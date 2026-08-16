@@ -673,3 +673,56 @@ cite { font-style: normal; }
   /* captions clear the corner arc at the smaller mobile radius */
   .tag { padding: 12px 28px 16px; }
 }
+
+/* ------------------------------------------------------------ instagram --
+   Real posts, self-hosted, in the page's own language — no third-party
+   script, no white card, no box-shadow. The row deliberately runs off the
+   container's right edge: it is the page's one horizontal edge event, and
+   the crop is what tells you it scrolls. */
+
+.ig__head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 24px; margin-bottom: 48px;
+}
+.ig__head h2 { margin: 0; }
+.ig__link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 16px; color: var(--plum); white-space: nowrap;
+}
+.ig__link svg { width: 18px; height: 18px; transition: transform .45s var(--ease); }
+.ig__link:hover svg { transform: translateX(4px); }
+
+.ig__row {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 300px;
+  gap: 24px; overflow-x: auto; scrollbar-width: none;
+  /* run past the container's right edge, and give the scroll its own gutter */
+  margin-right: calc(-1 * max(0px, (100vw - var(--container)) / 2 + var(--gutter)));
+  padding-right: var(--gutter);
+  scroll-snap-type: x proximity;
+}
+.ig__row::-webkit-scrollbar { display: none; }
+
+.ig__item { scroll-snap-align: start; display: block; }
+.ig__shot {
+  position: relative; display: block; aspect-ratio: 1;
+  border-radius: var(--r-inner); overflow: hidden; background: var(--surface);
+}
+.ig__shot img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .8s var(--ease);
+}
+.ig__item:hover .ig__shot img { transform: scale(1.04); }
+.ig__play {
+  position: absolute; right: 16px; top: 16px;
+  width: 32px; height: 32px; color: var(--ground);
+}
+.ig__play svg { width: 100%; height: 100%; }
+.ig__date { display: block; padding-top: 16px; font-size: 15px; color: var(--plum); }
+
+@media (max-width: 900px) {
+  .ig__head { margin-bottom: 24px; }
+  .ig__row {
+    grid-auto-columns: 220px; gap: 16px;
+    margin-right: calc(-1 * var(--gutter));
+  }
+}
