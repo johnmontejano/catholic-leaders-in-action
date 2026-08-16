@@ -24,8 +24,8 @@
 
 :root {
   /* grounds — M4: elevation is a tint step, never a shadow */
-  --ground:   #F8F0E3;
-  --surface:  #ECE4D7;
+  --ground:   #F7EFE5;
+  --surface:  #EBE2D5;
   --sunk:     #E3D9C8;
   --ink:      #1A1714;
   --ink-40:   rgba(26, 23, 20, .55);
@@ -135,12 +135,12 @@ section { position: relative; }
   font-size: 16px; white-space: nowrap;
   transition: background-color .25s ease, color .25s ease;
 }
-.btn--primary { background: var(--plum); color: var(--ground); }
+.btn--primary { background: var(--plum); color: var(--ground); border-radius: 999px; }
 /* M3 — the ONE asymmetric shape on the page, and it lives only in the fixed nav.
    Every other primary button stays on the 8px control radius. */
-.nav .btn--primary { border-radius: 32px 8px 8px 32px; }
+.nav .btn--primary { border-radius: 999px; }
 .btn--primary:hover { background: #3A0E22; }
-.btn--ghost { background: var(--surface); color: var(--ink); }
+.btn--ghost { background: var(--surface); color: var(--ink); border-radius: 999px; }
 .btn--ghost:hover { background: var(--sunk); }
 .btn--steel { background: var(--steel); color: var(--ground); }
 
@@ -148,15 +148,23 @@ section { position: relative; }
 
 .nav {
   position: fixed; inset: 16px 0 auto; z-index: 90;
-  display: flex; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; padding-inline: 32px;
   pointer-events: none;
 }
+/* the wordmark holds the true top-left corner instead of being swallowed
+   into a centred capsule — the page gains an anchor the reference lacks */
+.nav__brand {
+  pointer-events: auto; display: flex; align-items: center; gap: 8px;
+  height: 48px; font-size: 16px; letter-spacing: -.2px; white-space: nowrap; flex: none;
+}
+.nav__brand svg { width: 22px; height: 22px; }
 .nav__inner {
   pointer-events: auto;
   display: flex; align-items: center; gap: 32px;
-  height: 60px; padding: 0 8px 0 24px;
+  height: 48px; padding: 0 8px 0 24px;
   border-radius: var(--r-panel);
-  background: rgba(236, 228, 215, .92);
+  background: rgba(235, 226, 213, .94);
   backdrop-filter: blur(16px) saturate(1.4);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
 }
@@ -165,7 +173,7 @@ section { position: relative; }
 .nav__links { display: flex; gap: 24px; font-size: 16px; }
 .nav__links a { color: var(--ink-60); transition: color .2s ease; }
 .nav__links a:hover { color: var(--ink); }
-.nav .btn { height: 44px; padding: 0 16px; }
+.nav .btn { height: 36px; padding: 0 16px; }
 
 /* --------------------------------------------------------- panels ------- */
 
@@ -190,13 +198,14 @@ section { position: relative; }
 .arch--brick { background: var(--brick); }
 
 /* label pill that sits inside a photo, Fauna's caption device */
+/* The reference's dark translucent lozenge was transplanted verbatim here.
+   Deleted. Captions now sit on the cream beneath their photo, set in plum. */
 .tag {
-  position: absolute; left: 20px; bottom: 20px;
-  padding: 8px 16px; border-radius: var(--r-panel);
-  background: rgba(26, 23, 20, .62);
-  backdrop-filter: blur(8px);
-  color: var(--ground); font-size: 16px;
+  display: block; padding: 16px 48px 20px;
+  color: var(--plum); font-size: 15px; letter-spacing: .01em;
 }
+.bento__cell:has(.tag) { display: flex; flex-direction: column; background: var(--surface); }
+.bento__cell:has(.tag) img { flex: 1; min-height: 0; }
 
 
 /* ------------------------------------------------------------- icons -----
@@ -238,7 +247,7 @@ section { position: relative; }
 
 /* the nav tightens once you leave the top */
 .nav__inner { transition: height .45s var(--ease), background-color .45s var(--ease); }
-.nav.is-stuck .nav__inner { height: 52px; background: rgba(236, 228, 215, .96); }
+.nav.is-stuck .nav__inner { height: 44px; background: rgba(235, 226, 213, .97); }
 
 /* the hero media settles in, then drifts a touch against the scroll */
 [data-js] .hero__media { transform: scale(1.03); transition: transform 1.4s var(--ease); }
@@ -255,6 +264,8 @@ section { position: relative; }
 /* the media bleeds past the text container so it anchors the fold */
 .hero__media {
   position: relative; aspect-ratio: 21 / 9;
+  /* M3 — the page's ONE asymmetric shape, at a size that reads as intent */
+  border-radius: 100px 100px 8px 100px;
   width: calc(100vw - 64px); max-width: 1600px;
   margin-inline: calc(50% - min(50vw - 32px, 800px));
 }
@@ -299,7 +310,7 @@ section { position: relative; }
   position: relative;
 }
 .rail__btn[aria-selected="true"] { color: var(--ground); background: var(--plum); }
-.rail__btn[aria-selected="true"] .rail__meta { color: rgba(248, 240, 227, .70); }
+.rail__btn[aria-selected="true"] .rail__meta { color: rgba(247, 239, 229, .70); }
 .rail__meta { font-size: 16px; color: var(--ink-60); display: block; margin-top: 4px; }
 
 .pillars__panel { border-radius: var(--r-panel); background: var(--surface); padding: 64px; overflow: hidden; }
@@ -330,10 +341,10 @@ section { position: relative; }
   padding: 48px; display: flex; flex-direction: column; gap: 16px;
   background: var(--plum); color: var(--ground);   /* the screen's one colour block */
 }
-.bento__note p { color: rgba(248, 240, 227, .78); }
+.bento__note p { color: rgba(247, 239, 229, .78); }
 .bento__note .ico { color: var(--halo); }
 .bento__note h3 { font-size: 24px; line-height: 30px; margin: 0; color: var(--ground); }
-.bento__note p { font-size: 16px; line-height: 24px; margin: 0; color: rgba(248, 240, 227, .82); }
+.bento__note p { font-size: 16px; line-height: 24px; margin: 0; color: rgba(247, 239, 229, .82); }
 
 /* --------------------------------------------------------- quote -------- */
 
@@ -351,7 +362,7 @@ cite { font-style: normal; }
 .event__shot img { width: 100%; height: 100%; object-fit: cover; }
 .eyebrow { font-size: 16px; color: var(--ink-40); margin: 0 0 16px; }
 .timeline { list-style: none; margin: 32px 0 0; padding: 0; }
-.timeline li { display: flex; gap: 24px; padding: 0 0 24px; font-size: 16px; line-height: 24px; }
+.timeline li { display: flex; gap: 32px; padding: 0 0 24px; font-size: 16px; line-height: 24px; }
 .timeline time { flex: 0 0 92px; color: var(--ink-40); }
 
 /* --------------------------------------------------------- speakers ----- */
@@ -388,7 +399,7 @@ cite { font-style: normal; }
 
 /* --------------------------------------------------------- faq ---------- */
 
-.faq { border-radius: var(--r-panel); background: var(--surface); padding: 16px 48px; }
+.faq { border-radius: var(--r-inner); background: var(--surface); padding: 8px 48px; }
 .faq details + details { border-top: 1px solid var(--hairline); }
 .faq summary {
   list-style: none; cursor: pointer; padding: 24px 0;
@@ -474,7 +485,7 @@ cite { font-style: normal; }
 .hero__play {
   position: absolute; inset: 0; margin: auto;
   width: 68px; height: 68px; border-radius: 100%;
-  background: rgba(248, 240, 227, .92); color: var(--ink);
+  background: rgba(247, 239, 229, .92); color: var(--ink);
   display: flex; align-items: center; justify-content: center;
 }
 .hero__play svg { width: 26px; height: 26px; margin-left: 4px; }
@@ -490,7 +501,7 @@ cite { font-style: normal; }
 .bento > .bento__cell:nth-child(n+3) { grid-row: 2; }
 .bento { grid-template-rows: 420px 340px; }
 /* small media takes a proportionate radius, not the panel value */
-.bento__cell:not(.c2) { border-radius: 32px; }
+.bento__cell:not(.c2) { border-radius: var(--r-inner); }
 .bento__cell { aspect-ratio: auto; }
 
 /* --------------------------------------------------------- event type ---
@@ -501,7 +512,7 @@ cite { font-style: normal; }
 
 /* ------------------------------------------------------------- faq ------ */
 
-.faqwrap { display: grid; grid-template-columns: minmax(380px, 30%) 1fr; gap: 48px; align-items: stretch; }
+.faqwrap { display: grid; grid-template-columns: minmax(280px, 22%) 1fr; gap: 48px; align-items: stretch; }
 .faqwrap__side {
   border-radius: var(--r-panel); background: var(--plum); color: var(--ground);
   padding: 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 48px;
@@ -613,7 +624,7 @@ cite { font-style: normal; }
   .nav__menu {
     display: flex; flex-direction: column; gap: 2px;
     margin: 8px 8px 0; padding: 8px;
-    border-radius: 28px; background: rgba(248,240,227,.96);
+    border-radius: var(--r-inner); background: rgba(247,239,229,.96);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   }
   .nav__menu a { padding: 12px 16px; min-height: 44px; display: flex; align-items: center; border-radius: 8px; }
@@ -637,7 +648,8 @@ cite { font-style: normal; }
 
   .close__body { margin: 28px auto 24px; }
   /* the rule follows the wrapped line instead of a fixed bar through the type */
-  .close__q span { text-decoration-thickness: 2px; text-underline-offset: 8px; }
+  .close__q { line-height: 1.06; }
+  .close__q span { text-decoration-thickness: 2px; text-underline-offset: 14px; }
 
     
   .event__sub, .event__body { font-size: 16px; line-height: 24px; }
@@ -645,4 +657,19 @@ cite { font-style: normal; }
   /* every tap target clears 44px */
   .btn { height: 52px; }
   .foot__col a, .nav__links a { display: inline-block; min-height: 24px; }
+}
+
+/* ==================================================== mobile corrections ==
+   Appended last so these win on order rather than on specificity guesses. */
+@media (max-width: 900px) {
+  .nav { padding-inline: 12px; }
+  .nav__brand { flex: none; white-space: nowrap; }
+  /* the full wordmark wrapped to two lines and deformed the bar */
+  .nav__brand span { display: none; }
+  .nav__brand::after { content: "CLIA"; font-size: 16px; letter-spacing: -.2px; }
+  /* the decorative rule was touching the ascenders of the wrapped line */
+  .close__q { line-height: 1.08; }
+  .close__q span { text-underline-offset: 14px; text-decoration-thickness: 2px; }
+  /* captions clear the corner arc at the smaller mobile radius */
+  .tag { padding: 12px 28px 16px; }
 }
