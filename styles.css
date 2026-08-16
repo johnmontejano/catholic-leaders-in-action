@@ -1,0 +1,611 @@
+/* ==========================================================================
+   Catholic Leaders in Action
+   System measured off faunarobotics.com/company (2026-08-16), Catholic accents.
+   Rules enforced here — see bar.md:
+   M1  one family, one weight (500). no bold anywhere.
+   M2  display leading <= 1.03, tracking <= -0.025em above 60px.
+   M3  two radii: 100px panels, 8px controls. one asymmetric shape only.
+   M4  elevation is a 4% tint step. zero shadows.
+   M5  colour is a flat block. no gradients on the ground.
+   M6  three section paddings: 56 / 64 / 176.
+   M7  container 1280. panels never touch the viewport edge.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'General Sans';
+  src: url('assets/fonts/GeneralSans-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Switzer';
+  src: url('assets/fonts/Switzer-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* grounds — M4: elevation is a tint step, never a shadow */
+  --ground:   #F8F0E3;
+  --surface:  #ECE4D7;
+  --sunk:     #E3D9C8;
+  --ink:      #1A1714;
+  --ink-40:   rgba(26, 23, 20, .55);
+  --ink-60:   rgba(26, 23, 20, .72);
+  --hairline: rgba(26, 23, 20, .10);
+
+  /* accents — M5: flat blocks, one or two uses each, never a gradient */
+  --plum:    #4D142E;
+  --brass:   #C9A84C;
+  --halo:    #F5D18A;
+  --steel:   #63A4BC;
+  --emerald: #3DAC91;
+  --brick:   #A7625A;
+
+  /* radii — M3: exactly two, plus one asymmetric signature */
+  --r-panel: 100px;
+  --r-ctrl:  8px;
+  --r-inner: 64px;   /* nested media inside a panel */
+  --r-foot:  64px;
+
+  --container: 1280px;
+  --gutter: 40px;
+
+  /* M6: three vertical paddings, assigned by importance */
+  --pad-s: 56px;
+  --pad-m: 64px;
+  --pad-l: 120px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: 'General Sans', 'Switzer', system-ui, sans-serif;
+  font-weight: 500;             /* M1 — the only weight on the page */
+  font-size: 24px;
+  line-height: 30px;            /* 1.25, measured off Fauna */
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* M1 — nothing is allowed to get heavier or lighter than 500 */
+h1, h2, h3, h4, p, a, li, button, strong, b, dt, dd, summary, span {
+  font-weight: 500;
+}
+
+img, video { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+
+/* --------------------------------------------------------- layout ------- */
+
+.wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+section { position: relative; }
+
+.pad-s { padding-block: var(--pad-s); }
+.pad-m { padding-block: var(--pad-m); }
+.pad-l { padding-block: var(--pad-l); }
+
+/* --------------------------------------------------------- type --------- */
+
+/* M2 — display leading 1.03, tracking -0.031em. these numbers are the bar. */
+.display {
+  font-size: 72px;
+  line-height: 68px;            /* 0.94 */
+  letter-spacing: -2.3px;
+  margin: 0;
+  text-wrap: balance;
+}
+.display--mega {
+  font-size: 99.2px;
+  line-height: 92.26px;         /* 0.93 */
+  letter-spacing: -3px;
+}
+.display--sm {
+  font-size: 42px;
+  line-height: 47.88px;
+  letter-spacing: -1px;
+}
+
+.lede { font-size: 24px; line-height: 30px; margin: 0; }
+.meta { font-size: 16px; line-height: 24px; color: var(--ink-40); margin: 0; }
+.muted { color: var(--ink-60); }
+.center { text-align: center; }
+
+/* --------------------------------------------------------- controls ----- */
+
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 60px; padding: 0 28px;
+  border-radius: var(--r-ctrl);
+  font-size: 16px; white-space: nowrap;
+  transition: background-color .25s ease, color .25s ease;
+}
+.btn--primary { background: var(--plum); color: var(--ground); }
+/* M3 — the ONE asymmetric shape on the page, and it lives only in the fixed nav.
+   Every other primary button stays on the 8px control radius. */
+.nav .btn--primary { border-radius: 32px 8px 8px 32px; }
+.btn--primary:hover { background: #3A0E22; }
+.btn--ghost { background: var(--surface); color: var(--ink); }
+.btn--ghost:hover { background: var(--sunk); }
+.btn--steel { background: var(--steel); color: var(--ground); }
+
+/* --------------------------------------------------------- nav ---------- */
+
+.nav {
+  position: fixed; inset: 16px 0 auto; z-index: 90;
+  display: flex; justify-content: center;
+  pointer-events: none;
+}
+.nav__inner {
+  pointer-events: auto;
+  display: flex; align-items: center; gap: 32px;
+  height: 60px; padding: 0 8px 0 24px;
+  border-radius: var(--r-panel);
+  background: rgba(236, 228, 215, .92);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+}
+.nav__mark { display: flex; align-items: center; gap: 10px; font-size: 16px; letter-spacing: -.2px; }
+.nav__mark svg { width: 22px; height: 22px; }
+.nav__links { display: flex; gap: 24px; font-size: 16px; }
+.nav__links a { color: var(--ink-60); transition: color .2s ease; }
+.nav__links a:hover { color: var(--ink); }
+.nav .btn { height: 44px; padding: 0 20px; }
+
+/* --------------------------------------------------------- panels ------- */
+
+.panel {
+  border-radius: var(--r-panel);
+  background: var(--surface);
+  overflow: hidden;
+}
+.panel--media { background: var(--sunk); }
+.panel--media img, .panel--media video { width: 100%; height: 100%; object-fit: cover; }
+
+/* the arch — Fauna's core glyph, a 100px radius on the top two corners only */
+.arch {
+  width: 34px; height: 30px;
+  background: var(--ink);
+  border-radius: 100px 100px 0 0;
+}
+.arch--plum { background: var(--plum); }
+.arch--brass { background: var(--brass); }
+.arch--steel { background: var(--steel); }
+.arch--emerald { background: var(--emerald); }
+.arch--brick { background: var(--brick); }
+
+/* label pill that sits inside a photo, Fauna's caption device */
+.tag {
+  position: absolute; left: 20px; bottom: 20px;
+  padding: 8px 16px; border-radius: var(--r-panel);
+  background: rgba(26, 23, 20, .62);
+  backdrop-filter: blur(8px);
+  color: var(--ground); font-size: 16px;
+}
+
+/* --------------------------------------------------------- hero --------- */
+
+.hero { padding-top: 128px; }
+.hero__head { max-width: 17ch; margin: 0 auto 24px; }
+.hero__sub { max-width: 34ch; margin: 0 auto 32px; text-wrap: balance; }
+.hero__cta { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; }
+/* cinematic crop — the colonnade reads better wide, and 16:9 cost 160px of page */
+/* the media bleeds past the text container so it anchors the fold */
+.hero__media {
+  position: relative; aspect-ratio: 21 / 9;
+  width: calc(100vw - 64px); max-width: 1600px;
+  margin-inline: calc(50% - min(50vw - 32px, 800px));
+}
+
+/* the thin rule that separates the partner pills from the membership arches */
+.strip-rule { height: var(--pad-m); }
+
+/* --------------------------------------------------------- partners ----- */
+
+.partners { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.partners__item {
+  flex: 0 1 auto; height: 72px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 0 40px;
+  border-radius: var(--r-panel);
+  background: var(--surface);
+  font-size: 16px; color: var(--ink-60);
+}
+
+/* --------------------------------------------------------- three-up ----- */
+
+.threeup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.threeup__item { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.threeup__item h3 { font-size: 22px; line-height: 27px; margin: 0; }
+.threeup__item p { font-size: 16px; line-height: 24px; color: var(--ink-60); margin: 0; max-width: 300px; }
+
+/* --------------------------------------------------------- pillars ------ */
+/* Granola's pinned left rail + Dia's chips: three chips swap one panel */
+
+.pillars { display: grid; grid-template-columns: 420px 1fr; gap: 80px; align-items: start; }
+/* the heading lives in the rail column, so the left lane carries real mass
+   and both lanes terminate near each other */
+.pillars__lede { display: flex; flex-direction: column; gap: 44px; min-width: 0; }
+.pillars__head { margin: 0; }
+.rail { display: flex; flex-direction: column; gap: 4px; }
+.rail__btn {
+  text-align: left; padding: 18px 20px 16px;
+  border-radius: var(--r-ctrl);
+  font-size: 24px; line-height: 30px; color: var(--ink);
+  /* the active state is a filled block now, so only paint properties move */
+  transition: color .3s ease, background-color .3s ease;
+  position: relative;
+}
+.rail__btn[aria-selected="true"] { color: var(--ground); background: var(--plum); }
+.rail__btn[aria-selected="true"] .rail__meta { color: rgba(248, 240, 227, .70); }
+.rail__meta { font-size: 16px; color: var(--ink-60); display: block; margin-top: 4px; }
+
+.pillars__panel { border-radius: var(--r-panel); background: var(--surface); padding: 64px; overflow: hidden; }
+.pillars__pane { display: none; }
+.pillars__pane[data-active] { display: block; animation: fade .45s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.pillars__pane h3 { font-size: 24px; line-height: 30px; letter-spacing: 0; margin: 16px 0 12px; }
+.pillars__pane p { font-size: 20px; line-height: 28px; margin: 0 0 40px; max-width: 46ch; }
+.pillars__shot {
+  position: relative; overflow: hidden; aspect-ratio: 21 / 9; background: var(--sunk);
+  margin: 0 -64px -64px;                 /* runs to the panel's inner edges */
+  border-radius: var(--r-inner) var(--r-inner) 0 0;
+}
+.pillars__shot img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --------------------------------------------------------- bento -------- */
+
+.bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.bento__cell {
+  position: relative; border-radius: var(--r-panel); overflow: hidden;
+  background: var(--surface); min-width: 0;
+  aspect-ratio: var(--ar, 1);   /* driven per-cell so mobile can drop it cleanly */
+}
+.bento__cell img { width: 100%; height: 100%; object-fit: cover; }
+.span2 { grid-column: span 2; }
+.tall { grid-row: span 2; }
+.bento__note { padding: 48px; display: flex; flex-direction: column; gap: 16px; align-self: start; }
+.bento__note h3 { font-size: 24px; line-height: 30px; margin: 0; }
+.bento__note p { font-size: 16px; line-height: 24px; color: var(--ink-60); margin: 0; }
+
+/* --------------------------------------------------------- quote -------- */
+
+.quote { border-radius: var(--r-panel); background: var(--ink); color: var(--ground); padding: 72px; }
+.quote blockquote { margin: 0; max-width: 26ch; font-size: 64px; line-height: 65.92px; letter-spacing: -2px; }
+cite { font-style: normal; }
+.quote__cite { font-style: normal; font-size: 16px; color: rgba(248, 240, 227, .62); margin-top: 40px; display: block; }
+
+/* --------------------------------------------------------- event -------- */
+
+.event { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: stretch; }
+.event__main { border-radius: var(--r-panel); background: var(--surface); padding: 48px; }
+.event__side { display: flex; flex-direction: column; gap: 30px; }
+.event__shot { position: relative; border-radius: var(--r-inner); overflow: hidden; flex: 1; min-height: 240px; background: var(--sunk); }
+.event__shot img { width: 100%; height: 100%; object-fit: cover; }
+.eyebrow { font-size: 16px; color: var(--ink-40); margin: 0 0 20px; }
+.timeline { list-style: none; margin: 36px 0 0; padding: 0; }
+.timeline li { display: flex; gap: 24px; padding: 0 0 24px; font-size: 16px; line-height: 24px; }
+.timeline time { flex: 0 0 92px; color: var(--ink-40); }
+
+/* --------------------------------------------------------- speakers ----- */
+
+.speakers { display: grid; grid-template-columns: 5fr 7fr; gap: 24px; margin-top: 24px; align-items: start; }
+.speaker { border-radius: var(--r-panel); background: var(--surface); padding: 40px; display: flex; flex-direction: column; gap: 18px; }
+.speaker h3 { font-size: 24px; line-height: 30px; margin: 0; }
+.speaker p { font-size: 16px; line-height: 24px; color: var(--ink-60); margin: 0; }
+
+/* --------------------------------------------------- geometric triad ---- */
+/* Fauna's overlapping flat colour blocks. M5: hard edges, no gradient. */
+
+/* Three shapes that genuinely interlock — each overlaps its neighbour, the way
+   Fauna's blocks do. Percentages guarantee the overlap at every width. */
+.triad { position: relative; height: 360px; }
+.triad__shape { position: absolute; display: flex; align-items: flex-start; padding: 40px; color: var(--ground);
+  font-size: 42px; line-height: 47.88px; letter-spacing: -1px; }
+.triad__a { left: 0; top: 20px; width: 40%; height: 320px; background: var(--steel); }
+/* centred on the seam, overlapping each rectangle by 130px — never plugging a gap */
+.triad__b { left: calc(40% - 132px); top: 0; width: 264px; height: 264px; background: var(--brass);
+            border-radius: 100%; align-items: center; justify-content: center; padding: 0; color: var(--ink); }
+.triad__c { left: 40%; right: 0; top: 20px; height: 320px; background: var(--brick);
+            border-radius: 0 0 100px 100px; justify-content: flex-end; }
+/* the circle sits between the two rectangles in the stack, so both edges read */
+.triad__a, .triad__c { z-index: 1; }
+.triad__b { z-index: 2; }
+
+/* --------------------------------------------------------- slats -------- */
+/* Fairground/Fauna vertical reveal strip — rounded bottoms only */
+
+.slats { display: flex; gap: 12px; overflow: hidden; }
+.slats__item { flex: 1; height: 420px; border-radius: 0 0 100px 100px; overflow: hidden; background: var(--surface); }
+.slats__item img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --------------------------------------------------------- faq ---------- */
+
+.faq { border-radius: var(--r-panel); background: var(--surface); padding: 16px 56px; }
+.faq details + details { border-top: 1px solid var(--hairline); }
+.faq summary {
+  list-style: none; cursor: pointer; padding: 22px 0;
+  display: flex; justify-content: space-between; gap: 24px;
+  font-size: 24px; line-height: 30px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ''; width: 20px; height: 20px; flex: none; margin-top: 5px;
+  background: var(--ink); mask: var(--plus) center / contain no-repeat; transition: transform .3s ease; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq p { font-size: 16px; line-height: 24px; color: var(--ink-60); margin: 0 0 28px; max-width: 62ch; }
+
+/* --------------------------------------------------------- footer ------- */
+
+.close { text-align: left; }
+.close__q {
+  display: inline;
+  text-decoration: underline; text-underline-offset: 12px; text-decoration-thickness: 2px;
+  max-width: 16ch;
+}
+
+.foot {
+  border-radius: var(--r-foot) var(--r-foot) 0 0;
+  background: var(--surface);
+  padding: 96px var(--gutter) 40px;
+  margin-top: var(--pad-m);
+}
+.foot__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; max-width: var(--container); margin-inline: auto; }
+.foot__grid h2 { font-size: 32px; line-height: 37.76px; letter-spacing: -.5px; margin: 0 0 24px; max-width: 16ch; }
+.foot__col h4 { font-size: 16px; color: var(--ink-40); margin: 0 0 20px; }
+.foot__col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.foot__col a { font-size: 16px; transition: opacity .2s ease; }
+.foot__col a:hover { opacity: .6; }
+.foot__base {
+  max-width: var(--container); margin: 96px auto 0;
+  display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  font-size: 16px; color: var(--ink-40);
+}
+
+/* rotating badge — Fairground's margin device */
+.badge { position: absolute; right: 40px; bottom: 40px; width: 132px; height: 132px; }
+.badge svg { width: 100%; height: 100%; animation: spin 22s linear infinite; }
+.badge text { font-size: 13.5px; letter-spacing: 1.6px; fill: var(--ink-40); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --------------------------------------------------------- motion ------- */
+
+/* M8 — content paints regardless. The class only bites once JS sets data-js on <html>,
+   so no-JS, no-IntersectionObserver and full-page captures all show real content. */
+.reveal { opacity: 1; transform: none; }
+[data-js] .reveal { opacity: 0; transform: translateY(20px); }
+[data-js] .reveal.in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s cubic-bezier(.22,.61,.36,1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, [data-js] .reveal, [data-js] .reveal.in { opacity: 1; transform: none; transition: none; }
+  .badge svg { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+
+/* ------------------------------------------------- composed accent marks --
+   Three distinct marks built from two flat blocks each, in two accents, offset
+   so they overlap at one corner. Replaces tinting one logo silhouette 3x. */
+
+.mark { position: relative; display: block; width: 46px; height: 36px; flex: none; }
+.threeup .mark { width: 64px; height: 50px; }
+.threeup .mark i { transform: scale(1.4); transform-origin: top left; }
+.threeup .mark i + i { transform-origin: bottom right; }
+.mark i { position: absolute; display: block; }
+.mark__sq { width: 22px; height: 22px; left: 0; top: 0; }
+.mark__ci { width: 24px; height: 24px; left: 0; top: 0; border-radius: 100%; }
+.mark__ar { width: 24px; height: 21px; left: 0; top: 0; border-radius: 100px 100px 0 0; }
+.mark i + i { left: auto; right: 0; top: auto; bottom: 0; }
+
+.mark__sq--plum, .mark__ci--plum, .mark__ar--plum { background: var(--plum); }
+.mark__sq--brass, .mark__ci--brass, .mark__ar--brass { background: var(--brass); }
+.mark__sq--steel, .mark__ci--steel, .mark__ar--steel { background: var(--steel); }
+.mark__sq--emerald, .mark__ci--emerald, .mark__ar--emerald { background: var(--emerald); }
+.mark__sq--brick, .mark__ci--brick, .mark__ar--brick { background: var(--brick); }
+.mark__sq--halo, .mark__ci--halo, .mark__ar--halo { background: var(--halo); }
+
+/* ------------------------------------------------------------ nav extras -- */
+
+.nav__end { display: flex; align-items: center; gap: 8px; }
+.nav__toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; flex-direction: column; gap: 5px; }
+.nav__toggle span { display: block; width: 18px; height: 1.5px; background: var(--ink); transition: transform .3s ease, opacity .3s ease; }
+.nav__toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav__toggle[aria-expanded="true"] span:first-child { transform: translateY(6.5px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] span:last-child { transform: translateY(-6.5px) rotate(-45deg); }
+.nav__menu { display: none; }
+
+/* --------------------------------------------------------- hero extras --- */
+
+.hero__eyebrow { margin: 0 auto 20px; max-width: 34ch; }
+.hero__play {
+  position: absolute; inset: 0; margin: auto;
+  width: 68px; height: 68px; border-radius: 100%;
+  background: rgba(248, 240, 227, .92); color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+}
+.hero__play svg { width: 26px; height: 26px; margin-left: 3px; }
+.hero__play[hidden] { display: none; }
+[hidden] { display: none !important; }
+
+/* ------------------------------------------------------- bento geometry --
+   Four columns on explicit rows so the outer silhouette closes as a
+   rectangle. Widths vary (2/2 then 1/1/2); heights vary by row. */
+
+.bento { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 420px; align-items: start; }
+.bento > .c2 { grid-column: span 2; }
+.bento > .bento__cell:nth-child(n+3) { grid-row: 2; }
+.bento { grid-template-rows: 420px 340px; }
+.bento > .bento__note { height: auto; }
+/* small media takes a proportionate radius, not the panel value */
+.bento__cell:not(.c2) { border-radius: 32px; }
+.bento__cell { aspect-ratio: auto; }
+
+/* --------------------------------------------------------- event type ---
+   Two steps inside the card: the title, then everything else at 16px. */
+
+.event__sub { font-size: 16px; line-height: 24px; color: var(--ink-40); margin: 12px 0 24px; }
+.event__body { font-size: 16px; line-height: 24px; margin: 0 0 32px; max-width: 56ch; }
+
+/* ------------------------------------------------------------- faq ------ */
+
+.faqwrap { display: grid; grid-template-columns: minmax(380px, 30%) 1fr; gap: 48px; align-items: stretch; }
+.faqwrap__side {
+  border-radius: var(--r-panel); background: var(--plum); color: var(--ground);
+  padding: 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px;
+  min-width: 0; overflow: visible;
+}
+.faqwrap__side .btn { white-space: normal; height: auto; min-height: 52px; padding: 14px 24px; }
+.faqwrap__head { margin: 0; font-size: 42px; line-height: 47.88px; letter-spacing: -1px; }
+.faqwrap__side .btn { align-self: flex-start; background: var(--ground); color: var(--ink); }
+
+/* ---------------------------------------------------------- welcome ----- */
+
+.close__body { max-width: 46ch; margin: 40px 0 32px; }
+
+/* ------------------------------------------------------ triad chips -----
+   Free accent shapes straddling the panel edges, as Fauna does. */
+
+.triad__chip { position: absolute; display: block; z-index: 3; }
+.triad__chip--1 { width: 64px; height: 64px; left: 18%; bottom: -18px; background: var(--plum); border-radius: 100px 100px 0 0; }
+.triad__chip--2 { width: 60px; height: 60px; right: 22%; top: 96px; background: var(--emerald); border-radius: 100%; }
+
+
+/* ========================================================== mobile ======= */
+/* SESSION-1: the phone is the primary experience. */
+
+@media (max-width: 900px) {
+  :root { --gutter: 20px; --r-panel: 40px; --r-foot: 32px; --pad-l: 96px; --pad-m: 48px; --pad-s: 36px; }
+
+  body { font-size: 18px; line-height: 26px; }
+
+  /* M2 holds on mobile: leading stays at 1.03, tracking stays negative */
+  .display { font-size: 40px; line-height: 41.2px; letter-spacing: -1.2px; }
+  .display--mega { font-size: 52px; line-height: 48.4px; letter-spacing: -1.6px; }
+  .display--sm { font-size: 30px; line-height: 34.2px; letter-spacing: -.7px; }
+  .lede { font-size: 18px; line-height: 26px; }
+
+  .nav { inset: 10px 0 auto; }
+  .nav__inner { width: calc(100% - 20px); justify-content: space-between; padding: 0 8px 0 16px; gap: 12px; }
+  .nav__links { display: none; }
+
+  .hero { padding-top: 108px; }
+  .hero__cta { flex-direction: column; align-items: stretch; }
+  .hero__cta .btn { justify-content: center; }
+  .hero__media { aspect-ratio: 4 / 5; }
+
+  .partners { flex-direction: column; }
+  .partners__item { height: 84px; }
+
+  .threeup { grid-template-columns: 1fr; gap: 44px; }
+
+  .pillars { grid-template-columns: 1fr; gap: 28px; }
+  .pillars__lede { gap: 24px; }
+  .rail {
+    flex-direction: row; gap: 8px; border: 0; scrollbar-width: none;
+    /* the chip row scrolls edge-to-edge instead of pushing the page wide */
+    min-width: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    /* fade the trailing edge so a cropped chip reads as "scroll me", not a clip bug */
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent 100%);
+  }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail__btn { flex: none; }
+  .rail__btn {
+    border: 0; padding: 12px 20px; min-height: 44px; white-space: nowrap;
+    border-radius: 100px; background: var(--surface); font-size: 16px; line-height: 20px;
+  }
+  .rail__btn[aria-selected="true"] { background: var(--plum); color: var(--ground); }
+  .rail__meta { display: none; }
+  .pillars__panel { padding: 28px; }
+  .pillars__shot { aspect-ratio: 16 / 9; }
+  .pillars__pane h3 { font-size: 28px; line-height: 31px; margin: 14px 0 12px; }
+  .pillars__pane p { font-size: 18px; line-height: 26px; margin-bottom: 24px; }
+
+  .bento { grid-template-columns: 1fr; }
+  .span2, .tall { grid-column: auto; grid-row: auto; }
+  /* aspect-ratio + min-height was driving cell WIDTH past the viewport. Height only. */
+  .bento__cell { aspect-ratio: auto; height: 300px; }
+  .bento__note { height: auto; padding: 32px; }
+
+  .quote { padding: 56px 28px; }
+  .quote blockquote { max-width: none; }
+
+  .event { grid-template-columns: 1fr; }
+  .event__main { padding: 32px; }
+  .timeline li { flex-direction: column; gap: 4px; }
+  .timeline time { flex: none; }
+
+  .speakers { grid-template-columns: 1fr; }
+  .speaker { padding: 32px; }
+
+  /* stacked, and every offset is restated so no desktop value leaks through */
+  .triad { height: 470px; }
+  .triad__shape { font-size: 30px; line-height: 34.2px; letter-spacing: -.7px; padding: 0 24px; }
+  .triad__a { left: 0; right: auto; width: 76%; height: 180px; top: 0; }
+  .triad__b { left: auto; right: 0; top: 130px; width: 170px; height: 170px; }
+  .triad__c { left: 0; right: auto; width: 76%; height: 180px; top: 290px; border-radius: 0 0 60px 60px; justify-content: flex-start; }
+
+  .slats { gap: 6px; }
+  .slats__item { height: 200px; border-radius: 0 0 40px 40px; }
+  .slats__item:nth-child(n+5) { display: none; }
+
+  .faq summary { font-size: 18px; line-height: 26px; padding: 20px 0; min-height: 44px; }
+
+  .foot { padding: 56px 20px 32px; }
+  .foot__grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .foot__grid h2 { grid-column: 1 / -1; font-size: 26px; line-height: 30px; }
+  .foot__base { margin-top: 48px; }
+  .badge { position: static; width: 96px; height: 96px; margin-top: 36px; }
+
+
+  /* --- new components at 375 --- */
+  .nav__links { display: none; }
+  .nav__toggle { display: flex; }
+  .nav__menu[hidden] { display: none; }
+  .nav__menu {
+    display: flex; flex-direction: column; gap: 2px;
+    margin: 8px 10px 0; padding: 12px;
+    border-radius: 28px; background: rgba(248,240,227,.96);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  }
+  .nav__menu a { padding: 12px 14px; min-height: 44px; display: flex; align-items: center; border-radius: 8px; }
+  .nav__menu a:active { background: var(--surface); }
+
+  .hero__eyebrow { margin-bottom: 16px; }
+  .hero__media { aspect-ratio: 16 / 9; }
+
+  .bento { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-rows: 300px; }
+  .bento > .c2 { grid-column: auto; }
+  .bento > .bento__cell:nth-child(n+3) { grid-row: auto; }
+  .bento__note { grid-row: auto; height: auto; }
+
+  .faqwrap { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .faqwrap__side { padding: 28px; gap: 24px; min-width: 0; }
+  .faqwrap__side .btn { align-self: stretch; justify-content: center; white-space: normal; text-align: center; padding: 0 16px; }
+  .faq { padding: 8px 24px; min-width: 0; }
+
+  .quote blockquote { font-size: 30px; line-height: 34.2px; letter-spacing: -.7px; max-width: none; }
+  .quote__cite { margin-top: 28px; }
+
+  .close__body { margin: 28px auto 28px; }
+  /* the rule follows the wrapped line instead of a fixed bar through the type */
+  .close__q span { text-decoration-thickness: 2px; text-underline-offset: 8px; }
+
+  .triad__chip--1 { width: 40px; height: 40px; left: -8px; }
+  .triad__chip--2 { width: 38px; height: 38px; right: 24px; }
+
+  .event__sub, .event__body { font-size: 16px; line-height: 24px; }
+
+  /* every tap target clears 44px */
+  .btn { height: 52px; }
+  .foot__col a, .nav__links a { display: inline-block; min-height: 24px; }
+}

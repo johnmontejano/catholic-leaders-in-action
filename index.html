@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catholic Leaders in Action</title>
+<meta name="description" content="Forming Catholics to lead with faith, wisdom, and courage. A members' institute for Catholic young professionals in the San Francisco Bay Area.">
+<link rel="stylesheet" href="styles.css">
+<style>:root{--plus:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 0h2v20H9z'/%3E%3Cpath d='M0 9h20v2H0z'/%3E%3C/svg%3E")}</style>
+<!-- M8: only opt into scroll-reveal once we know JS can switch it back on. -->
+<script>if('IntersectionObserver' in window)document.documentElement.setAttribute('data-js','')</script>
+</head>
+<body>
+
+<!-- ================================================================ nav -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a class="nav__mark" href="#top">
+      <svg viewBox="0 0 22 22" aria-hidden="true"><path d="M11 1C5.9 1 1.8 5.1 1.8 10.2V21h4.6V10.2a4.6 4.6 0 0 1 9.2 0V21h4.6V10.2C20.2 5.1 16.1 1 11 1Z" fill="currentColor"/></svg>
+      <span>Catholic Leaders in Action</span>
+    </a>
+    <div class="nav__links">
+      <a href="#pillars">Formation</a>
+      <a href="#event">Events</a>
+      <a href="#welcome">Community</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav__end">
+      <a class="btn btn--primary" href="#event">RSVP</a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="nav__menu" id="nav-menu" hidden>
+    <a href="#pillars">Formation</a>
+    <a href="#event">Events</a>
+    <a href="#welcome">Community</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- =========================================================== hero -->
+  <section id="hero" class="hero">
+    <div class="wrap">
+      <p class="meta center hero__eyebrow">A members' institute for Catholic young professionals, 21&#8209;40, in the San Francisco Bay&nbsp;Area</p>
+      <h1 class="display center hero__head">Formed to lead with faith, wisdom, and courage</h1>
+      <p class="lede center muted hero__sub">A community of young Catholics rooted in Christ, leading with conviction. Formation, action, and prayer in the Bay&nbsp;Area.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#event">RSVP to our next event</a>
+        <a class="btn btn--ghost" href="#welcome">Join the WhatsApp community</a>
+      </div>
+      <div class="panel panel--media hero__media">
+        <video src="assets/photos/hero.mp4" poster="assets/photos/hero-video-poster.jpg"
+               autoplay muted loop playsinline preload="metadata"></video>
+        <button class="hero__play" type="button" aria-label="Play video" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================= partners -->
+  <section id="partners" class="pad-m">
+    <div class="wrap">
+      <p class="meta center" style="margin-bottom:24px">Speakers from</p>
+      <div class="partners">
+        <div class="partners__item">Archdiocese of San&nbsp;Francisco</div>
+        <div class="partners__item">Dominican School of Philosophy &amp; Theology</div>
+        <div class="partners__item">Lay Mission&nbsp;Institute</div>
+      </div>
+
+      <div class="strip-rule"></div>
+
+      <div class="threeup reveal">
+        <div class="threeup__item">
+          <span class="mark"><i class="mark__sq mark__sq--plum"></i><i class="mark__ar mark__ar--brass"></i></span>
+          <h3>Leadership development</h3>
+        </div>
+        <div class="threeup__item">
+          <span class="mark"><i class="mark__ci mark__ci--emerald"></i><i class="mark__sq mark__sq--steel"></i></span>
+          <h3>Service initiatives</h3>
+        </div>
+        <div class="threeup__item">
+          <span class="mark"><i class="mark__ar mark__ar--brick"></i><i class="mark__ci mark__ci--halo"></i></span>
+          <h3>Travel &amp; pilgrimage</h3>
+        </div>
+      </div>
+      <p class="meta center" style="margin-top:36px">Also part of membership, announced to members first.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================== pillars -->
+  <section id="pillars" class="pad-l">
+    <div class="wrap">
+      <div class="pillars">
+        <div class="pillars__lede">
+          <h2 class="display pillars__head">A leadership institute, not youth ministry</h2>
+          <div class="rail" role="tablist" aria-label="The three pillars">
+          <button class="rail__btn" role="tab" aria-selected="true" aria-controls="p-formation" id="t-formation">
+            Formation <span class="rail__meta">Talks and panels.</span>
+          </button>
+          <button class="rail__btn" role="tab" aria-selected="false" aria-controls="p-church" id="t-church">
+            With the Church <span class="rail__meta">Formed with our pastors.</span>
+          </button>
+          <button class="rail__btn" role="tab" aria-selected="false" aria-controls="p-community" id="t-community">
+            Community <span class="rail__meta">Friendships that hold.</span>
+          </button>
+          </div>
+        </div>
+
+        <div class="pillars__panel">
+          <div class="pillars__pane" data-active id="p-formation" role="tabpanel" aria-labelledby="t-formation">
+            <span class="mark"><i class="mark__ar mark__ar--plum"></i><i class="mark__ci mark__ci--brass"></i></span>
+            <h3>Talks and panels</h3>
+            <p>Speakers from the Dominican School, the Lay Mission Institute, and the Archdiocese, on vocation, work, and the laity.</p>
+            <div class="pillars__shot"><img src="assets/photos/panel-discussion.jpg" alt="A panel discussion at a Catholic Leaders in Action evening"></div>
+          </div>
+          <div class="pillars__pane" id="p-church" role="tabpanel" aria-labelledby="t-church">
+            <span class="mark"><i class="mark__sq mark__sq--brass"></i><i class="mark__ar mark__ar--plum"></i></span>
+            <h3>Formed with our pastors</h3>
+            <p>Evenings built with the Archdiocese and religious communities: not adjacent to the Church, inside it.</p>
+            <div class="pillars__shot"><img src="assets/photos/clergy-and-speakers.jpg" alt="Clergy and speakers at a Catholic Leaders in Action evening"></div>
+          </div>
+          <div class="pillars__pane" id="p-community" role="tabpanel" aria-labelledby="t-community">
+            <span class="mark"><i class="mark__ci mark__ci--emerald"></i><i class="mark__sq mark__sq--brick"></i></span>
+            <h3>Friendships that hold</h3>
+            <p>The same faces on a weeknight in the city — receptions, service, and travel together.</p>
+            <div class="pillars__shot"><img src="assets/photos/community-reception-wide.jpg" alt="A reception at a Catholic Leaders in Action evening"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== bento -->
+  <section id="evening" class="pad-m">
+    <div class="wrap">
+      <div class="bento reveal">
+        <div class="bento__cell c2">
+          <img src="assets/photos/community-reception-wide.jpg" alt="Guests at a Catholic Leaders in Action reception">
+          <span class="tag">Check-in and reception</span>
+        </div>
+        <div class="bento__cell bento__note c2">
+          <span class="mark"><i class="mark__ar mark__ar--brick"></i><i class="mark__sq mark__sq--brass"></i></span>
+          <h3>An evening at CLIA</h3>
+          <p>Check-in and a reception from 6:30 PM, a talk, a panel discussion, and a networking reception afterward. Wine and small bites are provided.</p>
+        </div>
+        <div class="bento__cell">
+          <img src="assets/photos/leaders-in-conversation.jpg" alt="Two guests in conversation">
+        </div>
+        <div class="bento__cell">
+          <img src="assets/photos/community-conversation.jpg" alt="Guests in conversation at a reception">
+        </div>
+        <div class="bento__cell c2">
+          <img src="assets/photos/community-group.jpg" alt="A group at a Catholic Leaders in Action evening">
+          <span class="tag">Business casual encouraged</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== quote -->
+  <section id="quote" class="pad-s">
+    <div class="wrap">
+      <div class="quote reveal">
+        <blockquote>The laity are called to make the Church present and operative in those places where only through them can it become the salt of the earth.</blockquote>
+        <cite class="quote__cite">Lumen Gentium, §33</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== event -->
+  <section id="event" class="pad-l">
+    <div class="wrap">
+      <h2 class="display" style="margin:0 0 48px">Our next evening</h2>
+      <div class="event reveal">
+        <div class="event__main">
+          <p class="eyebrow">Next event</p>
+          <h3 class="display--sm">The Work of Human Hands</h3>
+          <p class="event__sub">The Eucharistic necessity of your royal priesthood</p>
+          <p class="event__body">By baptism you share in Christ's royal priesthood. An evening on what that means in practice — how the work of your hands is carried to the altar, how your particular mission is discerned, and what the Church can accomplish in no other way than through you.</p>
+
+          <ul class="timeline">
+            <li><time>6:30 PM</time><span>Check-in and reception. Wine and small bites.</span></li>
+            <li><time>7:00 PM</time><span>Talk: Fr. Michael Sweeney, OP &amp; Sean Bryan, co-founders of the Lay Mission Institute. Panel discussion with Randall Williams and Catherine Dombrowski.</span></li>
+            <li><time>9:00 PM</time><span>Networking reception</span></li>
+          </ul>
+
+          <p class="meta" style="margin:8px 0 28px">Ages 21–40 · Business casual encouraged · San Francisco</p>
+          <a class="btn btn--primary" href="#welcome">RSVP on Luma</a>
+        </div>
+
+        <div class="event__side">
+          <div class="event__shot">
+            <img src="assets/photos/panel-discussion.jpg" alt="A panel discussion at a previous evening">
+          </div>
+          <div class="event__shot">
+            <img src="assets/photos/clergy-and-speakers.jpg" alt="Clergy and speakers at a previous evening">
+          </div>
+        </div>
+      </div>
+
+      <!-- the speakers belong to this evening, so they sit inside it -->
+      <div class="speakers reveal" id="speakers">
+        <div class="speaker">
+          <span class="mark"><i class="mark__ar mark__ar--plum"></i><i class="mark__sq mark__sq--halo"></i></span>
+          <h3>Fr. Michael Sweeney, OP</h3>
+          <p>Co-founded the Catherine of Siena Institute; President of the Dominican School of Philosophy &amp; Theology, 2004–2015.</p>
+        </div>
+        <div class="speaker">
+          <span class="mark"><i class="mark__ci mark__ci--steel"></i><i class="mark__ar mark__ar--brick"></i></span>
+          <h3>Sean Bryan</h3>
+          <p>Executive Director of the Lay Mission Institute, and a staple of NBC's American Ninja Warrior across fifty-plus episodes as the "Papal Ninja."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== triad -->
+  <section id="triad" class="pad-m">
+    <div class="wrap">
+      <div class="triad reveal">
+        <div class="triad__shape triad__a">Formation</div>
+        <div class="triad__shape triad__b">Action</div>
+        <div class="triad__shape triad__c">Prayer</div>
+        <i class="triad__chip triad__chip--1"></i>
+        <i class="triad__chip triad__chip--2"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ faq -->
+  <section id="faq" class="pad-m">
+    <div class="wrap">
+      <div class="faqwrap">
+        <div class="faqwrap__side">
+          <h2 class="display faqwrap__head">Questions</h2>
+          <a class="btn" href="#welcome">Join the WhatsApp community</a>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Who can join?</summary>
+            <p>Catholics aged 21–40 across the Bay Area. The community is formed in partnership with the Archdiocese of San Francisco — and all are welcome.</p>
+          </details>
+          <details>
+            <summary>What happens at an evening?</summary>
+            <p>Check-in and a reception from 6:30 PM, a talk, a panel discussion, and a networking reception afterward. Wine and small bites are provided.</p>
+          </details>
+          <details>
+            <summary>What should I wear?</summary>
+            <p>Business casual is encouraged.</p>
+          </details>
+          <details>
+            <summary>Do I have to be Catholic to come?</summary>
+            <p>The community is built for Catholics who want to lead with their faith — and all are welcome at our events.</p>
+          </details>
+          <details>
+            <summary>Where are events held?</summary>
+            <p>Parish halls and venues around San Francisco. Each event's RSVP page lists the venue and directions.</p>
+          </details>
+          <details>
+            <summary>How do I stay in the loop?</summary>
+            <p>RSVP to the next event on Luma, join the WhatsApp community, or follow @catholicleadersinaction on Instagram.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== welcome -->
+  <section id="welcome" class="pad-l">
+    <div class="wrap close">
+      <h2 class="display--mega close__q"><span>All are welcome</span></h2>
+      <p class="lede muted close__body">Catholic Leaders in Action is formed in partnership with the Archdiocese of San Francisco. Membership is open to Catholics aged 21–40 across the Bay&nbsp;Area.</p>
+      <a class="btn btn--primary" href="#welcome">Join the WhatsApp community</a>
+      <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <defs><path id="ring" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs>
+          <text><textPath href="#ring" startOffset="0" textLength="232.478" lengthAdjust="spacing">FORMATION · ACTION · PRAYER ·</textPath></text>
+        </svg>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================= footer -->
+<footer class="foot">
+  <div class="foot__grid">
+    <div>
+      <h2>Forming Catholics to lead with faith, wisdom, and courage.</h2>
+      <p class="meta">Archdiocese of San Francisco · Formation · Action · Prayer</p>
+    </div>
+    <div class="foot__col">
+      <h4>Attend</h4>
+      <ul>
+        <li><a href="#event">Next event</a></li>
+        <li><a href="#event">Events on Luma</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="foot__col">
+      <h4>Community</h4>
+      <ul>
+        <li><a href="#welcome">WhatsApp community</a></li>
+        <li><a href="#pillars">Formation</a></li>
+        <li><a href="#speakers">Speakers</a></li>
+      </ul>
+    </div>
+    <div class="foot__col">
+      <h4>Follow</h4>
+      <ul>
+        <li><a href="#top">Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot__base">
+    <span>© 2026 Catholic Leaders in Action. All are welcome.</span>
+    <span>San Francisco Bay Area</span>
+  </div>
+</footer>
+
+<script>
+// chip switcher — Dia's tappable chips over Granola's pinned rail
+document.querySelectorAll('.rail').forEach(rail => {
+  const tabs = [...rail.querySelectorAll('[role="tab"]')];
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      const pane = document.getElementById(t.getAttribute('aria-controls'));
+      if (on) pane.setAttribute('data-active', ''); else pane.removeAttribute('data-active');
+    });
+  }));
+});
+
+// mobile menu
+const toggle = document.querySelector('.nav__toggle');
+const menu = document.getElementById('nav-menu');
+if (toggle && menu) {
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    menu.hidden = open;
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    toggle.setAttribute('aria-expanded', 'false'); menu.hidden = true;
+  }));
+}
+
+// scroll reveal — decoration only; CSS keeps content visible without it
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// phones: hold on the poster, no native control strip, tap the custom button
+const media = document.querySelector('.hero__media');
+const v = media && media.querySelector('video');
+const play = media && media.querySelector('.hero__play');
+if (v && play && window.matchMedia('(max-width: 900px)').matches) {
+  v.removeAttribute('autoplay'); v.pause(); play.hidden = false;
+  play.addEventListener('click', () => { v.play(); play.hidden = true; });
+}
+</script>
+</body>
+</html>

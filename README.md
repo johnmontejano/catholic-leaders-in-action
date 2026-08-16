@@ -1,31 +1,30 @@
 # Catholic Leaders in Action
 
-Production landing page for Catholic Leaders in Action, built with Next.js,
-TypeScript, Tailwind CSS, and GSAP.
+One-page site for Catholic Leaders in Action — a members' institute for Catholic
+young professionals aged 21–40 in the San Francisco Bay Area, formed in
+partnership with the Archdiocese of San Francisco.
 
-## Local development
+Static build. No framework, no build step — open `index.html`.
 
-```bash
-npm install
-npm run dev
-```
+## The design system
 
-Run the complete verification suite with:
+Measured live off `faunarobotics.com/company` and recorded in `bar.md` in the
+working repo. Eight mechanisms, each verifiable from a screenshot:
 
-```bash
-npm run verify
-```
+| | Rule |
+|---|---|
+| M1 | One family, one weight (500). No bold, no italic. Hierarchy is size and colour only. |
+| M2 | Display leading ≤ 1.03; tracking ≤ −0.025em above 60px. |
+| M3 | Three radii — 100px panels, 64px nested media, 8px controls — and exactly one asymmetric shape. |
+| M4 | Zero shadows. Elevation is a 4% tint step: ground `#F8F0E3`, surface `#ECE4D7`. |
+| M5 | Colour is a flat hard-edged block. No gradients. |
+| M6 | Three vertical paddings — 56 / 64 / 120 — assigned by importance. |
+| M7 | Container 1280px. Panels bleed to the container, never the window. |
+| M8 | Content never depends on scroll to exist. |
 
-## Events
+Type is [General Sans](https://www.fontshare.com/fonts/general-sans), self-hosted.
 
-The single source of truth is `src/data/events.ts`. Add only confirmed event
-details, keep unapproved events as `draft`, and use ISO 8601 datetimes with the
-`America/Los_Angeles` timezone. Upcoming and past states are calculated from
-the current time.
+## Content
 
-## Deployment
-
-Pushes to `main` are verified, statically exported, and deployed through the
-GitHub Pages workflow in `.github/workflows/pages.yml`. The workflow also
-rebuilds hourly so timestamp-derived upcoming and past event states stay
-current on static hosting.
+Every name, date, quote and biography is supplied by the organisation. The
+photographs are real documentary shots from CLIA events.
