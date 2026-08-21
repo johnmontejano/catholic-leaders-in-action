@@ -911,3 +911,13 @@ cite { font-style: normal; }
   .band-dark { padding-block: var(--s7) var(--s7); }
   .band-dark__art img { object-position: 50% 60%; }
 }
+
+/* Each slat frames its own subject instead of centre-cropping onto the wall —
+   the beige is the room, and the crop is the only real lever on it. */
+.slats__item img { object-position: 50% 50%; }
+.slats__item:nth-child(1) img { object-position: 42% 58%; }
+.slats__item:nth-child(2) img { object-position: 52% 46%; }
+.slats__item:nth-child(3) img { object-position: 46% 52%; }
+.slats__item:nth-child(4) img { object-position: 50% 56%; }
+.slats__item:nth-child(5) img { object-position: 38% 48%; }
+.slats__item:nth-child(6) img { object-position: 58% 50%; }
