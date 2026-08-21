@@ -136,9 +136,11 @@
         <a class="btn btn--primary" href="#event">RSVP to our next event</a>
         <a class="btn btn--ghost" href="#welcome">Join the WhatsApp community</a>
       </div>
-      <div class="panel panel--media hero__media">
-        <video src="assets/photos/hero.mp4" poster="assets/photos/hero-video-poster.jpg"
-               autoplay muted loop playsinline preload="metadata"></video>
+      <div class="panel panel--media hero__media" data-scroll="expand">
+        <span class="media__inner" data-scroll="settle">
+          <video src="assets/photos/hero.mp4" poster="assets/photos/hero-video-poster.jpg"
+                 autoplay muted loop playsinline preload="metadata"></video>
+        </span>
       </div>
     </div>
   </section>
@@ -147,10 +149,15 @@
   <section id="partners" class="band-minor">
     <div class="wrap">
       <p class="meta" style="margin-bottom:24px">Speakers from</p>
-      <div class="partners reveal stagger">
-        <div class="partners__item">Archdiocese of San&nbsp;Francisco</div>
-        <div class="partners__item">Dominican School of Philosophy &amp; Theology</div>
-        <div class="partners__item">Lay Mission&nbsp;Institute</div>
+      <div class="marquee reveal">
+        <div class="marquee__track" aria-hidden="false">
+          <div class="partners__item">Archdiocese of San&nbsp;Francisco</div>
+          <div class="partners__item">Dominican School of Philosophy &amp; Theology</div>
+          <div class="partners__item">Lay Mission&nbsp;Institute</div>
+          <div class="partners__item">Archdiocese of San&nbsp;Francisco</div>
+          <div class="partners__item">Dominican School of Philosophy &amp; Theology</div>
+          <div class="partners__item">Lay Mission&nbsp;Institute</div>
+        </div>
       </div>
 
       <div class="strip-rule"></div>
@@ -178,7 +185,7 @@
     <div class="wrap">
       <div class="pillars">
         <div class="pillars__lede">
-          <h2 class="display pillars__head">A leadership institute, not youth ministry</h2>
+          <h2 class="display pillars__head" data-lines>A leadership institute, not youth ministry</h2>
           <div class="rail" role="tablist" aria-label="The three pillars">
           <button class="rail__btn" role="tab" aria-selected="true" aria-controls="p-formation" id="t-formation">
             Formation <span class="rail__meta">Talks and panels.</span>
@@ -197,19 +204,19 @@
             <span class="ico ico--plum"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#ic-mic"/></svg></span>
             <h3>Talks and panels</h3>
             <p>Speakers from the Dominican School, the Lay Mission Institute, and the Archdiocese, on vocation, work, and the laity.</p>
-            <div class="pillars__shot"><img src="assets/photos/panel-discussion.jpg" alt="A panel discussion at a Catholic Leaders in Action evening"></div>
+            <div class="pillars__shot" data-scroll="settle"><img src="assets/photos/panel-discussion.jpg" alt="A panel discussion at a Catholic Leaders in Action evening"></div>
           </div>
           <div class="pillars__pane" id="p-church" role="tabpanel" aria-labelledby="t-church">
             <span class="ico ico--brass"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#ic-cross"/></svg></span>
             <h3>Formed with our pastors</h3>
             <p>Evenings built with the Archdiocese and religious communities: not adjacent to the Church, inside it.</p>
-            <div class="pillars__shot"><img src="assets/photos/clergy-and-speakers.jpg" alt="Clergy and speakers at a Catholic Leaders in Action evening"></div>
+            <div class="pillars__shot" data-scroll="settle"><img src="assets/photos/clergy-and-speakers.jpg" alt="Clergy and speakers at a Catholic Leaders in Action evening"></div>
           </div>
           <div class="pillars__pane" id="p-community" role="tabpanel" aria-labelledby="t-community">
             <span class="ico ico--emerald"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#ic-people"/></svg></span>
             <h3>Friendships that hold</h3>
             <p>The same faces on a weeknight in the city — receptions, service, and travel together.</p>
-            <div class="pillars__shot"><img src="assets/photos/community-reception-wide.jpg" alt="A reception at a Catholic Leaders in Action evening"></div>
+            <div class="pillars__shot" data-scroll="settle"><img src="assets/photos/community-reception-wide.jpg" alt="A reception at a Catholic Leaders in Action evening"></div>
           </div>
         </div>
       </div>
@@ -221,7 +228,7 @@
     <div class="wrap">
       <div class="bento reveal stagger">
         <div class="bento__cell c2">
-          <img src="assets/photos/community-reception-wide.jpg" alt="Guests at a Catholic Leaders in Action reception">
+          <span class="media__inner" data-scroll="settle"><img src="assets/photos/community-reception-wide.jpg" alt="Guests at a Catholic Leaders in Action reception"></span>
           <span class="tag">Check-in and reception</span>
         </div>
         <div class="bento__cell bento__note c2">
@@ -230,13 +237,13 @@
           <p>Check-in and a reception from 6:30 PM, a talk, a panel discussion, and a networking reception afterward. Wine and small bites are provided.</p>
         </div>
         <div class="bento__cell">
-          <img src="assets/photos/leaders-in-conversation.jpg" alt="Two guests in conversation">
+          <span class="media__inner" data-scroll="settle"><img src="assets/photos/leaders-in-conversation.jpg" alt="Two guests in conversation"></span>
         </div>
         <div class="bento__cell">
-          <img src="assets/photos/community-conversation.jpg" alt="Guests in conversation at a reception">
+          <span class="media__inner" data-scroll="settle"><img src="assets/photos/community-conversation.jpg" alt="Guests in conversation at a reception"></span>
         </div>
         <div class="bento__cell c2">
-          <img src="assets/photos/community-group.jpg" alt="A group at a Catholic Leaders in Action evening">
+          <span class="media__inner" data-scroll="settle"><img src="assets/photos/community-group.jpg" alt="A group at a Catholic Leaders in Action evening"></span>
           <span class="tag">Business casual encouraged</span>
         </div>
       </div>
@@ -247,7 +254,7 @@
   <!-- ========================================================== event -->
   <section id="event" class="band-major">
     <div class="wrap">
-      <h2 class="display" style="margin:0 0 48px">Our next evening</h2>
+      <h2 class="display" style="margin:0 0 48px" data-lines>Our next evening</h2>
       <div class="event reveal">
         <div class="event__main">
           <p class="eyebrow">Next event</p>
@@ -266,10 +273,10 @@
         </div>
 
         <div class="event__side">
-          <div class="event__shot">
+          <div class="event__shot" data-scroll="settle">
             <img src="assets/photos/panel-discussion.jpg" alt="A panel discussion at a previous evening">
           </div>
-          <div class="event__shot">
+          <div class="event__shot" data-scroll="settle">
             <img src="assets/photos/clergy-and-speakers.jpg" alt="Clergy and speakers at a previous evening">
           </div>
         </div>
@@ -307,7 +314,7 @@
     <div class="wrap">
       <div class="faqwrap">
         <div class="faqwrap__side">
-          <h2 class="display faqwrap__head">Questions</h2>
+          <h2 class="display faqwrap__head" data-lines>Questions</h2>
           <a class="btn" href="#welcome">Join the WhatsApp community</a>
         </div>
         <div class="faq">
@@ -345,7 +352,7 @@
   <section id="instagram" class="band-open">
     <div class="wrap">
       <div class="ig__head">
-        <h2 class="display--sm">Lately</h2>
+        <h2 class="display--sm" data-lines>Lately</h2>
         <a class="ig__link" href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener">
           <span>@catholicleadersinaction</span> <svg viewBox="0 0 32 32" aria-hidden="true"><use href="#ic-arrow"/></svg>
         </a>
@@ -400,6 +407,21 @@
           </span>
           <span class="ig__date">2 June 2026</span>
         </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================================================== slats -->
+  <section id="slats" class="band-minor">
+    <div class="wrap">
+      <div class="slats">
+        <div class="slats__item"><img src="assets/photos/community-reception-wide.jpg" alt=""></div>
+        <div class="slats__item"><img src="assets/photos/panel-discussion.jpg" alt=""></div>
+        <div class="slats__item"><img src="assets/photos/community-conversation.jpg" alt=""></div>
+        <div class="slats__item"><img src="assets/photos/community-group.jpg" alt=""></div>
+        <div class="slats__item"><img src="assets/photos/leaders-in-conversation.jpg" alt=""></div>
+        <div class="slats__item"><img src="assets/photos/clergy-and-speakers.jpg" alt=""></div>
       </div>
     </div>
   </section>
@@ -484,29 +506,69 @@ if (toggle && menu) {
   }));
 }
 
-// ---- motion -------------------------------------------------------------
-// All of it is decoration: CSS keeps every element visible without JS.
+// ---- motion ---------------------------------------------------------------
+// Scroll-DRIVEN. Each registered element gets a --p from 0 to 1 as it travels
+// through the viewport, and the stylesheet reads that variable. All of it is
+// decoration: the CSS keeps every element visible and correct without JS.
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// things rise into place as they enter
+// --- things that rise into place once, as they enter -----------------------
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
 }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
-document.querySelectorAll('.reveal, .hero__media').forEach(el => io.observe(el));
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-// the hero headline comes up a word at a time, out of its own line box
-const head = document.querySelector('[data-split]');
-if (head && !reduced) {
-  head.innerHTML = head.textContent.trim().split(/\s+/).map((w, i) =>
-    `<span class="wordwrap"><span style="transition-delay:${60 + i * 55}ms">${w}</span></span>`
-  ).join(' ');
-  requestAnimationFrame(() => requestAnimationFrame(() => head.classList.add('lit')));
+// --- split the hero headline into words, section heads into lines ----------
+function splitWords(el, step) {
+  el.innerHTML = el.textContent.trim().split(/\s+/).map((w, i) =>
+    `<span class="wordwrap"><span style="transition-delay:${60 + i * step}ms">${w}</span></span>`).join(' ');
+}
+if (!reduced) {
+  const head = document.querySelector('[data-split]');
+  if (head) { splitWords(head, 55); requestAnimationFrame(() => requestAnimationFrame(() => head.classList.add('lit'))); }
+
+  document.querySelectorAll('[data-lines]').forEach(el => {
+    const txt = el.textContent.trim();
+    el.innerHTML = `<span class="linewrap"><span>${txt}</span></span>`;
+    const lio = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('lit'); lio.unobserve(e.target); }
+    }), { rootMargin: '0px 0px -18% 0px' });
+    lio.observe(el);
+  });
 }
 
-// the nav tightens once you leave the top
+// --- the scroll engine -----------------------------------------------------
+// One rAF loop, one pass over a static list, writes only CSS variables.
+const tracked = [];
+document.querySelectorAll('[data-scroll]').forEach(el => tracked.push({ el, kind: el.dataset.scroll, d: 0 }));
+document.querySelectorAll('.slats__item').forEach((el, i) => tracked.push({ el, kind: 'grow', d: i * 0.06 }));
+document.querySelectorAll('.triad__shape').forEach((el, i) => tracked.push({ el, kind: 'grow', d: i * 0.10 }));
+
+const clamp = v => v < 0 ? 0 : v > 1 ? 1 : v;
+// ease-out so the movement decelerates rather than tracking the wheel linearly
+const ease = t => 1 - Math.pow(1 - t, 3);
+
+function frame() {
+  const vh = window.innerHeight;
+  for (const t of tracked) {
+    const r = t.el.getBoundingClientRect();
+    if (r.bottom < -200 || r.top > vh + 200) continue;
+    let p;
+    if (t.kind === 'expand') {
+      // Driven by scrollY, NOT by the element's own rect: this element is being
+      // scaled, and a scaled rect would feed back into its own input.
+      p = clamp(window.scrollY / (vh * 0.55));
+    } else {
+      // enters at the bottom edge, resolves by the time it is a third up
+      p = clamp((vh - r.top) / (vh * 0.62) - t.d);
+    }
+    t.el.style.setProperty('--p', ease(p).toFixed(4));
+  }
+}
+
+// --- nav condense, and the hero video drifting against the scroll ----------
 const nav = document.querySelector('.nav');
-// the hero media drifts a little slower than the page
-const heroVid = document.querySelector('.hero__media video, .hero__media img');
+const heroVid = document.querySelector('.hero__media video');
 let ticking = false;
 function onScroll() {
   if (ticking) return;
@@ -514,17 +576,20 @@ function onScroll() {
   requestAnimationFrame(() => {
     const y = window.scrollY;
     if (nav) nav.classList.toggle('is-stuck', y > 40);
-    if (heroVid && !reduced) {
-      const r = heroVid.parentElement.getBoundingClientRect();
-      if (r.bottom > 0 && r.top < innerHeight) {
-        heroVid.style.setProperty('--py', `${Math.max(-28, Math.min(28, (r.top - innerHeight * .3) * -0.045))}px`);
-      }
-    }
+    if (!reduced) frame();
     ticking = false;
   });
 }
-addEventListener('scroll', onScroll, { passive: true });
-onScroll();
+if (!reduced) {
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll, { passive: true });
+  onScroll();
+  // settle the opening frame after fonts and media land
+  addEventListener('load', onScroll);
+} else {
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
 
 </script>
 </body>
