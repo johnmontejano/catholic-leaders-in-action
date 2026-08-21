@@ -28,7 +28,7 @@
   --surface:  #EBE2D5;
   --sunk:     #E3D9C8;
   --ink:      #1A1714;
-  --ink-40:   rgba(26, 23, 20, .55);
+  --ink-40:   rgba(26, 23, 20, .64);
   --ink-60:   rgba(26, 23, 20, .72);
   --hairline: rgba(26, 23, 20, .10);
 
@@ -277,7 +277,7 @@ section { position: relative; }
 
 /* --------------------------------------------------------- partners ----- */
 
-.partners { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.partners { display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-start; }
 .partners__item {
   flex: 0 1 auto; height: 72px;
   display: flex; align-items: center; justify-content: center;
@@ -290,9 +290,9 @@ section { position: relative; }
 /* --------------------------------------------------------- three-up ----- */
 
 .threeup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-.threeup__item { text-align: center; display: flex; flex-direction: column; align-items: center; gap: var(--s3); }
+.threeup__item { text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: var(--s3); }
 .threeup__item h3 { font-size: 22px; line-height: 27px; margin: 0; }
-.threeup__item p { font-size: 16px; line-height: 24px; color: var(--ink-60); margin: 0; max-width: 300px; }
+.threeup__item p { font-size: 16px; line-height: 24px; color: var(--ink-60); margin: 0; max-width: 32ch; }
 
 /* --------------------------------------------------------- pillars ------ */
 /* Granola's pinned left rail + Dia's chips: three chips swap one panel */
@@ -387,7 +387,7 @@ cite { font-style: normal; }
   display: flex; align-items: flex-end; padding: 48px;
   color: var(--ground); font-size: 88px; line-height: 80px; letter-spacing: -3px;
 }
-.triad__a { background: var(--steel); }
+.triad__a { background: var(--steel); color: var(--ink); }
 .triad__b { background: var(--brass); color: var(--ink);
             writing-mode: vertical-rl; align-items: flex-start; padding: 48px 32px; }
 .triad__c { background: var(--brick); }
@@ -416,7 +416,7 @@ cite { font-style: normal; }
 
 /* --------------------------------------------------------- footer ------- */
 
-.close { text-align: left; }
+.close { text-align: left; position: relative; }
 .close__q {
   display: inline;
   text-decoration: underline; text-underline-offset: 12px; text-decoration-thickness: 2px;
@@ -444,7 +444,7 @@ cite { font-style: normal; }
 }
 
 /* rotating badge — Fairground's margin device */
-.badge { position: absolute; right: 40px; bottom: 40px; width: 132px; height: 132px; }
+.badge { position: absolute; right: var(--gutter); bottom: 0; width: 132px; height: 132px; }
 .badge svg { width: 100%; height: 100%; animation: spin 22s linear infinite; }
 .badge text { font-size: 13.5px; letter-spacing: 1.6px; fill: var(--ink-40); }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -747,4 +747,44 @@ cite { font-style: normal; }
     grid-auto-columns: 220px; gap: 16px;
     margin-right: calc(-1 * var(--gutter));
   }
+}
+
+/* ======================================================= tablet (901–1180) ==
+   There was no breakpoint between 900px and desktop, so full-width grids ran
+   at widths they were never sized for: at 1024 the pillars rail took 420 of
+   944px and forced the headline to four lines, and the triad's middle field
+   was crushed. */
+@media (min-width: 901px) and (max-width: 1180px) {
+  .display { font-size: 56px; line-height: 54px; letter-spacing: -1.6px; }
+  .display--mega { font-size: 72px; line-height: 67px; letter-spacing: -2.2px; }
+
+  .pillars { grid-template-columns: 1fr; gap: 32px; }
+  .pillars__lede { gap: 32px; }
+  .rail { flex-direction: row; gap: 8px; flex-wrap: wrap; }
+  .rail__btn { flex: none; border-radius: 999px; padding: 14px 20px; font-size: 18px; line-height: 22px; }
+  .rail__meta { display: none; }
+
+  .bento { grid-template-columns: repeat(2, 1fr); grid-template-rows: none; grid-auto-rows: 340px; }
+  .bento > .c2 { grid-column: span 2; }
+  .bento > .bento__cell:nth-child(n+3) { grid-row: auto; }
+
+  .triad { grid-template-columns: 38fr 26fr 36fr; height: 340px; }
+  .triad__shape { font-size: 56px; line-height: 52px; letter-spacing: -1.6px; padding: 32px; }
+
+  .event { grid-template-columns: 1fr; }
+  .event__side { flex-direction: row; }
+  .speakers { grid-template-columns: 1fr 1fr; }
+  .faqwrap { grid-template-columns: 1fr; gap: 24px; }
+  .faqwrap__side { flex-direction: row; align-items: baseline; justify-content: space-between; gap: 32px; }
+  .faqwrap__side .btn { align-self: baseline; max-width: 260px; border-top: 0; padding-top: 0; }
+  .ig__row { grid-auto-columns: 260px; }
+}
+
+/* --------------------------------------------------- very small screens ---
+   The Instagram handle is 23 characters; below ~360px it exceeds the measure. */
+@media (max-width: 360px) {
+  .ig__link { font-size: 15px; }
+  .ig__link span { display: none; }
+  .ig__link::before { content: 'Instagram'; }
+  .close__q { font-size: 44px; line-height: 46px; letter-spacing: -1.2px; }
 }
