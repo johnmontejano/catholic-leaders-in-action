@@ -864,3 +864,50 @@ cite { font-style: normal; }
   [data-scroll="expand"] { transform: scale(calc(0.94 + 0.06 * var(--p)));
     border-radius: calc(40px - 24px * var(--p)); }
 }
+
+/* ============================================== the one dark band =========
+   Word on Fire's move: full-bleed art, held dark, with the display type
+   knocked out of it in white. This is the ONLY place the page leaves its
+   container and the only place it leaves the cream — a single deliberate
+   exception, which is what makes it read as a moment rather than a theme.
+   The type system does not change: still one sans, still weight 500. */
+
+.band-dark {
+  position: relative;
+  /* full-bleed to the window, without a horizontal scrollbar */
+  width: 100vw; margin-inline: calc(50% - 50vw);
+  padding-block: var(--s9) var(--s8);
+  color: var(--ground);
+  isolation: isolate;
+  overflow: hidden;
+}
+.band-dark__art { position: absolute; inset: 0; z-index: -2; background: #100D0B; }
+.band-dark__art img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 68%;
+}
+/* a FLAT hold, not a gradient — M5 stands */
+.band-dark::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: rgba(16, 13, 11, .68);
+}
+.band-dark .wrap { position: relative; }
+.band-dark .close__body { color: rgba(247, 239, 229, .78); }
+.band-dark .btn--primary { background: var(--halo); color: var(--ink); }
+.band-dark .btn--primary:hover { background: #FFE6AE; }
+.band-dark .badge text { fill: rgba(247, 239, 229, .62); }
+
+/* the art drifts a touch against the scroll, like every other panel */
+[data-scroll="hold"] { --p: 0; }
+[data-scroll="hold"] img {
+  transform: scale(calc(1.12 - 0.08 * var(--p)));
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll="hold"] img { transform: none; }
+}
+
+@media (max-width: 900px) {
+  .band-dark { padding-block: var(--s7) var(--s7); }
+  .band-dark__art img { object-position: 50% 60%; }
+}
