@@ -1,556 +1,563 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Catholic Leaders in Action — San Francisco</title>
+<meta name="description" content="A monthly evening series on Catholic social teaching, run with the Archdiocese of San Francisco. Ages 21 to 40. Next: Tuesday, September 1.">
 
-<meta name="description" content="An evening series on Catholic social teaching, run with the Archdiocese of San Francisco. Keynote, panel, and a reception. Ages 21 to 40.">
-<meta name="theme-color" content="#14100C">
-<link rel="canonical" href="https://catholicleadersinaction.org/">
-
-<!-- Link preview. Shared by SMS, iMessage and Instagram DM more than by search,
-     so the card is a deliverable: absolute URL, real photograph, no em dashes
-     (some clients mangle them). -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://catholicleadersinaction.org/">
-<meta property="og:site_name" content="Catholic Leaders in Action">
-<meta property="og:title" content="Move beyond passive faith.">
-<meta property="og:description" content="An evening series on Catholic social teaching, run with the Archdiocese of San Francisco. Keynote, panel, reception. Ages 21 to 40, in the city.">
+<meta property="og:title" content="Catholic Leaders in Action — San Francisco">
+<meta property="og:description" content="A monthly evening series on Catholic social teaching, run with the Archdiocese of San Francisco. Ages 21 to 40. Next: Tuesday, September 1.">
 <meta property="og:image" content="https://catholicleadersinaction.org/assets/og/og-wide.jpg">
-<meta property="og:image:secure_url" content="https://catholicleadersinaction.org/assets/og/og-wide.jpg">
-<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="A full parish hall at a Catholic Leaders in Action evening in San Francisco.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Move beyond passive faith.">
-<meta name="twitter:description" content="An evening series on Catholic social teaching, run with the Archdiocese of San Francisco. Ages 21 to 40, in the city.">
 <meta name="twitter:image" content="https://catholicleadersinaction.org/assets/og/og-wide.jpg">
 
-<link rel="icon" href="assets/og/favicon.png" sizes="any">
+<link rel="icon" href="assets/og/favicon.png">
 <link rel="apple-touch-icon" href="assets/og/apple-touch-icon.png">
-
-<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Zodiak-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Zodiak-300.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Switzer-400.woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
-
-<!-- M8: reveals only opt in once we know the observer exists. Without this the
-     page must render complete and static, which is the state the CSS defaults to. -->
-<script>if('IntersectionObserver' in window&&'clipPath' in document.documentElement.style)document.documentElement.setAttribute('data-js','')</script>
+<script>document.documentElement.classList.remove('no-js')</script>
 </head>
 <body>
 
-<a class="skip" href="#main">Skip to content</a>
-
-<header class="nav" id="nav">
-  <div class="nav__in">
-    <a class="mark" href="#top" aria-label="Catholic Leaders in Action, back to top">
-      <span class="mark__a">Catholic Leaders</span><span class="mark__b">in Action</span>
-    </a>
-    <nav class="nav__links" aria-label="Sections">
-      <a href="#record">The record</a>
-      <a href="#evening">An evening</a>
-      <a href="#next">Next</a>
-      <a href="#questions">Questions</a>
-    </nav>
-    <a class="btn btn--brass nav__cta" href="#signup">Get the next date</a>
-    <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu">
-      <span class="nav__bars" aria-hidden="true"><i></i><i></i></span>
-      <span class="sr">Menu</span>
-    </button>
-  </div>
-  <div class="nav__menu" id="nav-menu" hidden>
-    <a href="#record">The record</a>
-    <a href="#evening">An evening</a>
-    <a href="#next">Next</a>
-    <a href="#questions">Questions</a>
-    <a href="#signup">Get the next date</a>
-  </div>
-</header>
+<a class="sr-only" href="#main">Skip to content</a>
 
 <main id="main">
 
-<!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
-<section class="hero" id="top">
-  <div class="hero__media" data-par="0.14">
-    <img src="assets/img/nave-full-1100.jpg"
-         srcset="assets/img/nave-full-480.jpg 480w, assets/img/nave-full-760.jpg 760w, assets/img/nave-full-1100.jpg 1100w"
-         sizes="100vw" alt="A full church at a Catholic Leaders in Action evening in San Francisco." fetchpriority="high" width="1100" height="834">
-  </div>
-  <div class="hero__in">
-    <p class="eyebrow eyebrow--light">San Francisco · Ages 21 to 40</p>
+  <!-- piece 1 — hero + next event -->
+  <section id="hero" aria-labelledby="hero-h">
+    <div class="wrap">
 
-    <h1 class="display" data-reveal-lines>
-      <span>Move beyond</span>
-      <span>passive faith.</span>
-    </h1>
-
-    <p class="hero__lead">A monthly evening series on Catholic social teaching, run with the
-      Archdiocese of San Francisco. Keynote, panel, reception. All three so far have sold out.</p>
-
-    <form class="signup" id="signup" novalidate>
-      <label class="signup__label" for="phone">Stay updated on the latest news and events.</label>
-      <div class="signup__row">
-        <input class="signup__input" id="phone" name="phone" type="tel" inputmode="tel"
-               autocomplete="tel-national" placeholder="(415) 555 0134" maxlength="16"
-               aria-describedby="signup-note">
-        <button class="signup__go" type="submit">
-          <span class="signup__go-txt">Send me the date</span>
-        </button>
-        <input class="signup__pot" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="hero__mast">
+        <p class="hero__name">Catholic Leaders in Action</p>
+        <p class="t-meta hero__tag">San Francisco · Ages 21 to 40</p>
       </div>
-      <p class="signup__note" id="signup-note">We text you when the next evening is set. That is the only thing we use it for.</p>
-      <p class="signup__msg" role="status" aria-live="polite"></p>
-    </form>
-  </div>
 
-  <div class="hero__foot">
-    <span class="tick">Scroll</span>
-    <span class="hero__rule" aria-hidden="true"></span>
-    <span class="tick">Since June 2026</span>
-  </div>
-</section>
+      <div class="hero__head">
+        <h1 class="t-display hero__h" id="hero-h"><span class="hero__l">Take faith</span><span class="hero__l"><em>into the</em></span><span class="hero__l">workplace.</span></h1>
+        <p class="t-lead hero__lead">Evening lectures and service outings, run in partnership with the Archdiocese of San Francisco, Office of Human Life&nbsp;&amp;&nbsp;Dignity.</p>
+      </div>
 
-<!-- ═══ MARQUEE ════════════════════════════════════════════════════════════ -->
-<section class="marq" aria-label="Institutions that have supplied speakers or co-sponsored">
-  <p class="eyebrow marq__label">Speakers and co-sponsors have come from</p>
-  <div class="marq__track" data-marq="1">
-    <div class="marq__set">
-      <span>Archdiocese of San Francisco</span><i>·</i>
-      <span>Office of Human Life &amp; Dignity</span><i>·</i>
-      <span>California Catholic Conference</span><i>·</i>
-      <span>Catholic Charities San Francisco</span><i>·</i>
-      <span>Order of Malta, Clinic of Northern California</span><i>·</i>
-      <span>St. Anthony Foundation</span><i>·</i>
-    </div>
-  </div>
-  <div class="marq__track marq__track--rev" data-marq="-1">
-    <div class="marq__set">
-      <span>Pro-Life San Francisco</span><i>·</i>
-      <span>Dominican School of Philosophy &amp; Theology</span><i>·</i>
-      <span>Lay Mission Institute</span><i>·</i>
-      <span>Bay Wide Young Adults</span><i>·</i>
-      <span>Sisterhood Surrender</span><i>·</i>
-      <span>St Raymond's Young Adults</span><i>·</i>
-    </div>
-  </div>
-</section>
+      <div class="bento hero__grid">
 
-
-<!-- ═══ PROOF ══════════════════════════════════════════════════════════════
-     Every figure here is sourced. Luma reports sold_out on all three lecture
-     nights; the 63 is Luma's own guest_count for the first; the "about 50" and
-     the two features are the Archdiocese's own reporting. Nothing is rounded up. -->
-<section class="proof" aria-label="What has happened so far">
-  <div class="wrap proof__in">
-    <div class="proof__i"><span class="proof__n" data-count="3">3</span><span class="proof__l">Lecture nights held so far. All three sold out.</span></div>
-    <div class="proof__i"><span class="proof__n" data-count="63">63</span><span class="proof__l">Registered for the first evening, June 2026.</span></div>
-    <div class="proof__i"><span class="proof__n" data-count="7">7</span><span class="proof__l">Evenings in the series. One theme of Catholic social teaching a month.</span></div>
-    <div class="proof__i"><span class="proof__n" data-count="2">2</span><span class="proof__l">Times the Archdiocese of San Francisco has written them up.</span></div>
-  </div>
-</section>
-
-<!-- ═══ STATEMENT ══════════════════════════════════════════════════════════ -->
-<section class="stmt">
-  <div class="wrap stmt__in">
-    <div class="stmt__text">
-      <p class="eyebrow">What it is</p>
-      <h2 class="head" data-reveal-lines>
-        <span>This is not</span>
-        <span>youth ministry.</span>
-      </h2>
-      <p class="lead">An evening series on Catholic social teaching, run with the
-        Archdiocese of San Francisco. A keynote from someone who does the work for a living,
-        a panel, and a reception where you can actually talk to them.</p>
-      <p class="body">Doors at 6:30. Out by 9. Ages 21 to 40, business casual, in a parish
-        hall somewhere in the city.</p>
-      <p class="body stmt__boiler">In their own words: a collective formed in partnership with the
-        Archdiocese of San Francisco, dedicated to connecting and equipping Catholics who desire
-        to lead with conviction, excellence, and faith in everyday life.</p>
-    </div>
-    <figure class="stmt__fig" data-par="0.1">
-      <img src="assets/gen/hall-before.jpg" alt="An empty parish hall set with chairs and a microphone before an evening talk." loading="lazy" width="1536" height="1024">
-      <figcaption class="cap">Illustration, not a photograph</figcaption>
-    </figure>
-  </div>
-</section>
-
-<!-- ═══ THE RECORD ═════════════════════════════════════════════════════════ -->
-<section class="record" id="record">
-  <div class="wrap record__head">
-    <p class="eyebrow">The record</p>
-    <h2 class="head" data-reveal-lines><span>Evenings we have</span><span>actually held.</span></h2>
-    <p class="lead">Their own posters, with the speakers who showed up and the churches that
-      hosted them.</p>
-  </div>
-
-  <div class="record__pin" data-pin>
-    <div class="record__rail" aria-hidden="true">
-      <span class="record__count"><b data-pin-i>01</b> / 03</span>
-      <span class="record__bar"><i></i></span>
-      <span class="record__hint">Scroll</span>
-    </div>
-    <div class="record__track" data-pin-track>
-
-      <article class="ev">
-        <a class="ev__poster" href="https://www.instagram.com/p/DZGufi6JAbk/" target="_blank" rel="noopener">
-          <img src="assets/instagram/DZGufi6JAbk.jpg" alt="Poster for Called to Lead, a discussion on Catholic social teaching." loading="lazy" width="640" height="640">
-        </a>
-        <div class="ev__body">
-          <p class="ev__no">01</p>
-          <h3 class="ev__title">Called to Lead</h3>
-          <p class="ev__sub">A discussion on Catholic social teaching</p>
-          <dl class="ev__meta">
-            <div><dt>When</dt><dd>2 June 2026, 7:00 to 9:00 PM</dd></div>
-            <div><dt>Where</dt><dd>St Philip Catholic Church Hall, 725 Diamond St</dd></div>
-            <div><dt>Speaker</dt><dd>Mr. Ryan Mayer, Director of the Office of Catholic Identity Formation &amp; Assessment, Archdiocese of San Francisco</dd></div>
-            <div><dt>Panel</dt><dd>Mason Friedberg, Founder of Bay Wide Young Adults. Amytza Maskati, Founder of Sisterhood Surrender and trailblazer at St Raymond's Young Adults.</dd></div>
-          </dl>
-        </div>
-      </article>
-
-      <article class="ev">
-        <a class="ev__poster" href="https://www.instagram.com/p/DZ6Ga2yptfR/" target="_blank" rel="noopener">
-          <img src="assets/instagram/DZ6Ga2yptfR.jpg" alt="Poster for Rights and Responsibilities, advancing the common good." loading="lazy" width="640" height="640">
-        </a>
-        <div class="ev__body">
-          <p class="ev__no">02</p>
-          <h3 class="ev__title">Rights and Responsibilities</h3>
-          <p class="ev__sub">Advancing the common good</p>
-          <dl class="ev__meta">
-            <div><dt>When</dt><dd>Tuesday 7 July, 6:30 to 9:00 PM</dd></div>
-            <div><dt>Where</dt><dd>St. James Catholic Church</dd></div>
-            <div><dt>Keynote</dt><dd>Molly C. Sheahan, Associate Director of Healthy Families and Respect Life, California Catholic Conference</dd></div>
-            <div><dt>Panel</dt><dd>Saul Perez, Social Action &amp; Digital Media Coordinator, Office of Human Life &amp; Dignity, Archdiocese of San Francisco. Melanie Salazar, Executive Director of Pro-Life San Francisco, Congressional Candidate and Birth Doula. Franco Aurelio Fernandez, content creator focused on Catholic theology, conversion stories and apologetics.</dd></div>
-          </dl>
-        </div>
-      </article>
-
-      <article class="ev">
-        <a class="ev__poster" href="https://www.instagram.com/p/DbULpBWJ-ok/" target="_blank" rel="noopener">
-          <img src="assets/instagram/DbULpBWJ-ok.jpg" alt="Poster for Called to Serve, option for the poor and vulnerable." loading="lazy" width="640" height="640">
-        </a>
-        <div class="ev__body">
-          <p class="ev__no">03</p>
-          <h3 class="ev__title">Called to Serve</h3>
-          <p class="ev__sub">Option for the poor and vulnerable</p>
-          <dl class="ev__meta">
-            <div><dt>When</dt><dd>Wednesday 5 August, 6:30 to 9:00 PM</dd></div>
-            <div><dt>Where</dt><dd>St. Paul's Catholic Church</dd></div>
-            <div><dt>Keynote</dt><dd>Sr. Marilú Ibarra, FdCC, Spiritual Caregiver, Program Advocate and Community Leader, St. Anthony Foundation</dd></div>
-            <div><dt>Panel</dt><dd>Bridget Mahoney, Director of Development, Catholic Charities San Francisco, moderating. Lorna Baggott, Development &amp; Communications Manager, Order of Malta Clinic of Northern California. Miguel Ramirez Lacayo, Case Manager and Housing Specialist, Catholic Charities San Francisco.</dd></div>
-          </dl>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-
-<!-- ═══ PULL ═══════════════════════════════════════════════════════════════
-     Their own copy, verbatim off their Luma event pages. -->
-<section class="pull">
-  <div class="wrap">
-    <blockquote class="pull__q" data-reveal-lines>
-      <span>Every generation</span><span>inherits a culture.</span><span>Few choose to shape it.</span>
-    </blockquote>
-    <p class="pull__c">Catholic Leaders in Action, on their own event page</p>
-  </div>
-</section>
-
-<!-- ═══ THE ROOM ═══════════════════════════════════════════════════════════ -->
-<section class="room">
-  <div class="wrap room__head">
-    <p class="eyebrow eyebrow--light">The room</p>
-    <h2 class="head head--light" data-reveal-lines><span>It fills up.</span></h2>
-    <p class="lead lead--light">A parish hall on a weeknight in San Francisco. Business casual,
-      ages 21 to 40, and a reception that runs until they turn the lights on.</p>
-  </div>
-  <div class="room__grid">
-    <!-- "About fifty" is the Archdiocese's own count of the 2 June room,
-         sfarch.org 2026-06-04, via research/instagram-dossier.md. -->
-    <figure class="room__f room__f--w" data-par="0.12">
-      <img src="assets/img/group-june-1600.jpg"
-           srcset="assets/img/group-june-480.jpg 480w, assets/img/group-june-760.jpg 760w, assets/img/group-june-1100.jpg 1100w, assets/img/group-june-1600.jpg 1600w"
-           sizes="(max-width:900px) 100vw, 66vw"
-           alt="About fifty young adults photographed together in a parish hall at the first evening." loading="lazy" width="1600" height="837">
-      <figcaption class="cap cap--light">Called to Lead · 2 June 2026 · St Philip Catholic Church Hall</figcaption>
-    </figure>
-    <figure class="room__f room__f--a" data-par="0.18">
-      <img src="assets/img/panel-mic-1200.jpg" srcset="assets/img/panel-mic-480.jpg 480w, assets/img/panel-mic-760.jpg 760w, assets/img/panel-mic-1200.jpg 1200w"
-           sizes="(max-width:900px) 50vw, 33vw" alt="A panelist answering a question into a handheld microphone." loading="lazy" width="1200" height="631">
-      <figcaption class="cap cap--light">Rights and Responsibilities · 7 July 2026</figcaption>
-    </figure>
-    <figure class="room__f room__f--b" data-par="0.18">
-      <img src="assets/img/laughing-1000.jpg" srcset="assets/img/laughing-460.jpg 460w, assets/img/laughing-640.jpg 640w, assets/img/laughing-1000.jpg 1000w"
-           sizes="(max-width:900px) 50vw, 33vw" alt="Two attendees laughing during the reception." loading="lazy" width="1000" height="526">
-      <figcaption class="cap cap--light">The reception · 7 July 2026</figcaption>
-    </figure>
-    <figure class="room__f room__f--c" data-par="0.2">
-      <img src="assets/img/qa-hands-760.jpg" srcset="assets/img/qa-hands-480.jpg 480w, assets/img/qa-hands-760.jpg 760w"
-           sizes="(max-width:900px) 50vw, 33vw" alt="Hands up across the audience during the question period." loading="lazy" width="760" height="411">
-      <figcaption class="cap cap--light">Called to Serve · 5 August 2026</figcaption>
-    </figure>
-    <figure class="room__f room__f--d" data-par="0.16">
-      <img src="assets/img/reception-1200.jpg" srcset="assets/img/reception-480.jpg 480w, assets/img/reception-760.jpg 760w, assets/img/reception-1200.jpg 1200w"
-           sizes="(max-width:900px) 50vw, 33vw" alt="A group talking with drinks after the panel." loading="lazy" width="1200" height="631">
-      <figcaption class="cap cap--light">Networking · 7 July 2026</figcaption>
-    </figure>
-  </div>
-</section>
-
-
-
-<!-- ═══ SERVICE ════════════════════════════════════════════════════════════
-     Instagram, 3 August 2026, location-tagged San Francisco. The pull quote is
-     the first line of their own caption, unedited. -->
-<section class="serve">
-  <div class="wrap serve__head">
-    <p class="eyebrow">Beyond the talk</p>
-    <h2 class="head" data-reveal-lines><span>They also</span><span>go out.</span></h2>
-    <p class="lead">On 3 August a group went out with the Missionaries of Charity for homeless
-      ministry across San Francisco. No talk, no panel, no name tags.</p>
-    <blockquote class="serve__q">Blessed to have been invited to join the Missionaries of Charity
-      for homeless ministry throughout San Francisco.</blockquote>
-    <p class="serve__c">Catholic Leaders in Action, 3 August 2026</p>
-  </div>
-  <div class="serve__strip">
-    <figure data-par="0.14"><img src="assets/img/serve-van-660.jpg" srcset="assets/img/serve-van-460.jpg 460w, assets/img/serve-van-660.jpg 660w, assets/img/serve-van-1000.jpg 1000w" sizes="(max-width:900px) 60vw, 25vw" alt="Sisters and volunteers at the back of a van on a San Francisco street." loading="lazy" width="660" height="879"></figure>
-    <figure data-par="0.2"><img src="assets/img/serve-camp-600.jpg" srcset="assets/img/serve-camp-420.jpg 420w, assets/img/serve-camp-600.jpg 600w, assets/img/serve-camp-900.jpg 900w" sizes="(max-width:900px) 60vw, 25vw" alt="Two sisters walking toward a tent encampment." loading="lazy" width="600" height="799"></figure>
-    <figure data-par="0.11"><img src="assets/img/serve-hand-600.jpg" srcset="assets/img/serve-hand-420.jpg 420w, assets/img/serve-hand-600.jpg 600w, assets/img/serve-hand-900.jpg 900w" sizes="(max-width:900px) 60vw, 25vw" alt="A volunteer handing something to a man at the open door of the van." loading="lazy" width="600" height="799"></figure>
-    <figure data-par="0.17"><img src="assets/img/serve-sisters-600.jpg" srcset="assets/img/serve-sisters-420.jpg 420w, assets/img/serve-sisters-600.jpg 600w, assets/img/serve-sisters-900.jpg 900w" sizes="(max-width:900px) 60vw, 25vw" alt="Missionaries of Charity sisters talking with people on the street." loading="lazy" width="600" height="800"></figure>
-  </div>
-</section>
-
-<!-- ═══ VOICES ═════════════════════════════════════════════════════════════
-     Two named attendees quoted by the Archdiocese of San Francisco, sfarch.org,
-     15 July 2026. The third is the Archdiocesan office's own public LinkedIn post
-     of 5 June 2026, which is a different source and a different date, so each
-     figcaption carries its own attribution rather than one blanket line.
-     No quote here is anonymous and none was written for this site. -->
-<section class="voices">
-  <div class="wrap voices__in">
-    <div class="voices__head">
-      <p class="eyebrow">On the record</p>
-      <h2 class="head" data-reveal-lines><span>What people</span><span>said after.</span></h2>
-      <p class="lead">Not written for this page. Each one is quoted from where it was
-        first published.</p>
-    </div>
-    <div class="voices__list">
-      <figure class="v">
-        <blockquote>They are just humans who are deciding to say yes despite their fear. God had a call for them and they were stepping up into it.</blockquote>
-        <figcaption><b>Megan Sauter</b><span>Attendee · Archdiocese of San Francisco, 15 July 2026</span></figcaption>
-      </figure>
-      <figure class="v">
-        <blockquote>I think we're in a time where a lot of young adults are on fire for their faith, but there's a disconnect because many don't know how to unite or move something forward.</blockquote>
-        <figcaption><b>Catherine Dombrowski</b><span>Attendee · Archdiocese of San Francisco, 15 July 2026</span></figcaption>
-      </figure>
-      <figure class="v v--inst">
-        <blockquote>Kudos to the young adults who started a new Catholic Leaders in Action young adults group and launched a monthly Catholic Social Teaching series in Noe Valley this week. These are dynamic folks!</blockquote>
-        <figcaption><b>Office of Human Life &amp; Dignity</b><span>Archdiocese of San Francisco · LinkedIn, 5 June 2026</span></figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ AN EVENING ═════════════════════════════════════════════════════════ -->
-<section class="run" id="evening">
-  <div class="wrap run__in">
-    <div class="run__head">
-      <p class="eyebrow">An evening</p>
-      <h2 class="head" data-reveal-lines><span>How the</span><span>night runs.</span></h2>
-    </div>
-    <ol class="run__list">
-      <li class="run__row">
-        <span class="run__t">6:30</span>
-        <span class="run__d"><b>Check-in and reception.</b> Wine and small bites. Name tags by the door.</span>
-      </li>
-      <li class="run__row">
-        <span class="run__t">7:00</span>
-        <span class="run__d"><b>Keynote, then a panel.</b> Someone who does the work for a living, then three or four people arguing about it in front of you.</span>
-      </li>
-      <li class="run__row">
-        <span class="run__t">9:00</span>
-        <span class="run__d"><b>Networking reception.</b> The part most people actually come for.</span>
-      </li>
-    </ol>
-    <p class="run__foot">Ages 21 to 40. Business casual encouraged. Luma registration required for entry.</p>
-  </div>
-</section>
-
-<!-- ═══ NEXT ═══════════════════════════════════════════════════════════════ -->
-<section class="next" id="next">
-  <div class="wrap next__in">
-    <div class="next__main">
-      <p class="eyebrow eyebrow--light">Next evening</p>
-      <h2 class="next__title" data-reveal-lines><span>The Work of</span><span>Human Hands</span></h2>
-      <p class="next__sub">The Eucharistic necessity of your royal priesthood</p>
-      <!-- Date, time and venue from their own detail slide, DcKANRuGtzj_10. -->
-      <dl class="next__when">
-        <div><dt>When</dt><dd>Tuesday 1 September, 6:30 to 9:30 PM</dd></div>
-        <div><dt>Where</dt><dd>St Philip the Apostle Church Hall, San Francisco</dd></div>
-      </dl>
-      <p class="body body--light">By baptism you share in Christ's royal priesthood. An evening on
-        what that means in practice: how the work of your hands is carried to the altar, how your
-        particular mission is discerned, and what the Church can accomplish in no other way than
-        through you.</p>
-      <a class="btn btn--brass" href="https://luma.com/me6t2z7s" target="_blank" rel="noopener">RSVP on Luma</a>
-      <p class="next__meta">Ages 21 to 40 · Business casual encouraged · Luma registration required</p>
-    </div>
-    <div class="next__speakers">
-      <article class="spk">
-        <h3>Fr. Michael Sweeney, OP</h3>
-        <p>Co-founded the Catherine of Siena Institute. President of the Dominican School of
-          Philosophy &amp; Theology from 2004 to 2015.</p>
-      </article>
-      <article class="spk">
-        <h3>Sean Bryan</h3>
-        <p>Executive Director of the Lay Mission Institute. Appeared on NBC's American Ninja
-          Warrior across more than forty episodes as the "Papal Ninja".</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ LATELY ═════════════════════════════════════════════════════════════ -->
-<section class="lately">
-  <div class="wrap lately__in">
-    <div class="lately__text">
-      <p class="eyebrow">Lately</p>
-      <h2 class="head" data-reveal-lines><span>Straight from</span><span>the feed.</span></h2>
-      <p class="lead">Posters, rooms and recaps, posted as they happen.</p>
-      <a class="btn btn--ink" href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener">@catholicleadersinaction</a>
-    </div>
-
-    <div class="device" data-device>
-      <div class="device__body">
-        <div class="device__btn device__btn--vol" aria-hidden="true"></div>
-        <div class="device__btn device__btn--pwr" aria-hidden="true"></div>
-        <div class="device__screen">
-          <div class="device__bar" aria-hidden="true">
-            <span class="device__time">6:30</span>
-            <span class="device__speaker"></span>
-            <span class="device__stat"><i></i><i></i><i></i></span>
-          </div>
-          <div class="device__app">
-            <div class="device__apphead" aria-hidden="true">
-              <span class="device__glyph">Instagram</span>
+        <article class="card card--ink ev" aria-labelledby="ev-h">
+          <p class="t-meta ev__kicker">Next evening · Tuesday</p>
+          <p class="t-chapter ev__date">1 September 2026</p>
+          <div class="ev__cols">
+            <div class="ev__what">
+              <h2 class="ev__title" id="ev-h">The Work of Human Hands</h2>
+              <p class="ev__sub">The Eucharistic Necessity of Your Royal Priesthood</p>
+              <p class="ev__who">Fr. Michael Sweeney, OP and Sean Bryan, co-founders of the Lay Mission Institute.</p>
             </div>
-            <div class="device__feed" data-feed>
-              <a class="post" href="https://www.instagram.com/p/DbULpBWJ-ok/" target="_blank" rel="noopener">
-                <img src="assets/instagram/DbULpBWJ-ok.jpg" alt="Called to Serve poster." loading="lazy" width="640" height="640">
-                <span class="post__m">Called to Serve · Option for the poor and vulnerable</span>
-              </a>
-              <a class="post" href="https://www.instagram.com/p/DbuObFxFJY3/" target="_blank" rel="noopener">
-                <img src="assets/instagram/DbuObFxFJY3.jpg" alt="The full hall photographed together." loading="lazy" width="640" height="345">
-                <span class="post__m">The whole room, end of the night</span>
-              </a>
-              <a class="post" href="https://www.instagram.com/p/Db3x4v6hxow/" target="_blank" rel="noopener">
-                <img src="assets/instagram/Db3x4v6hxow.jpg" alt="A short video from an evening." loading="lazy" width="360" height="640">
-                <span class="post__m">From the reception</span>
-              </a>
-              <a class="post" href="https://www.instagram.com/p/DZ6Ga2yptfR/" target="_blank" rel="noopener">
-                <img src="assets/instagram/DZ6Ga2yptfR.jpg" alt="Rights and Responsibilities poster." loading="lazy" width="640" height="640">
-                <span class="post__m">Rights and Responsibilities · St. James</span>
-              </a>
-              <a class="post" href="https://www.instagram.com/p/DawmlieFIHm/" target="_blank" rel="noopener">
-                <img src="assets/instagram/DawmlieFIHm.jpg" alt="A full room at an evening." loading="lazy" width="640" height="335">
-                <span class="post__m">A full house</span>
-              </a>
-              <a class="post" href="https://www.instagram.com/p/DZGufi6JAbk/" target="_blank" rel="noopener">
-                <img src="assets/instagram/DZGufi6JAbk.jpg" alt="Called to Lead poster." loading="lazy" width="640" height="640">
-                <span class="post__m">Called to Lead · St Philip</span>
-              </a>
-              <a class="post" href="https://www.instagram.com/p/DZJY-BjJgjU/" target="_blank" rel="noopener">
-                <img src="assets/instagram/DZJY-BjJgjU.jpg" alt="Attendees gathered in a parish hall." loading="lazy" width="640" height="335">
-                <span class="post__m">St Philip Catholic Church Hall</span>
-              </a>
+            <div class="ev__act">
+              <p class="ev__where">6:30 to 9:30 PM. St Philip the Apostle Church Hall, Noe Valley, San Francisco.</p>
+              <p class="ev__open">Registration is open.</p>
+              <a class="btn btn--brass ev__go" href="https://luma.com/me6t2z7s">RSVP on Luma</a>
             </div>
           </div>
+          <p class="t-meta ev__terms">Ages 21–40 · Business casual encouraged. Luma registration required for entry.</p>
+        </article>
+
+        <article class="card rec">
+          <p class="t-meta rec__k">Every evening so far</p>
+          <ul class="rec__list">
+            <li class="rec__i"><span class="rec__d">2 June 2026</span><span class="rec__t">Called to Lead</span><span class="rec__s">Sold out</span></li>
+            <li class="rec__i"><span class="rec__d">7 July 2026</span><span class="rec__t">Rights and Responsibilities</span><span class="rec__s">Sold out</span></li>
+            <li class="rec__i"><span class="rec__d">30 July 2026</span><span class="rec__t">The Shroud of Turin</span><span class="rec__s">In Spanish</span></li>
+            <li class="rec__i"><span class="rec__d">5 August 2026</span><span class="rec__t">Called to Serve</span><span class="rec__s">Sold out</span></li>
+          </ul>
+        </article>
+
+        <figure class="card--photo shot shot--close">
+          <img src="assets/img/reception-760.jpg" width="1200" height="632"
+               srcset="assets/img/reception-480.jpg 480w, assets/img/reception-760.jpg 760w, assets/img/reception-1200.jpg 1200w"
+               sizes="(min-width:1376px) 1200px, (min-width:900px) 100vw, 480px"
+               decoding="async"
+               alt="A young man laughing with his head back mid-conversation, a woman beside him holding a wine glass, at the July 7 evening in St James Parish Hall.">
+          <figcaption class="t-meta shot__cap"><span class="cap__s">The reception</span><span class="cap__d">7&nbsp;July&nbsp;2026</span><span class="cap__v">St James&nbsp;Parish</span></figcaption>
+        </figure>
+
+        <figure class="card--photo shot shot--laugh">
+          <img src="assets/img/laughing-640.jpg" width="1000" height="527"
+               srcset="assets/img/laughing-460.jpg 460w, assets/img/laughing-640.jpg 640w, assets/img/laughing-1000.jpg 1000w"
+               sizes="(min-width:1376px) 820px, (min-width:900px) calc(100vw - 144px), 300px"
+               decoding="async"
+               alt="Two attendees leaning together and laughing towards the camera, one holding a wine glass, at the July 7 evening.">
+          <figcaption class="t-meta shot__cap"><span class="cap__s">Two attendees</span><span class="cap__d">7&nbsp;July&nbsp;2026</span><span class="cap__v">Dolores&nbsp;Heights</span></figcaption>
+        </figure>
+
+        <figure class="card--photo shot shot--ask">
+          <img src="assets/img/asking-660.jpg" width="1000" height="541"
+               srcset="assets/img/asking-460.jpg 460w, assets/img/asking-660.jpg 660w, assets/img/asking-1000.jpg 1000w"
+               sizes="(min-width:1376px) 1000px, (min-width:900px) 100vw, 460px"
+               decoding="async"
+               alt="A woman stands holding a microphone to ask a question at Called to Serve, the seated room turned towards her.">
+          <figcaption class="t-meta shot__cap"><span class="cap__s">A question</span><span class="cap__d">5&nbsp;August&nbsp;2026</span><span class="cap__v">St Paul&nbsp;Church</span></figcaption>
+        </figure>
+
+        <figure class="card--photo shot shot--panel">
+          <img src="assets/img/panel-table-760.jpg" width="760" height="411"
+               srcset="assets/img/panel-table-480.jpg 480w, assets/img/panel-table-760.jpg 760w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), 280px"
+               decoding="async"
+               alt="Four panellists seated at a long table at Called to Serve, one speaking into a microphone and a religious sister listening at the end of the row, the event slide projected on the wall behind them.">
+          <figcaption class="t-meta shot__cap"><span class="cap__s">The panel</span><span class="cap__d">5&nbsp;August&nbsp;2026</span><span class="cap__v">St Paul&nbsp;Church</span></figcaption>
+        </figure>
+
+        <figure class="card--photo shot shot--room">
+          <picture>
+            <source media="(min-width:900px)"
+                    srcset="assets/img/group-june-760.jpg 760w, assets/img/group-june-1100.jpg 1100w, assets/img/group-june-1400.jpg 1400w"
+                    sizes="(min-width:1376px) 1184px, calc(100vw - 128px)">
+            <img src="assets/img/group-tight-760.jpg" width="760" height="593"
+                 srcset="assets/img/group-tight-480.jpg 480w, assets/img/group-tight-760.jpg 760w"
+                 sizes="calc(100vw - 64px)"
+                 fetchpriority="high" decoding="async"
+                 alt="Young adults in business casual standing shoulder to shoulder for a group photograph in the parish hall at Called to Lead, a priest in a Roman collar among them.">
+          </picture>
+          <figcaption class="t-meta shot__cap"><span class="cap__s">Called to Lead</span><span class="cap__d">2&nbsp;June&nbsp;2026</span><span class="cap__v">St Philip the&nbsp;Apostle</span></figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- piece 2 — the record -->
+  <section id="record" aria-labelledby="record-h">
+    <div class="wrap">
+
+      <div class="rc__head">
+        <p class="t-meta rc__kick">The record &middot; June to August 2026</p>
+        <h2 class="t-chapter rc__h" id="record-h">Four evenings.<br>Four parishes.</h2>
+        <p class="rc__lead">Three lecture nights on Catholic social teaching, each one sold out, and one evening in Spanish at St&nbsp;Monica. The Archdiocese of San Francisco covered two of them: its 4&nbsp;June&nbsp;2026 article reports the 2&nbsp;June evening, its 15&nbsp;July&nbsp;2026 article the 7&nbsp;July one, and both counted about fifty young adults in the room. One outing with the Missionaries of Charity has been run. A second is set for Saturday 29&nbsp;August&nbsp;2026, 2:00 to 6:00&nbsp;PM, and it is sold&nbsp;out.</p>
+      </div>
+
+      <div class="bento rc__grid">
+
+        <article class="card rc__ev rc-t1">
+          <p class="t-meta rc__k">Sold out</p>
+          <p class="t-head rc__d">2 June 2026</p>
+          <h3 class="t-head rc__t">Called to Lead</h3>
+          <p class="rc__sub">A Discussion on Catholic Social Teaching</p>
+          <p class="rc__at">Tuesday, 7:00 to 9:00&nbsp;PM. St Philip the Apostle Church Hall, 725 Diamond&nbsp;St, San&nbsp;Francisco.</p>
+          <p class="rc__n">63 registered.</p>
+          <div class="rc__who">
+            <p class="t-meta rc__role">Speaker</p>
+            <p class="rc__p"><span class="rc__nm">Mr. Ryan Mayer</span>, Director of the Office of Catholic Identity Formation&nbsp;&amp;&nbsp;Assessment, Archdiocese of San&nbsp;Francisco</p>
+            <p class="t-meta rc__role">Panel</p>
+            <p class="rc__p"><span class="rc__nm">Mason Friedberg</span>, Founder of Bay&nbsp;Wide&nbsp;Young&nbsp;Adults</p>
+            <p class="rc__p"><span class="rc__nm">Amytza Maskati</span>, Founder of Sisterhood&nbsp;Surrender and trailblazer at St&nbsp;Raymond&rsquo;s&nbsp;Young&nbsp;Adults</p>
+          </div>
+        </article>
+
+        <figure class="card--photo rc__shot rc-p1">
+          <img src="assets/img/group-tight-760.jpg" width="760" height="593"
+               srcset="assets/img/group-tight-480.jpg 480w, assets/img/group-tight-760.jpg 760w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc(100vw - 64px)"
+               loading="lazy" decoding="async"
+               alt="Young adults standing shoulder to shoulder at Called to Lead, a priest in a Roman collar among them, photographed close in so the faces read.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">The room</span><span class="cap__d">2&nbsp;June&nbsp;2026</span><span class="cap__v">St Philip the&nbsp;Apostle</span></figcaption>
+        </figure>
+
+        <article class="card rc__ev rc-t2">
+          <p class="t-meta rc__k">Sold out</p>
+          <p class="t-head rc__d">7 July 2026</p>
+          <h3 class="t-head rc__t">Rights and Responsibilities</h3>
+          <p class="rc__sub">Advancing the Common Good</p>
+          <p class="rc__at">Tuesday, 6:30 to 9:00&nbsp;PM. St James Parish Hall, Dolores&nbsp;Heights, San&nbsp;Francisco.</p>
+          <p class="rc__n">62 registered.</p>
+          <div class="rc__who">
+            <p class="t-meta rc__role">Keynote</p>
+            <p class="rc__p"><span class="rc__nm">Molly C. Sheahan</span>, Associate Director for Healthy&nbsp;Families, California&nbsp;Catholic&nbsp;Conference</p>
+            <p class="t-meta rc__role">Panel</p>
+            <p class="rc__p"><span class="rc__nm">Saul Perez</span>, Social Action&nbsp;&amp;&nbsp;Digital Media Coordinator, Office of Human Life&nbsp;&amp;&nbsp;Dignity, Archdiocese of San&nbsp;Francisco</p>
+            <p class="rc__p"><span class="rc__nm">Melanie Salazar</span>, Executive Director of Pro-Life&nbsp;San&nbsp;Francisco</p>
+            <p class="rc__p"><span class="rc__nm">Franco Aurelio Fernandez</span>, content&nbsp;creator</p>
+          </div>
+        </article>
+
+        <figure class="card--photo rc__shot rc-p2">
+          <img src="assets/img/panel-mic-two-760.jpg" width="1200" height="632"
+               srcset="assets/img/panel-mic-two-480.jpg 480w, assets/img/panel-mic-two-760.jpg 760w, assets/img/panel-mic-two-1200.jpg 1200w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc(100vw - 64px)"
+               loading="lazy" decoding="async"
+               alt="A priest in a Roman collar speaks into a microphone at the front of the parish hall, with three panellists standing beside him listening.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">The panel</span><span class="cap__d">7&nbsp;July&nbsp;2026</span><span class="cap__v">St James&nbsp;Parish</span></figcaption>
+        </figure>
+
+        <article class="card rc__ev rc-t3">
+          <p class="t-meta rc__k">The one evening held in Spanish</p>
+          <p class="t-head rc__d">30 July 2026</p>
+          <h3 class="t-head rc__t" lang="es">&iquest;Qui&eacute;n es el hombre de la S&aacute;bana Santa?</h3>
+          <p class="rc__sub">The Shroud of Turin. The one evening of the four held in Spanish, and the only one in a church rather than a parish&nbsp;hall.</p>
+          <p class="rc__at">Thursday, 6:30 to 9:00&nbsp;PM. St Monica Catholic Church, 470 24th&nbsp;Ave, San&nbsp;Francisco.</p>
+          <p class="rc__n">22 guests. Tickets were $10.</p>
+          <div class="rc__who">
+            <p class="t-meta rc__role">Presented by</p>
+            <p class="rc__p"><span class="rc__nm">Othonia</span>, which brought the full-length replica of the Shroud of Turin and presented&nbsp;it</p>
+            <p class="t-meta rc__role">Co-hosted with</p>
+            <p class="rc__p"><span class="rc__nm">Star of the Sea Young Adults&nbsp;Group</span></p>
+          </div>
+        </article>
+
+        <figure class="card--photo rc__shot rc-p3">
+          <img src="assets/img/shroud-stand-840.jpg" width="840" height="584"
+               srcset="assets/img/shroud-stand-460.jpg 460w, assets/img/shroud-stand-600.jpg 600w, assets/img/shroud-stand-840.jpg 840w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc(100vw - 64px)"
+               loading="lazy" decoding="async"
+               alt="A presenter in clerical black stands at the front of St Monica with his hand out towards the full-length replica of the Shroud of Turin, mounted on a stand across the sanctuary steps.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">The replica</span><span class="cap__d">30&nbsp;July&nbsp;2026</span><span class="cap__v">St&nbsp;Monica</span></figcaption>
+        </figure>
+
+        <article class="card rc__ev rc-t4">
+          <p class="t-meta rc__k">Service &middot; Missionaries of Charity</p>
+          <p class="t-head rc__d">3 August 2026</p>
+          <h3 class="t-head rc__t">Serving with the Missionaries of Charity</h3>
+          <p class="rc__sub">Volunteers out with the sisters in San&nbsp;Francisco. This work sits outside the lecture&nbsp;series.</p>
+          <p class="rc__at">The four photographs here are the group&rsquo;s own, published from the outing on 3&nbsp;August&nbsp;2026.</p>
+          <div class="rc__who">
+            <p class="t-meta rc__role">Spoke about it afterwards</p>
+            <p class="rc__p"><span class="rc__nm">Roberto Lacayo</span> shared his experience serving with the Missionaries of Charity in&nbsp;San&nbsp;Francisco</p>
+          </div>
+        </article>
+
+        <figure class="card--photo rc__shot rc-s1">
+          <img src="assets/img/serve-hand-600.jpg" width="900" height="1199"
+               srcset="assets/img/serve-hand-420.jpg 420w, assets/img/serve-hand-600.jpg 600w, assets/img/serve-hand-900.jpg 900w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="A Missionary of Charity sister stands in the side door of a white van handing a small package to a man in a dark hooded sweatshirt.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">The van&nbsp;door</span><span class="cap__d">3&nbsp;August&nbsp;2026</span><span class="cap__v">San&nbsp;Francisco</span></figcaption>
+        </figure>
+
+        <figure class="card--photo rc__shot rc-s2">
+          <img src="assets/img/serve-street-600.jpg" width="600" height="606"
+               srcset="assets/img/serve-street-320.jpg 320w, assets/img/serve-street-420.jpg 420w, assets/img/serve-street-600.jpg 600w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="A Missionary of Charity sister in a white sari and blue apron smiles as she talks with a man holding a small dog beside a painted fence at a street encampment.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">On the&nbsp;street</span><span class="cap__d">3&nbsp;August&nbsp;2026</span><span class="cap__v">San&nbsp;Francisco</span></figcaption>
+        </figure>
+
+        <figure class="card--photo rc__shot rc-s3">
+          <img src="assets/img/serve-van-660.jpg" width="1000" height="1332"
+               srcset="assets/img/serve-van-460.jpg 460w, assets/img/serve-van-660.jpg 660w, assets/img/serve-van-1000.jpg 1000w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="Two sisters hand goods out of the open side of a van to a man in a yellow shirt and hard hat standing on the pavement.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">The handover</span><span class="cap__d">3&nbsp;August&nbsp;2026</span><span class="cap__v">San&nbsp;Francisco</span></figcaption>
+        </figure>
+
+        <figure class="card--photo rc__shot rc-s4">
+          <img src="assets/img/serve-shelter-660.jpg" width="660" height="758"
+               srcset="assets/img/serve-shelter-320.jpg 320w, assets/img/serve-shelter-460.jpg 460w, assets/img/serve-shelter-660.jpg 660w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="A sister in glasses looks in through the opening of a tarpaulin shelter at a street encampment, two other sisters standing with her.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">The shelter</span><span class="cap__d">3&nbsp;August&nbsp;2026</span><span class="cap__v">San&nbsp;Francisco</span></figcaption>
+        </figure>
+
+        <article class="card rc__ev rc-t5">
+          <p class="t-meta rc__k">Sold out</p>
+          <p class="t-head rc__d">5 August 2026</p>
+          <h3 class="t-head rc__t">Called to Serve</h3>
+          <p class="rc__sub">Option for the Poor &amp; Vulnerable</p>
+          <p class="rc__at">Wednesday, 6:30 to 9:00&nbsp;PM. St Paul Catholic Church, 221 Valley&nbsp;St, San&nbsp;Francisco.</p>
+          <p class="rc__n">57 registered.</p>
+          <div class="rc__who">
+            <p class="t-meta rc__role">Keynote</p>
+            <p class="rc__p"><span class="rc__nm">Sr. Maril&uacute; Ibarra, FdCC</span>, Spiritual Caregiver, Program Advocate and Community&nbsp;Leader, St.&nbsp;Anthony&nbsp;Foundation</p>
+            <p class="t-meta rc__role">Moderator</p>
+            <p class="rc__p"><span class="rc__nm">Bridget Mahoney</span>, Director of Development, Catholic&nbsp;Charities&nbsp;San&nbsp;Francisco</p>
+            <p class="t-meta rc__role">Panel</p>
+            <p class="rc__p"><span class="rc__nm">Lorna Baggott</span>, Development&nbsp;&amp;&nbsp;Communications Manager, Order&nbsp;of&nbsp;Malta Clinic of Northern&nbsp;California</p>
+            <p class="rc__p"><span class="rc__nm">Miguel Ramirez Lacayo</span>, Case Manager and Housing Specialist, Catholic&nbsp;Charities&nbsp;San&nbsp;Francisco</p>
+          </div>
+        </article>
+
+        <figure class="card--photo rc__shot rc-p4">
+          <img src="assets/img/qa-hands-760.jpg" width="760" height="411"
+               srcset="assets/img/qa-hands-480.jpg 480w, assets/img/qa-hands-760.jpg 760w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc(100vw - 64px)"
+               loading="lazy" decoding="async"
+               alt="The seated room at Called to Serve with several hands raised for questions and one man standing with both arms in the air.">
+          <figcaption class="t-meta rc__cap"><span class="cap__s">Questions</span><span class="cap__d">5&nbsp;August&nbsp;2026</span><span class="cap__v">St Paul&nbsp;Church</span></figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- piece 3 — an evening, and who speaks -->
+  <section id="evening" aria-labelledby="evening-h">
+    <div class="wrap">
+
+      <div class="ev3__head">
+        <p class="t-meta ev3__kick">What happens if you go</p>
+        <h2 class="t-chapter ev3__h" id="evening-h">One evening,<br>and who runs it.</h2>
+        <p class="ev3__lead">The subject changes from month to month, and so do the people at the front of the room. The order of the night does not. The series keeps a chaplain of its own and runs in partnership with the Archdiocese of San&nbsp;Francisco.</p>
+      </div>
+
+      <div class="bento ev3__grid">
+
+        <article class="card ev3__tl">
+          <p class="t-meta ev3__k">The order of the night &middot; three hours</p>
+          <ol class="tl__list">
+            <li class="tl__i tl__i--30">
+              <p class="tl__n"><span class="t-chapter tl__num">6:30</span><span class="t-meta tl__ap">PM</span></p>
+              <p class="tl__t">Check-in. Wine and small&nbsp;bites.</p>
+            </li>
+            <li class="tl__i tl__i--120">
+              <p class="tl__n"><span class="t-chapter tl__num">7:00</span><span class="t-meta tl__ap">PM</span></p>
+              <p class="tl__t">The talk starts. A panel discussion follows it, then questions from the&nbsp;floor.</p>
+            </li>
+            <li class="tl__i tl__i--30">
+              <p class="tl__n"><span class="t-chapter tl__num">9:00</span><span class="t-meta tl__ap">PM</span></p>
+              <p class="tl__t">The room turns to&nbsp;networking.</p>
+            </li>
+            <li class="tl__i tl__i--end">
+              <p class="tl__n"><span class="t-chapter tl__num">9:30</span><span class="t-meta tl__ap">PM</span></p>
+              <p class="tl__t">The evening&nbsp;ends.</p>
+            </li>
+          </ol>
+        </article>
+
+        <figure class="card--photo ev3__fr ev-p1">
+          <img src="assets/img/reception-two-660.jpg" width="1000" height="527"
+               srcset="assets/img/reception-two-460.jpg 460w, assets/img/reception-two-660.jpg 660w, assets/img/reception-two-1000.jpg 1000w"
+               sizes="(min-width:1376px) 820px, (min-width:900px) calc(100vw - 144px), 300px"
+               loading="lazy" decoding="async"
+               alt="Two attendees standing face to face in conversation before the talk, one gesturing mid-sentence, with the drinks table and other guests behind them.">
+          <figcaption class="t-meta ev3__cap"><span class="cap__s">Before the talk</span><span class="cap__d">7&nbsp;July&nbsp;2026</span><span class="cap__v">St James&nbsp;Parish</span></figcaption>
+        </figure>
+
+        <figure class="card--photo ev3__fr ev-p2">
+          <picture>
+            <source media="(min-width:900px)"
+                    srcset="assets/img/nave-full-480.jpg 480w, assets/img/nave-full-760.jpg 760w, assets/img/nave-full-1100.jpg 1100w"
+                    sizes="(min-width:1376px) 900px, calc(100vw - 144px)">
+            <img src="assets/img/nave-tall-480.jpg" width="480" height="628"
+                 srcset="assets/img/nave-tall-320.jpg 320w, assets/img/nave-tall-480.jpg 480w"
+                 sizes="calc((100vw - 80px) / 2)"
+                 loading="lazy" decoding="async"
+                 alt="A speaker stands at the front of St Monica addressing a congregation seated in the pews, tall stained glass windows above them.">
+          </picture>
+          <figcaption class="t-meta ev3__cap"><span class="cap__s">The talk</span><span class="cap__d">30&nbsp;July&nbsp;2026</span><span class="cap__v">St&nbsp;Monica</span></figcaption>
+        </figure>
+
+        <figure class="card--photo ev3__fr ev-p3">
+          <img src="assets/img/panel-close-660.jpg" width="660" height="494"
+               srcset="assets/img/panel-close-320.jpg 320w, assets/img/panel-close-460.jpg 460w, assets/img/panel-close-660.jpg 660w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="A panellist speaks into a handheld microphone while the panellist seated beside him listens and gestures.">
+          <figcaption class="t-meta ev3__cap"><span class="cap__s">The panel</span><span class="cap__d">7&nbsp;July&nbsp;2026</span><span class="cap__v">St James&nbsp;Parish</span></figcaption>
+        </figure>
+
+        <figure class="card--photo ev3__fr ev-p4">
+          <picture>
+            <source media="(min-width:900px)"
+                    srcset="assets/img/room-back-460.jpg 460w, assets/img/room-back-660.jpg 660w, assets/img/room-back-860.jpg 860w"
+                    sizes="(min-width:1376px) 584px, calc((100vw - 144px) / 2)">
+            <img src="assets/img/room-tall-400.jpg" width="400" height="470"
+                 srcset="assets/img/room-tall-320.jpg 320w, assets/img/room-tall-400.jpg 400w"
+                 sizes="calc((100vw - 80px) / 2)"
+                 loading="lazy" decoding="async"
+                 alt="The room seen from the back row, panellists at a table under the projected title slide and the audience seated in rows in front of them.">
+          </picture>
+          <figcaption class="t-meta ev3__cap"><span class="cap__s">From the back</span><span class="cap__d">5&nbsp;August&nbsp;2026</span><span class="cap__v">St Paul&nbsp;Church</span></figcaption>
+        </figure>
+
+        <article class="card ev3__pr">
+          <p class="t-meta ev3__k">Chaplain</p>
+          <h3 class="t-head pr__nm">Fr. Tom Martin</h3>
+          <p class="pr__t">Pastor of the Noe Valley Cluster, serving the parishes of St. Paul, St. James, and St. Philip the Apostle in San Francisco, and serves as Chaplain for Catholic Leaders in&nbsp;Action.</p>
+          <p class="pr__t">Ordained to the priesthood in 2013. Fr. Tom also serves as Catholic Chaplain for the San Francisco Giants and Magistral Chaplain for the Order of&nbsp;Malta.</p>
+          <p class="pr__t">Every evening held so far has been in one of the three parishes he pastors, apart from the Spanish-language one at St&nbsp;Monica. So is the evening on 1&nbsp;September.</p>
+        </article>
+
+        <article class="card ev3__sy">
+          <p class="t-meta ev3__k">On the record</p>
+          <h3 class="t-head sy__nm">Catherine Dombrowski</h3>
+          <p class="sy__role">Attendee at the 7 July 2026 evening. Both quotations below are&nbsp;hers.</p>
+          <blockquote class="sy__q" cite="https://sfarch.org/catholic-lobbyist-calls-for-civic-involvement-at-young-adult-gathering/">
+            <p>&ldquo;I think we&rsquo;re in a time where a lot of young adults are on fire for their faith, but there&rsquo;s a disconnect because many don&rsquo;t know how to unite or move something forward.&rdquo;</p>
+          </blockquote>
+          <blockquote class="sy__q" cite="https://sfarch.org/catholic-lobbyist-calls-for-civic-involvement-at-young-adult-gathering/">
+            <p>&ldquo;I enjoyed meeting new people, learning new things, and connecting with people who are passionate about putting their faith into action.&rdquo;</p>
+          </blockquote>
+          <p class="t-meta sy__src">Both quotations reported by the Archdiocese of San&nbsp;Francisco.</p>
+        </article>
+
+        <article class="card ev3__in">
+          <div class="in__a">
+            <p class="t-meta ev3__k">In its own words</p>
+            <blockquote class="in__q">
+              <p class="t-head">&ldquo;Catholic Leaders in Action is a collective formed in partnership with the Archdiocese of San Francisco dedicated to connecting and equipping Catholics who desire to lead with conviction, excellence, and faith in everyday&nbsp;life.&rdquo;</p>
+            </blockquote>
+          </div>
+          <div class="in__b">
+            <p class="t-meta ev3__k">Institutions that have co-sponsored an evening or supplied a speaker</p>
+            <ul class="in__list">
+              <li class="in__o">Archdiocese&nbsp;of&nbsp;San&nbsp;Francisco, Office&nbsp;of&nbsp;Human&nbsp;Life&nbsp;&amp;&nbsp;Dignity</li>
+              <li class="in__o">California&nbsp;Catholic&nbsp;Conference</li>
+              <li class="in__o in__o--nb">Pro-Life&nbsp;San&nbsp;Francisco</li>
+              <li class="in__o">Catholic&nbsp;Charities&nbsp;San&nbsp;Francisco</li>
+              <li class="in__o">Order&nbsp;of&nbsp;Malta, Clinic&nbsp;of&nbsp;Northern&nbsp;California</li>
+              <li class="in__o">St.&nbsp;Anthony&nbsp;Foundation</li>
+              <li class="in__o">Bay&nbsp;Wide&nbsp;Young&nbsp;Adults</li>
+              <li class="in__o">Sisterhood&nbsp;Surrender</li>
+              <li class="in__o">St&nbsp;Raymond&rsquo;s&nbsp;Young&nbsp;Adults</li>
+              <li class="in__o">Dominican School of Philosophy&nbsp;&amp;&nbsp;Theology</li>
+              <li class="in__o">Lay&nbsp;Mission&nbsp;Institute</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- piece 4 — signup, questions, footer -->
+  <section id="close" aria-labelledby="close-h">
+    <div class="wrap">
+
+      <div class="cl__head">
+        <p class="t-meta cl__kick">What to do next</p>
+        <h2 class="t-chapter cl__h" id="close-h">Come 1 September,<br>or leave a number.</h2>
+        <p class="cl__lead">Registration for the September evening runs through Luma. If that date does not work, leave a mobile number and you get one text when the next evening has a&nbsp;date.</p>
+      </div>
+
+      <div class="bento cl__grid">
+
+        <article class="card cl__acts">
+          <div class="act">
+            <p class="t-meta cl__k">If 1 September works</p>
+            <h3 class="t-head act__t">Hold a place.</h3>
+            <p class="act__b">Entry is by Luma registration. The listing carries the address, the start time and the two speakers. It is the same listing linked at the top of this&nbsp;page.</p>
+            <a class="btn btn--brass act__go" href="https://luma.com/me6t2z7s">RSVP on Luma</a>
+          </div>
+
+          <div class="act act--tel">
+            <p class="t-meta cl__k">If it does not</p>
+            <h3 class="t-head act__t">Take the next date by text.</h3>
+            <p class="act__b">One message, sent when the next evening has a date. The number is used for that and nothing&nbsp;else.</p>
+            <form class="tel" data-signup data-endpoint="">
+              <label class="t-meta tel__l" for="phone">Mobile number</label>
+              <div class="tel__row">
+                <input class="tel__in" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel"
+                       placeholder="(415) 555 0134" aria-describedby="phone-note">
+                <button class="btn tel__go" type="submit">Add my number</button>
+              </div>
+              <p class="signup__msg" id="phone-note" data-signup-note aria-live="polite">Ten digits, US numbers only.</p>
+            </form>
+          </div>
+        </article>
+
+        <figure class="card--photo cl__fr cl-f1">
+          <img src="assets/img/panel-answer-760.jpg" width="1200" height="632"
+               srcset="assets/img/panel-answer-480.jpg 480w, assets/img/panel-answer-760.jpg 760w, assets/img/panel-answer-1200.jpg 1200w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="A panellist in a pink blazer holds a microphone and answers a question, two other panellists listening on either side of her.">
+          <figcaption class="t-meta cl__cap"><span class="c4__s">A panellist</span><span class="c4__d">7&nbsp;July&nbsp;2026</span><span class="c4__v">St James&nbsp;Parish</span></figcaption>
+        </figure>
+
+        <figure class="card--photo cl__fr cl-f2">
+          <img src="assets/img/serve-arrive-660.jpg" width="1000" height="1332"
+               srcset="assets/img/serve-arrive-460.jpg 460w, assets/img/serve-arrive-660.jpg 660w, assets/img/serve-arrive-1000.jpg 1000w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="Missionaries of Charity sisters in white saris arrive at a street encampment in bright afternoon sun, two of them standing beside a tarpaulin shelter under an ivy wall.">
+          <figcaption class="t-meta cl__cap"><span class="c4__s">The outing</span><span class="c4__d">3&nbsp;August&nbsp;2026</span><span class="c4__v">San&nbsp;Francisco</span></figcaption>
+        </figure>
+
+        <figure class="card--photo cl__fr cl-f3">
+          <img src="assets/img/shroud-pews-760.jpg" width="1000" height="759"
+               srcset="assets/img/shroud-pews-480.jpg 480w, assets/img/shroud-pews-760.jpg 760w, assets/img/shroud-pews-1000.jpg 1000w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="The sanctuary of St Monica seen down the nave, carved reredos and altar lit above the pews, with the full-length Shroud replica hung across the front and people standing beside it.">
+          <figcaption class="t-meta cl__cap"><span class="c4__s">The sanctuary</span><span class="c4__d">30&nbsp;July&nbsp;2026</span><span class="c4__v">St&nbsp;Monica</span></figcaption>
+        </figure>
+
+        <figure class="card--photo cl__fr cl-f4">
+          <img src="assets/img/after-talk-760.jpg" width="1200" height="632"
+               srcset="assets/img/after-talk-480.jpg 480w, assets/img/after-talk-760.jpg 760w, assets/img/after-talk-1200.jpg 1200w"
+               sizes="(min-width:1376px) 584px, (min-width:900px) calc((100vw - 144px) / 2), calc((100vw - 80px) / 2)"
+               loading="lazy" decoding="async"
+               alt="A dozen young adults crowd together for a photograph after the talk, several holding wine glasses, all of them smiling at the camera.">
+          <figcaption class="t-meta cl__cap"><span class="c4__s">After the talk</span><span class="c4__d">7&nbsp;July&nbsp;2026</span><span class="c4__v">St James&nbsp;Parish</span></figcaption>
+        </figure>
+
+      </div>
+
+      <div class="card cl__qs">
+        <div class="qs__side">
+          <p class="t-meta cl__k">What people ask before they register</p>
+          <p class="qs__note">These are the answers the event listings give. Where a listing does not say, this page does not say&nbsp;either.</p>
+        </div>
+        <div class="qs">
+
+          <details class="q">
+            <summary class="t-head q__q">Do I have to be Catholic?</summary>
+            <div class="q__a">The series describes itself as a collective for Catholics who desire to lead. Nothing published sets out a policy wider than that, so if you are not Catholic and want to come, ask on Instagram before you register.</div>
+          </details>
+
+          <details class="q">
+            <summary class="t-head q__q">What does it cost?</summary>
+            <div class="q__a">The three evenings on Catholic social teaching were free to register on Luma. The Shroud of Turin evening on 30 July was $10. Check the listing for the date you want.</div>
+          </details>
+
+          <details class="q">
+            <summary class="t-head q__q">Do I need to register?</summary>
+            <div class="q__a">Yes. Luma registration is required for entry. Each evening has its own listing, and that is where registration happens.</div>
+          </details>
+
+          <details class="q">
+            <summary class="t-head q__q">What should I wear?</summary>
+            <div class="q__a">Business casual is encouraged. That is the only guidance the event listings give.</div>
+          </details>
+
+          <details class="q">
+            <summary class="t-head q__q">How old is this group?</summary>
+            <div class="q__a">It was founded in June 2026. The first evening was held on 2 June 2026 at St Philip the Apostle Church Hall.</div>
+          </details>
+
+          <details class="q">
+            <summary class="t-head q__q">What is the age range?</summary>
+            <div class="q__a">21 to 40. The inaugural evening was listed as 21 to 39, and every event since has been listed 21 to 40.</div>
+          </details>
+
+          <details class="q">
+            <summary class="t-head q__q">Do the events sell out?</summary>
+            <div class="q__a">Yes. Three lecture evenings in a row sold out. If a date matters to you, register when it is posted rather than in the week before.</div>
+          </details>
+
         </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- ═══ QUESTIONS ══════════════════════════════════════════════════════════ -->
-<section class="qs" id="questions">
-  <div class="wrap qs__in">
-    <div class="qs__head">
-      <p class="eyebrow">Questions</p>
-      <h2 class="head" data-reveal-lines><span>Before you</span><span>show up.</span></h2>
-    </div>
-    <div class="qs__list">
-      <details class="q"><summary>Who is it for?</summary>
-        <div class="q__a"><p>Catholics aged 21 to 40 across the Bay Area. All are welcome at the events.</p></div></details>
-      <details class="q"><summary>Do I have to be Catholic to come?</summary>
-        <div class="q__a"><p>No. The evenings are built for Catholics who want to lead with their faith, and anyone can attend.</p></div></details>
-      <details class="q"><summary>What should I wear?</summary>
-        <div class="q__a"><p>Business casual.</p></div></details>
-      <details class="q"><summary>Where are they held?</summary>
-        <div class="q__a"><p>Parish halls and churches around San Francisco. St Philip on Diamond Street, St. James and St. Paul's have all hosted. Each event's Luma page lists the address and directions.</p></div></details>
-      <details class="q"><summary>Do I need to register?</summary>
-        <div class="q__a"><p>Yes. Luma registration is required for entry, and it is free.</p></div></details>
-      <details class="q"><summary>How do I hear about the next one?</summary>
-        <div class="q__a"><p>Leave your number at the top of this page, or follow <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener">@catholicleadersinaction</a>.</p></div></details>
-    </div>
-  </div>
-</section>
+      <footer class="cl__foot">
+        <div class="foot__id">
+          <p class="foot__name">Catholic Leaders in Action</p>
+          <p class="t-meta foot__where">San Francisco &middot; Ages 21 to 40</p>
+        </div>
+        <ul class="foot__links">
+          <li><a href="https://www.instagram.com/catholicleadersinaction/">@catholicleadersinaction</a></li>
+          <li><a href="https://luma.com/me6t2z7s">1 September on Luma</a></li>
+        </ul>
+      </footer>
 
-<!-- ═══ CLOSE ══════════════════════════════════════════════════════════════ -->
-<section class="close">
-  <div class="close__media" data-par="0.1">
-    <img src="assets/gen/church-dusk.jpg" alt="A parish church in San Francisco at dusk with its doors open." loading="lazy" width="1536" height="1024">
-  </div>
-  <div class="wrap close__in">
-    <h2 class="close__h" data-reveal-lines><span>Come to the</span><span>next one.</span></h2>
-    <p class="close__p">Leave your number. We text you the date, the church and the speaker, and
-      nothing else.</p>
-
-    <form class="signup signup--close" novalidate>
-      <label class="sr" for="phone2">Phone number</label>
-      <div class="signup__row">
-        <input class="signup__input" id="phone2" name="phone" type="tel" inputmode="tel"
-               autocomplete="tel-national" placeholder="(415) 555 0134" maxlength="16">
-        <button class="signup__go" type="submit"><span class="signup__go-txt">Send me the date</span></button>
-        <input class="signup__pot" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
-      </div>
-      <p class="signup__msg" role="status" aria-live="polite"></p>
-    </form>
-  </div>
-</section>
+    </div>
+  </section>
 
 </main>
 
-<footer class="foot">
-  <div class="wrap foot__in">
-    <div class="foot__brand">
-      <p class="foot__mark">Catholic Leaders in Action</p>
-      <p class="foot__line">A collective formed in partnership with the Archdiocese of San Francisco.
-        Started in June 2026 by Saul Perez, Jessica Glennon, Daniel Ramirez and Jerry Sharp III,
-        with Fr. Tom Martin as chaplain.</p>
-    </div>
-    <nav class="foot__cols" aria-label="Footer">
-      <div>
-        <p class="eyebrow">Attend</p>
-        <a href="#next">Next evening</a>
-        <a href="https://luma.com/me6t2z7s" target="_blank" rel="noopener">Events on Luma</a>
-        <a href="#questions">Questions</a>
-      </div>
-      <div>
-        <p class="eyebrow">Follow</p>
-        <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener">Instagram</a>
-        <a href="#signup">Get the next date</a>
-      </div>
-    </nav>
-    <p class="foot__cred">Room photographs are from Catholic Leaders in Action events.
-      Architectural plates are illustrations. Event posters are the organisation's own.</p>
-    <p class="foot__legal"><span>© 2026 Catholic Leaders in Action</span><span>San Francisco Bay Area</span></p>
-  </div>
-</footer>
-
-<script src="main.js" defer></script>
+<script src="main.js"></script>
 </body>
 </html>

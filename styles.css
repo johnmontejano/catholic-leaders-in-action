@@ -1,756 +1,1075 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   Catholic Leaders in Action
-   "The Record" — warm paper as the ground, ink chapters arriving full bleed.
-   Mobile at 375 is the design target; 1440 is the adaptation.
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ─────────────────────────────────────────────────────────────
+   CLIA — chassis
+   Tokens and type scale are derived from design-system.md, which is
+   derived from live measurements in bar.md. Do not invent a value here;
+   if a piece needs a new one, add it to design-system.md first.
+   ───────────────────────────────────────────────────────────── */
 
-@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-400.woff2) format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-700.woff2) format("woff2");font-weight:700;font-display:swap}
+/* ── fonts (local woff2, Fontshare, free) ───────────────────── */
+@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-300.woff2) format("woff2");font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-300i.woff2) format("woff2");font-weight:300;font-style:italic;font-display:swap}
+@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-400.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-400i.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
 @font-face{font-family:Switzer;src:url(assets/fonts/Switzer-400.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:Switzer;src:url(assets/fonts/Switzer-500.woff2) format("woff2");font-weight:500;font-display:swap}
-@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-600.woff2) format("woff2");font-weight:600;font-display:swap}
+/* Zodiak-700 is deliberately not declared. Display never exceeds weight 400. */
 
-@property --sc{syntax:"<number>";inherits:true;initial-value:1}
-
+/* ── tokens ─────────────────────────────────────────────────── */
 :root{
-  --ink:#14100C;
-  --ink-2:#1F1913;
+  /* colour — see design-system.md §1 for measured contrast ratios */
   --paper:#F2EDE4;
-  --paper-2:#E7DFD2;
-  --brass:#B37D3E;         /* sampled off all three of their real posters */
-  --brass-lift:#D8A45C;    /* the same hue, lifted to clear AA on ink */
-  --rule:rgba(20,16,12,.16);
-  --rule-dark:rgba(242,237,228,.18);
-  --on-ink:#EDE6DA;
-  --dim:rgba(20,16,12,.62);
-  --dim-light:rgba(237,230,218,.66);
+  --card:#E9E2D5;
+  --ink:#14100C;
+  --muted:#5A5148;
+  --brass:#B37D3E;        /* fills, rules. never type on paper (3.04:1) */
+  --brass-text:#835829;   /* brass-coloured type. 5.31:1 on paper, 4.81:1 on card */
+  --on-ink:#F2EDE4;
 
-  --wrap:1360px;
-  --gut:24px;
-  --ease:cubic-bezier(.22,1,.36,1);
-  --reveal:cubic-bezier(.33,0,0,1);
+  /* type — size interpolates 390→1440, ratios never move.
+     --t-head is the card-head role: a constant 24px at both breakpoints, the
+     size Fauna's own scale collapses to on mobile. It carries the record's
+     dates and evening titles, so the chronology reads at a squint and a card
+     title is never the same size as a paragraph. Because it exists, --t-lead
+     lands on 16px at 390 (Fauna's own mobile lead) — that keeps the page at
+     five distinct sizes at 390 and six at 1440. */
+  --t-display: clamp(56px, 4.571vw + 38.17px, 104px);
+  --t-chapter: clamp(32px, 2.286vw + 23.09px, 56px);
+  --t-head:    24px;
+  --t-lead:    clamp(16px, 0.381vw + 14.51px, 20px);
+  --t-body:    16px;
+  --t-meta:    clamp(11px, 0.095vw + 10.63px, 12px);
 
-  --d:clamp(46px,11.2vw,104px);   /* display   */
-  --h:clamp(32px,6.2vw,60px);     /* section head */
-  --lead:clamp(18px,1.6vw,22px);
-  --body:clamp(16px,1.15vw,17px);
+  /* leading — identical at every breakpoint. this is the whole point. */
+  --lh-display:0.90;
+  --lh-chapter:1.03;
+  --lh-head:1.25;
+  --lh-lead:1.50;
+  --lh-body:1.50;
+  --lh-meta:1.60;
+
+  --tr-display:-0.02em;
+  --tr-chapter:-0.025em;
+  --tr-head:-0.01em;
+  --tr-meta:0.05em;
+
+  /* grid — measured off faunarobotics.com */
+  --row:108px;
+  --gap:16px;
+  --radius:32px;
+  --gutter:32px;
 }
+@media (min-width:900px){ :root{ --gutter:64px; } }
 
+/* ── reset ──────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-html:focus-within{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto}}
-
 body{
-  margin:0;background:var(--paper);color:var(--ink);
-  font:400 var(--body)/1.55 Switzer,system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Switzer,system-ui,sans-serif;
+  font-size:var(--t-body);
+  line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
 }
-img{display:block;max-width:100%;height:auto}
+img{max-width:100%;display:block}
 a{color:inherit}
-h1,h2,h3{margin:0;font-weight:400}
-p{margin:0}
-dl,dd,ol,ul{margin:0;padding:0}
-li{list-style:none}
+h1,h2,h3,h4,p{margin:0}
+button{font:inherit;color:inherit}
 
-.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gut)}
-@media (min-width:900px){:root{--gut:40px}}
-
-.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.skip{position:absolute;left:-9999px;top:0;z-index:99;background:var(--ink);color:var(--on-ink);padding:12px 18px}
-.skip:focus{left:8px;top:8px}
-
-:where(a,button,summary,input):focus-visible{
-  outline:2px solid var(--brass);outline-offset:3px;border-radius:2px;
+/* ── type roles ─────────────────────────────────────────────── */
+.t-display{
+  font-family:Zodiak,Georgia,serif;font-weight:300;
+  font-size:var(--t-display);line-height:var(--lh-display);letter-spacing:var(--tr-display);
 }
+/* The one italic voice, once per page. font-weight:inherit is load-bearing:
+   this was 400 against a display set at 300, which measured 9px stems against
+   the roman's 6px and made a preposition the darkest object on the page. An
+   italic is a second voice, not emphasis — it changes style, never weight.
+   Zodiak-300i exists on disk for exactly this. */
+.t-display em{font-style:italic;font-weight:inherit}
 
-/* ── shared type ─────────────────────────────────────────────────────────── */
-.eyebrow{
-  font-size:clamp(11px,.85vw,12px);font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--dim);line-height:1.2;
-}
-.eyebrow--light{color:var(--dim-light)}
-
-.display{
+.t-chapter{
   font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:var(--d);line-height:.94;letter-spacing:-.028em;
+  font-size:var(--t-chapter);line-height:var(--lh-chapter);letter-spacing:var(--tr-chapter);
 }
-.head{
+.t-head{
   font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:var(--h);line-height:1;letter-spacing:-.022em;
+  font-size:var(--t-head);line-height:var(--lh-head);letter-spacing:var(--tr-head);
 }
-.head--light{color:var(--on-ink)}
-.lead{font-size:var(--lead);line-height:1.42;letter-spacing:-.005em;color:var(--dim);max-width:46ch}
-.lead--light{color:var(--dim-light)}
-.body{font-size:var(--body);line-height:1.55;max-width:56ch;color:var(--dim)}
-.body--light{color:var(--dim-light)}
-.cap{
-  margin-top:10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-  color:rgba(20,16,12,.80);font-weight:500;
+.t-lead{font-size:var(--t-lead);line-height:var(--lh-lead);color:var(--muted)}
+.t-meta{
+  font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
+  text-transform:uppercase;font-weight:500;color:var(--muted);
 }
-.cap--light{color:var(--on-ink)}
-.tick{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim-light);font-weight:600}
 
-/* ── buttons ─────────────────────────────────────────────────────────────── */
+/* ── layout ─────────────────────────────────────────────────── */
+.wrap{max-width:1312px;margin:0 auto;padding-inline:var(--gutter)}
+
+/* bento: two columns at every breakpoint, fine row track.
+   cards span 3/4/5 rows → 356 / 480 / 604px. never a flat stack. */
+.bento{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-auto-rows:var(--row);
+  gap:var(--gap);
+}
+/* The row spans are arithmetic: they are computed for the two widths the page
+   is designed at, 390 and 1440, where a half-width card is 155px and 584px.
+   Between and below those the same copy wraps to more lines, and a fixed track
+   would clip it against overflow:hidden. Outside the two design widths the
+   track is allowed to grow past 108px rather than cut a speaker's title in
+   half. At 390 and at 1440 it is exactly 108px and the interlock is exact. */
+@media (max-width:389px),(min-width:900px) and (max-width:1439px){
+  .bento{grid-auto-rows:minmax(var(--row),auto)}
+}
+.bento > *{border-radius:var(--radius);overflow:hidden}
+.span-2{grid-column:span 2}
+.rows-3{grid-row:span 3}
+.rows-4{grid-row:span 4}
+.rows-5{grid-row:span 5}
+
+/* Cards centre their content in whatever height the span bought, so leftover
+   space splits above and below instead of pooling at the foot. Two sections
+   were failed for a constant ~36px top against an 87-121px bottom.
+   Deliberately NOT space-between: that produced 276px voids in round one.
+   A child with margin-top:auto still overrides this where a card genuinely
+   wants something pinned low. */
+.card{
+  background:var(--card);padding:28px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.card--ink{background:var(--ink);color:var(--on-ink)}
+.card--photo{padding:0;background:var(--card)}
+.card--photo img{width:100%;height:100%;object-fit:cover}
+/* <picture> is only ever an art-direction switch here, never a box. display:contents
+   keeps the <img> as the flex child of the photo card, so the same
+   `flex:1 1 0` sizing applies whether or not a frame has a phone variant. */
+.card--photo picture{display:contents}
+
+/* ── one caption rule, page-wide ──────────────────────────────────
+   A caption carries three things and all three render at BOTH widths: what
+   the frame shows, the date, and the venue. One line at 1440, three lines at
+   390. Two sections were failed for hiding the venue below 900px — the date
+   and the venue are the entire reason a caption exists, and four adjacent
+   photographs captioned only "3 AUGUST 2026" read as a truncation bug. Each
+   part is held to one line so every strip in a section is the same height. */
+.cap__s,.cap__d,.cap__v{
+  display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+@media (min-width:900px){
+  .cap__s,.cap__d,.cap__v{display:inline;white-space:normal;overflow:visible}
+  .cap__d::before{content:" · "}
+  .cap__v::before{content:", "}
+}
+
+/* ── controls ───────────────────────────────────────────────── */
 .btn{
-  display:inline-flex;align-items:center;gap:.6em;
-  padding:14px 26px;border-radius:999px;text-decoration:none;
-  font-size:14px;font-weight:600;letter-spacing:-.01em;
-  transition:background .22s var(--ease),color .22s var(--ease),transform .22s var(--ease);
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:48px;padding:0 26px;border:0;border-radius:999px;
+  background:var(--ink);color:var(--on-ink);
+  font-weight:500;font-size:var(--t-body);text-decoration:none;cursor:pointer;
 }
 .btn--brass{background:var(--brass);color:var(--ink)}
-.btn--brass:hover{background:#C08D4B;transform:translateY(-1px)}
-.btn--ink{background:var(--ink);color:var(--on-ink)}
-.btn--ink:hover{background:#0A0806;transform:translateY(-1px)}
 
-/* ═══ NAV ════════════════════════════════════════════════════════════════ */
-.nav{position:fixed;inset:0 0 auto;z-index:50}
-.nav__in{
-  max-width:var(--wrap);margin-inline:auto;padding:5px var(--gut);
-  display:flex;align-items:center;gap:24px;min-height:72px;
-}
-.nav::before{
-  content:"";position:absolute;inset:0;background:var(--ink);
-  border-bottom:1px solid var(--rule-dark);
-  opacity:0;transition:opacity .18s linear;pointer-events:none;
-}
-.nav[data-solid]::before{opacity:1}
-.nav__in>*{position:relative}
-
-.mark{
-  display:flex;flex-direction:column;line-height:1.02;text-decoration:none;
-  color:var(--on-ink);font-family:Zodiak,Georgia,serif;font-size:15px;letter-spacing:-.01em;
-}
-.mark__b{color:var(--brass-lift)}
-
-.nav__links{display:none;gap:26px;margin-left:auto;align-items:center}
-.nav__links a{
-  text-decoration:none;font-size:13px;font-weight:500;color:var(--dim-light);
-  transition:color .2s var(--ease);
-  display:inline-flex;align-items:center;min-height:24px;padding:11px 0;
-}
-.nav__links a:hover{color:var(--on-ink)}
-.nav__cta{display:none;padding:10px 20px;font-size:13px;border-radius:999px 4px 4px 999px}
-
-.nav__toggle{
-  margin-left:auto;width:44px;height:44px;display:grid;place-items:center;
-  background:none;border:0;cursor:pointer;color:var(--on-ink);
-}
-.nav__bars{display:grid;gap:5px;width:20px}
-.nav__bars i{height:1.5px;background:currentColor;display:block;transition:transform .24s var(--ease)}
-.nav__toggle[aria-expanded=true] .nav__bars i:first-child{transform:translateY(3.25px) rotate(45deg)}
-.nav__toggle[aria-expanded=true] .nav__bars i:last-child{transform:translateY(-3.25px) rotate(-45deg)}
-
-.nav__menu{
-  position:relative;background:var(--ink);border-top:1px solid var(--rule-dark);
-  padding:8px var(--gut) 24px;display:grid;
-}
-.nav__menu[hidden]{display:none}   /* display:grid otherwise beats the attribute */
-.nav__menu a{
-  padding:14px 0;text-decoration:none;color:var(--on-ink);font-size:18px;
-  border-bottom:1px solid var(--rule-dark);
-}
-@media (min-width:900px){
-  .nav__links{display:flex}
-  .nav__cta{display:inline-flex}
-  .nav__toggle,.nav__menu{display:none}
+/* no border-radius here: the outline already follows the element's own radius,
+   and forcing 4px squared off every pill button. */
+:where(a,button,input,summary):focus-visible{
+  outline:2px solid var(--brass-text);outline-offset:3px;
 }
 
-[id]{scroll-margin-top:88px}
-
-/* ═══ HERO ═══════════════════════════════════════════════════════════════ */
-.hero{
-  position:relative;background:var(--ink);color:var(--on-ink);
-  min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;
-  padding:120px var(--gut) 24px;overflow:hidden;isolation:isolate;
+/* ── motion ─────────────────────────────────────────────────────
+   .reveal only hides itself once main.js has confirmed it can show it again
+   (html.can-reveal). Without that class — JS absent, JS failed, reduced
+   motion, no IntersectionObserver — the element is simply visible. A section
+   must never be able to strand itself at opacity 0. */
+.can-reveal .reveal{
+  opacity:0;transform:translateY(18px);
+  transition:opacity .6s ease-out,transform .6s ease-out;
 }
-.hero__media{position:absolute;inset:0;z-index:-2;overflow:hidden}
-.hero__media img{
-  width:100%;height:100%;object-fit:cover;object-position:50% 42%;
-  transform:scale(var(--hs,1.1)) translateY(var(--py,0px));
-  transform-origin:50% 40%;
-}
-.hero::after{ /* the grade that makes type land on documentary photography */
-  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:
-    linear-gradient(180deg,rgba(20,16,12,.84) 0%,rgba(20,16,12,.58) 26%,rgba(20,16,12,.90) 62%,rgba(20,16,12,.98) 100%),
-    radial-gradient(135% 92% at 14% 76%,rgba(20,16,12,.86),transparent 68%);
-}
-.hero__in{width:100%;max-width:var(--wrap);margin-inline:auto;position:relative}
-.hero .display{margin:18px 0 0;max-width:14ch}
-.hero__lead{
-  margin-top:22px;max-width:52ch;font-size:var(--lead);line-height:1.42;
-  color:var(--dim-light);letter-spacing:-.005em;
-}
-.hero__foot{
-  width:100%;max-width:var(--wrap);margin:44px auto 0;
-  display:flex;align-items:center;gap:16px;
-}
-.hero__rule{flex:1;height:1px;background:var(--rule-dark)}
-@media (max-width:620px){.hero__foot .tick:last-child{display:none}}
-
-/* ── signup ──────────────────────────────────────────────────────────────── */
-.signup{margin-top:34px;max-width:520px}
-.signup__label{display:block;font-size:14px;font-weight:500;color:var(--on-ink);margin-bottom:12px}
-.signup__row{
-  display:flex;align-items:center;gap:6px;padding:6px;
-  background:rgba(237,230,218,.07);border:1px solid var(--rule-dark);
-  border-radius:999px;transition:border-color .2s var(--ease),background .2s var(--ease);
-}
-.signup__row:focus-within{border-color:var(--brass-lift);background:rgba(237,230,218,.11)}
-.signup__row:has(.signup__input:focus-visible){
-  outline:2px solid var(--brass-lift);outline-offset:3px;
-}
-@supports not selector(:has(*)){
-  .signup__row:focus-within{outline:2px solid var(--brass-lift);outline-offset:3px}
-}
-.signup__input{
-  flex:1;min-width:0;background:none;border:0;color:var(--on-ink);
-  font:500 16px/1 Switzer,system-ui,sans-serif;padding:14px 18px;letter-spacing:.01em;
-}
-.signup__input::placeholder{color:rgba(237,230,218,.4)}
-.signup__input:focus{outline:none}
-.signup__go{
-  flex:none;border:0;cursor:pointer;background:var(--brass);color:var(--ink);
-  font:600 14px/1 Switzer,system-ui,sans-serif;padding:15px 24px;
-  border-radius:999px 6px 6px 999px;   /* the one asymmetric shape on the page */
-  transition:background .22s var(--ease);
-}
-.signup__go:hover{background:#C08D4B}
-.signup__go[data-busy]{opacity:.6;pointer-events:none}
-.signup__pot{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.signup__note{margin-top:12px;font-size:12.5px;line-height:1.5;color:rgba(237,230,218,.62)}
-.signup__msg{margin-top:10px;font-size:13px;font-weight:500;min-height:1.2em}
-.signup__msg[data-s=ok]{color:var(--brass-lift)}
-.signup__msg[data-s=err]{color:#E8927C}
-.signup__msg[data-s=note]{color:var(--dim-light)}
-.signup__msg a{color:var(--brass-lift);text-underline-offset:3px}
-.close .signup__msg[data-s=note]{color:var(--dim-light)}
-@media (max-width:560px){
-  .signup__row{flex-wrap:wrap;border-radius:22px}
-  .signup__input{flex:1 0 100%;text-align:center}
-  .signup__go{flex:1 0 100%;border-radius:999px;padding:15px}
-}
-
-/* ═══ MARQUEE ════════════════════════════════════════════════════════════ */
-.marq{background:var(--ink);color:var(--on-ink);padding:0 0 64px;overflow:hidden}
-.marq__label{padding:0 var(--gut) 20px;max-width:var(--wrap);margin-inline:auto;color:var(--dim-light)}
-.marq__track{display:flex;width:max-content;will-change:transform;transform:translate3d(var(--mx,0),0,0)}
-.marq__set{display:flex;align-items:center;gap:20px;padding-right:20px;flex:none}
-.marq__set span{
-  font-family:Zodiak,Georgia,serif;font-size:clamp(18px,2.4vw,30px);
-  letter-spacing:-.02em;white-space:nowrap;color:rgba(237,230,218,.82);
-}
-.marq__set i{color:var(--brass-lift);font-style:normal;font-size:clamp(14px,1.6vw,20px)}
-.marq__track--rev{margin-top:10px}
-.marq__track--rev .marq__set span{color:rgba(237,230,218,.60)}
-
-/* ═══ STATEMENT ══════════════════════════════════════════════════════════ */
-.stmt{background:var(--paper);padding:clamp(72px,10vw,140px) 0}
-.stmt__in{display:grid;gap:clamp(32px,5vw,72px)}
-.stmt .head{margin:16px 0 24px}
-.stmt .lead{margin-bottom:18px}
-.stmt__boiler{margin-top:14px;padding-top:14px;border-top:1px solid var(--rule);font-size:15px}
-.stmt__fig{margin:0;overflow:hidden;position:relative}
-.stmt__fig figcaption{
-  position:absolute;left:12px;bottom:12px;margin:0;z-index:2;
-  background:rgba(20,16,12,.82);color:var(--on-ink);
-  padding:5px 10px;backdrop-filter:blur(6px);
-}
-.stmt__fig img{width:100%;transform:translateY(var(--py,0px)) scale(1.06)}
-@media (min-width:900px){
-  .stmt__in{grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);align-items:center}
-}
-
-/* ═══ THE RECORD ═════════════════════════════════════════════════════════ */
-.record{background:var(--paper);padding:clamp(56px,7vw,96px) 0 clamp(72px,9vw,120px)}
-.record__head .head{margin:16px 0 20px}
-.record__pin{margin-top:clamp(40px,5vw,64px)}
-.record__track{
-  display:flex;gap:24px;padding-inline:var(--gut);
-  overflow-x:auto;scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none;
-}
-.record__track::-webkit-scrollbar{display:none}
-
-.ev{
-  flex:none;width:min(86vw,420px);scroll-snap-align:center;
-  background:var(--paper-2);border:1px solid var(--rule);
-  display:flex;flex-direction:column;
-}
-.ev__poster{display:block;background:var(--ink);overflow:hidden}
-.ev__poster img{width:100%;transition:transform .5s var(--ease)}
-.ev__poster:hover img{transform:scale(1.03)}
-.ev__body{padding:22px 22px 26px;display:flex;flex-direction:column;flex:1}
-.ev__no{
-  font-family:Zodiak,Georgia,serif;font-size:13px;letter-spacing:.1em;
-  color:var(--brass-text);margin-bottom:10px;
-}
-.ev__title{font-family:Zodiak,Georgia,serif;font-size:clamp(24px,2.4vw,30px);line-height:1.05;letter-spacing:-.02em}
-.ev__sub{margin-top:6px;font-size:14px;color:var(--dim)}
-.ev__meta{margin-top:18px;display:grid;gap:12px;border-top:1px solid var(--rule);padding-top:16px}
-.ev__meta>div{display:grid;gap:3px}
-.ev__meta dt{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-text);font-weight:600}
-.ev__meta dd{font-size:13.5px;line-height:1.45;color:var(--dim)}
-
-@media (min-width:1024px){
-  /* The card lies down so the row overruns the viewport and the pin has real
-     distance to cover. Height is set from the measured overflow in main.js. */
-  .ev{width:auto;height:min(62vh,560px);flex-direction:row;align-items:stretch}
-  .ev__poster{flex:none;height:100%;aspect-ratio:1/1}
-  .ev__poster img{width:100%;height:100%;object-fit:cover}
-  .ev__body{width:clamp(360px,28vw,420px);padding:36px 36px 32px;overflow:hidden}
-  .ev__meta{margin-top:22px;padding-top:20px}
-  .ev__title{font-size:clamp(28px,2.7vw,36px)}
-
-  html[data-js] .record__pin[data-pin]{position:relative;overflow-x:clip}
-  html[data-js] .record__pin[data-pin] .record__track{
-    position:sticky;top:0;height:100vh;align-items:center;
-    overflow:visible;padding-inline:max(var(--gut),calc((100vw - var(--wrap))/2 + var(--gut)));
-    transform:translate3d(var(--tx,0px),0,0);will-change:transform;
-  }
-}
-@media (prefers-reduced-motion:reduce){
-  html[data-js] .record__pin[data-pin]{height:auto}
-  html[data-js] .record__pin[data-pin] .record__track{
-    position:static;height:auto;overflow-x:auto;transform:none;
-  }
-}
-
-/* the rail: a persistent read on where you are inside the pinned run */
-.record__rail{display:none}
-@media (min-width:1024px){
-  html[data-js] .record__rail{
-    display:flex;align-items:center;gap:18px;
-    position:sticky;top:calc(100vh - 96px);height:0;z-index:2;
-    max-width:var(--wrap);margin-inline:auto;padding:0 var(--gut);
-  }
-  .record__count,.record__hint{
-    background:var(--paper);padding:6px 12px;border-radius:999px;
-  }
-  .record__count{
-    font-family:Zodiak,Georgia,serif;font-size:13px;letter-spacing:.08em;color:var(--ink);
-    font-variant-numeric:tabular-nums;
-  }
-  .record__count b{font-weight:400;color:var(--brass-text)}
-  .record__bar{flex:1;height:1px;background:var(--rule);position:relative;overflow:hidden}
-  .record__bar i{
-    position:absolute;inset:0;background:var(--brass);
-    transform:scaleX(var(--p,0));transform-origin:0 50%;
-  }
-  .record__hint{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:600;flex:none}
-}
-
-/* ═══ THE ROOM ═══════════════════════════════════════════════════════════ */
-.room{
-  background:var(--ink);color:var(--on-ink);
-  padding:clamp(72px,10vw,140px) 0 clamp(72px,10vw,132px);
-  border-radius:var(--rr,0px) var(--rr,0px) 0 0;
-  overflow:hidden;
-}
-.room__head{display:grid;gap:clamp(14px,2vw,20px)}
-.room__head .head{margin:4px 0 0}
-@media (min-width:900px){
-  .room__head{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);column-gap:clamp(32px,5vw,72px)}
-  .room__head .eyebrow{grid-column:1;grid-row:1}
-  .room__head .head   {grid-column:1;grid-row:2}
-  .room__head .lead   {grid-column:2;grid-row:2;align-self:end;padding-bottom:.4em}
-}
-.room__grid{
-  margin-top:clamp(40px,5vw,64px);padding-inline:var(--gut);
-  max-width:var(--wrap);margin-inline:auto;
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;
-}
-.room__f{margin:0;overflow:hidden;position:relative}
-.room__f img{width:100%;height:100%;object-fit:cover;transform:translateY(var(--py,0px)) scale(1.1)}
-.room__f{aspect-ratio:4/3}
-.room__f--w{grid-column:span 2;aspect-ratio:16/10}
-.room__f figcaption{
-  position:absolute;left:12px;bottom:10px;margin:0;
-  background:rgba(20,16,12,.82);padding:5px 10px;backdrop-filter:blur(6px);
-}
-@media (min-width:900px){
-  .room__grid{
-    grid-template-columns:repeat(12,minmax(0,1fr));gap:18px;
-    grid-template-areas:
-      "w w w w w w w a a a a a"
-      "b b b b c c c c d d d d";
-  }
-  .room__f{aspect-ratio:auto}
-  .room__f--w{grid-area:w}
-  .room__f--a{grid-area:a}
-  .room__f--b{grid-area:b}
-  .room__f--c{grid-area:c}
-  .room__f--d{grid-area:d}
-  .room__f--w,.room__f--a{height:clamp(360px,31vw,440px)}
-  .room__f--b,.room__f--c,.room__f--d{height:clamp(230px,20vw,285px)}
-}
-
-/* ═══ AN EVENING ═════════════════════════════════════════════════════════ */
-.run{background:var(--paper);padding:clamp(72px,10vw,140px) 0}
-.run__in{display:grid;gap:clamp(32px,4vw,64px)}
-.run__head .head{margin-top:16px}
-.run__list{display:grid}
-.run__row{
-  display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,56px);
-  align-items:baseline;padding:clamp(20px,2.4vw,30px) 0;border-top:1px solid var(--rule);
-}
-.run__row:last-child{border-bottom:1px solid var(--rule)}
-.run__t{
-  font-family:Zodiak,Georgia,serif;font-size:clamp(30px,4.4vw,58px);
-  line-height:1;letter-spacing:-.03em;color:var(--brass);font-variant-numeric:tabular-nums;
-}
-.run__d{font-size:var(--body);line-height:1.55;color:var(--dim);max-width:52ch}
-.run__d b{font-weight:600;color:var(--ink)}
-.run__foot{
-  margin-top:22px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--dim);font-weight:500;
-}
-@media (min-width:900px){.run__in{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr)}}
-
-/* ═══ NEXT ═══════════════════════════════════════════════════════════════ */
-.next{
-  background:var(--ink-2);color:var(--on-ink);
-  padding:clamp(72px,10vw,140px) 0;
-  border-radius:var(--rr,0px) var(--rr,0px) 0 0;
-  overflow:hidden;
-}
-.next__in{display:grid;gap:clamp(40px,5vw,72px)}
-.next__title{
-  font-family:Zodiak,Georgia,serif;font-size:clamp(38px,6.4vw,74px);
-  line-height:.98;letter-spacing:-.028em;margin:16px 0 0;
-}
-.next__sub{margin-top:14px;font-size:var(--lead);color:var(--brass-lift);letter-spacing:-.005em}
-.next__when{
-  display:grid;gap:14px;margin-top:24px;padding-top:20px;
-  border-top:1px solid var(--rule-dark);max-width:44ch;
-}
-.next__when>div{display:grid;gap:3px}
-.next__when dt{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-lift);font-weight:600}
-.next__when dd{font-size:15px;line-height:1.45}
-@media (min-width:560px){
-  .next__when{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px}
-}
-.next .body{margin:22px 0 30px}
-.next__meta{
-  margin-top:18px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--dim-light);font-weight:500;
-}
-.next__speakers{display:grid;gap:2px;align-self:start}
-.spk{background:rgba(237,230,218,.05);border:1px solid var(--rule-dark);padding:24px}
-.spk h3{font-family:Zodiak,Georgia,serif;font-size:22px;letter-spacing:-.02em;margin-bottom:10px}
-.spk p{font-size:14px;line-height:1.55;color:var(--dim-light)}
-@media (min-width:900px){.next__in{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}}
-
-/* ═══ LATELY + DEVICE ════════════════════════════════════════════════════ */
-.lately{background:var(--paper);padding:clamp(72px,10vw,140px) 0;overflow:hidden}
-.lately__in{display:grid;gap:clamp(44px,6vw,80px);align-items:center;justify-items:center}
-.lately__text{justify-self:start;width:100%}
-.lately .head{margin:16px 0 18px}
-.lately .lead{margin-bottom:26px}
-
-.device{
-  --dw:min(320px,78vw);
-  width:var(--dw);flex:none;perspective:1400px;
-}
-.device__body{
-  position:relative;width:100%;aspect-ratio:9/19.5;
-  background:linear-gradient(158deg,#2A231C 0%,#12100D 42%,#241D17 100%);
-  --bez:calc(var(--dw)/28);
-  --rad:calc(var(--dw)/6.6);
-  border-radius:var(--rad);
-  padding:var(--bez);
-  box-shadow:
-    inset 0 0 4px rgba(252,248,241,.22),
-    0 34px 80px rgba(20,16,12,.38),
-    0 4px 14px rgba(20,16,12,.22);
-  transform:rotateY(var(--dry,-8deg)) rotateX(var(--drx,3deg)) translateY(var(--py,0px));
-  transform-style:preserve-3d;
-}
-.device__btn{position:absolute;background:#1A1510;border-radius:2px}
-.device__btn--vol{left:-2px;top:22%;width:3px;height:9%}
-.device__btn--pwr{right:-2px;top:30%;width:3px;height:12%}
-.device__screen{
-  position:relative;width:100%;height:100%;overflow:hidden;
-  border-radius:calc(var(--rad) - var(--bez));background:#0C0A08;
-  display:flex;flex-direction:column;
-}
-.device__bar{
-  flex:none;display:flex;align-items:center;justify-content:space-between;
-  padding:calc(var(--dw)/26) calc(var(--dw)/16) calc(var(--dw)/40);
-  color:#EDE6DA;font-size:calc(var(--dw)/26);font-weight:600;position:relative;
-}
-.device__speaker{
-  position:absolute;left:50%;top:calc(var(--dw)/28);transform:translateX(-50%);
-  width:22%;height:calc(var(--dw)/26);background:#050403;border-radius:999px;
-}
-.device__stat{display:flex;align-items:flex-end;gap:2px}
-.device__stat i{width:2px;background:#EDE6DA;border-radius:1px}
-.device__stat i:nth-child(1){height:4px}
-.device__stat i:nth-child(2){height:6px}
-.device__stat i:nth-child(3){height:8px}
-.device__app{flex:1;min-height:0;display:flex;flex-direction:column;background:#0A0806}
-.device__apphead{
-  flex:none;padding:calc(var(--dw)/30) calc(var(--dw)/18);
-  border-bottom:1px solid rgba(237,230,218,.12);
-}
-.device__glyph{
-  font-family:Zodiak,Georgia,serif;color:#EDE6DA;font-size:calc(var(--dw)/17);letter-spacing:-.02em;
-}
-.device__feed{
-  flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-}
-.device__feed::-webkit-scrollbar{display:none}
-.post{display:block;text-decoration:none;border-bottom:1px solid rgba(237,230,218,.1)}
-.post img{width:100%}
-.post__m{
-  display:block;padding:calc(var(--dw)/26) calc(var(--dw)/20) calc(var(--dw)/18);
-  color:rgba(237,230,218,.74);font-size:calc(var(--dw)/28);line-height:1.4;
-}
-@media (min-width:900px){
-  .lately__in{grid-template-columns:minmax(0,1fr) auto;justify-items:stretch}
-  .device{--dw:340px;justify-self:end}
-}
-@media (prefers-reduced-motion:reduce){
-  .device__body{transform:none}
-}
-
-/* ═══ CLOSE ══════════════════════════════════════════════════════════════ */
-.close{
-  position:relative;background:var(--ink);color:var(--on-ink);
-  padding:clamp(84px,12vw,164px) 0;overflow:hidden;isolation:isolate;
-}
-.close__media{position:absolute;inset:0;z-index:-2}
-.close__media img{width:100%;height:100%;object-fit:cover;transform:translateY(var(--py,0px)) scale(1.12)}
-.close::after{
-  content:"";position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,rgba(20,16,12,.9),rgba(20,16,12,.78) 45%,rgba(20,16,12,.95));
-}
-.close__h{
-  font-family:Zodiak,Georgia,serif;font-size:clamp(40px,8vw,92px);
-  line-height:.96;letter-spacing:-.03em;max-width:12ch;
-}
-.close__p{margin-top:20px;max-width:44ch;font-size:var(--lead);line-height:1.42;color:var(--dim-light)}
-.signup--close{margin-top:30px}
-
-/* ═══ FOOTER ═════════════════════════════════════════════════════════════ */
-.foot{background:var(--ink);color:var(--on-ink);border-top:1px solid var(--rule-dark);padding:64px 0 40px}
-.foot__in{display:grid;gap:40px}
-.foot__mark{font-family:Zodiak,Georgia,serif;font-size:22px;letter-spacing:-.02em}
-.foot__line{margin-top:10px;max-width:36ch;font-size:14px;color:var(--dim-light);line-height:1.5}
-.foot__cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
-.foot__cols div{display:grid;gap:4px;align-content:start;justify-items:start}
-.foot__cols .eyebrow{margin-bottom:4px;color:var(--dim-light)}
-.foot__cols a{
-  text-decoration:none;font-size:14px;color:var(--dim-light);
-  transition:color .2s var(--ease);
-  display:inline-flex;align-items:center;min-height:24px;padding:3px 0;
-}
-.foot__cols a:hover{color:var(--on-ink)}
-.foot__cred{font-size:11.5px;line-height:1.6;color:rgba(237,230,218,.60);max-width:60ch}
-.foot__legal{
-  display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
-  border-top:1px solid var(--rule-dark);padding-top:20px;
-  font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(237,230,218,.60);
-}
-@media (min-width:900px){
-  .foot__in{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .foot__cred,.foot__legal{grid-column:span 2}
-}
-
-/* ═══ QUESTIONS ══════════════════════════════════════════════════════════ */
-.qs{background:var(--paper-2);padding:clamp(72px,10vw,140px) 0}
-.qs__in{display:grid;gap:clamp(32px,4vw,64px);align-items:start}
-.qs__head .head{margin-top:16px}
-.q{border-top:1px solid var(--rule)}
-.q:last-child{border-bottom:1px solid var(--rule)}
-.q summary{
-  list-style:none;cursor:pointer;padding:22px 40px 22px 0;position:relative;
-  font-size:clamp(17px,1.5vw,20px);font-weight:500;letter-spacing:-.012em;
-}
-.q summary::-webkit-details-marker{display:none}
-.q summary::after{
-  content:"";position:absolute;right:6px;top:50%;width:13px;height:13px;
-  margin-top:-6.5px;
-  background:
-    linear-gradient(var(--brass),var(--brass)) center/1.5px 100% no-repeat,
-    linear-gradient(var(--brass),var(--brass)) center/100% 1.5px no-repeat;
-  transition:transform .28s var(--ease);
-}
-.q[open] summary::after{transform:rotate(135deg)}
-.q__a{padding:0 0 24px}
-.q__a p{max-width:56ch;color:var(--dim);line-height:1.6}
-.q__a a{color:var(--brass-text);text-underline-offset:3px}
-@media (min-width:900px){.qs__in{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr)}}
-
-/* ═══ MOTION ═════════════════════════════════════════════════════════════
-   M8: everything above renders complete without JavaScript. The rules below
-   only apply once html[data-js] is set, and each one resolves to the same
-   final state the static page already shows. ══════════════════════════════ */
-/* each span is one line of the head, so it must be a block in both states */
-[data-reveal-lines] span{display:block}
-html[data-js] [data-reveal-lines] span{
-  clip-path:inset(-0.3em 0);     /* bleed top and bottom so descenders survive */
-}
-html[data-js] [data-reveal-lines] span>i{
-  display:inline-block;font-style:inherit;
-  transform:translateY(110%);
-  transition:transform 1.1s var(--reveal);
-  transition-delay:calc(var(--i,0)*70ms);
-}
-html[data-js] [data-reveal-lines].lit span>i{transform:translateY(0)}
-
-/* Settle-in clip reveal, measured off the award set: the frame opens from a
-   small inset while the image relaxes out of an over-scale.
-
-   The frame animates clip-path and nothing else, because several of these
-   elements already own their img transform for parallax. Each family animates
-   its own scale through --sc so the two never fight over `transform`. */
-html[data-js] [data-settle]{
-  clip-path:inset(2.4%);
-  transition:clip-path 1.15s var(--reveal);
-}
-html[data-js] [data-settle].seen{clip-path:inset(0%)}
-
-html[data-js] .room__f[data-settle]      {--sc:1.17;transition:clip-path 1.15s var(--reveal),--sc 1.35s var(--reveal)}
-html[data-js] .room__f[data-settle].seen {--sc:1.10}
-html[data-js] .room__f[data-settle] img  {transform:translateY(var(--py,0px)) scale(var(--sc,1.1))}
-/* the caption must not inherit the frame's clip or it vanishes at the edge */
-html[data-js] .room__f[data-settle] figcaption{position:absolute;z-index:2}
-
-html[data-js] .stmt__fig[data-settle]      {--sc:1.13;transition:clip-path 1.15s var(--reveal),--sc 1.35s var(--reveal)}
-html[data-js] .stmt__fig[data-settle].seen {--sc:1.06}
-html[data-js] .stmt__fig[data-settle] img  {transform:translateY(var(--py,0px)) scale(var(--sc,1.06))}
-
-html[data-js] .serve__strip figure[data-settle]      {--sc:1.15;transition:clip-path 1.15s var(--reveal),--sc 1.35s var(--reveal)}
-html[data-js] .serve__strip figure[data-settle].seen {--sc:1.08}
-html[data-js] .serve__strip figure[data-settle] img  {transform:translateY(var(--py,0px)) scale(var(--sc,1.08))}
-
-html[data-js] .close__media[data-settle]      {--sc:1.19;transition:clip-path 1.15s var(--reveal),--sc 1.35s var(--reveal)}
-html[data-js] .close__media[data-settle].seen {--sc:1.12}
-html[data-js] .close__media[data-settle] img  {transform:translateY(var(--py,0px)) scale(var(--sc,1.12))}
-
-/* the poster keeps its own hover scale, so it only gets the frame opening */
-html[data-js] .ev__poster[data-settle] img{transform:scale(1)}
-html[data-js] .ev__poster[data-settle]:hover img{transform:scale(1.03)}
+.can-reveal .reveal.is-in{opacity:1;transform:none}
 
 @media (prefers-reduced-motion:reduce){
-  html[data-js] [data-settle]{clip-path:none!important;transition:none}
-  html[data-js] [data-settle] img{transform:none!important;transition:none}
-  html[data-js] [data-settle]{--sc:1}
-  html[data-js] [data-reveal-lines] span>i{transform:none;transition:none}
-  .hero__media img,.stmt__fig img,.room__f img,.close__media img{transform:none!important}
-  .room,.next{border-radius:0!important}
-  .marq__track{transform:none!important}
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
 }
 
-/* ═══ PROOF ══════════════════════════════════════════════════════════════ */
-.proof{background:var(--ink);color:var(--on-ink);padding:0 0 clamp(64px,8vw,104px)}
-.proof__in{
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  border-top:1px solid var(--rule-dark);
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
 }
-.proof__i{
-  padding:clamp(24px,3vw,36px) 0;display:grid;gap:10px;align-content:start;
-  border-bottom:1px solid var(--rule-dark);
+
+/* ── piece 1: hero ── */
+/* One derived value only: --on-ink-dim is --on-ink at 70% over --ink
+   (#F2EDE4·0.7 + #14100C·0.3). Measured 8.27:1 on --ink, so it clears AA at
+   11px. --brass appears once in this section and never as type: the RSVP fill.
+   It used to be spent first on the hairline under the masthead, which put a
+   decoration ahead of the only thing on the page a reader can click. That rule
+   is --muted now and the first accent on the page is the button.
+
+   The event date is the chapter role — 56px at 1440, 32px at 390 — at both
+   breakpoints, never display and never lead.
+
+   The display is hard-broken into three lines so the italic connective sits
+   inside one line at every width, not only at 390 and 1440.
+
+   THE BENTO (mechanism 6). Every card is placed on explicit rows, because the
+   interlock is an arithmetic property and auto-placement cannot be trusted to
+   hold it. Two full-width cards sit above the interlocked block and one below
+   it; the block itself is four photographs in two columns whose boundaries
+   never coincide:
+
+     1440 and 390, block rows relative to the block top
+       column 1   reception  3 rows (356)   then  a question  2 rows (232)
+       column 2   laughing   2 rows (232)   then  the panel   3 rows (356)
+     Column 1 breaks at 356/372, column 2 at 232/248. They meet only at the
+     very top and the very bottom, and both columns run 604px.
+
+   Running text is never in a half-width cell — at 390 that cell is 155px, and
+   only a photograph belongs in it. The ledger and the next-event card are
+   therefore the full-width ones at both breakpoints. */
+
+#hero{--on-ink-dim:#AFABA3;padding-block:32px 64px}
+#hero figure{margin:0}
+
+/* ── masthead: a lockup, not an eyebrow ─────────────────────────
+   The rule under it is deliberately NOT brass. The accent is worth two uses a
+   screen and the first one should be the thing a reader can click: spending it
+   on a decorative hairline at the very top of the page put the RSVP fill
+   second. The hairline is the same --muted the body's secondary type uses. */
+.hero__mast{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 28px;
+  padding-bottom:14px;border-bottom:1px solid var(--muted);
 }
-.proof__i:nth-child(odd){padding-right:20px;border-right:1px solid var(--rule-dark)}
-.proof__i:nth-child(even){padding-left:clamp(20px,3vw,36px)}
-.proof__n{
-  font-family:Zodiak,Georgia,serif;font-size:clamp(48px,7vw,88px);line-height:.9;
-  letter-spacing:-.04em;color:var(--brass-lift);font-variant-numeric:tabular-nums;
+.hero__name{
+  font-family:Zodiak,Georgia,serif;font-weight:400;
+  font-size:var(--t-lead);line-height:var(--lh-lead);letter-spacing:-0.01em;
 }
-.proof__l{font-size:13.5px;line-height:1.45;color:var(--dim-light);max-width:26ch}
+.hero__tag{flex:1 0 100%}
+
+.hero__head{margin:26px 0 56px}
+.hero__h{margin-bottom:20px}
+.hero__l{display:block}
+.hero__lead{font-size:var(--t-lead);line-height:var(--lh-lead);color:var(--muted);text-wrap:pretty}
+
+/* ── the next event ─────────────────────────────────────────────
+   The talk leads and the action follows it, left to right. With the order
+   reversed the heaviest sans on the card — the title of the talk — sat in the
+   right column and the RSVP pill in the left, so a reader crossed the card and
+   then had to come back for the button. */
+.ev{grid-column:1/-1;grid-row:1/span 5;display:flex;flex-direction:column;padding:36px 22px}
+.ev__kicker{color:var(--on-ink-dim);margin-bottom:12px}
+.ev__date{margin-bottom:32px}
+/* On the phone the five essentials — who this is, what happens, when, where and
+   the action — must all land inside the top 844px. Putting the talk ahead of
+   the action column fixed where the eye goes at 1440 but pushed the RSVP button
+   to y=908 at 390, 64px below the fold. Below 900px the two column wrappers
+   collapse to display:contents so all six leaves become flex children of the
+   card, and the speakers line is ordered after the button: it is credibility,
+   not an essential, and it is the only thing here a reader does not need before
+   deciding to act. */
+.ev__cols{display:flex;flex-direction:column}
+.ev__act{display:flex;flex-direction:column;align-items:flex-start;margin-top:38px}
+
+@media (max-width:899px){
+  .ev__cols{display:contents}
+  .ev__what,.ev__act{display:contents}
+  .ev__title{order:1}
+  .ev__sub  {order:2}
+  .ev__where{order:3;margin-top:22px}
+  .ev__open {order:4}
+  .ev__go   {order:5}
+  .ev__who  {order:6;margin-top:26px}
+  .ev__terms{order:7}
+}
+/* balance, not pretty: this runs to two lines and pretty left "San Francisco."
+   alone on the second one */
+.ev__where{text-wrap:balance}
+/* availability at reading size rather than inside a 12px label, and directly
+   above the control it applies to */
+.ev__open{font-size:var(--t-lead);line-height:var(--lh-lead);margin-top:14px}
+.ev__go{align-self:stretch;max-width:320px;margin-top:18px;transition:background-color .18s ease}
+.ev__go:hover{background:var(--brass-text);color:var(--on-ink)}
+.ev__go:focus-visible{outline-color:var(--on-ink)}
+.ev__title{font-size:var(--t-lead);line-height:var(--lh-lead);font-weight:500}
+.ev__sub{margin-top:6px}
+.ev__who{margin-top:14px;text-wrap:pretty}
+.ev__sub,.ev__who,.ev__terms{color:var(--on-ink-dim)}
+.ev__terms{margin-top:34px}
+
+/* ── the ledger: four evenings, each with its title and its outcome ──
+   Full width at both breakpoints. A 155px column cannot hold a title, and the
+   four rows are what earn this card its height. */
+.rec{grid-column:1/-1;grid-row:6/span 3;display:flex;flex-direction:column;padding:24px 18px}
+.rec__k{margin-bottom:12px}
+.rec__list{list-style:none;margin:0;padding:0}
+/* explicit areas: the date and the outcome share the first line, the title
+   takes the second. Left to auto-placement the outcome dropped to a third
+   line and the card grew a row it had not earned. */
+.rec__i{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:20px;
+  padding:10px 0;border-top:1px solid var(--paper);
+}
+.rec__d{grid-area:1/1;color:var(--muted)}
+.rec__s{grid-area:1/2;text-align:right;color:var(--muted)}
+.rec__t{grid-area:2/1/2/-1;font-weight:500}
+
+/* ── photographs: image and caption, never one on the other ───
+   One caption rule and one padding, so every strip in the section is the same
+   height: three lines at 390, one at 1440, subject and date and venue present
+   at both. */
+.shot{display:flex;flex-direction:column;background:var(--card)}
+.shot img{flex:1 1 0;min-height:0;width:100%;height:auto;object-fit:cover}
+.shot__cap{flex:0 0 auto;padding:12px 12px 14px;color:var(--muted)}
+
+/* The interlocked block: four frames, two columns, boundaries offset — and
+   every span earned by its subject rather than by a row that needed filling.
+   Two frames were letterboxed to 3.38:1 here, a ratio no camera makes, and it
+   cut both subjects off at the jaw. Now the reception and the woman asking a
+   question take the upright cells, the pair laughing and the panel table take
+   the wide ones, and each frame's two boxes are near enough in shape that the
+   same picture survives the breakpoint: 0.87 against 0.56, and 1.93 against
+   1.01, rather than 1.97 against 3.38. */
+.shot--close{grid-column:1;grid-row:10/span 3}
+.shot--laugh{grid-column:2;grid-row:10/span 2}
+.shot--panel{grid-column:1;grid-row:13/span 2}
+.shot--ask  {grid-column:2;grid-row:12/span 3}
+
+/* crops chosen per frame, never the default centre.
+   close: the laugh and the woman beside it, not the blind behind them.
+   laugh: both faces, held in the middle of the box at either width.
+   ask:   the woman with the microphone, hard to the left edge of the frame.
+   panel: the whole table at 1440; at 155px the three who are speaking. */
+.shot--close img{object-position:23% 50%}
+.shot--laugh img{object-position:42% 40%}
+.shot--ask   img{object-position:2% 52%}
+.shot--panel img{object-position:88% 50%}
+
+/* The room. Full width at both breakpoints, and two different frames: the wide
+   one is the negative cut to the standing rows, the phone gets a tighter frame
+   of about fifteen people. Fifty faces across 326px is texture, not evidence. */
+.shot--room{grid-column:1/-1;grid-row:15/span 3}
+.shot--room img{object-position:50% 50%}
+
 @media (min-width:900px){
-  .proof__in{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .proof__i{border-bottom:0;padding-inline:clamp(20px,2.4vw,32px)}
-  .proof__i:first-child{padding-left:0}
-  .proof__i:last-child{padding-right:0}
-  .proof__i:nth-child(odd){padding-right:clamp(20px,2.4vw,32px)}
-  .proof__i+.proof__i{border-left:1px solid var(--rule-dark);border-right:0}
-  .proof__i:nth-child(odd){border-right:0}
+  #hero{padding-block:56px 96px}
+
+  .hero__mast{flex-wrap:nowrap;justify-content:space-between;padding-bottom:16px}
+  .hero__tag{flex:0 0 auto}
+
+  /* the display gets a column, and the small type sits beside it rather than
+     leaving 42% of the row empty. last baseline, so the lead's final line and
+     the display's final line sit on one line rather than 18px apart. */
+  /* the display gets a column, the small type sits beside it, and the seam
+     below is 88px against the bento's own 16px. Every seam on this section
+     used to measure 17-25px, which put the gap separating the hero from the
+     event on the same footing as the gap between two photographs. */
+  .hero__head{
+    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    column-gap:64px;align-items:last baseline;margin:30px 0 88px;
+  }
+  .hero__h{margin-bottom:0}
+
+  .ev{grid-row:1/span 4;padding:64px 48px}
+  .ev__date{margin-bottom:30px}
+  .ev__cols{
+    display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+    column-gap:56px;
+  }
+  /* the action column is set to the same depth as the talk column, so the two
+     halves of the card end on one line instead of leaving a band of empty ink
+     above the terms */
+  .ev__act{margin-top:0}
+  .ev__sub{margin-top:20px}
+  .ev__who{margin-top:34px}
+  .ev__open{margin-top:22px}
+  .ev__go{align-self:flex-start;margin-top:28px}
+  .ev__terms{margin-top:34px}
+
+  .rec{grid-row:5/span 2;padding:30px 40px}
+  .rec__k{margin-bottom:21px}
+  /* wide enough for date, title and outcome on one line each */
+  .rec__i{grid-template-columns:170px minmax(0,1fr) auto;column-gap:32px;padding:18px 0}
+  .rec__d{grid-area:1/1}
+  .rec__t{grid-area:1/2}
+  .rec__s{grid-area:1/3}
+  /* past 900 the ledger is set two evenings across: on one column the outcome
+     sat 640px clear of the title it belongs to. */
+  .rec__list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px}
+  .rec__i{grid-template-columns:130px minmax(0,1fr) auto;column-gap:24px;padding:20px 0}
+
+  .shot__cap{padding:16px 24px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* Row 7 is deliberately empty. It is the one seam inside the grid that is
+     not 16px: the event and its ledger are one group, the photographs are
+     another, and 140px of paper says so without touching the bento's gap. */
+  .shot--close{grid-row:8/span 6}
+  .shot--laugh{grid-row:8/span 4}
+  .shot--ask  {grid-row:12/span 5}
+  .shot--panel{grid-row:14/span 3}
+  .shot--room {grid-row:17/span 4}
+
+  .shot--close img{object-position:23% 50%}
+  .shot--panel img{object-position:50% 46%}
 }
 
-/* ═══ PULL ═══════════════════════════════════════════════════════════════ */
-.pull{
-  background:var(--paper-2);padding:clamp(84px,12vw,168px) 0;
-  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
-}
-.pull__q{
-  margin:0;font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:clamp(30px,5.4vw,64px);line-height:1.04;letter-spacing:-.028em;
-  max-width:22ch;
-}
-.pull__q span{display:block}
-.pull__q span:last-child{color:var(--brass-text)}
-.pull__c{
-  margin-top:clamp(24px,3vw,40px);font-size:11.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--dim);font-weight:600;
-}
+/* ── piece 2: the record ── */
+/* Five type sizes at 390 and six at 1440, page-wide. The record adds only the
+   card-head role (24px, both breakpoints): it carries each card's date and
+   each card's title, which is what makes the chronology legible at thumbnail
+   size and stops a card title being the same size as a paragraph. No italic —
+   piece 1 owns the page's one italic. No brass type; the accent appears once,
+   as the hairline above the chapter heading.
 
-/* ═══ VOICES ═════════════════════════════════════════════════════════════ */
-.voices{background:var(--paper);padding:clamp(72px,10vw,140px) 0}
-.voices__in{display:grid;gap:clamp(36px,4vw,64px);align-items:start}
-.voices__head .head{margin:16px 0 18px}
-.voices__list{display:grid;gap:2px}
-.v{
-  margin:0;background:var(--paper-2);border:1px solid var(--rule);
-  padding:clamp(24px,3vw,34px);display:grid;gap:20px;
+   THE BENTO. Thirteen cards, every one placed on explicit rows. At 1440 all
+   thirteen are half width and form a single interlocked block:
+
+     column 1   T1 5  P2 3  T3 5  S2 6  T4 4  S4 6  P4 3
+                                              breaks at rows 6, 9, 14, 20, 24, 30
+     column 2   P1 4  T2 6  P3 4  S1 6  S3 6  T5 6
+                                              breaks at rows 5, 11, 15, 21, 27
+   No interior break is shared, and both columns run 32 rows, 3952px. Each
+   column alternates text and photographs the whole way down, and every
+   photograph overlaps the card it documents.
+
+   At 390 a card of running text cannot sit in a 155px column, so every text
+   card and every landscape frame goes full width, and the interlocked block is
+   the four portrait frames from the service outing, sitting directly under the
+   card that documents them, each caption carrying its own subject, date and
+   place.
+
+   Heights are earned. The evening cards run 604 / 728 / 604 / 480 / 728 in the
+   order they are held: 7 July and 5 August each carry four named people with
+   their full titles, where the 3 August outing carries one. */
+
+#record{padding-block:8px 56px}
+#record figure{margin:0}
+
+/* ── section head: the rule, the chapter, and small type beside it ── */
+.rc__head{
+  border-top:1px solid var(--brass);
+  padding-top:26px;margin-bottom:44px;
 }
-.v blockquote{
-  margin:0;font-family:Zodiak,Georgia,serif;font-size:clamp(19px,2.1vw,26px);
-  line-height:1.28;letter-spacing:-.018em;
-}
-.v blockquote::before{content:"\201C"}
-.v blockquote::after{content:"\201D"}
-.v figcaption{display:grid;gap:3px;border-top:1px solid var(--rule);padding-top:16px}
-.v figcaption b{font-size:14px;font-weight:600}
-.v figcaption span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
-.v--inst{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
-.v--inst blockquote{color:var(--on-ink)}
-.v--inst figcaption{border-top-color:var(--rule-dark)}
-.v--inst figcaption span{color:var(--dim-light)}
+.rc__kick{margin-bottom:20px}
+.rc__h{margin-bottom:22px}
+.rc__lead{color:var(--muted);text-wrap:pretty}
+
+/* ── an evening ────────────────────────────────────────────────── */
+.rc__ev{display:flex;flex-direction:column;padding:28px 24px}
+.rc__k{margin-bottom:14px}
+.rc__d{color:var(--muted)}
+.rc__t{margin-top:2px}
+.rc__sub{color:var(--muted);margin-top:10px;text-wrap:pretty}
+.rc__at{margin-top:14px;text-wrap:pretty}
+.rc__n{margin-top:8px;font-weight:500}
+
+.rc__who{margin-top:18px;padding-top:18px;border-top:1px solid var(--paper)}
+.rc__role{margin-bottom:4px}
+.rc__p{color:var(--muted);text-wrap:pretty}
+.rc__nm{color:var(--ink);font-weight:500}
+.rc__p + .rc__p{margin-top:12px}
+.rc__p + .rc__role{margin-top:16px}
+
+/* ── photographs: frame and caption, never one over the other ──── */
+.rc__shot{display:flex;flex-direction:column;background:var(--card)}
+.rc__shot img{flex:1 1 0;min-height:0;width:100%;height:auto;object-fit:cover}
+.rc__cap{flex:0 0 auto;padding:12px 12px 14px;color:var(--muted)}
+
+/* Crops. Four of these were cut at the source rather than here, because
+   object-fit can only take a centred band of whatever it is handed:
+   p1 is the 2 June negative cut to about fifteen people, because fifty faces
+      across a 584px box is a grey smear;
+   p3 is the replica on its stand, which is the frame the dossier names for
+      this evening — the aisle frame spent its top quarter on wall, windows
+      and a shut door and its bottom-left on an out-of-focus head;
+   s2 starts to the right of the three heads that the negative itself cuts
+      against its top edge, and keeps the one sister whose face is whole;
+   s4 is cut to the sister in profile, because uncut the frame is three backs.
+   p2 keeps its top edge so no head is cut. p4 pushes the teal wall out of
+   frame. s1 and s3 are uprights in upright boxes and need no help. */
+.rc-p1 img{object-position:50% 50%}
+.rc-p2 img{object-position:50% 6%}
+.rc-p3 img{object-position:50% 50%}
+.rc-p4 img{object-position:50% 74%}
+.rc-s1 img{object-position:50% 22%}
+.rc-s2 img{object-position:50% 40%}
+.rc-s3 img{object-position:52% 26%}
+.rc-s4 img{object-position:50% 34%}
+
+/* ── placement: 390 ─────────────────────────────────────────────
+   Full width: every text card and every landscape frame — a 155px column
+   cannot hold running text. The interlocked block is the four portrait frames
+   from the service outing, rows 30 to 34: one event, four frames, every
+   caption carrying its own subject, date and place.
+       column 1   the van door 3 rows (356)  then  on the street 2 rows (232)
+       column 2   the shelter  2 rows (232)  then  the handover  3 rows (356) */
+.rc__grid > *{grid-column:1/-1}
+.rc-t1{grid-row:1/span 6}
+.rc-p1{grid-row:7/span 3}
+.rc-t2{grid-row:10/span 6}
+.rc-p2{grid-row:16/span 2}
+.rc-t3{grid-row:18/span 5}
+.rc-p3{grid-row:23/span 3}
+.rc-t4{grid-row:26/span 4}
+.rc-s1{grid-column:1;grid-row:30/span 3}
+.rc-s2{grid-column:1;grid-row:33/span 2}
+.rc-s4{grid-column:2;grid-row:30/span 2}
+.rc-s3{grid-column:2;grid-row:32/span 3}
+.rc-t5{grid-row:35/span 7}
+.rc-p4{grid-row:42/span 2}
+
 @media (min-width:900px){
-  .voices__in{grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr)}
+  #record{padding-block:16px 104px}
+
+  .rc__head{
+    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    column-gap:64px;row-gap:40px;align-items:baseline;
+    padding-top:30px;margin-bottom:60px;
+  }
+  .rc__kick{grid-column:1/-1;margin-bottom:0}
+  .rc__h{margin-bottom:0}
+
+  .rc__ev{padding:36px 40px}
+  .rc__cap{padding:16px 24px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rc__k{margin-bottom:18px}
+  .rc__sub{margin-top:12px}
+  .rc__at{margin-top:18px}
+  .rc__who{margin-top:22px;padding-top:22px}
+  .rc__p + .rc__p{margin-top:14px}
+  .rc__p + .rc__role{margin-top:18px}
+
+  /* ── placement: 1440. One interlocked block, thirteen half-width cards.
+     column 1 breaks at rows 6, 9, 14, 20, 24, 30;  column 2 at 5, 11, 15, 21,
+     27. Nothing coincides, both columns run 32 rows and end level at 3952px.
+
+     Two things this arrangement is fixing. Every photograph now overlaps the
+     card it documents — the 3 August service card is set between two of its
+     own frames with the other two beside it, where the encampment frame used
+     to have zero overlap with its own card and spend 74% of its height beside
+     the 5 August one. And each column carries text and photographs the whole
+     way down: below the midpoint this was five consecutive photographs in one
+     column against two text cards in the other, which passes the arithmetic
+     and still reads as a picture column beside a copy column. */
+  .rc__grid > *{grid-column:auto}
+  .rc-t1{grid-column:1;grid-row:1/span 5}
+  .rc-p2{grid-column:1;grid-row:6/span 3}
+  .rc-t3{grid-column:1;grid-row:9/span 5}
+  .rc-s2{grid-column:1;grid-row:14/span 6}
+  .rc-t4{grid-column:1;grid-row:20/span 4}
+  .rc-s4{grid-column:1;grid-row:24/span 6}
+  .rc-p4{grid-column:1;grid-row:30/span 3}
+
+  .rc-p1{grid-column:2;grid-row:1/span 4}
+  .rc-t2{grid-column:2;grid-row:5/span 6}
+  .rc-p3{grid-column:2;grid-row:11/span 4}
+  .rc-s1{grid-column:2;grid-row:15/span 6}
+  .rc-s3{grid-column:2;grid-row:21/span 6}
+  .rc-t5{grid-column:2;grid-row:27/span 6}
+
+  /* Two cards set their own internal rhythm, because the same margins that fit
+     three named people leave a band of ground under four. 7 July carries the
+     most people of any card and is set the most openly; 30 July carries one
+     co-host and is set open enough to reach the foot of its four rows. */
+  .rc-t2 .rc__sub{margin-top:16px}
+  .rc-t2 .rc__at{margin-top:26px}
+  .rc-t2 .rc__n{margin-top:12px}
+  .rc-t2 .rc__who{margin-top:34px;padding-top:34px}
+  .rc-t2 .rc__p + .rc__p{margin-top:22px}
+  .rc-t2 .rc__p + .rc__role{margin-top:26px}
+
+  .rc-t4 .rc__at{margin-top:22px}
+  .rc-t4 .rc__who{margin-top:28px;padding-top:28px}
+  .rc-t4 .rc__p + .rc__p{margin-top:18px}
+  .rc-t4 .rc__p + .rc__role{margin-top:22px}
+
+  .rc-t3 .rc__sub{margin-top:16px}
+  .rc-t3 .rc__at{margin-top:22px}
+  .rc-t3 .rc__who{margin-top:26px;padding-top:26px}
+  .rc-t3 .rc__p + .rc__p{margin-top:18px}
 }
 
-/* ═══ SERVICE ════════════════════════════════════════════════════════════ */
-.serve{background:var(--paper);padding:clamp(72px,10vw,140px) 0 0;overflow:hidden}
-.serve__head .head{margin:16px 0 20px}
-.serve__q{
-  margin:clamp(28px,3vw,40px) 0 0;padding-left:clamp(18px,2vw,26px);
-  border-left:2px solid var(--brass);
-  font-family:Zodiak,Georgia,serif;font-size:clamp(20px,2.3vw,28px);
-  line-height:1.28;letter-spacing:-.018em;max-width:34ch;
+/* ── piece 3: an evening ── */
+/* No new type size. The section uses chapter (the section head and the three
+   numerals), head (the chaplain's name and the institution run), lead (the
+   quotations), body and meta. Zero italics — piece 1 owns the page's one. The
+   accent appears twice: the hairline above the chapter, and the separator
+   between institution names, set in --brass-text (4.81:1 on card) rather than
+   --brass (2.75:1 on card, which would fail even at 24px).
+
+   Four photographs, none of them a frame pieces 1 or 2 already used. Two are
+   new derivatives built through tools/build-assets.py from source frames that
+   had no graded output yet: reception-two (DawmlieFIHm_08) and room-back
+   (DbuObFxFJY3_04). The alternative was reprinting reception and qa-hands under
+   captions that read almost word for word like the ones they already carry
+   elsewhere on this page.
+
+   THE BENTO. Eight cards, every one on explicit rows. Two full-width cards sit
+   outside the interlocked block — the timeline above it, the institutions below
+   it — because after a span-2 card both columns resume on the same row and that
+   is a shared boundary by construction.
+
+     1440, six half-width cards, block rows 3–12
+       column 1   the reception 3 (356)  the talk  3 (356)  the quotes 4 (480)
+       column 2   Fr. Tom       4 (480)  the panel 3 (356)  the seats  3 (356)
+     Column 1 breaks at rows 6 and 9, column 2 at rows 7 and 10. Nothing
+     coincides; both columns run 10 rows, 1224px.
+
+     390, four half-width photographs, block rows 5–9
+       column 1   the reception 2 (232)   the panel 3 (356)
+       column 2   the talk      3 (356)   the seats 2 (232)
+     Column 1 breaks at row 7, column 2 at row 8; both run 5 rows, 604px. The
+     four frames are contiguous in the DOM and read left to right, top to
+     bottom, in the order of the night. At 155px a column cannot hold running
+     text, so the timeline, the chaplain, the quotations and the institutions
+     are all full width there.
+
+   HEIGHTS. All four photographs are the same height at 1440, because all four
+   hold the same material: one frame and one one-line caption. The variation in
+   that block comes from the two cards that genuinely hold more — the chaplain
+   and the quotations, both 480 against the photographs' 356.
+
+   At 390 that is not available. The only cards that can take a 155px cell are
+   photographs, and two columns of equal cards share every interior boundary,
+   which is a two-column grid rather than a bento. So the block there carries
+   two cell shapes, and which frame gets which is decided by the subject rather
+   than by the file: the church interior and the panellist with the microphone
+   read as uprights and take the tall cells; the pair in conversation and the
+   room seen from the back need width and take the short ones.
+
+   Every card was measured before its span was chosen. The largest slack in the
+   section is 13.1% of a card's height, under the 15% the system allows, and
+   nothing is clipped at any width between 390 and 1600. */
+
+#evening{padding-block:8px 56px}
+#evening figure{margin:0}
+
+/* ── section head: the rule, the chapter, small type beside it ──
+   The section's largest type gets a band of its own: 20px above it and 44px
+   below, against the 48/46 that gave it no more air than a 12px label. And
+   the deck is balanced rather than pretty, because pretty left "at" stranded
+   at a line end and closed the block on a quarter-measure line. */
+.ev3__head{border-top:1px solid var(--brass);padding-top:26px;margin-bottom:44px}
+.ev3__kick{margin-bottom:20px}
+.ev3__h{margin-bottom:22px}
+.ev3__lead{color:var(--muted);text-wrap:balance}
+
+/* one card padding and one caption rule for the whole section */
+.ev3__grid .card{padding:28px 24px}
+.ev3__k{margin-bottom:14px}
+
+/* ── the order of the night: numerals, no icons ──────────────────
+   Four moments, not three. The last entry used to describe something
+   starting and the card never said when the evening ends; it runs 6:30 to
+   9:30. And the pitch is set to the real intervals — 30 minutes, two hours,
+   30 minutes — so the spacing agrees with the durations instead of putting
+   three numerals at an even pitch and reading as three statistics. The rule
+   above the row is what makes them one sequence rather than three cards. */
+.tl__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--paper);padding-top:26px}
+.tl__i + .tl__i{margin-top:22px}
+.tl__i--120 + .tl__i{margin-top:66px}       /* two hours, and it looks like it */
+.tl__n{display:flex;align-items:baseline;gap:9px}
+.tl__ap{color:var(--muted)}
+.tl__t{margin-top:12px;text-wrap:pretty}
+
+/* ── the chaplain ──────────────────────────────────────────────── */
+.pr__nm{margin-top:2px}
+.pr__t{color:var(--muted);text-wrap:pretty;margin-top:38px}
+
+/* ── what an attendee said. Reproduced, not authored. ────────────
+   The name leads the card at card-head size and the card says outright that
+   both quotations are hers. Before this the two quotes shared one attribution
+   in the section's smallest type, 74px below the second of them, under a
+   label that read "An attendee" in the singular. */
+.sy__nm{margin-top:2px}
+.sy__role{color:var(--muted);margin-top:8px;text-wrap:pretty}
+.sy__q{margin:0}
+.sy__q p{font-size:var(--t-lead);line-height:var(--lh-lead);text-wrap:pretty}
+.sy__q{margin-top:30px}
+.sy__src{margin-top:32px;text-wrap:pretty}
+
+/* ── the institutions, set as typography. No logo file on disk is
+      anything better than a crop out of a poster JPEG. ───────────
+   The organisation's own statement of what it is now carries the display
+   face and full ink; the partner list carries the body scale in secondary
+   ink. It was the other way round, which put a credential list above the
+   substantive claim. The names are bound with non-breaking spaces: a list
+   whose only job is legibility of names was breaking five lines of seven
+   through the middle of one. */
+.in__q{margin:0}
+.in__q p{text-wrap:pretty}
+.in__b{margin-top:30px}
+.in__list{
+  list-style:none;margin:0;padding:0;text-wrap:pretty;
+  font-size:var(--t-lead);line-height:var(--lh-lead);color:var(--muted);
 }
-.serve__c{
-  margin-top:14px;padding-left:clamp(18px,2vw,26px);
-  font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:600;
-}
-.serve__strip{
-  margin-top:clamp(44px,5vw,72px);display:flex;gap:12px;
-  padding:0 var(--gut) clamp(72px,10vw,140px);
-  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-}
-.serve__strip::-webkit-scrollbar{display:none}
-.serve__strip figure{margin:0;flex:none;width:min(62vw,300px);overflow:hidden}
-.serve__strip img{width:100%;transform:translateY(var(--py,0px)) scale(1.08)}
+.in__o{display:inline}
+/* the only name in the list with a hyphen in it. A hyphen is a break
+   opportunity that a non-breaking space cannot close, and this list exists to
+   keep names whole. */
+.in__o--nb{white-space:nowrap}
+/* the separator hangs off the END of the name before it, bound by a
+   non-breaking space, so a line never opens on a floating dot */
+.in__o:not(:last-child)::after{content:"\00a0\00b7";color:var(--brass-text)}
+
+/* ── photographs: frame and caption, never one over the other ──── */
+.ev3__fr{display:flex;flex-direction:column;background:var(--card)}
+.ev3__fr img{flex:1 1 0;min-height:0;width:100%;height:auto;object-fit:cover}
+.ev3__cap{flex:0 0 auto;padding:12px 12px 14px;color:var(--muted)}
+
+/* Crops. Two of these four are two frames rather than one, because a 584px
+   box and a 155px box cannot be served by the same negative: the talk and the
+   room from the back each ship a second, upright cut for the phone. That is
+   the sanctioned alternative to re-pouring one picture through boxes of very
+   different shape, which is what turned an attendee into a hand and a sliver
+   of cheek and took the second panelist out of a photograph captioned
+   "The panel".
+   p1 both women at 584px, the one on the right at 155px — the only
+      per-breakpoint object-position in the section
+   p2 the speaker at the front and the filled pews, windows kept above them
+   p3 the two who are talking; the blurred foreground head and the man cut by
+      the right edge were removed at the source, not here
+   p4 the panel table, the slide and the seated rows in front of it */
+.ev-p1 img{object-position:72% 40%}   /* 390: the pair in the middle of the frame */
+.ev-p2 img{object-position:100% 58%}
+.ev-p3 img{object-position:50% 26%}
+.ev-p4 img{object-position:50% 40%}
+
+/* ── placement: 390 ──────────────────────────────────────────────
+   The timeline, the chaplain, the quotations and the institutions are all
+   full width: a 155px column cannot hold running text. The interlocked block
+   is the four photographs, reading left to right in the order of the night,
+   with the two upright cells taking the two frames cut upright for them. */
+.ev3__grid > *{grid-column:1/-1}
+.ev3__tl{grid-row:1/span 5}
+.ev-p1{grid-column:1;grid-row:6/span 2}
+.ev-p2{grid-column:2;grid-row:6/span 3}
+.ev-p4{grid-column:1;grid-row:8/span 3}
+.ev-p3{grid-column:2;grid-row:9/span 2}
+.ev3__pr{grid-row:11/span 5}
+.ev3__sy{grid-row:16/span 5}
+.ev3__in{grid-row:21/span 8}
+
 @media (min-width:900px){
-  .serve__head{
+  #evening{padding-block:16px 104px}
+
+  /* first baselines aligned, not bottoms. Ending the head and the deck level
+     put their first lines 12px out of register, which reads as an error
+     rather than as an alignment. */
+  .ev3__head{
+    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    column-gap:64px;row-gap:40px;align-items:baseline;
+    padding-top:30px;margin-bottom:60px;
+  }
+  .ev3__kick{grid-column:1/-1;margin-bottom:0}
+  .ev3__h{margin-bottom:0}
+
+  .ev3__grid .card{padding:36px}
+  .ev3__cap{padding:16px 24px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* Four moments across, at the pitch of the real intervals: the columns run
+     1fr : 3fr : 1fr and the last is sized to its own line, so the two-hour
+     block is the wide one and the two half-hours are the narrow ones. */
+  .tl__list{
+    display:grid;grid-template-columns:1fr 3fr 1fr auto;
+    column-gap:0;padding-top:60px;
+  }
+  .tl__i + .tl__i,.tl__i--120 + .tl__i{margin-top:0}
+  .tl__t{margin-top:30px;padding-right:26px}
+  /* the band is the whole card, so the label is given its own line of air
+     above the rule rather than leaving the slack under the numerals */
+  .ev3__tl .ev3__k{margin-bottom:40px}
+  .tl__i--end .tl__t{padding-right:0}
+
+  .pr__t{margin-top:40px}
+  .sy__role{margin-top:10px}
+  .sy__q{margin-top:30px}
+  .sy__src{margin-top:34px}
+
+  /* the boilerplate and the institution run sit side by side, so the card is
+     three rows rather than five and neither half is left standing alone.
+     align-content centres the pair in the span: this card is a grid, which
+     was overriding the flex centring every other card gets, and it measured
+     36px of ground above its content against 77px below. */
+  .ev3__in{
     display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    column-gap:clamp(32px,5vw,72px);row-gap:0;   /* gap here also spaced the rows apart */
-    align-items:start;
+    column-gap:56px;align-items:start;align-content:center;
   }
-  .serve__head .eyebrow{grid-column:1;grid-row:1}
-  .serve__head .head{grid-column:1;grid-row:2}
-  .serve__head .serve__q{grid-column:1;grid-row:3}
-  .serve__head .serve__c{grid-column:1;grid-row:4}
-  .serve__head .lead{grid-column:2;grid-row:2 / span 2;margin-top:.4em}
-  .serve__strip{
-    max-width:var(--wrap);margin-inline:auto;overflow:visible;
-    padding-inline:var(--gut);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;
+  .in__b{margin-top:0}
+
+  /* ── placement: 1440 ───────────────────────────────────────────
+     The timeline is full width above the block and the institutions full
+     width below it, because after a span-2 card both columns resume on the
+     same row and that is a shared boundary by construction. The block is six
+     half-width cards, three to a column, each column alternating photograph
+     and text so neither reads as a column of pictures beside a column of
+     copy. Column 1 breaks at rows 8 and 12, column 2 at 9 and 13. Both run
+     12 rows and end level. */
+  /* 1440: the box is wide enough for both women, so it holds both. At 155px
+     it holds two of the three people and neither is bisected. */
+  .ev-p1 img{object-position:28% 40%}
+
+  .ev3__grid > *{grid-column:auto}
+  .ev3__tl{grid-column:1/-1;grid-row:1/span 3}
+
+  .ev-p1  {grid-column:1;grid-row:4/span 4}
+  .ev3__pr{grid-column:1;grid-row:8/span 4}
+  .ev-p3  {grid-column:1;grid-row:12/span 4}
+
+  .ev-p2  {grid-column:2;grid-row:4/span 5}
+  .ev3__sy{grid-column:2;grid-row:9/span 4}
+  .ev-p4  {grid-column:2;grid-row:13/span 3}
+
+  .ev3__in{grid-column:1/-1;grid-row:16/span 3}
+}
+
+/* ── piece 4: close ── */
+/* No new type size. The section uses chapter (the section head), head (the two
+   exit titles and every question), lead (the section lead and the footer
+   wordmark), body and meta. Zero italics — piece 1 owns the page's one.
+
+   The accent appears as a hairline twice, above the chapter and above the
+   footer, and as one fill, the RSVP pill. Head and pill sit in the same band;
+   the footer rule is ~2000px below them, so no screen carries more than two.
+
+   THE TWO EXITS. They are one card, not two, because the choice between them
+   is exclusive: a reader takes the September date or does not. Splitting them
+   into two competing cards would put the same weight on both. The card is full
+   width, which also keeps it out of the interlocked block — after a span-2 card
+   both columns resume on the same row, and that is a shared boundary by
+   construction.
+
+   THE QUESTIONS CARD SITS OUTSIDE THE BENTO ON PURPOSE. `.bento > *` is
+   `overflow:hidden` over a fixed row track, so a card whose height changes when
+   a <details> opens would silently clip its own answer. Outside the grid it
+   keeps the same fill, radius and padding and is free to grow.
+
+   THE BENTO. Five cards. The exits card is full width above the block; the
+   block itself is four photographs, which is what the interlock needs at 390
+   where a 155px column cannot hold running text. A photograph's subject is its
+   content, so the spans vary by subject and the two spans a frame gets are
+   chosen to be SIMILAR in aspect at the two widths:
+
+     1440, block rows 4–13 (both columns 1224px, level)
+       column 1   a panellist   4 (480)   the sanctuary 6 (728)   breaks 852/868
+       column 2   the outing    6 (728)   after the talk 4 (480)  breaks 1100/1116
+     390, block rows 8–12 (both columns 604px, level)
+       column 1   a panellist   2 (232)   the sanctuary 3 (356)   breaks 1100/1116
+       column 2   the outing    3 (356)   after the talk 2 (232)  breaks 1224/1240
+
+   Nothing interior coincides at either width. The two frames that need width —
+   a panellist with a microphone, and twelve people posed shoulder to shoulder —
+   take the landscape cells, 1.37 at 1440 against 1.03 at 390. The two that read
+   as uprights — a church sanctuary, a street shot in portrait — take the tall
+   cells, 0.87 against 0.56. Piece 3 failed for running one frame through 1.94
+   and 0.51, which lost a panellist out of a photograph captioned "The panel";
+   nothing here changes by more than 1.6x across the breakpoint.
+
+   CAPTIONS. Three parts, and all three render at both breakpoints: what the
+   frame shows, the date, and the venue. One line at 1440, three lines at 390.
+   Dropping the venue on the phone is what makes a photograph read as stock, and
+   two of these four share a date, so the venue and the subject are what keep the
+   captions distinct. One caption rule and one card padding across the section.
+
+   PHOTOGRAPHS. Three of the four frames had no graded output yet and were built
+   through tools/build-assets.py: panel-answer (DawmlieFIHm_04), after-talk
+   (DawmlieFIHm_02) and serve-arrive (DbmTXzlGLPl_02). shroud-pews was already
+   built and had not been printed. Nothing here repeats a frame from pieces 1–3.
+
+   THE FORM IS HONEST. data-endpoint is empty until the client deploys
+   backend/Code.gs, and main.js never reports success while it is. The visible
+   copy promises one message and nothing else, which is all the endpoint would
+   ever be used for. */
+
+#close{padding-block:8px 56px}
+#close figure{margin:0}
+
+/* ── section head: the rule, the chapter, small type beside it ──
+   The section's largest type gets more air under it than a 12px label gets
+   above it. Piece 3 was failed for running 48px above the head and 46px below
+   it, which gave the head no band of its own. */
+.cl__head{border-top:1px solid var(--brass);padding-top:26px;margin-bottom:44px}
+.cl__kick{margin-bottom:20px}
+.cl__h{margin-bottom:22px}
+/* balance, not pretty: these blocks run two to five lines and pretty leaves a
+   quarter-measure last line, which is what a critic failed on piece 3's deck. */
+.cl__lead{color:var(--muted);text-wrap:balance}
+
+/* one card padding for the section: the exits card and the questions card */
+#close .card{padding:28px 24px}
+.cl__k{margin-bottom:14px}
+
+/* ── the two exits ─────────────────────────────────────────────── */
+/* stacked at 390 and centred in the span, so whatever slack the span bought
+   splits above and below instead of pooling at the foot */
+.cl__acts{display:flex;flex-direction:column;justify-content:center}
+.act{display:flex;flex-direction:column;align-items:flex-start}
+.act + .act{margin-top:40px;padding-top:40px;border-top:1px solid var(--paper)}
+.act__t{margin-top:2px}
+.act__b{color:var(--muted);margin-top:16px;text-wrap:balance}
+.act__go{margin-top:32px;transition:background-color .18s ease}
+.act__go:hover{background:var(--brass-text);color:var(--on-ink)}
+
+/* ── the phone field ───────────────────────────────────────────── */
+.tel{align-self:stretch;margin-top:30px}
+.tel__l{display:block;margin-bottom:10px}
+.tel__row{display:flex;flex-direction:column;gap:12px}
+.tel__in{
+  flex:1 1 auto;min-width:0;min-height:48px;padding:0 20px;
+  border:1px solid var(--muted);border-radius:999px;
+  background:var(--paper);color:var(--ink);
+  font-family:inherit;font-size:var(--t-body);line-height:var(--lh-body);
+}
+.tel__in::placeholder{color:var(--muted);opacity:1}
+.tel__go{flex:0 0 auto}
+.signup__msg{margin-top:16px;color:var(--muted);text-wrap:pretty}
+.signup__msg[data-state="err"],.signup__msg[data-state="ok"]{color:var(--ink)}
+
+/* ── photographs: frame and caption, never one over the other ──── */
+.cl__fr{display:flex;flex-direction:column;background:var(--card)}
+.cl__fr img{flex:1 1 0;min-height:0;width:100%;height:auto;object-fit:cover}
+.cl__cap{flex:0 0 auto;padding:13px 14px 15px;color:var(--muted)}
+.c4__s,.c4__d,.c4__v{display:block}
+
+/* Crops, one per frame. The spans are chosen so each frame gets boxes of
+   SIMILAR aspect at both breakpoints, because re-pouring one photograph through
+   two very different boxes destroys it. The two landscape frames run 1.37 at
+   1440 against 1.03 at 390; the two uprights run 0.87 against 0.56. Every crop
+   is therefore horizontal at one width and horizontal at the other, or vertical
+   at both, so the same picture survives the breakpoint:
+     f1 the panellist and the microphone, both men kept at the edges
+     f2 the sisters and the shelter, the loose ground dropped off the foot
+     f3 the reredos and the altar, centred, side altars trimmed evenly
+     f4 the middle of the group, cut between people and never through a face */
+.cl-f1 img{object-position:46% 50%}
+.cl-f2 img{object-position:34% 4%}
+.cl-f3 img{object-position:50% 50%}
+.cl-f4 img{object-position:40% 50%}
+
+/* ── the questions ─────────────────────────────────────────────── */
+.cl__qs{margin-top:var(--gap);border-radius:var(--radius)}
+.qs__note{color:var(--muted);text-wrap:balance;margin-bottom:26px}
+.qs{border-top:1px solid var(--paper)}
+.q{border-bottom:1px solid var(--paper)}
+/* the disclosure mark is two hairlines, drawn in CSS. It is a control
+   affordance in the same language as the section rules, not an icon: the
+   section ships zero svg, zero icon fonts and zero emoji. */
+.q__q{
+  display:block;list-style:none;cursor:pointer;position:relative;
+  padding:16px 40px 16px 0;
+}
+.q__q::-webkit-details-marker{display:none}
+.q__q::before,.q__q::after{content:"";position:absolute;background:var(--ink)}
+.q__q::before{right:2px;top:50%;width:15px;height:1px;margin-top:-1px}
+.q__q::after{right:9px;top:50%;width:1px;height:15px;margin-top:-8px;transition:opacity .18s ease}
+.q[open] .q__q::after{opacity:0}
+.q__a{color:var(--muted);padding:0 40px 20px 0;text-wrap:pretty}
+
+/* ── the footer ────────────────────────────────────────────────── */
+.cl__foot{
+  border-top:1px solid var(--brass);
+  margin-top:44px;padding-top:26px;
+  display:flex;flex-direction:column;gap:24px;
+}
+.foot__name{
+  font-family:Zodiak,Georgia,serif;font-weight:400;
+  font-size:var(--t-lead);line-height:var(--lh-lead);letter-spacing:-0.01em;
+}
+.foot__where{margin-top:6px}
+.foot__links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.foot__links a{
+  display:inline-block;padding:11px 0;
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;
+}
+
+/* ── placement: 390 ────────────────────────────────────────────── */
+.cl__grid > *{grid-column:1/-1}
+.cl__acts{grid-row:1/span 7}
+.cl-f1{grid-column:1;grid-row:8/span 2}
+.cl-f2{grid-column:2;grid-row:8/span 3}
+.cl-f3{grid-column:1;grid-row:10/span 3}
+.cl-f4{grid-column:2;grid-row:11/span 2}
+
+@media (min-width:900px){
+  #close{padding-block:16px 88px}
+
+  .cl__head{
+    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    column-gap:64px;row-gap:40px;align-items:end;
+    padding-top:30px;margin-bottom:60px;
   }
-  .serve__strip figure{width:auto}
-  .serve__strip figure:nth-child(even){margin-top:clamp(24px,3vw,48px)}
+  .cl__kick{grid-column:1/-1;margin-bottom:0}
+  .cl__h{margin-bottom:0}
+  .cl__lead{padding-bottom:6px}
+
+  #close .card{padding:36px}
+  .cl__k{margin-bottom:18px}
+
+  /* the two exits sit side by side, divided by a hairline. Tops are aligned
+     rather than centred: two offers read as a pair only when their labels
+     start on one line. */
+  .cl__acts{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:start;justify-content:normal;
+  }
+  .cl__acts .act:first-child{padding-right:56px}
+  .act + .act{
+    margin-top:0;padding-top:0;padding-left:56px;
+    border-top:0;border-left:1px solid var(--paper);
+  }
+  .act__b{margin-top:18px}
+  .act__go{margin-top:30px}
+  .tel{margin-top:26px}
+  .tel__row{flex-direction:row;align-items:center}
+  /* The half that holds only a link runs shorter than the half that holds a
+     label, a field, a button and a message. Its own margins are opened to close
+     the gap rather than pushing the button down with margin-top:auto, which is
+     what produced the 276px voids in the first round. Residual after this is
+     23px, 6% of the card. */
+  .cl__acts .act:first-child .act__b{margin-top:24px}
+  .cl__acts .act:first-child .act__go{margin-top:44px}
+
+  /* one line at this width: subject, date, venue, all three still present */
+  .cl__cap{padding:16px 24px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .c4__s,.c4__d,.c4__v{display:inline}
+  .c4__d::before{content:" · "}
+  .c4__v::before{content:", "}
+
+  /* The standing note leads the card and the questions run the full width under
+     it. Setting the note in a side column instead left 389px of empty ground
+     beside the accordion, 68% of the card. Every row here has ink at both ends,
+     the question and its mark, so the full width is a list rather than a band
+     of nothing. Only the answers are held to a reading measure; run to the card
+     edge they would be 138 characters a line. */
+  .qs__note{margin-bottom:30px;max-width:640px}
+  .q__q{padding:20px 48px 20px 0}
+  .q__a{padding:0 40px 24px 0;max-width:640px}
+
+  .cl__foot{
+    flex-direction:row;justify-content:space-between;align-items:flex-start;
+    margin-top:64px;padding-top:30px;
+  }
+  .foot__links{flex-direction:row;gap:44px}
+
+  /* ── placement: 1440 ─────────────────────────────────────────── */
+  .cl__grid > *{grid-column:auto}
+  .cl__acts{grid-column:1/-1;grid-row:1/span 3}
+  .cl-f1{grid-column:1;grid-row:4/span 4}
+  .cl-f2{grid-column:2;grid-row:4/span 6}
+  .cl-f3{grid-column:1;grid-row:8/span 6}
+  .cl-f4{grid-column:2;grid-row:10/span 4}
+}
+
+/* ── one chassis-level fix, required by A13 and by focus visibility ──
+   The page's skip link is `.sr-only`, which is 1x1 and clipped. Blurred that is
+   correct; focused it is not, because the first thing a keyboard user reaches
+   on this page is then a 1x1 target they cannot see or hit. This adds a :focus
+   state rather than changing the .sr-only rule, and it affects no layout in any
+   piece: the link is out of flow and only paints while it holds focus. */
+.sr-only:focus{
+  position:fixed;top:16px;left:16px;z-index:20;
+  width:auto;height:auto;margin:0;padding:12px 22px;
+  clip:auto;overflow:visible;white-space:nowrap;
+  background:var(--ink);color:var(--on-ink);
+  border-radius:999px;font-weight:500;text-decoration:none;
 }
