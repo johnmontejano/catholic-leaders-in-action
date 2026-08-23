@@ -7,23 +7,34 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── the bar's hairline ───────────────────────────────────────
-     Claude's bar is borderless at the top of the page and grows a rule once you
-     scroll. With this file absent the bar simply keeps the borderless state,
-     which is the correct state at the top and is legible everywhere else — the
-     bar is on --paper and the rule is a refinement, not the thing that makes it
-     readable. Gated on reduced motion with everything else: a bar that changes
-     as the page moves is page-driven movement even though it is one property. */
-  var bar = document.querySelector('.nav');
-  if (bar && !reduced) {
-    var past = false;
-    var mark = function () {
-      var now = (window.scrollY || 0) > 4;
-      if (now !== past) { past = now; bar.classList.toggle('is-past', now); }
-    };
-    mark();
-    window.addEventListener('scroll', mark, { passive: true });
+  /* ── the bar ──────────────────────────────────────────────────
+     The hairline is now painted by the stylesheet at every scroll position, so
+     nothing here is needed to make the bar legible. Two behaviours only, and
+     the bar works completely without either.
 
+     THE MENU SHEET is a <details>, which means it opens, closes and takes
+     keyboard focus with this file absent. What is added here is the explicit
+     aria-expanded mirror and closing the sheet when a link inside it is
+     tapped — a sheet that stays open over the section it just scrolled to is
+     the one thing the native element does not handle. */
+  var bar = document.querySelector('.nav');
+  var menu = document.querySelector('[data-menu]');
+
+  if (menu) {
+    var mb = menu.querySelector('summary');
+    var sync = function () { if (mb) mb.setAttribute('aria-expanded', menu.open ? 'true' : 'false'); };
+    sync();
+    menu.addEventListener('toggle', sync);
+    menu.addEventListener('click', function (ev) {
+      var a = ev.target.closest && ev.target.closest('a[href]');
+      if (a) { menu.open = false; sync(); }
+    });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && menu.open) { menu.open = false; sync(); if (mb) mb.focus(); }
+    });
+  }
+
+  if (bar && !reduced) {
     /* the three anchors glide rather than jump. Scoped to these links on
        purpose — see the note in styles.css about what a global
        scroll-behavior:smooth does to the measuring tools. */
@@ -61,31 +72,28 @@
   if (!reduced && window.gsap && window.ScrollTrigger) {
     gsap.registerPlugin(ScrollTrigger);
 
-    var tiles = gsap.utils.toArray('.ht');
-    var zone  = document.querySelector('.hz');
+    var tile = document.querySelector('.ht');
+    var zone = document.querySelector('.hz');
 
-    /* the tiles arrive first, staggered from the middle outwards, so the type
-       is already set when the field lands around it */
-    if (tiles.length) {
-      gsap.from(tiles, {
-        opacity: 0, y: 26, scale: 0.965,
-        duration: 0.75, ease: 'power2.out', stagger: 0.07
+    /* One tile now, so the entrance is one movement rather than a staggered
+       field: it fades up while the type is already set. */
+    if (tile) {
+      gsap.from(tile, {
+        opacity: 0, y: 20,
+        duration: 0.7, ease: 'power2.out'
       });
     }
 
-    /* Parallax, Claude-subtle: a few pixels of drift over the whole hero, not a
-       theme park. scrub:true rather than a number is deliberate — a scrubbed
-       tween with inertia keeps moving for half a second after the scroll stops,
-       which is enough to make two screenshots of the same element disagree and
-       hand tools/contrast.mjs a false glyph mask. */
-    if (zone && tiles.length && window.matchMedia('(min-width: 900px)').matches) {
-      var drift = [-22, 14, -30, 18, -12];
-      tiles.forEach(function (t, i) {
-        gsap.to(t, {
-          y: drift[i % drift.length],
-          ease: 'none',
-          scrollTrigger: { trigger: zone, start: 'top top', end: 'bottom top', scrub: true }
-        });
+    /* Parallax, quieter than it was: 14px of drift over the whole hero, not a
+       theme park, and only where the tile floats beside the type. scrub:true
+       rather than a number is deliberate — a scrubbed tween with inertia keeps
+       moving for half a second after the scroll stops, which is enough to make
+       two screenshots of the same element disagree and hand tools/contrast.mjs
+       a false glyph mask. */
+    if (zone && tile && window.matchMedia('(min-width: 1360px)').matches) {
+      gsap.to(tile, {
+        y: -14, ease: 'none',
+        scrollTrigger: { trigger: zone, start: 'top top', end: 'bottom top', scrub: true }
       });
     }
 
@@ -103,7 +111,7 @@
       });
     });
 
-    gsap.utils.toArray('.rc__head, .ev3__head, .cl__head, .cl__qs, .cl__foot, .hero__body')
+    gsap.utils.toArray('.sh, .rc__band, .ev3__tl, .cl__acts, .cl__qs, .cl__foot, .hero__body')
       .forEach(function (el) {
         gsap.from(el, {
           opacity: 0, y: 20,
