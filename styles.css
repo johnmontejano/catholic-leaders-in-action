@@ -23,7 +23,16 @@
   --muted:#5A5148;
   --brass:#B37D3E;        /* fills, rules. never type on paper (3.04:1) */
   --brass-text:#835829;   /* brass-coloured type. 5.31:1 on paper, 4.81:1 on card */
-  --on-ink:#F2EDE4;
+  --on-ink:#F2EDE4;       /* primary type on a dark chapter. 16.24:1 on ink */
+  /* The dark chapter is now a whole section, not one card, so the two values it
+     needs are page-level rather than local to the hero.
+     --on-ink-dim is --on-ink at 70% over --ink: 8.28:1 on ink, 7.47:1 on
+     --card-ink, so it clears AA at 11px on both.
+     --card-ink is to --ink what --card is to --paper: 1.11 against its ground
+     where the paper pair is 1.10. Cards separate by radius and content, not by
+     contrast, at both ends of the page. */
+  --on-ink-dim:#AFABA3;
+  --card-ink:#201B15;
 
   /* type — size interpolates 390→1440, ratios never move.
      --t-head is the card-head role: a constant 24px at both breakpoints, the
@@ -141,6 +150,27 @@ button{font:inherit;color:inherit}
   display:flex;flex-direction:column;justify-content:center;
 }
 .card--ink{background:var(--ink);color:var(--on-ink)}
+
+/* ── the dark chapter ──────────────────────────────────────────────
+   A band is the one element allowed to break the wrap: it paints the full
+   viewport width and holds a .wrap of its own. Everything inside it swaps
+   ground for ink and secondary ink for --on-ink-dim, in one place, so no
+   section has to restate the palette card by card. Hairlines inside a card
+   follow the same perceptual step they take on paper — there the divider is
+   --paper, one shade LIGHTER than the --card it sits on; on ink the lighter
+   step is --muted, 2.2 against --card-ink. A hairline the same 1.1 ratio as
+   the paper pair simply disappears at the dark end. */
+.band--ink{background:var(--ink);color:var(--on-ink)}
+.band--ink .card{background:var(--card-ink)}
+.band--ink .card--photo{background:var(--card-ink)}
+.card--ink .t-meta,.band--ink .t-meta{color:var(--on-ink-dim)}
+.band--ink .t-lead{color:var(--on-ink-dim)}
+/* --brass-text is 3.06:1 on ink and fails as type there; --brass is 5.34:1 but
+   design-system §1 forbids it under 24px. On the dark chapter the ring is
+   --brass, which is a focus indicator rather than type, and clears the 3:1
+   that WCAG asks of a non-text control by a wide margin. */
+.band--ink :where(a,button,input,summary):focus-visible{outline-color:var(--brass)}
+
 .card--photo{padding:0;background:var(--card)}
 .card--photo img{width:100%;height:100%;object-fit:cover}
 /* <picture> is only ever an art-direction switch here, never a box. display:contents
@@ -162,6 +192,22 @@ button{font:inherit;color:inherit}
   .cap__s,.cap__d,.cap__v{display:inline;white-space:normal;overflow:visible}
   .cap__d::before{content:" · "}
   .cap__v::before{content:", "}
+}
+
+/* ── one poster-label rule, page-wide ─────────────────────────────
+   A photograph needs a caption to say what it shows; the client's posters say
+   it themselves, in type he set, at the top of his own graphic. So a poster
+   carries the two things it cannot say — the date and the venue, which are
+   printed on it in 8px and unreadable at any size we can show it — and, where
+   the poster names a keynote, that name at reading size. Four posters use this
+   on the page: three in the record, one in the close. */
+.pcap{margin-top:14px}
+.pcap__d,.pcap__v{display:block}
+.pcap__w{margin-top:6px;text-wrap:pretty}
+@media (min-width:900px){
+  .pcap{margin-top:18px}
+  .pcap__d,.pcap__v{display:inline}
+  .pcap__v::before{content:" · "}
 }
 
 /* ── controls ───────────────────────────────────────────────── */
@@ -200,74 +246,160 @@ button{font:inherit;color:inherit}
   overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
 }
 
-/* ── piece 1: hero ── */
-/* One derived value only: --on-ink-dim is --on-ink at 70% over --ink
-   (#F2EDE4·0.7 + #14100C·0.3). Measured 8.27:1 on --ink, so it clears AA at
-   11px. --brass appears once in this section and never as type: the RSVP fill.
-   It used to be spent first on the hairline under the masthead, which put a
-   decoration ahead of the only thing on the page a reader can click. That rule
-   is --muted now and the first accent on the page is the button.
+/* ── piece 1: the opening ── */
+/* REBUILT 2026-08-22 for bar.md mechanisms 1 (corrected) and 10 (restored).
+   The page used to open with 1,123px of paragraph from y=0 and no image at
+   all until 1.1 screens down. Every reference opens with an image as the
+   dominant object — Word on Fire sets 168px type directly on a Caravaggio,
+   Apple runs 80px display type on video chapter after chapter — and the
+   client's verdict on the text-first build was "this doesn't even have a
+   design." So the page now opens on the room.
 
-   The event date is the chapter role — 56px at 1440, 32px at 390 — at both
-   breakpoints, never display and never lead.
+   THE FRAME IS THE ARGUMENT. It is the 2 June negative: about fifty young
+   adults in business casual, shoulder to shoulder, a priest in a Roman collar
+   near the middle. "These evenings fill" is a claim a sentence has to ask you
+   to believe and a photograph does not. It runs full bleed from y=0, and it is
+   the only element on the page allowed to break the wrap besides the ink
+   bands.
 
-   The display is hard-broken into three lines so the italic connective sits
-   inside one line at every width, not only at 390 and 1440.
+   THE GRADE AND THE SCRIM ARE ONE DECISION, TAKEN TOGETHER. The plate is cut
+   twice through tools/build-assets.py and stopped down to 0.78 in linear light
+   (grade.py `expo`), because the alternative — leaving the frame at working
+   exposure and laying a scrim opaque enough to carry 11px type on its own —
+   puts the room behind frosted glass, and the room is the argument. Measured
+   on the graded plate, the worst pixel under the masthead needs 0.47 of ink to
+   clear 4.5:1 and the worst pixel under the headline needs 0.37 to clear 3:1.
+   The two gradients below carry both with margin and clear to nothing across
+   the band that holds the faces, so the scrim is dark exactly where type lands
+   and nowhere else. Verified worst-pixel by tools/contrast.mjs, not by eye.
 
-   THE BENTO (mechanism 6). Every card is placed on explicit rows, because the
-   interlock is an arithmetic property and auto-placement cannot be trusted to
-   hold it. Two full-width cards sit above the interlocked block and one below
-   it; the block itself is four photographs in two columns whose boundaries
-   never coincide:
+   TWO CUTS, NOT ONE RE-POURED FRAME. A 2.30 negative in a 0.9 box shows a
+   fifth of a room, which is the failure builder-notes names by name. So the
+   phone gets its own crop — the centre thirty of the same room, on the same
+   axis, at 0.935 — and the switch happens at 560px, above which the wide cut
+   never sees a box narrower than about 1.5.
 
-     1440 and 390, block rows relative to the block top
-       column 1   reception  3 rows (356)   then  a question  2 rows (232)
-       column 2   laughing   2 rows (232)   then  the panel   3 rows (356)
-     Column 1 breaks at 356/372, column 2 at 232/248. They meet only at the
-     very top and the very bottom, and both columns run 604px.
+   THE FOLD. At 390 screen one has to hold the org, the date, the talk, the
+   venue and hour, the availability and the RSVP inside 844px AND be at least
+   35% photograph. That is why the lede's type is only the masthead and the
+   headline, why the event card compresses its padding below 900px, and why
+   the lead sentence sits at the FOOT of the section rather than under the
+   headline: it is the one thing here that is neither an essential nor an
+   image, and putting it above the card cost 114px the fold does not have.
+   Body copy never sits on the image (mechanism 1); the masthead is a
+   one-line label of the kind Fauna lays on its own video.
 
-   Running text is never in a half-width cell — at 390 that cell is 155px, and
-   only a photograph belongs in it. The ledger and the next-event card are
-   therefore the full-width ones at both breakpoints. */
+   THE ITALIC. One on the page, and this is it. At 1440 the line breaks allow
+   Word on Fire's own construction — roman, italic, roman on one line — so the
+   headline sets as "Take faith / into the workplace." At 390 "into the
+   workplace." measures 492px against a 326px column, so the connective takes
+   its own line there rather than the display size being dropped, which is the
+   trade builder-notes already settled.
 
-#hero{--on-ink-dim:#AFABA3;padding-block:32px 64px}
+   THE BENTO (mechanism 6) is unchanged and still interlocks. The room card
+   that used to close it is gone — it is the lede now — and removing it leaves
+   both columns ending level on the same row they already ended on:
+     390   col 1  reception rows 5-7 (356) then the panel rows 8-9 (232)
+           col 2  laughing  rows 5-6 (232) then a question rows 7-9 (356)
+     1440  col 1  reception rows 6-11 (728) then the panel rows 12-14 (356)
+           col 2  laughing  rows 6-9  (480) then a question rows 10-14 (604)
+   The two lists share no interior boundary and both end on the same row. The
+   next-event card is full width above the block, never inside it.
+
+   --brass appears once in this section and never as type: the RSVP fill. */
+
+#hero{padding-block:0 64px}
 #hero figure{margin:0}
 
-/* ── masthead: a lockup, not an eyebrow ─────────────────────────
-   The rule under it is deliberately NOT brass. The accent is worth two uses a
-   screen and the first one should be the thing a reader can click: spending it
-   on a decorative hairline at the very top of the page put the RSVP fill
-   second. The hairline is the same --muted the body's secondary type uses. */
-.hero__mast{
-  display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 28px;
-  padding-bottom:14px;border-bottom:1px solid var(--muted);
+/* ── the lede: the room, full bleed, the display type on it ─────────
+   Height is set in vw so the box tracks the frame's own shape instead of
+   letterboxing it: 108vw below the switch (0.93 at 390, against the phone
+   cut's 0.935) and 44vw above it (2.27 at 1440, against the wide cut's 2.30).
+   Both cuts are therefore shown almost whole at the two design widths. */
+.lede{
+  position:relative;
+  height:clamp(340px, 100vw, 440px);
+  background:var(--ink);
+  overflow:hidden;
 }
-.hero__name{
+/* <picture> is an art-direction switch, never a box. */
+.lede picture{display:contents}
+.lede img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:50% 38%;
+}
+
+/* The scrim. Two gradients, not one wash: dark at the two edges where type
+   lands, clear across the middle third where the faces are. Stops are in ink,
+   never black — design-system §1 forbids pure #000 anywhere on the page. */
+.lede::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,
+      rgba(20,16,12,.74) 0%, rgba(20,16,12,.60) 14%,
+      rgba(20,16,12,.22) 30%, rgba(20,16,12,0)  46%),
+    linear-gradient(0deg,
+      rgba(20,16,12,.90) 0%,  rgba(20,16,12,.80) 14%,
+      rgba(20,16,12,.66) 30%, rgba(20,16,12,.44) 45%,
+      rgba(20,16,12,.18) 58%, rgba(20,16,12,0)  70%);
+}
+
+/* The type layer is a .wrap, so the headline's left edge lands on the same
+   line as the caption and the event card below it at every width.
+   space-between here is not the void builder-notes forbids: what sits between
+   the masthead and the headline is the photograph, which is the content. */
+.lede__type{
+  position:relative;z-index:1;height:100%;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding-block:20px 24px;
+  color:var(--on-ink);
+}
+/* Below the narrowest design width "workplace." at the 56px floor is 286px
+   against a 256px column. It does not overflow the document, but it comes
+   within 2px of the viewport edge, so the type layer gives back 12px of
+   gutter under 360 rather than trusting the rounding. */
+@media (max-width:359px){ .lede__type{padding-inline:20px} }
+
+.lede__mast{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 28px}
+.lede__name{
   font-family:Zodiak,Georgia,serif;font-weight:400;
   font-size:var(--t-lead);line-height:var(--lh-lead);letter-spacing:-0.01em;
 }
-.hero__tag{flex:1 0 100%}
+/* both lines of the lockup take the full --on-ink: --on-ink-dim is 8.28:1 on
+   flat ink but only ~3.4:1 over a scrimmed wall, and 11px type needs 4.5. */
+.lede__tag{flex:1 0 100%;color:var(--on-ink)}
+.lede__l{display:block}
+.lede__w{display:block}
 
-.hero__head{margin:26px 0 56px}
-.hero__h{margin-bottom:20px}
-.hero__l{display:block}
-.hero__lead{font-size:var(--t-lead);line-height:var(--lh-lead);color:var(--muted);text-wrap:pretty}
+/* ── the caption, on flat ground, one rule with the rest of the section ──
+   Subject, date and venue, all three at both widths — three lines at 390 and
+   one at 1440, exactly like every other caption on the page. */
+.hero__cap{margin-top:14px}
+
+.hero__body{display:flex;flex-direction:column}
+.hero__grid{margin-top:28px}
+
+/* The lead is the section's foot: what the organisation is, immediately
+   before the record that proves it. */
+.hero__lead{
+  font-size:var(--t-lead);line-height:var(--lh-lead);color:var(--muted);
+  text-wrap:pretty;margin-top:32px;max-width:52ch;
+}
 
 /* ── the next event ─────────────────────────────────────────────
    The talk leads and the action follows it, left to right. With the order
    reversed the heaviest sans on the card — the title of the talk — sat in the
    right column and the RSVP pill in the left, so a reader crossed the card and
    then had to come back for the button. */
-.ev{grid-column:1/-1;grid-row:1/span 5;display:flex;flex-direction:column;padding:36px 22px}
-.ev__kicker{color:var(--on-ink-dim);margin-bottom:12px}
-.ev__date{margin-bottom:32px}
+.ev{grid-column:1/-1;grid-row:1/span 4;display:flex;flex-direction:column;padding:28px 22px}
+.ev__kicker{color:var(--on-ink-dim);margin-bottom:10px}
+.ev__date{margin-bottom:20px}
 /* On the phone the five essentials — who this is, what happens, when, where and
-   the action — must all land inside the top 844px. Putting the talk ahead of
-   the action column fixed where the eye goes at 1440 but pushed the RSVP button
-   to y=908 at 390, 64px below the fold. Below 900px the two column wrappers
-   collapse to display:contents so all six leaves become flex children of the
-   card, and the speakers line is ordered after the button: it is credibility,
-   not an essential, and it is the only thing here a reader does not need before
+   the action — must all land inside the top 844px, and the photograph above now
+   takes half of that. Below 900px the two column wrappers collapse to
+   display:contents so all six leaves become flex children of the card, and the
+   speakers line is ordered after the button: it is credibility, not an
+   essential, and it is the only thing here a reader does not need before
    deciding to act. */
 .ev__cols{display:flex;flex-direction:column}
 .ev__act{display:flex;flex-direction:column;align-items:flex-start;margin-top:38px}
@@ -276,44 +408,25 @@ button{font:inherit;color:inherit}
   .ev__cols{display:contents}
   .ev__what,.ev__act{display:contents}
   .ev__title{order:1}
-  .ev__sub  {order:2}
-  .ev__where{order:3;margin-top:22px}
-  .ev__open {order:4}
-  .ev__go   {order:5}
-  .ev__who  {order:6;margin-top:26px}
-  .ev__terms{order:7}
+  .ev__where{order:2;margin-top:14px}
+  .ev__open {order:3}
+  .ev__go   {order:4}
+  .ev__who  {order:5;margin-top:18px}
+  .ev__terms{order:6;margin-top:22px}
 }
 /* balance, not pretty: this runs to two lines and pretty left "San Francisco."
    alone on the second one */
 .ev__where{text-wrap:balance}
 /* availability at reading size rather than inside a 12px label, and directly
    above the control it applies to */
-.ev__open{font-size:var(--t-lead);line-height:var(--lh-lead);margin-top:14px}
-.ev__go{align-self:stretch;max-width:320px;margin-top:18px;transition:background-color .18s ease}
+.ev__open{font-size:var(--t-lead);line-height:var(--lh-lead);margin-top:12px}
+.ev__go{align-self:stretch;max-width:320px;margin-top:16px;transition:background-color .18s ease}
 .ev__go:hover{background:var(--brass-text);color:var(--on-ink)}
 .ev__go:focus-visible{outline-color:var(--on-ink)}
 .ev__title{font-size:var(--t-lead);line-height:var(--lh-lead);font-weight:500}
-.ev__sub{margin-top:6px}
 .ev__who{margin-top:14px;text-wrap:pretty}
-.ev__sub,.ev__who,.ev__terms{color:var(--on-ink-dim)}
+.ev__who,.ev__terms{color:var(--on-ink-dim)}
 .ev__terms{margin-top:34px}
-
-/* ── the ledger: four evenings, each with its title and its outcome ──
-   Full width at both breakpoints. A 155px column cannot hold a title, and the
-   four rows are what earn this card its height. */
-.rec{grid-column:1/-1;grid-row:6/span 3;display:flex;flex-direction:column;padding:24px 18px}
-.rec__k{margin-bottom:12px}
-.rec__list{list-style:none;margin:0;padding:0}
-/* explicit areas: the date and the outcome share the first line, the title
-   takes the second. Left to auto-placement the outcome dropped to a third
-   line and the card grew a row it had not earned. */
-.rec__i{
-  display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:20px;
-  padding:10px 0;border-top:1px solid var(--paper);
-}
-.rec__d{grid-area:1/1;color:var(--muted)}
-.rec__s{grid-area:1/2;text-align:right;color:var(--muted)}
-.rec__t{grid-area:2/1/2/-1;font-weight:500}
 
 /* ── photographs: image and caption, never one on the other ───
    One caption rule and one padding, so every strip in the section is the same
@@ -331,10 +444,10 @@ button{font:inherit;color:inherit}
    the wide ones, and each frame's two boxes are near enough in shape that the
    same picture survives the breakpoint: 0.87 against 0.56, and 1.93 against
    1.01, rather than 1.97 against 3.38. */
-.shot--close{grid-column:1;grid-row:10/span 3}
-.shot--laugh{grid-column:2;grid-row:10/span 2}
-.shot--panel{grid-column:1;grid-row:13/span 2}
-.shot--ask  {grid-column:2;grid-row:12/span 3}
+.shot--close{grid-column:1;grid-row:5/span 3}
+.shot--laugh{grid-column:2;grid-row:5/span 2}
+.shot--panel{grid-column:1;grid-row:8/span 2}
+.shot--ask  {grid-column:2;grid-row:7/span 3}
 
 /* crops chosen per frame, never the default centre.
    close: the laugh and the woman beside it, not the blind behind them.
@@ -346,30 +459,27 @@ button{font:inherit;color:inherit}
 .shot--ask   img{object-position:2% 52%}
 .shot--panel img{object-position:88% 50%}
 
-/* The room. Full width at both breakpoints, and two different frames: the wide
-   one is the negative cut to the standing rows, the phone gets a tighter frame
-   of about fifteen people. Fifty faces across 326px is texture, not evidence. */
-.shot--room{grid-column:1/-1;grid-row:15/span 3}
-.shot--room img{object-position:50% 50%}
+@media (min-width:560px){
+  /* the wide cut takes over here, and the box goes with it. The floor is 392
+     rather than the frame's own 44vw all the way down because between 560 and
+     890 the masthead and a three-line headline together need 286px, and a box
+     sized purely by vw there would leave the picture almost nothing. */
+  .lede{height:clamp(392px, 44vw, 680px)}
+}
 
 @media (min-width:900px){
-  #hero{padding-block:56px 96px}
+  #hero{padding-block:0 96px}
 
-  .hero__mast{flex-wrap:nowrap;justify-content:space-between;padding-bottom:16px}
-  .hero__tag{flex:0 0 auto}
+  .lede__type{padding-block:48px 56px}
+  .lede__mast{flex-wrap:nowrap;justify-content:space-between}
+  .lede__tag{flex:0 0 auto}
+  /* the connective gets roman beside it on the same line, which is Word on
+     Fire's own setting and the thing the 390 column cannot afford */
+  .lede__w{display:inline}
 
-  /* the display gets a column, and the small type sits beside it rather than
-     leaving 42% of the row empty. last baseline, so the lead's final line and
-     the display's final line sit on one line rather than 18px apart. */
-  /* the display gets a column, the small type sits beside it, and the seam
-     below is 88px against the bento's own 16px. Every seam on this section
-     used to measure 17-25px, which put the gap separating the hero from the
-     event on the same footing as the gap between two photographs. */
-  .hero__head{
-    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
-    column-gap:64px;align-items:last baseline;margin:30px 0 88px;
-  }
-  .hero__h{margin-bottom:0}
+  .hero__cap{margin-top:18px}
+  .hero__grid{margin-top:48px}
+  .hero__lead{margin-top:56px}
 
   .ev{grid-row:1/span 4;padding:64px 48px}
   .ev__date{margin-bottom:30px}
@@ -385,63 +495,65 @@ button{font:inherit;color:inherit}
   .ev__who{margin-top:34px}
   .ev__open{margin-top:22px}
   .ev__go{align-self:flex-start;margin-top:28px}
-  .ev__terms{margin-top:34px}
-
-  .rec{grid-row:5/span 2;padding:30px 40px}
-  .rec__k{margin-bottom:21px}
-  /* wide enough for date, title and outcome on one line each */
-  .rec__i{grid-template-columns:170px minmax(0,1fr) auto;column-gap:32px;padding:18px 0}
-  .rec__d{grid-area:1/1}
-  .rec__t{grid-area:1/2}
-  .rec__s{grid-area:1/3}
-  /* past 900 the ledger is set two evenings across: on one column the outcome
-     sat 640px clear of the title it belongs to. */
-  .rec__list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px}
-  .rec__i{grid-template-columns:130px minmax(0,1fr) auto;column-gap:24px;padding:20px 0}
+  .ev__terms{margin-top:26px}
 
   .shot__cap{padding:16px 24px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-  /* Row 7 is deliberately empty. It is the one seam inside the grid that is
-     not 16px: the event and its ledger are one group, the photographs are
-     another, and 140px of paper says so without touching the bento's gap. */
-  .shot--close{grid-row:8/span 6}
-  .shot--laugh{grid-row:8/span 4}
-  .shot--ask  {grid-row:12/span 5}
-  .shot--panel{grid-row:14/span 3}
-  .shot--room {grid-row:17/span 4}
+  /* Row 5 is deliberately empty. It is the one seam inside the grid that is
+     not 16px: the next evening is one thing, the photographs are another, and
+     124px of paper says so without touching the bento's gap. */
+  .shot--close{grid-row:6/span 6}
+  .shot--laugh{grid-row:6/span 4}
+  .shot--ask  {grid-row:10/span 5}
+  .shot--panel{grid-row:12/span 3}
 
   .shot--close img{object-position:23% 50%}
   .shot--panel img{object-position:50% 46%}
 }
 
 /* ── piece 2: the record ── */
-/* Five type sizes at 390 and six at 1440, page-wide. The record adds only the
-   card-head role (24px, both breakpoints): it carries each card's date and
-   each card's title, which is what makes the chronology legible at thumbnail
-   size and stops a card title being the same size as a paragraph. No italic —
-   piece 1 owns the page's one italic. No brass type; the accent appears once,
-   as the hairline above the chapter heading.
+/* REBUILT for mechanisms 8 and 9. This section used to carry five evening
+   cards, each with a full speaker roster, and it alone ran about 400 words of
+   grey type. The evenings are now told in the client's own navy-and-gold
+   posters, which carry the title, the subtitle, the address, the hour and the
+   faces AS IMAGERY. Our type beside them is a date, a venue and one keynote
+   name. Baked-in poster text is his design, not ours over a photograph:
+   mechanism 1 forbids our type on a picture, not a picture that is type.
 
-   THE BENTO. Thirteen cards, every one placed on explicit rows. At 1440 all
-   thirteen are half width and form a single interlocked block:
+   THE POSTER BAND IS A CHAPTER. It is a full-width --ink card, and it is the
+   first of the two non-ground events mechanism 9 asks for after the hero. The
+   ink ground is not decoration: the posters are navy, so the card they sit in
+   has to be darker than they are or they read as three stickers on cream. The
+   posters are printed at their native 1:1 with no object-fit at all — a
+   graphic that has been cropped to fill a row track is a graphic with its own
+   border cut off.
 
-     column 1   T1 5  P2 3  T3 5  S2 6  T4 4  S4 6  P4 3
-                                              breaks at rows 6, 9, 14, 20, 24, 30
-     column 2   P1 4  T2 6  P3 4  S1 6  S3 6  T5 6
-                                              breaks at rows 5, 11, 15, 21, 27
-   No interior break is shared, and both columns run 32 rows, 3952px. Each
-   column alternates text and photographs the whole way down, and every
-   photograph overlaps the card it documents.
+   No new type size. The band uses meta for the date and venue line and body
+   for the keynote. The section's --brass appears once, as the hairline above
+   the chapter heading.
 
-   At 390 a card of running text cannot sit in a 155px column, so every text
-   card and every landscape frame goes full width, and the interlocked block is
-   the four portrait frames from the service outing, sitting directly under the
-   card that documents them, each caption carrying its own subject, date and
-   place.
+   THE BENTO. Seven cards. The band is full width above everything.
 
-   Heights are earned. The evening cards run 604 / 728 / 604 / 480 / 728 in the
-   order they are held: 7 July and 5 August each carry four named people with
-   their full titles, where the 3 August outing carries one. */
+     1440, six half-width cards, and each column is one event:
+       column 1   the replica 4 (480)   the Spanish evening 3 (356)   the sanctuary 6 (728)
+       column 2   the van door 6 (728)  the outing 2 (232)            the shelter 5 (604)
+     Column 1 breaks at rows 5 and 8, column 2 at 7 and 9. Nothing coincides,
+     both columns run 13 rows and end level. Left is 30 July at St Monica,
+     right is 3 August with the Missionaries of Charity, each with its text
+     card sitting directly under its own first photograph.
+
+     390, four half-width photographs, the two text cards full width above and
+     below them because a 155px column cannot hold running text:
+       column 1   the replica 2 (232)   the van door 3 (356)
+       column 2   the sanctuary 3 (356) the shelter 2 (232)
+     Column 1 breaks at row 3, column 2 at row 4; both run 5 rows. The two
+     shroud frames read across the top, directly under the card that describes
+     them, and the two service frames across the bottom, directly above theirs.
+
+   Every frame gets boxes of similar shape at the two widths: 1.37 against 1.02
+   for the replica, 0.87 against 0.56 for the sanctuary, 0.87 against 0.56 for
+   the van door, 1.06 against 1.02 for the shelter. Nothing changes by more
+   than 1.6x. */
 
 #record{padding-block:8px 56px}
 #record figure{margin:0}
@@ -455,69 +567,63 @@ button{font:inherit;color:inherit}
 .rc__h{margin-bottom:22px}
 .rc__lead{color:var(--muted);text-wrap:pretty}
 
-/* ── an evening ────────────────────────────────────────────────── */
+/* ── the poster band ────────────────────────────────────────────
+   Full width at both breakpoints. Three posters across at 1440, stacked at
+   390 where a third of 326px would put the poster's own body copy under 4px.
+   The card is a flex column rather than the usual centred one: the band is
+   filled by what it holds, so there is no slack to split. */
+.rc__band{grid-column:1/-1;padding:28px 24px}
+.rc__bk{margin-bottom:22px}
+.rc__posters{list-style:none;margin:0;padding:0;display:grid;gap:34px}
+.rc__poster img{width:100%;height:auto}
+.rc__pd{margin-top:14px;color:var(--on-ink-dim)}
+.rc__pd .pd__v::before{content:" \00b7 "}
+.rc__pw{margin-top:6px;text-wrap:pretty}
+
+/* ── the two evenings that are not lecture nights ──────────────── */
 .rc__ev{display:flex;flex-direction:column;padding:28px 24px}
 .rc__k{margin-bottom:14px}
 .rc__d{color:var(--muted)}
 .rc__t{margin-top:2px}
-.rc__sub{color:var(--muted);margin-top:10px;text-wrap:pretty}
-.rc__at{margin-top:14px;text-wrap:pretty}
-.rc__n{margin-top:8px;font-weight:500}
+.rc__at{margin-top:14px;text-wrap:pretty;color:var(--muted)}
 
-.rc__who{margin-top:18px;padding-top:18px;border-top:1px solid var(--paper)}
-.rc__role{margin-bottom:4px}
-.rc__p{color:var(--muted);text-wrap:pretty}
-.rc__nm{color:var(--ink);font-weight:500}
-.rc__p + .rc__p{margin-top:12px}
-.rc__p + .rc__role{margin-top:16px}
+/* Two short cards in a fine row track: the smallest span that holds 26 words
+   still buys more height than 26 words need, so the internal margins are opened
+   until the block fills the span it is on. That is the sanctioned move — a
+   space-between here is what produced 276px voids in the first round. */
+.rc-t3 .rc__k{margin-bottom:32px}
+.rc-t3 .rc__t{margin-top:10px}
+.rc-t3 .rc__at{margin-top:34px}
+.rc-t4 .rc__k{margin-bottom:40px}
+.rc-t4 .rc__t{margin-top:10px}
+.rc-t4 .rc__at{margin-top:48px}
 
 /* ── photographs: frame and caption, never one over the other ──── */
 .rc__shot{display:flex;flex-direction:column;background:var(--card)}
 .rc__shot img{flex:1 1 0;min-height:0;width:100%;height:auto;object-fit:cover}
 .rc__cap{flex:0 0 auto;padding:12px 12px 14px;color:var(--muted)}
 
-/* Crops. Four of these were cut at the source rather than here, because
-   object-fit can only take a centred band of whatever it is handed:
-   p1 is the 2 June negative cut to about fifteen people, because fifty faces
-      across a 584px box is a grey smear;
-   p3 is the replica on its stand, which is the frame the dossier names for
-      this evening — the aisle frame spent its top quarter on wall, windows
-      and a shut door and its bottom-left on an out-of-focus head;
-   s2 starts to the right of the three heads that the negative itself cuts
-      against its top edge, and keeps the one sister whose face is whole;
-   s4 is cut to the sister in profile, because uncut the frame is three backs.
-   p2 keeps its top edge so no head is cut. p4 pushes the teal wall out of
-   frame. s1 and s3 are uprights in upright boxes and need no help. */
-.rc-p1 img{object-position:50% 50%}
-.rc-p2 img{object-position:50% 6%}
-.rc-p3 img{object-position:50% 50%}
-.rc-p4 img{object-position:50% 74%}
-.rc-s1 img{object-position:50% 22%}
-.rc-s2 img{object-position:50% 40%}
-.rc-s3 img{object-position:52% 26%}
-.rc-s4 img{object-position:50% 34%}
+/* Crops, chosen per frame and per breakpoint where the box changes shape:
+   p3 the replica on its stand, held left of centre so the stand is whole;
+   p5 the reredos and the altar at 1440, and at 155px the altar alone, because
+      a nave squeezed to 0.56 is otherwise a strip of pew ends;
+   s1 the sister and the van door, the loose ground dropped off the foot;
+   s4 the sister in profile at the shelter mouth, because uncut the frame is
+      three backs. */
+.rc-p3 img{object-position:22% 50%}
+.rc-p5 img{object-position:50% 34%}
+.rc-s1 img{object-position:50% 26%}
+.rc-s4 img{object-position:18% 30%}
 
-/* ── placement: 390 ─────────────────────────────────────────────
-   Full width: every text card and every landscape frame — a 155px column
-   cannot hold running text. The interlocked block is the four portrait frames
-   from the service outing, rows 30 to 34: one event, four frames, every
-   caption carrying its own subject, date and place.
-       column 1   the van door 3 rows (356)  then  on the street 2 rows (232)
-       column 2   the shelter  2 rows (232)  then  the handover  3 rows (356) */
+/* ── placement: 390 ───────────────────────────────────────────── */
 .rc__grid > *{grid-column:1/-1}
-.rc-t1{grid-row:1/span 6}
-.rc-p1{grid-row:7/span 3}
-.rc-t2{grid-row:10/span 6}
-.rc-p2{grid-row:16/span 2}
-.rc-t3{grid-row:18/span 5}
-.rc-p3{grid-row:23/span 3}
-.rc-t4{grid-row:26/span 4}
-.rc-s1{grid-column:1;grid-row:30/span 3}
-.rc-s2{grid-column:1;grid-row:33/span 2}
-.rc-s4{grid-column:2;grid-row:30/span 2}
-.rc-s3{grid-column:2;grid-row:32/span 3}
-.rc-t5{grid-row:35/span 7}
-.rc-p4{grid-row:42/span 2}
+.rc__band{grid-row:1/span 12}
+.rc-t3{grid-row:13/span 3}
+.rc-p3{grid-column:1;grid-row:16/span 2}
+.rc-p5{grid-column:2;grid-row:16/span 3}
+.rc-s1{grid-column:1;grid-row:18/span 3}
+.rc-s4{grid-column:2;grid-row:19/span 2}
+.rc-t4{grid-row:21/span 3}
 
 @media (min-width:900px){
   #record{padding-block:16px 104px}
@@ -530,116 +636,77 @@ button{font:inherit;color:inherit}
   .rc__kick{grid-column:1/-1;margin-bottom:0}
   .rc__h{margin-bottom:0}
 
+  .rc__band{padding:36px 40px}
+  .rc__bk{margin-bottom:30px}
+  .rc__posters{grid-template-columns:repeat(3,minmax(0,1fr));gap:36px}
+  .rc__pd{margin-top:18px}
+
   .rc__ev{padding:36px 40px}
   .rc__cap{padding:16px 24px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .rc__k{margin-bottom:18px}
-  .rc__sub{margin-top:12px}
-  .rc__at{margin-top:18px}
-  .rc__who{margin-top:22px;padding-top:22px}
-  .rc__p + .rc__p{margin-top:14px}
-  .rc__p + .rc__role{margin-top:18px}
+  .rc__at{margin-top:20px}
 
-  /* ── placement: 1440. One interlocked block, thirteen half-width cards.
-     column 1 breaks at rows 6, 9, 14, 20, 24, 30;  column 2 at 5, 11, 15, 21,
-     27. Nothing coincides, both columns run 32 rows and end level at 3952px.
+  /* the Spanish evening is set the more openly of the two: its title runs to
+     two lines at 24px where the service card's runs to one, and opening its
+     own margins is what closes the span rather than a space-between. */
+  .rc-t3 .rc__k{margin-bottom:40px}
+  .rc-t3 .rc__t{margin-top:12px}
+  .rc-t3 .rc__at{margin-top:56px}
+  /* at 1440 this card is half width and two rows, not three, so it is set at
+     the section's own rhythm rather than the opened one */
+  .rc-t4 .rc__k{margin-bottom:18px}
+  .rc-t4 .rc__t{margin-top:2px}
+  .rc-t4 .rc__at{margin-top:20px}
 
-     Two things this arrangement is fixing. Every photograph now overlaps the
-     card it documents — the 3 August service card is set between two of its
-     own frames with the other two beside it, where the encampment frame used
-     to have zero overlap with its own card and spend 74% of its height beside
-     the 5 August one. And each column carries text and photographs the whole
-     way down: below the midpoint this was five consecutive photographs in one
-     column against two text cards in the other, which passes the arithmetic
-     and still reads as a picture column beside a copy column. */
+  /* ── placement: 1440 ─────────────────────────────────────────── */
   .rc__grid > *{grid-column:auto}
-  .rc-t1{grid-column:1;grid-row:1/span 5}
-  .rc-p2{grid-column:1;grid-row:6/span 3}
-  .rc-t3{grid-column:1;grid-row:9/span 5}
-  .rc-s2{grid-column:1;grid-row:14/span 6}
-  .rc-t4{grid-column:1;grid-row:20/span 4}
-  .rc-s4{grid-column:1;grid-row:24/span 6}
-  .rc-p4{grid-column:1;grid-row:30/span 3}
+  .rc__band{grid-column:1/-1;grid-row:1/span 5}
 
-  .rc-p1{grid-column:2;grid-row:1/span 4}
-  .rc-t2{grid-column:2;grid-row:5/span 6}
-  .rc-p3{grid-column:2;grid-row:11/span 4}
-  .rc-s1{grid-column:2;grid-row:15/span 6}
-  .rc-s3{grid-column:2;grid-row:21/span 6}
-  .rc-t5{grid-column:2;grid-row:27/span 6}
+  .rc-p3{grid-column:1;grid-row:6/span 4}
+  .rc-t3{grid-column:1;grid-row:10/span 3}
+  .rc-p5{grid-column:1;grid-row:13/span 6}
 
-  /* Two cards set their own internal rhythm, because the same margins that fit
-     three named people leave a band of ground under four. 7 July carries the
-     most people of any card and is set the most openly; 30 July carries one
-     co-host and is set open enough to reach the foot of its four rows. */
-  .rc-t2 .rc__sub{margin-top:16px}
-  .rc-t2 .rc__at{margin-top:26px}
-  .rc-t2 .rc__n{margin-top:12px}
-  .rc-t2 .rc__who{margin-top:34px;padding-top:34px}
-  .rc-t2 .rc__p + .rc__p{margin-top:22px}
-  .rc-t2 .rc__p + .rc__role{margin-top:26px}
+  .rc-s1{grid-column:2;grid-row:6/span 6}
+  .rc-t4{grid-column:2;grid-row:12/span 2}
+  .rc-s4{grid-column:2;grid-row:14/span 5}
 
-  .rc-t4 .rc__at{margin-top:22px}
-  .rc-t4 .rc__who{margin-top:28px;padding-top:28px}
-  .rc-t4 .rc__p + .rc__p{margin-top:18px}
-  .rc-t4 .rc__p + .rc__role{margin-top:22px}
-
-  .rc-t3 .rc__sub{margin-top:16px}
-  .rc-t3 .rc__at{margin-top:22px}
-  .rc-t3 .rc__who{margin-top:26px;padding-top:26px}
-  .rc-t3 .rc__p + .rc__p{margin-top:18px}
+  .rc-p5 img{object-position:50% 50%}
 }
-
 /* ── piece 3: an evening ── */
-/* No new type size. The section uses chapter (the section head and the three
-   numerals), head (the chaplain's name and the institution run), lead (the
-   quotations), body and meta. Zero italics — piece 1 owns the page's one. The
-   accent appears twice: the hairline above the chapter, and the separator
-   between institution names, set in --brass-text (4.81:1 on card) rather than
-   --brass (2.75:1 on card, which would fail even at 24px).
+/* No new type size. The section uses chapter (the section head and the four
+   numerals), head (the chaplain's name and the attendee's), lead (the
+   quotation), body and meta. Zero italics — piece 1 owns the page's one. The
+   accent appears once, as the hairline above the chapter.
 
-   Four photographs, none of them a frame pieces 1 or 2 already used. Two are
-   new derivatives built through tools/build-assets.py from source frames that
-   had no graded output yet: reception-two (DawmlieFIHm_08) and room-back
-   (DbuObFxFJY3_04). The alternative was reprinting reception and qa-hands under
-   captions that read almost word for word like the ones they already carry
-   elsewhere on this page.
+   TWO CARDS ARE GONE and one quotation with them, all under mechanism 8. The
+   institutions card was a label plus eleven organisation names set at reading
+   size in the middle of the page; the names now run as one caps line in the
+   footer, where a credential list belongs. The boilerplate card restated in
+   34 words what the hero's own lead already says in one clause — that this is
+   run in partnership with the Archdiocese — so it was the page paying twice.
+   And the attendee's second quotation said less than her first; two quotations
+   from one person is a transcript, not evidence.
 
-   THE BENTO. Eight cards, every one on explicit rows. Two full-width cards sit
-   outside the interlocked block — the timeline above it, the institutions below
-   it — because after a span-2 card both columns resume on the same row and that
-   is a shared boundary by construction.
+   THE BENTO. Seven cards. The timeline is full width above the interlocked
+   block, because after a span-2 card both columns resume on the same row and
+   that is a shared boundary by construction.
 
-     1440, six half-width cards, block rows 3–12
-       column 1   the reception 3 (356)  the talk  3 (356)  the quotes 4 (480)
-       column 2   Fr. Tom       4 (480)  the panel 3 (356)  the seats  3 (356)
-     Column 1 breaks at rows 6 and 9, column 2 at rows 7 and 10. Nothing
-     coincides; both columns run 10 rows, 1224px.
+     1440, six half-width cards, block rows 4–15
+       column 1   before the talk 4 (480)  Fr. Tom   3 (356)  the panel 5 (604)
+       column 2   the talk        5 (604)  the quote 4 (480)  the back  3 (356)
+     Column 1 breaks at rows 8 and 11, column 2 at 9 and 13. Nothing coincides;
+     both columns run 12 rows, 1480px. Each column alternates photograph and
+     text so neither reads as a picture column beside a copy column.
 
-     390, four half-width photographs, block rows 5–9
-       column 1   the reception 2 (232)   the panel 3 (356)
-       column 2   the talk      3 (356)   the seats 2 (232)
-     Column 1 breaks at row 7, column 2 at row 8; both run 5 rows, 604px. The
-     four frames are contiguous in the DOM and read left to right, top to
-     bottom, in the order of the night. At 155px a column cannot hold running
-     text, so the timeline, the chaplain, the quotations and the institutions
-     are all full width there.
+     390, four half-width photographs, block rows 6–10
+       column 1   before the talk 2 (232)   from the back 3 (356)
+       column 2   the talk        3 (356)   the panel     2 (232)
+     Column 1 breaks at row 8, column 2 at row 9; both run 5 rows, 604px. At
+     155px a column cannot hold running text, so the timeline, the chaplain and
+     the quotation are all full width there.
 
-   HEIGHTS. All four photographs are the same height at 1440, because all four
-   hold the same material: one frame and one one-line caption. The variation in
-   that block comes from the two cards that genuinely hold more — the chaplain
-   and the quotations, both 480 against the photographs' 356.
-
-   At 390 that is not available. The only cards that can take a 155px cell are
-   photographs, and two columns of equal cards share every interior boundary,
-   which is a two-column grid rather than a bento. So the block there carries
-   two cell shapes, and which frame gets which is decided by the subject rather
-   than by the file: the church interior and the panellist with the microphone
-   read as uprights and take the tall cells; the pair in conversation and the
-   room seen from the back need width and take the short ones.
-
-   Every card was measured before its span was chosen. The largest slack in the
-   section is 13.1% of a card's height, under the 15% the system allows, and
-   nothing is clipped at any width between 390 and 1600. */
+   HEIGHTS. The two text cards are sized from what they now hold: the chaplain
+   is 23 words against the quotation's 46, and they are 356 against 480. */
 
 #evening{padding-block:8px 56px}
 #evening figure{margin:0}
@@ -665,8 +732,8 @@ button{font:inherit;color:inherit}
    30 minutes — so the spacing agrees with the durations instead of putting
    three numerals at an even pitch and reading as three statistics. The rule
    above the row is what makes them one sequence rather than three cards. */
-.tl__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--paper);padding-top:26px}
-.tl__i + .tl__i{margin-top:22px}
+.tl__list{list-style:none;margin:0;padding:0;border-top:1px solid var(--paper);padding-top:34px}
+.tl__i + .tl__i{margin-top:26px}
 .tl__i--120 + .tl__i{margin-top:66px}       /* two hours, and it looks like it */
 .tl__n{display:flex;align-items:baseline;gap:9px}
 .tl__ap{color:var(--muted)}
@@ -675,42 +742,17 @@ button{font:inherit;color:inherit}
 /* ── the chaplain ──────────────────────────────────────────────── */
 .pr__nm{margin-top:2px}
 .pr__t{color:var(--muted);text-wrap:pretty;margin-top:38px}
+.pr__t + .pr__t{margin-top:20px}
 
 /* ── what an attendee said. Reproduced, not authored. ────────────
-   The name leads the card at card-head size and the card says outright that
-   both quotations are hers. Before this the two quotes shared one attribution
-   in the section's smallest type, 74px below the second of them, under a
-   label that read "An attendee" in the singular. */
+   The name leads the card at card-head size, and there is one quotation now,
+   so the attribution under it is a single line naming the paper that reported
+   it rather than a note explaining which of two quotes belongs to whom. */
 .sy__nm{margin-top:2px}
-.sy__role{color:var(--muted);margin-top:8px;text-wrap:pretty}
-.sy__q{margin:0}
+.sy__role{color:var(--muted);margin-top:14px;text-wrap:pretty}
+.sy__q{margin:0;margin-top:44px}
 .sy__q p{font-size:var(--t-lead);line-height:var(--lh-lead);text-wrap:pretty}
-.sy__q{margin-top:30px}
-.sy__src{margin-top:32px;text-wrap:pretty}
-
-/* ── the institutions, set as typography. No logo file on disk is
-      anything better than a crop out of a poster JPEG. ───────────
-   The organisation's own statement of what it is now carries the display
-   face and full ink; the partner list carries the body scale in secondary
-   ink. It was the other way round, which put a credential list above the
-   substantive claim. The names are bound with non-breaking spaces: a list
-   whose only job is legibility of names was breaking five lines of seven
-   through the middle of one. */
-.in__q{margin:0}
-.in__q p{text-wrap:pretty}
-.in__b{margin-top:30px}
-.in__list{
-  list-style:none;margin:0;padding:0;text-wrap:pretty;
-  font-size:var(--t-lead);line-height:var(--lh-lead);color:var(--muted);
-}
-.in__o{display:inline}
-/* the only name in the list with a hyphen in it. A hyphen is a break
-   opportunity that a non-breaking space cannot close, and this list exists to
-   keep names whole. */
-.in__o--nb{white-space:nowrap}
-/* the separator hangs off the END of the name before it, bound by a
-   non-breaking space, so a line never opens on a floating dot */
-.in__o:not(:last-child)::after{content:"\00a0\00b7";color:var(--brass-text)}
+.sy__src{margin-top:58px;text-wrap:pretty}
 
 /* ── photographs: frame and caption, never one over the other ──── */
 .ev3__fr{display:flex;flex-direction:column;background:var(--card)}
@@ -736,19 +778,18 @@ button{font:inherit;color:inherit}
 .ev-p4 img{object-position:50% 40%}
 
 /* ── placement: 390 ──────────────────────────────────────────────
-   The timeline, the chaplain, the quotations and the institutions are all
-   full width: a 155px column cannot hold running text. The interlocked block
-   is the four photographs, reading left to right in the order of the night,
-   with the two upright cells taking the two frames cut upright for them. */
+   The timeline, the chaplain and the quotation are full width: a 155px column
+   cannot hold running text. The interlocked block is the four photographs,
+   reading left to right in the order of the night, with the two upright cells
+   taking the two frames cut upright for them. */
 .ev3__grid > *{grid-column:1/-1}
 .ev3__tl{grid-row:1/span 5}
 .ev-p1{grid-column:1;grid-row:6/span 2}
 .ev-p2{grid-column:2;grid-row:6/span 3}
 .ev-p4{grid-column:1;grid-row:8/span 3}
 .ev-p3{grid-column:2;grid-row:9/span 2}
-.ev3__pr{grid-row:11/span 5}
-.ev3__sy{grid-row:16/span 5}
-.ev3__in{grid-row:21/span 8}
+.ev3__pr{grid-row:11/span 3}
+.ev3__sy{grid-row:14/span 4}
 
 @media (min-width:900px){
   #evening{padding-block:16px 104px}
@@ -781,63 +822,60 @@ button{font:inherit;color:inherit}
   .ev3__tl .ev3__k{margin-bottom:40px}
   .tl__i--end .tl__t{padding-right:0}
 
-  .pr__t{margin-top:40px}
+  .ev3__pr .ev3__k{margin-bottom:30px}
+  .pr__t{margin-top:58px}
+  .pr__t + .pr__t{margin-top:26px}
   .sy__role{margin-top:10px}
   .sy__q{margin-top:30px}
-  .sy__src{margin-top:34px}
-
-  /* the boilerplate and the institution run sit side by side, so the card is
-     three rows rather than five and neither half is left standing alone.
-     align-content centres the pair in the span: this card is a grid, which
-     was overriding the flex centring every other card gets, and it measured
-     36px of ground above its content against 77px below. */
-  .ev3__in{
-    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    column-gap:56px;align-items:start;align-content:center;
-  }
-  .in__b{margin-top:0}
+  .sy__src{margin-top:32px}
 
   /* ── placement: 1440 ───────────────────────────────────────────
-     The timeline is full width above the block and the institutions full
-     width below it, because after a span-2 card both columns resume on the
-     same row and that is a shared boundary by construction. The block is six
-     half-width cards, three to a column, each column alternating photograph
-     and text so neither reads as a column of pictures beside a column of
-     copy. Column 1 breaks at rows 8 and 12, column 2 at 9 and 13. Both run
-     12 rows and end level. */
-  /* 1440: the box is wide enough for both women, so it holds both. At 155px
-     it holds two of the three people and neither is bisected. */
+     The timeline is full width above the block, because after a span-2 card
+     both columns resume on the same row and that is a shared boundary by
+     construction. The block is six half-width cards, three to a column, each
+     column alternating photograph and text. Column 1 breaks at rows 8 and 11,
+     column 2 at 9 and 13. Both run 12 rows and end level. */
+  /* 1440: the box is wide enough for both women, so it holds both. At 155px it
+     holds two of the three people and neither is bisected. */
   .ev-p1 img{object-position:28% 40%}
 
   .ev3__grid > *{grid-column:auto}
   .ev3__tl{grid-column:1/-1;grid-row:1/span 3}
 
   .ev-p1  {grid-column:1;grid-row:4/span 4}
-  .ev3__pr{grid-column:1;grid-row:8/span 4}
-  .ev-p3  {grid-column:1;grid-row:12/span 4}
+  .ev3__pr{grid-column:1;grid-row:8/span 3}
+  .ev-p3  {grid-column:1;grid-row:11/span 4}
 
   .ev-p2  {grid-column:2;grid-row:4/span 5}
-  .ev3__sy{grid-column:2;grid-row:9/span 4}
-  .ev-p4  {grid-column:2;grid-row:13/span 3}
-
-  .ev3__in{grid-column:1/-1;grid-row:16/span 3}
+  .ev3__sy{grid-column:2;grid-row:9/span 3}
+  .ev-p4  {grid-column:2;grid-row:12/span 3}
 }
+/* ── piece 4: the close, and it is the ink chapter ── */
+/* This section is now the second of mechanism 9's non-ground events, and the
+   larger of the two: the whole of it sits on --ink, full bleed, the way
+   claude.com/programs/startups closes on black. Nothing about the type scale
+   changes across the boundary — chapter, head, lead, body and meta, the same
+   five roles the paper sections use, in --on-ink and --on-ink-dim.
 
-/* ── piece 4: close ── */
-/* No new type size. The section uses chapter (the section head), head (the two
-   exit titles and every question), lead (the section lead and the footer
-   wordmark), body and meta. Zero italics — piece 1 owns the page's one.
+   Every pair on the dark ground was measured rather than eyeballed:
+     --on-ink on --ink            16.24
+     --on-ink on --card-ink       14.65
+     --on-ink-dim on --ink         8.28
+     --on-ink-dim on --card-ink    7.47
+     --ink on --brass (RSVP pill)  5.34
+     --on-ink on --brass-text (its hover)  5.31
+   The focus ring is --brass, 5.34 on ink, because --brass-text is 3.06 there
+   and a ring is the one thing on the page a keyboard user cannot do without.
+   Hairlines inside a card are --muted: on paper the divider is a *lighter*
+   hairline on a slightly darker card, and --muted is the same step in the
+   other direction, 2.2 against --card-ink.
 
-   The accent appears as a hairline twice, above the chapter and above the
-   footer, and as one fill, the RSVP pill. Head and pill sit in the same band;
-   the footer rule is ~2000px below them, so no screen carries more than two.
-
-   THE TWO EXITS. They are one card, not two, because the choice between them
-   is exclusive: a reader takes the September date or does not. Splitting them
-   into two competing cards would put the same weight on both. The card is full
-   width, which also keeps it out of the interlocked block — after a span-2 card
-   both columns resume on the same row, and that is a shared boundary by
-   construction.
+   THE CARD GROUP CARRIES THE POSTER. The exits card holds the client's own
+   September title card as its first cell, so the thing a reader is being asked
+   to attend is shown rather than described. At 1440 it is three cells across —
+   the plate, the Luma exit, the text exit; at 390 it stacks with the plate on
+   top, which is also what keeps the run from the evening's last photograph to
+   the close's first image under two screens.
 
    THE QUESTIONS CARD SITS OUTSIDE THE BENTO ON PURPOSE. `.bento > *` is
    `overflow:hidden` over a fixed row track, so a card whose height changes when
@@ -846,111 +884,109 @@ button{font:inherit;color:inherit}
 
    THE BENTO. Five cards. The exits card is full width above the block; the
    block itself is four photographs, which is what the interlock needs at 390
-   where a 155px column cannot hold running text. A photograph's subject is its
-   content, so the spans vary by subject and the two spans a frame gets are
-   chosen to be SIMILAR in aspect at the two widths:
+   where a 155px column cannot hold running text.
 
-     1440, block rows 4–13 (both columns 1224px, level)
-       column 1   a panellist   4 (480)   the sanctuary 6 (728)   breaks 852/868
-       column 2   the outing    6 (728)   after the talk 4 (480)  breaks 1100/1116
-     390, block rows 8–12 (both columns 604px, level)
-       column 1   a panellist   2 (232)   the sanctuary 3 (356)   breaks 1100/1116
-       column 2   the outing    3 (356)   after the talk 2 (232)  breaks 1224/1240
-
-   Nothing interior coincides at either width. The two frames that need width —
-   a panellist with a microphone, and twelve people posed shoulder to shoulder —
-   take the landscape cells, 1.37 at 1440 against 1.03 at 390. The two that read
-   as uprights — a church sanctuary, a street shot in portrait — take the tall
-   cells, 0.87 against 0.56. Piece 3 failed for running one frame through 1.94
-   and 0.51, which lost a panellist out of a photograph captioned "The panel";
-   nothing here changes by more than 1.6x across the breakpoint.
-
-   CAPTIONS. Three parts, and all three render at both breakpoints: what the
-   frame shows, the date, and the venue. One line at 1440, three lines at 390.
-   Dropping the venue on the phone is what makes a photograph read as stock, and
-   two of these four share a date, so the venue and the subject are what keep the
-   captions distinct. One caption rule and one card padding across the section.
-
-   PHOTOGRAPHS. Three of the four frames had no graded output yet and were built
-   through tools/build-assets.py: panel-answer (DawmlieFIHm_04), after-talk
-   (DawmlieFIHm_02) and serve-arrive (DbmTXzlGLPl_02). shroud-pews was already
-   built and had not been printed. Nothing here repeats a frame from pieces 1–3.
+     1440, block rows 5–14 (both columns 10 rows, 1180px)
+       column 1   the room 4 (480)      the outing   6 (728)
+       column 2   the keynote 6 (728)   a panellist  4 (480)
+     390, block rows 12–16 (both columns 5 rows, 604px)
+       column 1   the room 2 (232)      the outing   3 (356)
+       column 2   the keynote 3 (356)   a panellist  2 (232)
+   Column 1 breaks at 4 rows, column 2 at 6, and at 390 at 2 against 3. Nothing
+   interior coincides at either width. The two frames that need width — a room
+   of seated people, and a panellist with a microphone — take the landscape
+   cells, 1.37 at 1440 against 1.02 at 390. The two that read as uprights — a
+   priest standing at a microphone, sisters walking into an encampment — take
+   the tall cells, 0.87 against 0.56. Nothing changes by more than 1.6x.
 
    THE FORM IS HONEST. data-endpoint is empty until the client deploys
-   backend/Code.gs, and main.js never reports success while it is. The visible
-   copy promises one message and nothing else, which is all the endpoint would
-   ever be used for. */
+   backend/Code.gs, and main.js never reports success while it is. */
 
-#close{padding-block:8px 56px}
+#close{padding-block:0}
 #close figure{margin:0}
+.band--ink{padding-block:64px 64px}
 
-/* ── section head: the rule, the chapter, small type beside it ──
-   The section's largest type gets more air under it than a 12px label gets
-   above it. Piece 3 was failed for running 48px above the head and 46px below
-   it, which gave the head no band of its own. */
+/* ── section head: the rule, the chapter, small type beside it ── */
 .cl__head{border-top:1px solid var(--brass);padding-top:26px;margin-bottom:44px}
 .cl__kick{margin-bottom:20px}
 .cl__h{margin-bottom:22px}
 /* balance, not pretty: these blocks run two to five lines and pretty leaves a
    quarter-measure last line, which is what a critic failed on piece 3's deck. */
-.cl__lead{color:var(--muted);text-wrap:balance}
+.cl__lead{color:var(--on-ink-dim);text-wrap:balance}
 
 /* one card padding for the section: the exits card and the questions card */
 #close .card{padding:28px 24px}
 .cl__k{margin-bottom:14px}
+
+/* ── the poster plate inside the exits card ─────────────────────
+   The title card is printed at its native 1:1 with no object-fit: it is a
+   graphic, and a graphic cropped to fill a row track is a graphic with its own
+   border cut off. Its caption is the section's caption rule, so the strip is
+   the same height as every photograph's. */
+.cl__plate{display:flex;flex-direction:column}
+/* The one crop on a poster anywhere on the page, and it is a repair rather
+   than a composition: the square Instagram export cuts its own last line mid
+   word, so the bottom 14% is trimmed off and nothing else is touched. */
+.cl__plate img{width:100%;height:auto;aspect-ratio:1/0.86;object-fit:cover;object-position:50% 0}
 
 /* ── the two exits ─────────────────────────────────────────────── */
 /* stacked at 390 and centred in the span, so whatever slack the span bought
    splits above and below instead of pooling at the foot */
 .cl__acts{display:flex;flex-direction:column;justify-content:center}
 .act{display:flex;flex-direction:column;align-items:flex-start}
-.act + .act{margin-top:40px;padding-top:40px;border-top:1px solid var(--paper)}
+.cl__plate + .act,.act + .act{margin-top:36px;padding-top:36px;border-top:1px solid var(--muted)}
 .act__t{margin-top:2px}
-.act__b{color:var(--muted);margin-top:16px;text-wrap:balance}
+.act__b{color:var(--on-ink-dim);margin-top:16px;text-wrap:balance}
 .act__go{margin-top:32px;transition:background-color .18s ease}
 .act__go:hover{background:var(--brass-text);color:var(--on-ink)}
 
-/* ── the phone field ───────────────────────────────────────────── */
+/* ── the phone field ─────────────────────────────────────────────
+   On paper the field is the page ground inside a card; on ink it is the same
+   relation, --ink inside --card-ink, and its edge is what makes it a field.
+   Placeholder and border are both --on-ink-dim: 8.28 on the field's own
+   ground, so the hint clears AA and the border clears the 3:1 a control needs. */
 .tel{align-self:stretch;margin-top:30px}
 .tel__l{display:block;margin-bottom:10px}
 .tel__row{display:flex;flex-direction:column;gap:12px}
 .tel__in{
-  flex:1 1 auto;min-width:0;min-height:48px;padding:0 20px;
-  border:1px solid var(--muted);border-radius:999px;
-  background:var(--paper);color:var(--ink);
+  /* min-width in ch, not 0: at 1440 the exits card's right column left this
+     input ~100px of content box and the placeholder clipped to "(415) 555 0" —
+     which reads as a bug in the page's second most important control. 16ch
+     holds the full placeholder; when the column cannot give it 16ch plus the
+     button, the row wraps instead of the text clipping. */
+  flex:1 1 auto;min-width:16ch;min-height:48px;padding:0 20px;
+  border:1px solid var(--on-ink-dim);border-radius:999px;
+  background:var(--ink);color:var(--on-ink);
   font-family:inherit;font-size:var(--t-body);line-height:var(--lh-body);
 }
-.tel__in::placeholder{color:var(--muted);opacity:1}
-.tel__go{flex:0 0 auto}
-.signup__msg{margin-top:16px;color:var(--muted);text-wrap:pretty}
-.signup__msg[data-state="err"],.signup__msg[data-state="ok"]{color:var(--ink)}
+.tel__in::placeholder{color:var(--on-ink-dim);opacity:1}
+/* the secondary action, so it is the ground inverted rather than the accent:
+   --brass is spent on the RSVP pill and the two section rules, and mechanism 1
+   allows the accent twice a screen. */
+.tel__go{flex:0 0 auto;background:var(--on-ink);color:var(--ink)}
+.signup__msg{margin-top:16px;color:var(--on-ink-dim);text-wrap:pretty}
+.signup__msg[data-state="err"],.signup__msg[data-state="ok"]{color:var(--on-ink)}
 
 /* ── photographs: frame and caption, never one over the other ──── */
-.cl__fr{display:flex;flex-direction:column;background:var(--card)}
+.cl__fr{display:flex;flex-direction:column}
 .cl__fr img{flex:1 1 0;min-height:0;width:100%;height:auto;object-fit:cover}
-.cl__cap{flex:0 0 auto;padding:13px 14px 15px;color:var(--muted)}
-.c4__s,.c4__d,.c4__v{display:block}
+.cl__cap{flex:0 0 auto;padding:13px 14px 15px;color:var(--on-ink-dim)}
 
-/* Crops, one per frame. The spans are chosen so each frame gets boxes of
-   SIMILAR aspect at both breakpoints, because re-pouring one photograph through
-   two very different boxes destroys it. The two landscape frames run 1.37 at
-   1440 against 1.03 at 390; the two uprights run 0.87 against 0.56. Every crop
-   is therefore horizontal at one width and horizontal at the other, or vertical
-   at both, so the same picture survives the breakpoint:
-     f1 the panellist and the microphone, both men kept at the edges
-     f2 the sisters and the shelter, the loose ground dropped off the foot
-     f3 the reredos and the altar, centred, side altars trimmed evenly
-     f4 the middle of the group, cut between people and never through a face */
-.cl-f1 img{object-position:46% 50%}
-.cl-f2 img{object-position:34% 4%}
-.cl-f3 img{object-position:50% 50%}
-.cl-f4 img{object-position:40% 50%}
+/* Crops, one per frame.
+   f1 the seated rows, cut above the empty chairs at the front
+   f2 the priest at the microphone, who is the vertical in a 1.9 negative
+   f3 the sisters and the shelter, the loose ground dropped off the foot
+   f4 the panellist and the microphone, both neighbours kept at the edges */
+.cl-f1 img{object-position:50% 56%}
+.cl-f2 img{object-position:26% 16%}
+.cl-f3 img{object-position:34% 4%}
+.cl-f4 img{object-position:46% 50%}
 
 /* ── the questions ─────────────────────────────────────────────── */
-.cl__qs{margin-top:var(--gap);border-radius:var(--radius)}
-.qs__note{color:var(--muted);text-wrap:balance;margin-bottom:26px}
-.qs{border-top:1px solid var(--paper)}
-.q{border-bottom:1px solid var(--paper)}
+.cl__qs{margin-top:var(--gap);border-radius:var(--radius);background:var(--card-ink)}
+.qs__note{color:var(--on-ink-dim);text-wrap:balance;margin-bottom:26px}
+.qs{border-top:1px solid var(--muted)}
+.q{border-bottom:1px solid var(--muted)}
 /* the disclosure mark is two hairlines, drawn in CSS. It is a control
    affordance in the same language as the section rules, not an icon: the
    section ships zero svg, zero icon fonts and zero emoji. */
@@ -959,11 +995,11 @@ button{font:inherit;color:inherit}
   padding:16px 40px 16px 0;
 }
 .q__q::-webkit-details-marker{display:none}
-.q__q::before,.q__q::after{content:"";position:absolute;background:var(--ink)}
+.q__q::before,.q__q::after{content:"";position:absolute;background:var(--on-ink)}
 .q__q::before{right:2px;top:50%;width:15px;height:1px;margin-top:-1px}
 .q__q::after{right:9px;top:50%;width:1px;height:15px;margin-top:-8px;transition:opacity .18s ease}
 .q[open] .q__q::after{opacity:0}
-.q__a{color:var(--muted);padding:0 40px 20px 0;text-wrap:pretty}
+.q__a{color:var(--on-ink-dim);padding:0 40px 20px 0;text-wrap:pretty}
 
 /* ── the footer ────────────────────────────────────────────────── */
 .cl__foot{
@@ -982,16 +1018,39 @@ button{font:inherit;color:inherit}
   text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;
 }
 
+/* ── the institutions, set as typography ────────────────────────
+   Eleven names used to be a card in the middle of the page, at reading size,
+   under a label of its own. A credential list is footer material: it is here
+   as one caps line, the names bound with non-breaking spaces so a list whose
+   only job is legibility of names never breaks one through the middle. The
+   separator hangs off the END of the name before it, so a line never opens on
+   a floating dot. */
+.foot__orgk{margin-top:36px;margin-bottom:12px}
+.foot__orgs{list-style:none;margin:0;padding:0;text-wrap:pretty}
+/* A16, found by tools/audit.mjs: "Dominican School of Philosophy & Theology"
+   bound with non-breaking spaces measures 296px at 11px caps, and at 320 the
+   column is 256px. An atom wider than its column cannot wrap, so it pushed the
+   DOCUMENT 8px past the viewport — a page-wide horizontal scrollbar produced by
+   one institution's name. overflow-wrap is emergency-only by definition: it
+   fires solely when a run cannot fit a line at all, so it never triggers at 390
+   (326px column) or anywhere above, and the nbsp binding that keeps the other
+   names whole is untouched. The name breaks instead of the page. */
+.foot__org{display:inline;overflow-wrap:break-word}
+/* the only name in the list with a hyphen in it. A hyphen is a break
+   opportunity that a non-breaking space cannot close. */
+.foot__org--nb{white-space:nowrap}
+.foot__org:not(:last-child)::after{content:"\00a0\00b7"}
+
 /* ── placement: 390 ────────────────────────────────────────────── */
 .cl__grid > *{grid-column:1/-1}
-.cl__acts{grid-row:1/span 7}
-.cl-f1{grid-column:1;grid-row:8/span 2}
-.cl-f2{grid-column:2;grid-row:8/span 3}
-.cl-f3{grid-column:1;grid-row:10/span 3}
-.cl-f4{grid-column:2;grid-row:11/span 2}
+.cl__acts{grid-row:1/span 9}
+.cl-f1{grid-column:1;grid-row:10/span 2}
+.cl-f2{grid-column:2;grid-row:10/span 3}
+.cl-f3{grid-column:1;grid-row:12/span 3}
+.cl-f4{grid-column:2;grid-row:13/span 2}
 
 @media (min-width:900px){
-  #close{padding-block:16px 88px}
+  .band--ink{padding-block:96px 88px}
 
   .cl__head{
     display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
@@ -1005,42 +1064,36 @@ button{font:inherit;color:inherit}
   #close .card{padding:36px}
   .cl__k{margin-bottom:18px}
 
-  /* the two exits sit side by side, divided by a hairline. Tops are aligned
-     rather than centred: two offers read as a pair only when their labels
-     start on one line. */
+  /* the plate and the two exits sit across the card, divided by hairlines.
+     Tops are aligned rather than centred: three cells read as one group only
+     when their first lines start together. */
   .cl__acts{
-    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    align-items:start;justify-content:normal;
+    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);
+    align-items:start;align-content:center;justify-content:normal;
   }
-  .cl__acts .act:first-child{padding-right:56px}
-  .act + .act{
-    margin-top:0;padding-top:0;padding-left:56px;
-    border-top:0;border-left:1px solid var(--paper);
+  .cl__plate + .act,.act + .act{
+    margin-top:0;padding-top:0;padding-left:48px;
+    border-top:0;border-left:1px solid var(--muted);
   }
+  .cl__plate,.cl__acts .act:first-of-type{padding-right:48px}
   .act__b{margin-top:18px}
   .act__go{margin-top:30px}
   .tel{margin-top:26px}
-  .tel__row{flex-direction:row;align-items:center}
-  /* The half that holds only a link runs shorter than the half that holds a
+  .tel__row{flex-direction:row;align-items:center;flex-wrap:wrap}
+  /* The cell that holds only a link runs shorter than the cell that holds a
      label, a field, a button and a message. Its own margins are opened to close
      the gap rather than pushing the button down with margin-top:auto, which is
-     what produced the 276px voids in the first round. Residual after this is
-     23px, 6% of the card. */
-  .cl__acts .act:first-child .act__b{margin-top:24px}
-  .cl__acts .act:first-child .act__go{margin-top:44px}
+     what produced the 276px voids in the first round. */
+  .cl__acts .act:first-of-type .act__b{margin-top:26px}
+  .cl__acts .act:first-of-type .act__go{margin-top:52px}
 
   /* one line at this width: subject, date, venue, all three still present */
   .cl__cap{padding:16px 24px 18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .c4__s,.c4__d,.c4__v{display:inline}
-  .c4__d::before{content:" · "}
-  .c4__v::before{content:", "}
 
   /* The standing note leads the card and the questions run the full width under
      it. Setting the note in a side column instead left 389px of empty ground
-     beside the accordion, 68% of the card. Every row here has ink at both ends,
-     the question and its mark, so the full width is a list rather than a band
-     of nothing. Only the answers are held to a reading measure; run to the card
-     edge they would be 138 characters a line. */
+     beside the accordion, 68% of the card. Only the answers are held to a
+     reading measure; run to the card edge they would be 138 characters a line. */
   .qs__note{margin-bottom:30px;max-width:640px}
   .q__q{padding:20px 48px 20px 0}
   .q__a{padding:0 40px 24px 0;max-width:640px}
@@ -1050,14 +1103,15 @@ button{font:inherit;color:inherit}
     margin-top:64px;padding-top:30px;
   }
   .foot__links{flex-direction:row;gap:44px}
+  .foot__orgk{margin-top:44px}
 
   /* ── placement: 1440 ─────────────────────────────────────────── */
   .cl__grid > *{grid-column:auto}
-  .cl__acts{grid-column:1/-1;grid-row:1/span 3}
-  .cl-f1{grid-column:1;grid-row:4/span 4}
-  .cl-f2{grid-column:2;grid-row:4/span 6}
-  .cl-f3{grid-column:1;grid-row:8/span 6}
-  .cl-f4{grid-column:2;grid-row:10/span 4}
+  .cl__acts{grid-column:1/-1;grid-row:1/span 4}
+  .cl-f1{grid-column:1;grid-row:5/span 4}
+  .cl-f3{grid-column:1;grid-row:9/span 6}
+  .cl-f2{grid-column:2;grid-row:5/span 6}
+  .cl-f4{grid-column:2;grid-row:11/span 4}
 }
 
 /* ── one chassis-level fix, required by A13 and by focus visibility ──
