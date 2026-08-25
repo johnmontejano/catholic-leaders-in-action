@@ -79,6 +79,15 @@
       hz.removeAttribute('data-sc-span');
     }
 
+    /* The record pin holds 3.4 viewport-heights on a desktop wheel. On a phone
+       a full viewport per poster makes the page 17 screens against the
+       skill's 8-to-14 band; 2.6 keeps each poster on screen for most of a
+       thumb-swipe and returns 1.6 screens to the rest of the page. */
+    var rc = document.querySelector('.rc__act');
+    if (rc && !window.matchMedia('(min-width: 900px)').matches) {
+      rc.setAttribute('data-sc-span', '2.6');
+    }
+
     /* The flat band's sizes attribute describes a 132px thumbnail, and with a
        w-descriptor srcset that sets the image's INTRINSIC width. In the deck
        the poster owns most of a viewport, so say so before the engine lays
