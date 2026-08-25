@@ -20,6 +20,7 @@
 <link rel="apple-touch-icon" href="assets/og/apple-touch-icon.png">
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Zodiak-300.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Switzer-400.woff2" crossorigin>
+<link rel="stylesheet" href="scrollcraft.css">
 <link rel="stylesheet" href="styles.css">
 <script>document.documentElement.classList.remove('no-js')</script>
 </head>
@@ -66,16 +67,17 @@
        off an edge outside the type column. -->
   <section id="hero" aria-labelledby="hero-h" data-sc-act="hero">
 
-    <div class="hz">
+    <div class="hz__act" data-sc-act="pin" data-sc-span="1.35">
+    <div class="hz" data-sc-stage>
 
       <div class="hz__type">
-        <p class="t-brow hz__brow"><span>San Francisco</span><span class="hz__bx">Ages 21 to 40</span></p>
-        <h1 class="t-display hz__h" id="hero-h"><span class="hz__l">Take faith</span><span class="hz__l"><em>into the</em> <span class="hz__w">workplace.</span></span></h1>
-        <p class="t-lead hz__lead">Next: <span class="ev__title">The Work of Human Hands</span>. <span class="ev__date">Tuesday 1 September</span>, <span class="ev__where">6:30&nbsp;PM, St&nbsp;Philip the&nbsp;Apostle Church&nbsp;Hall</span>.</p>
-        <a class="btn btn--brass ev__go" href="https://luma.com/me6t2z7s">RSVP for 1 September</a>
+        <p class="t-brow hz__brow" data-sc-cue="0 1 0 0"><span>San Francisco</span><span class="hz__bx">Ages 21 to 40</span></p>
+        <h1 class="t-display hz__h" id="hero-h"><span class="hz__l" data-sc-cue="0 1 0 0">Take faith</span><span class="hz__l" data-sc-cue="0.02"><em>into the</em> <span class="hz__w">workplace.</span></span></h1>
+        <p class="t-lead hz__lead" data-sc-cue="0.10">Next: <span class="ev__title">The Work of Human Hands</span>. <span class="ev__date">Tuesday 1 September</span>, <span class="ev__where">6:30&nbsp;PM, St&nbsp;Philip the&nbsp;Apostle Church&nbsp;Hall</span>.</p>
+        <a class="btn btn--brass ev__go" href="https://luma.com/me6t2z7s" data-sc-cue="0.16">RSVP for 1 September</a>
       </div>
 
-      <figure class="ht" data-onphoto>
+      <figure class="ht" data-onphoto data-sc-cue="0 1 0 0" data-sc-parallax="-0.06">
         <img src="assets/img/reception-760.jpg" width="1080" height="569"
              srcset="assets/img/reception-480.jpg 480w, assets/img/reception-760.jpg 760w, assets/img/reception-1080.jpg 1080w"
              sizes="(min-width:1360px) 420px, calc(100vw - 64px)"
@@ -88,8 +90,9 @@
       </figure>
 
     </div>
+    </div>
 
-    <div class="wrap hero__body">
+    <div class="wrap hero__body" data-sc-in>
 
       <article class="card card--ink ev">
         <p class="t-meta ev__kicker">Speaking on 1 September</p>
@@ -113,7 +116,7 @@
   <section id="record" aria-labelledby="record-h" data-sc-act="record">
     <div class="wrap">
 
-      <div class="sh rc__head">
+      <div class="sh rc__head" data-sc-in>
         <p class="t-meta sh__kick">The record, June to August 2026</p>
         <h2 class="t-chapter sh__h" id="record-h">Four evenings.<br>Four parishes.</h2>
         <p class="sh__lead">The Archdiocese covered two of these evenings and counted about fifty in the room at&nbsp;each.</p>
@@ -125,12 +128,13 @@
            square graphics need. Under 900 it shows one poster as a thumbnail and
            the other two evenings as rows, rather than 1,471px of flyer set at a
            size where the printed body copy is under 4px. -->
-      <div class="rc__stage" data-sc-stage="posters">
+      <div class="rc__act" data-sc-act="pin" data-sc-span="3.4">
+      <div class="rc__stage" data-sc-stage>
       <article class="card card--navy rc__band">
-        <p class="t-chapter rc__bk">Three lecture evenings, every one sold&nbsp;out.</p>
+        <p class="t-chapter rc__bk" data-sc-cue="0 1 0 0">Three lecture evenings, every one sold&nbsp;out.</p>
         <ol class="rc__posters">
 
-          <li class="rc__poster">
+          <li class="rc__poster" data-sc-cue="0 0.42 0 0.35">
             <img src="assets/instagram/DZGufi6JAbk-640.jpg" width="640" height="640"
                  sizes="(min-width:900px) calc((100vw - 272px) / 3), 132px"
                  loading="lazy" decoding="async"
@@ -141,8 +145,8 @@
             </div>
           </li>
 
-          <li class="rc__poster">
-            <img src="assets/instagram/DZ6Ga2yptfR-640.jpg" width="640" height="640"
+          <li class="rc__poster" data-sc-cue="0.28 0.72 0.3 0.3">
+            <img src="assets/instagram/DZ6Ga2yptfR-640.jpg width="640" height="640"
                  srcset="assets/instagram/DZ6Ga2yptfR-640.jpg 640w, assets/instagram/DZ6Ga2yptfR-1080.jpg 1080w"
                  sizes="(min-width:900px) calc((100vw - 272px) / 3), 132px"
                  loading="lazy" decoding="async"
@@ -153,8 +157,8 @@
             </div>
           </li>
 
-          <li class="rc__poster">
-            <img src="assets/instagram/DbULpBWJ-ok-640.jpg" width="640" height="640"
+          <li class="rc__poster" data-sc-cue="0.58 1 0.3 0">
+            <img src="assets/instagram/DbULpBWJ-ok-640.jpg width="640" height="640"
                  srcset="assets/instagram/DbULpBWJ-ok-640.jpg 640w, assets/instagram/DbULpBWJ-ok-1080.jpg 1080w"
                  sizes="(min-width:900px) calc((100vw - 272px) / 3), 132px"
                  loading="lazy" decoding="async"
@@ -168,8 +172,9 @@
         </ol>
       </article>
       </div>
+      </div>
 
-      <div class="bento rc__grid">
+      <div class="bento rc__grid" data-sc-in data-sc-stagger="70">
 
         <article class="card card--text rc-t3">
           <div class="tx">
@@ -246,7 +251,7 @@
   <section id="evening" aria-labelledby="evening-h" data-sc-act="evening">
     <div class="wrap">
 
-      <div class="sh ev3__head">
+      <div class="sh ev3__head" data-sc-in>
         <p class="t-meta sh__kick">What happens if you go</p>
         <h2 class="t-chapter sh__h" id="evening-h">One evening,<br>and who runs it.</h2>
         <p class="sh__lead">The subject changes each month. The order of the night does&nbsp;not.</p>
@@ -257,9 +262,9 @@
            51/438/47px and one unpaired hairline hanging at x940. Every entry now
            opens on the same rule and sits on the same track; the interval is
            carried by the times themselves. -->
-      <article class="card card--navy ev3__tl">
+      <article class="card card--navy ev3__tl" data-sc-in>
         <p class="t-meta ev3__k">The order of the night</p>
-        <ol class="tl__list">
+        <ol class="tl__list" data-sc-in data-sc-stagger="80">
           <li class="tl__i">
             <p class="tl__n"><span class="t-chapter tl__num">6:30</span><span class="t-meta tl__ap">PM</span></p>
             <p class="tl__t">Check-in. Wine and small&nbsp;bites.</p>
@@ -279,7 +284,7 @@
         </ol>
       </article>
 
-      <div class="bento ev3__grid">
+      <div class="bento ev3__grid" data-sc-in data-sc-stagger="70">
 
 
         <figure class="card card--photo ev-p1" data-onphoto>
@@ -359,12 +364,12 @@
     <div class="wrap">
       <div class="panel panel--ink">
 
-        <div class="sh cl__head">
+        <div class="sh cl__head" data-sc-in>
           <p class="t-meta sh__kick">What to do next</p>
           <h2 class="t-chapter sh__h" id="close-h">Come 1 September,<br>or leave a number.</h2>
         </div>
 
-        <article class="card cl__acts">
+        <article class="card cl__acts" data-sc-in>
 
 
           <div class="act">
@@ -400,7 +405,7 @@
 
         </article>
 
-        <div class="card cl__qs" id="questions">
+        <div class="card cl__qs" id="questions" data-sc-in>
           <p class="t-meta cl__k">What people ask before they register</p>
           <p class="qs__note">Answers from the event&nbsp;listings.</p>
           <div class="qs">
@@ -438,7 +443,7 @@
           </div>
         </div>
 
-        <div class="bento cl__grid">
+        <div class="bento cl__grid" data-sc-in data-sc-stagger="70">
 
           <article class="card card--plate card--plate-navy cl-a1">
             <h3 class="t-head plate__l">Ages 21 to 40</h3>
@@ -553,8 +558,7 @@
 
 </main>
 
-<script src="assets/js/gsap.min.js" defer></script>
-<script src="assets/js/ScrollTrigger.min.js" defer></script>
+<script src="scrollcraft.js" defer></script>
 <script src="main.js" defer></script>
 </body>
 </html>

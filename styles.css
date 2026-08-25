@@ -1048,79 +1048,103 @@ body > main{padding-bottom:var(--gutter)}
   .foot__credit{margin-top:44px}
 }
 
-/* ═══ scrollcraft ═══════════════════════════════════════════════
-   Everything below this line exists ONLY under html.scrollcraft, a class
-   main.js adds after GSAP and ScrollTrigger have both loaded and only when
-   prefers-reduced-motion is not set. Without that class this whole block is
-   inert and the page above is untouched — which is how audit A14 (works
-   without JS) and A15 (reduced motion) stay green by construction rather
-   than by promise. Method and numbers: scrollcraft/builds/clia/SCORE.md.
+/* ═══ scrollcraft, the real engine ═════════════════════════════════
+   scrollcraft.css (the skill's engine floor) loads BEFORE this file, and
+   scrollcraft.js drives the data-sc-* attributes in the markup. This block
+   does four jobs: retheme the engine's tokens to the house palette, keep two
+   house invariants the engine does not promise (full visibility without JS,
+   zero motion under reduced motion), compose the two pinned stages, and
+   style the bespoke clock. main.js mounts the engine only when
+   prefers-reduced-motion is not set — under reduce the engine never runs and
+   the overrides below un-hide everything its stylesheet hides. */
 
-   THE POSTER STAGE — the peak. The band pins while the three evenings
-   cross-advance one at a time under the reader's own scroll. The stage owns
-   the scroll span; the band rides sticky inside it, so there is no GSAP
-   pin-spacer and no layout box is ever moved by a tween: the browser does
-   the pinning, the tween only paints opacity and transform. */
-html.scrollcraft .rc__stage{
-  /* The span lives here, not in JS, so tools/density.mjs measures the real
-     scroll length. 260svh on the phone: the page is 17 screens tall at 390
-     with a full viewport per poster, and the skill's own band tops out at 14.
-     Three posters across 1.6 screens of travel still gives each one more
-     dwell than the flat band ever did. */
-  height:260svh;
+:root{
+  --sc-canvas:var(--paper);
+  --sc-surface:var(--card);
+  --sc-ink:var(--ink);
+  --sc-ink-soft:var(--muted);
+  --sc-accent:var(--brass);
+  --sc-accent-ink:var(--on-ink);
+  --sc-font-display:'Zodiak',Georgia,serif;
+  --sc-font-text:'Switzer',system-ui,sans-serif;
+  --sc-r-lg:var(--radius);
 }
-@media (min-width:900px){
-  html.scrollcraft .rc__stage{height:340svh}
+
+/* the engine sets a global smooth scroll; the measuring tools scroll
+   programmatically and a glide makes two shots of one position disagree.
+   The three nav anchors keep their glide in main.js. */
+html{scroll-behavior:auto}
+
+/* HOUSE INVARIANT 1 — the page works in full with JavaScript absent. The
+   engine's floor hides cue and reveal targets until it drives them; when the
+   bootstrap script never runs, .no-js stays on <html> and this un-hides all
+   of them. */
+html.no-js [data-sc-cue],
+html.no-js [data-sc-in],
+html.no-js [data-sc-stagger] > *{opacity:1;transform:none}
+
+/* HOUSE INVARIANT 2 — reduced motion means zero motion, not gentler motion.
+   main.js skips the mount entirely, so nothing is driven; this shows the
+   static page the reader was promised. */
+@media (prefers-reduced-motion: reduce){
+  [data-sc-cue],
+  [data-sc-in],
+  [data-sc-stagger] > *{opacity:1 !important;transform:none !important}
 }
-html.scrollcraft .rc__band{
-  position:sticky;
-  top:calc(50svh - min(44svh, 340px));
+
+/* ── the hero stage ──
+   Pinned only at >=1360 (main.js downgrades the act to flow below that,
+   where the full hero does not fit one small viewport). When pinned, the
+   engine's .sc-stage height replaces the min-height and everything keeps
+   its absolute composition. */
+@media (min-width:1360px){
+  .hz__act.sc-act--pinned .hz{min-height:0}
+}
+
+/* ── the poster stage — the peak ──
+   The engine pins .rc__stage for 3.4 viewport-heights and drives the three
+   posters' cues. This block only composes: band centred in the stage, the
+   list as a deck, every poster in the same cell. All of it gated on
+   html.sc-ready, so the flat band is what no-JS and reduced motion get. */
+html.sc-ready .rc__stage{
+  display:flex;align-items:center;
+}
+html.sc-ready .rc__band{
+  width:100%;
   margin-bottom:0;
+  min-height:min(88svh,680px);
   display:flex;flex-direction:column;justify-content:center;
-  min-height:min(88svh, 680px);
 }
-/* the list becomes a deck: every poster in the same cell of one grid, the
-   tween deciding which one is up. Captions travel with their poster. */
-html.scrollcraft .rc__posters{
+html.sc-ready .rc__posters{
   display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);
 }
-html.scrollcraft .rc__poster,
-html.scrollcraft .rc__poster + .rc__poster{
-  grid-area:1/1;
+html.sc-ready .rc__poster,
+html.sc-ready .rc__poster + .rc__poster{
+  grid-area:1/1;position:relative;
   display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;
   justify-items:center;align-content:center;
   padding:0;border-top:0;column-gap:0;
 }
-/* restore the two posters the flat mobile band hides: in the deck every
-   evening shows its own flyer at full width, one at a time. */
-html.scrollcraft .rc__poster + .rc__poster img{display:block}
-html.scrollcraft .rc__poster img{
+html.sc-ready .rc__poster + .rc__poster img{display:block}
+html.sc-ready .rc__poster img{
   width:auto;max-width:100%;
-  max-height:min(56svh, 460px);
+  max-height:min(56svh,460px);
   border-radius:var(--radius);
 }
-html.scrollcraft .rc__pt{margin-top:16px;text-align:center}
-html.scrollcraft .rc__bk{margin-bottom:24px}
-/* at 900 the pinned screen composes as a spread: the claim on the left, the
-   evening advancing on the right. Without this the deck centres under the
-   headline and the right half of a full-viewport navy panel is empty air. */
+html.sc-ready .rc__pt{margin-top:16px;text-align:center}
+html.sc-ready .rc__bk{margin-bottom:24px}
 @media (min-width:900px){
-  html.scrollcraft .rc__band{
+  html.sc-ready .rc__band{
     display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
     align-items:center;column-gap:56px;
   }
-  html.scrollcraft .rc__bk{margin-bottom:0;max-width:14ch}
-  html.scrollcraft .rc__poster img{max-height:min(64svh, 560px)}
+  html.sc-ready .rc__bk{margin-bottom:0;max-width:14ch}
+  html.sc-ready .rc__poster img{max-height:min(64svh,560px)}
 }
 
-/* the deck needs stacking order the flat band never did */
-html.scrollcraft .rc__poster{position:relative}
-
-/* THE CLOCK CHIP — the signature move's readout. The element itself is
-   created by main.js, so a page without the script simply has no clock;
-   the four printed times in the timeline carry the information. Chip
-   language borrowed from the photo captions: same ground, same pill. */
-html.scrollcraft .clock{
+/* ── the clock — the signature move, created by main.js only when the
+   engine is mounted. Chip language borrowed from the photo captions. ── */
+.clock{
   position:fixed;right:16px;bottom:16px;z-index:60;
   pointer-events:none;
   display:flex;align-items:baseline;gap:8px;
@@ -1130,27 +1154,17 @@ html.scrollcraft .clock{
   font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
   text-transform:uppercase;font-weight:500;color:var(--ink);
 }
-html.scrollcraft .clock__t{font-variant-numeric:tabular-nums}
-html.scrollcraft .clock__bar{
+.clock__t{font-variant-numeric:tabular-nums}
+.clock__bar{
   width:44px;height:2px;border-radius:1px;
   background:var(--hairline);
   overflow:hidden;
 }
-html.scrollcraft .clock__fill{
+.clock__fill{
   display:block;width:100%;height:100%;
   background:var(--brass);
   transform:scaleX(0);transform-origin:left center;
 }
 @media (min-width:900px){
-  html.scrollcraft .clock{right:24px;bottom:24px}
-}
-
-/* THE TIMELINE FILL — a brass rule main.js lays over the navy card's own
-   top hairlines and draws left to right as the card is scrolled. Element
-   is JS-created; only transform is animated. */
-html.scrollcraft .tl__i{position:relative}
-html.scrollcraft .tl__fill{
-  position:absolute;top:-1px;left:0;right:0;height:1px;
-  background:var(--gold);
-  transform:scaleX(0);transform-origin:left center;
+  .clock{right:24px;bottom:24px}
 }
