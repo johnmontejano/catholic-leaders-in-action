@@ -85,7 +85,7 @@
        thumb-swipe and returns 1.6 screens to the rest of the page. */
     var rc = document.querySelector('.rc__act');
     if (rc && !window.matchMedia('(min-width: 900px)').matches) {
-      rc.setAttribute('data-sc-span', '2.6');
+      rc.setAttribute('data-sc-span', '3');
     }
 
     /* The flat band's sizes attribute describes a 132px thumbnail, and with a

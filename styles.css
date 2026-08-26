@@ -1092,6 +1092,14 @@ html.no-js [data-sc-stagger] > *{opacity:1;transform:none}
   [data-sc-stagger] > *{opacity:1 !important;transform:none !important}
 }
 
+/* the hero photograph settles from a slight push-in as the pin is scrolled,
+   read straight off the engine's published progress. The default of 1 means
+   no engine, no scale: reduced motion and no-JS both get the still page. */
+html.sc-ready .hz__act .ht img{
+  transform:scale(calc(1.10 - var(--sc-p, 1) * 0.10));
+  transform-origin:50% 40%;
+}
+
 /* ── the hero stage ──
    Pinned only at >=1360 (main.js downgrades the act to flow below that,
    where the full hero does not fit one small viewport). When pinned, the
