@@ -1,31 +1,49 @@
-/* CLIA — progressive enhancement only.
-   Every section is fully visible and legible with this file absent. Nothing
-   here creates content; it only adds motion and form behaviour on top of
-   markup that already works. */
+/* CLIA — progressive enhancement only, and nothing else.
+
+   SPEC §7: the page is complete at paint. Every section, every image and every
+   word is laid out and legible with this file absent, with JavaScript off, and
+   with prefers-reduced-motion on. Nothing here creates content, pins a section,
+   reads layout per frame or drives anything from a scroll offset.
+
+   Four behaviours, and this is the complete list:
+     1. the bar's two states
+     2. the menu sheet's aria-expanded mirror and tap-to-close
+     3. one entrance fade for blocks that start below the first viewport
+     4. the phone field                                                       */
 (function () {
   'use strict';
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
 
-  /* scrollcraft's shoot.mjs waits for html.sc-ready before sampling. The
-     engine sets it on mount; when the mount is skipped (reduced motion, or
-     the engine file missing) it is set here, because the settled state in
-     those modes is simply the static page. */
-  if (reduced || !window.ScrollCraft) document.documentElement.classList.add('sc-ready');
+  /* ── 1. the bar ───────────────────────────────────────────────
+     One class toggle at the hero boundary. The threshold is measured once on
+     load and once on resize, never per scroll event, so the listener reads a
+     number and sets a class and does no layout work at all. */
+  var hero = document.getElementById('top');
+  if (hero) {
+    var barH = 0, edge = 0, solid = false;
 
-  /* ── the bar ──────────────────────────────────────────────────
-     The hairline is now painted by the stylesheet at every scroll position, so
-     nothing here is needed to make the bar legible. Two behaviours only, and
-     the bar works completely without either.
+    var remeasure = function () {
+      barH = window.matchMedia('(min-width: 900px)').matches ? 72 : 64;
+      edge = hero.offsetHeight - barH;
+      apply();
+    };
+    var apply = function () {
+      var want = window.scrollY > edge;
+      if (want !== solid) { solid = want; root.classList.toggle('bar-solid', want); }
+    };
 
-     THE MENU SHEET is a <details>, which means it opens, closes and takes
-     keyboard focus with this file absent. What is added here is the explicit
-     aria-expanded mirror and closing the sheet when a link inside it is
-     tapped — a sheet that stays open over the section it just scrolled to is
-     the one thing the native element does not handle. */
-  var bar = document.querySelector('.nav');
+    window.addEventListener('scroll', apply, { passive: true });
+    window.addEventListener('resize', remeasure);
+    remeasure();
+  }
+
+  /* ── 2. the menu sheet ────────────────────────────────────────
+     <details> already opens, closes and takes keyboard focus with this file
+     absent. Added here: the explicit aria-expanded mirror, and closing the
+     sheet after a link inside it is used. */
   var menu = document.querySelector('[data-menu]');
-
   if (menu) {
     var mb = menu.querySelector('summary');
     var sync = function () { if (mb) mb.setAttribute('aria-expanded', menu.open ? 'true' : 'false'); };
@@ -40,128 +58,68 @@
     });
   }
 
-  if (bar && !reduced) {
-    /* the three anchors glide rather than jump. Scoped to these links on
-       purpose — see the note in styles.css about what a global
-       scroll-behavior:smooth does to the measuring tools. */
-    bar.addEventListener('click', function (ev) {
+  /* ── 3. the entrance, SPEC §7.2.1 ─────────────────────────────
+     opacity and 10px, 300ms, once, then unobserved. The pre-state class is
+     added HERE and never written into the HTML, so a JS-off render has nothing
+     to resolve. Only blocks starting below 90% of the first viewport are ever
+     touched, so nothing above the fold moves. A 900ms failsafe then clears
+     every remaining pre-state class unconditionally, which is what makes a
+     cold screenshot at any offset a screenshot of a finished page. */
+  if (!reduced && 'IntersectionObserver' in window) {
+    var blocks = [];
+    var sections = document.querySelectorAll('main > section');
+    for (var s = 0; s < sections.length; s++) {
+      var kids = sections[s].children;
+      for (var k = 0; k < kids.length; k++) {
+        if (kids[k].getBoundingClientRect().top > window.innerHeight * 0.9) blocks.push(kids[k]);
+      }
+    }
+
+    var clear = function (el) { el.classList.remove('reveal'); el.classList.add('revealed'); };
+
+    if (blocks.length) {
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) { clear(entries[i].target); io.unobserve(entries[i].target); }
+        }
+      }, { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
+
+      for (var b = 0; b < blocks.length; b++) {
+        blocks[b].classList.add('reveal');
+        io.observe(blocks[b]);
+      }
+
+      setTimeout(function () {
+        var left = document.querySelectorAll('.reveal');
+        for (var i = 0; i < left.length; i++) { clear(left[i]); io.unobserve(left[i]); }
+        io.disconnect();
+      }, 900);
+    }
+  }
+
+  /* smooth anchor scrolling, skipped entirely under reduced motion */
+  if (!reduced) {
+    document.addEventListener('click', function (ev) {
       var a = ev.target.closest && ev.target.closest('a[href^="#"]');
       if (!a) return;
-      var t = document.getElementById(a.getAttribute('href').slice(1));
+      var id = a.getAttribute('href').slice(1);
+      if (!id) return;
+      var t = document.getElementById(id);
       if (!t) return;
       ev.preventDefault();
       t.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 
-  /* ── motion, driven by the scrollcraft engine ─────────────────
-     scrollcraft.js reads the data-sc-* attributes off the markup and drives
-     them from one scroll value; nothing here generates DOM for content. The
-     TWO HARD RULES survive the engine swap, but by different means than the
-     GSAP build, and both are now guaranteed in styles.css rather than here:
-
-     1. Without JavaScript every element is fully visible. The engine's own
-        stylesheet hides cue targets; the html.no-js override un-hides them,
-        and .no-js is only ever removed by a script.
-
-     2. Under prefers-reduced-motion the engine is never mounted — the skill
-        ships "gentler, not zero" and the house contract is zero — and the
-        reduce override shows the full static page. sc-ready is still set so
-        the verification harness can sample the settled page. */
-  if (!reduced && window.ScrollCraft) {
-
-    /* The hero pin only fits where the absolute composition does. Below 1360
-       the act becomes a plain flow act BEFORE mount: same cues, lit on
-       arrival instead of assembled under the first scroll. */
-    var hz = document.querySelector('.hz__act');
-    if (hz && !window.matchMedia('(min-width: 1360px)').matches) {
-      hz.setAttribute('data-sc-act', 'flow');
-      hz.removeAttribute('data-sc-span');
-    }
-
-    /* The record pin holds 3.4 viewport-heights on a desktop wheel. On a phone
-       a full viewport per poster makes the page 17 screens against the
-       skill's 8-to-14 band; 2.6 keeps each poster on screen for most of a
-       thumb-swipe and returns 1.6 screens to the rest of the page. */
-    var rc = document.querySelector('.rc__act');
-    if (rc && !window.matchMedia('(min-width: 900px)').matches) {
-      rc.setAttribute('data-sc-span', '3');
-    }
-
-    /* The flat band's sizes attribute describes a 132px thumbnail, and with a
-       w-descriptor srcset that sets the image's INTRINSIC width. In the deck
-       the poster owns most of a viewport, so say so before the engine lays
-       out — this also fetches the 1080 candidate where one exists. */
-    document.querySelectorAll('.rc__poster img').forEach(function (img) {
-      img.setAttribute('sizes', '(min-width:900px) min(64svh, 560px), calc(100vw - 128px)');
-    });
-
-    ScrollCraft.mount(document.body);
-
-    /* THE CLOCK — the signature move, bespoke page JS as the skill requires
-       (the engine is never edited). The page runs on the evening's own
-       timetable: 6:30 PM at the top, 7:00 where the record begins, 9:00
-       where the room turns, 9:30 at the close, where it stops and stays
-       stopped. Scroll position IS the time. It publishes its rendered time
-       as data-sc-verify-state, never raw progress. */
-    var anchors = [
-      { el: document.getElementById('hero'), min: 390 },
-      { el: document.getElementById('record'), min: 420 },
-      { el: document.getElementById('evening'), min: 540 },
-      { el: document.getElementById('close'), min: 570 }
-    ];
-    if (anchors.every(function (a) { return a.el; })) {
-      var clock = document.createElement('div');
-      clock.className = 'clock';
-      clock.setAttribute('aria-hidden', 'true');
-      clock.innerHTML = '<span class="clock__t">6:30 PM</span>' +
-        '<span class="clock__bar"><span class="clock__fill"></span></span>';
-      document.body.appendChild(clock);
-      var ct = clock.querySelector('.clock__t');
-      var cf = clock.querySelector('.clock__fill');
-      var shown = '';
-      var ticking = false;
-      var tick = function () {
-        ticking = false;
-        var y = window.scrollY;
-        var tops = anchors.map(function (a) {
-          return a.el.getBoundingClientRect().top + window.scrollY;
-        });
-        var min = anchors[0].min;
-        if (y >= tops[tops.length - 1]) {
-          min = anchors[anchors.length - 1].min;
-        } else if (y >= tops[0]) {
-          for (var i = 0; i < tops.length - 1; i++) {
-            if (y >= tops[i] && y < tops[i + 1]) {
-              var f = (y - tops[i]) / Math.max(tops[i + 1] - tops[i], 1);
-              min = anchors[i].min + f * (anchors[i + 1].min - anchors[i].min);
-              break;
-            }
-          }
-        }
-        min = Math.round(min);
-        var h = Math.floor(min / 60), m = min % 60;
-        var label = h + ':' + (m < 10 ? '0' + m : m) + ' PM';
-        if (label !== shown) { shown = label; ct.textContent = label; }
-        cf.style.transform = 'scaleX(' + ((min - 390) / 180).toFixed(4) + ')';
-        clock.setAttribute('data-sc-verify-state', label);
-      };
-      window.addEventListener('scroll', function () {
-        if (!ticking) { ticking = true; requestAnimationFrame(tick); }
-      }, { passive: true });
-      window.addEventListener('load', tick);
-      tick();
-    }
-  }
-
-  /* ── phone field ──────────────────────────────────────────────
-     Formats as typed, rejects anything short of 10 digits, and never reports
-     success while the endpoint is unset. Wired by piece 4; harmless if absent. */
+  /* ── 4. the phone field ───────────────────────────────────────
+     Formats as typed, rejects anything short of ten digits, and never reports
+     success while data-endpoint is empty. */
   var form = document.querySelector('[data-signup]');
   if (!form) return;
 
   var input = form.querySelector('input[type="tel"]');
   var note = form.querySelector('[data-signup-note]');
+  var pot = form.querySelector('input[name="company"]');
   var ENDPOINT = form.getAttribute('data-endpoint') || '';
 
   function digits(v) { return (v || '').replace(/\D/g, '').slice(0, 10); }
@@ -173,19 +131,20 @@
   function say(msg, ok) {
     if (!note) return;
     note.textContent = msg;
-    note.dataset.state = ok ? 'ok' : 'err';
+    note.setAttribute('data-state', ok ? 'ok' : 'err');
   }
 
   if (input) {
     input.addEventListener('input', function () {
-      var start = input.selectionStart === input.value.length;
+      var atEnd = input.selectionStart === input.value.length;
       input.value = format(digits(input.value));
-      if (start) input.setSelectionRange(input.value.length, input.value.length);
+      if (atEnd) input.setSelectionRange(input.value.length, input.value.length);
     });
   }
 
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
+    if (pot && pot.value) return;
     var d = digits(input && input.value);
     if (d.length !== 10) {
       say('That needs to be a 10 digit US number.', false);
@@ -193,17 +152,17 @@
       return;
     }
     if (!ENDPOINT) {
-      say('The text list is not connected yet. Use the RSVP link above for September 1.', false);
+      say('Signup is not connected yet. RSVP on Luma instead.', false);
       return;
     }
     say('Sending.', true);
     fetch(ENDPOINT, {
       method: 'POST', mode: 'cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ phone: d, at: new Date().toISOString() })
+      body: JSON.stringify({ phone: '+1' + d, source: 'site', consent: true })
     })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-      .then(function () { say('Done. We will text you when the next date is set.', true); form.reset(); })
-      .catch(function () { say('That did not go through. Use the RSVP link above for September 1.', false); });
+      .then(function () { say('Added. We will text you when the next date is set.', true); form.reset(); })
+      .catch(function () { say('That did not go through. Use the RSVP link instead.', false); });
   });
 })();

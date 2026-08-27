@@ -1,91 +1,60 @@
-/* ─────────────────────────────────────────────────────────────
-   CLIA — chassis
-   Tokens and type scale are derived from design-system.md, which is
-   derived from live measurements in bar.md. Do not invent a value here;
-   if a piece needs a new one, add it to design-system.md first.
+/* ═══════════════════════════════════════════════════════════════
+   CLIA — one stylesheet, in the order SPEC §9 fixes:
+     fonts · tokens · reset · type roles · layout primitives ·
+     sections in page order · motion · <900px · reduced motion
 
-   Rebuilt 2026-08-22 against the measured teardown. The four structural
-   changes, each one measured off the client's own references:
-     ONE radius on every rectangular container (the r=10 tiles and the r=0
-       posters and bands are gone);
-     ONE section-gap token and ONE heading-to-content token, used everywhere;
-     a single column below 768, by client instruction;
-     one hero tile instead of five, bled off an edge, outside the type column.
-   ───────────────────────────────────────────────────────────── */
+   The governing rule of this build is SPEC §7: THE PAGE IS COMPLETE
+   AT PAINT. Nothing below makes composition, hierarchy or legibility
+   depend on a scroll position, a cue or a frame loop. A screenshot at
+   any offset, with or without JavaScript, shows a finished page.
+   ═══════════════════════════════════════════════════════════════ */
 
-/* ── fonts (local woff2, Fontshare, free) ───────────────────── */
+/* ── fonts (local woff2, Fontshare) ───────────────────────────── */
 @font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-300.woff2) format("woff2");font-weight:300;font-style:normal;font-display:swap}
-@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-300i.woff2) format("woff2");font-weight:300;font-style:italic;font-display:swap}
 @font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-400.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
+/* The one italic on the page, in the <h1>. It is declared at 400 and used at
+   an inherited 300, because an italic changes style and never weight. */
+@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-400i.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
 @font-face{font-family:Switzer;src:url(assets/fonts/Switzer-400.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:Switzer;src:url(assets/fonts/Switzer-500.woff2) format("woff2");font-weight:500;font-display:swap}
-/* Zodiak-700 is deliberately not declared. Display never exceeds weight 400.
-   Zodiak-400i is no longer declared either: the page's one italic sits inside
-   a display line set at 300, and an italic changes style, never weight. */
+@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-600.woff2) format("woff2");font-weight:600;font-display:swap}
+/* Zodiak-700 is deliberately never declared. */
 
-/* ── tokens ─────────────────────────────────────────────────── */
+/* ── tokens ───────────────────────────────────────────────────── */
 :root{
-  /* colour — see design-system.md §1 for measured contrast ratios */
+  /* colour, SPEC §6.1 */
   --paper:#F2EDE4;
   --card:#E9E2D5;
   --ink:#14100C;
+  --ink-2:#1F1913;
   --muted:#5A5148;
-  --brass:#B37D3E;        /* fills, rules. never type on paper (3.04:1) */
-  --brass-text:#835829;   /* brass-coloured type. 5.31:1 on paper, 4.81:1 on card */
-  --on-ink:#F2EDE4;       /* primary type on a dark chapter. 16.24:1 on ink */
-  --on-ink-dim:#AFABA3;   /* 8.28:1 on ink, 7.47:1 on --card-ink */
-  --card-ink:#201B15;     /* card fill on the dark chapter, 1.11 against it */
+  --brass:#B37D3E;
+  --brass-text:#835829;
+  --brass-lift:#D8A45C;
+  --on-ink:#F2EDE4;
+  --on-ink-dim:rgba(242,237,228,.74);
+  --rule:rgba(20,16,12,.16);
+  --rule-dark:rgba(242,237,228,.18);
+  --navy:#1B2A4A;
+  --chip:rgba(242,237,228,.92);
 
-  /* the client's own poster palette. CONTENT colours, the way a photograph's
-     colours are content: card grounds only, never replacing --brass, and not
-     counted against the one-accent-twice-a-screen cap.
-       gold on navy-deep 7.03 · on-ink on navy-deep 15.74 · on-ink on navy 13.48
-     --navy is the exact ground the three generated plates were composited onto,
-     so a plate inside a navy card has no visible seam. */
-  --navy:#16233A;
-  --navy-deep:#0E1728;
-  --gold:#C89A44;
-
-  /* THE CHIP GROUND. Rebuilt 2026-08-22: this used to be --ink at .82 with
-     paper type, and the whole .chip rule was being DROPPED by the CSS parser,
-     because the comment above it carried a stray comment terminator in the
-     middle and everything after it was swallowed into an invalid selector. So
-     every chip on the page shipped with no ground at all and --muted type
-     straight onto the photograph — the 2.33:1 ghost label the teardown
-     measured. Never put a comment terminator inside a comment.
-     It is now Fauna's own construction, inverted to the safer direction:
-     --paper at .90 with --ink type. The worst case is a chip over a BLACK
-     pixel, which composites to rgb(218,213,205) and carries --ink at 12.99:1.
-     Verified worst-pixel by tools/contrast.mjs at both widths. */
-  --chip-ground:rgba(242,237,228,.90);
-  --chip-ground-ink:rgba(233,226,213,.90);
-  /* the nav hairline: --ink at .14 over --paper, the same perceptual step
-     --card takes against --paper (1.10) */
-  --hairline:rgba(20,16,12,.14);
-
-  /* ── shape: exactly TWO values on the page ────────────────────────
-     --radius  every rectangular container: cards, the hero tile, chapter
-               panels, poster frames, plates
-     --pill    pills only: the buttons, the phone field, the chips, the skip
-               link
-     The third value, an 18px tile radius, is deleted. design-system.md §3,
-     amended 2026-08-22 under client instruction: one radius, two shapes. */
+  /* shape: exactly two values, page-wide (SPEC §6.3) */
   --radius:32px;
   --pill:999px;
 
-  /* type — size interpolates 390→1440, ratios never move. Six roles, six sizes
-     at 1440 and five at 390 (--t-lead lands on --t-body's 16px there).
-     The hero eyebrow is set at LEAD size rather than meta: Claude's own eyebrow
-     measures a 15px cap height against ours at 8, and lead size is already in
-     the scale, so the fix costs no seventh size. */
-  --t-display: clamp(56px, 4.571vw + 38.17px, 104px);
-  --t-chapter: clamp(32px, 2.286vw + 23.09px, 56px);
-  --t-head:    24px;
-  --t-lead:    clamp(16px, 0.381vw + 14.51px, 20px);
-  --t-body:    16px;
-  --t-meta:    clamp(11px, 0.095vw + 10.63px, 12px);
+  /* one elevation token, used in exactly three places (SPEC §6.4) */
+  --lift:0 1px 2px rgba(20,16,12,.10), 0 10px 28px rgba(20,16,12,.09);
 
-  /* leading — identical at every breakpoint. this is the whole point. */
+  /* type — six roles. Sizes are fixed per breakpoint so the rendered set is
+     exactly six values at 1440 and five at 390; leading and tracking never
+     move across the breakpoint (bar.md §4's named failure). */
+  --t-display:56px;
+  --t-chapter:32px;
+  --t-head:24px;
+  --t-lead:16px;
+  --t-body:16px;
+  --t-meta:11px;
+
   --lh-display:0.90;
   --lh-chapter:1.03;
   --lh-head:1.25;
@@ -98,36 +67,32 @@
   --tr-head:-0.01em;
   --tr-meta:0.05em;
 
-  /* ── space: ONE section token, ONE heading token ──────────────────
-     The measured page ran 93–200px between sections at 1440 and 32–120px at
-     390, which is what the client saw as "no good spacing". There is now one
-     value for a seam between sections and one for the drop from a section
-     heading to its content, and nothing else lives between two sections. */
-  --section:160px;
-  --headgap:88px;
-
-  /* grid — measured off faunarobotics.com */
-  --row:108px;
-  --gap:16px;
+  /* space: ONE seam token and ONE heading token (SPEC §4.1, §6.3) */
+  --section:80px;
+  --headgap:28px;
   --gutter:32px;
-  /* ONE card side padding, page-wide. The measured page ran 24, 28, 36, 40 and
-     48 across cards that sit beside each other. It is a token so the 65% text
-     measure below can be expressed against the CARD rather than against the
-     content box, which is a different number. */
-  --pad:28px;
-
-  /* the air under the primary CTA before the first image, and the clear channel
-     the display type keeps from any image edge */
-  --cta-air:100px;
+  --gap:16px;
+  --pad:24px;        /* one card padding per breakpoint */
+  --panelpad:32px;
 }
-@media (min-width:900px){ :root{ --gutter:64px; --section:288px; --pad:36px; } }
-/* Below the design width the page margin steps down. 32px is the margin AT 390
-   and above; at 320 the display word "workplace." measures 265px against a
-   256px column, and a gutter that never moves would clip the headline rather
-   than the page. */
-@media (max-width:360px){ :root{ --gutter:20px; } }
 
-/* ── reset ──────────────────────────────────────────────────── */
+@media (min-width:900px){
+  :root{
+    --t-display:clamp(72px,7.3vw,104px);
+    --t-chapter:clamp(40px,4vw,56px);
+    --t-lead:20px;
+    --t-meta:12px;
+    --section:128px;
+    --headgap:40px;
+    --gutter:64px;
+    --gap:24px;
+    --pad:40px;
+    --panelpad:64px;
+  }
+}
+@media (max-width:359px){ :root{ --gutter:20px } }
+
+/* ── reset ────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
@@ -138,27 +103,34 @@ body{
   font-size:var(--t-body);
   line-height:var(--lh-body);
   -webkit-font-smoothing:antialiased;
-  /* clip, not hidden: `overflow-x:hidden` computes overflow-y to auto, which
-     makes <body> a scroll container and quietly breaks position:sticky on the
-     bar. `clip` fences the same axis without creating one. */
+  /* clip, not hidden: overflow-x:hidden computes overflow-y to auto, which
+     makes <body> a scroll container and quietly breaks the sticky bar. */
   overflow-x:clip;
 }
-img{max-width:100%;display:block}
+img{max-width:100%;display:block;height:auto}
 a{color:inherit}
-h1,h2,h3,h4,p{margin:0}
+h1,h2,h3,h4,p,dd,dl,figure,blockquote{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+b,strong{font-weight:500}
 button{font:inherit;color:inherit}
-figure{margin:0}
 
-/* ── type roles ─────────────────────────────────────────────── */
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:60;
+  background:var(--ink);color:var(--on-ink);
+  padding:12px 20px;border-radius:var(--pill);text-decoration:none;
+}
+.skip:focus{left:16px;top:12px}
+
+/* Decorative separator. It is drawn, never typed, so it stays out of the
+   accessibility tree and out of the reading order. */
+.dot::before{content:"\00B7";padding-inline:.5em}
+
+/* ── type roles ───────────────────────────────────────────────── */
 .t-display{
   font-family:Zodiak,Georgia,serif;font-weight:300;
   font-size:var(--t-display);line-height:var(--lh-display);letter-spacing:var(--tr-display);
 }
-/* The one italic voice, once per page. font-weight:inherit is load-bearing:
-   this was 400 against a display set at 300, which measured 9px stems against
-   the roman's 6px and made a preposition the darkest object on the page. */
 .t-display em{font-style:italic;font-weight:inherit}
-
 .t-chapter{
   font-family:Zodiak,Georgia,serif;font-weight:400;
   font-size:var(--t-chapter);line-height:var(--lh-chapter);letter-spacing:var(--tr-chapter);
@@ -167,1012 +139,451 @@ figure{margin:0}
   font-family:Zodiak,Georgia,serif;font-weight:400;
   font-size:var(--t-head);line-height:var(--lh-head);letter-spacing:var(--tr-head);
 }
-.t-lead{font-size:var(--t-lead);line-height:var(--lh-lead);color:var(--muted)}
+.t-lead{font-size:var(--t-lead);line-height:var(--lh-lead)}
 .t-meta{
   font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
-  text-transform:uppercase;font-weight:500;color:var(--muted);
-}
-/* The eyebrow role: lead SIZE, meta treatment. It is the reference's own
-   proportion — a tracked line big enough to be read as the page's first word
-   rather than as a caption — and it introduces no new size. */
-.t-brow{
-  font-size:var(--t-lead);line-height:var(--lh-lead);letter-spacing:var(--tr-meta);
-  text-transform:uppercase;font-weight:500;color:var(--muted);
+  text-transform:uppercase;font-weight:500;
 }
 
-/* ── layout ─────────────────────────────────────────────────── */
-.wrap{max-width:1312px;margin:0 auto;padding-inline:var(--gutter)}
+/* ── layout primitives ────────────────────────────────────────── */
+.wrap{width:min(1360px,100%);margin-inline:auto;padding-inline:var(--gutter);display:flow-root}
 
-/* ONE seam value between sections, and nothing else between them. */
-main > section + section{margin-top:var(--section)}
-main > section{padding-block:0}
-body > main{padding-bottom:var(--gutter)}
-
-/* ── the bar ────────────────────────────────────────────────────────
-   Claude's own construction, measured off research/refs/claude-1440-full.png:
-   a paper bar the full width of the viewport, the wordmark at the left, the
-   links centred, one pill at the right. Three corrections from the teardown:
-   the band is 77px, the hairline is drawn at every scroll position rather than
-   only after the page moves, and the wordmark is a two-line lockup so it stays
-   inside 180px instead of running 250 as one line.
-
-   NO HAMBURGER. The stock icon vocabulary is banned by design-system §4 and
-   bar.md §7. Under 900 the anchors move into a sheet opened by a control that
-   says the word "Menu". It is a <details>, so it is keyboard reachable, reports
-   its expanded state, and works with this page's JavaScript absent. */
-.nav{
-  position:sticky;top:0;z-index:20;
-  background:var(--paper);
-  border-bottom:1px solid var(--hairline);
-}
-.nav__in{
-  max-width:1312px;margin:0 auto;padding-inline:var(--gutter);
-  min-height:77px;
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-}
-.nav__mark{
-  font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:var(--t-body);line-height:1.14;letter-spacing:var(--tr-head);
-  max-width:180px;
-}
-/* The lockup is two lines because each half is its own block, and it stays two
-   lines wherever the row can give it 132px — which is every width from 375 up.
-   Below that it shrinks and the first half wraps, which is the correct answer
-   at 320: three short lines beside two controls, rather than a 372px bar inside
-   a 320px viewport. It is never allowed past 180px. */
-.nav__mark{min-width:0}
-.nav__mark span{display:block}
-.nav__links{display:none}
-.nav__right{display:flex;align-items:center;gap:8px}
-/* .nav wins on specificity, not on source order: .btn sets min-height:48px and
-   is declared below this block, so a bare .nav__go rule lost the cascade and
-   the bar's pill measured 48. Still a 40x76 target, well past the 24px floor. */
-.nav .nav__go{min-height:40px;padding:0 16px}
-
-/* the sheet is positioned against the BAR, not against this control: as a
-   100vw box centred on a <details> sitting near the right edge it hung 68px
-   past the viewport at 320. */
-.nav__m{position:static}
-.nav .nav__mb{
-  display:inline-flex;align-items:center;justify-content:center;
-  min-height:40px;padding:0 14px;
-  border:1px solid var(--hairline);border-radius:var(--pill);
-  font-size:var(--t-body);font-weight:500;cursor:pointer;
-  list-style:none;
-}
-.nav .nav__mb::-webkit-details-marker{display:none}
-.nav__m[open] .nav__mb{background:var(--card);border-color:transparent}
-
-/* the sheet: full viewport width, under the bar, three anchors and the RSVP */
-.sheet{
-  position:absolute;top:100%;left:0;right:0;
-  background:var(--paper);
-  border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
-  padding:8px var(--gutter) 28px;
-}
-.sheet__links{list-style:none;margin:0 0 20px;padding:0}
-.sheet__links a{
-  display:block;padding:16px 0;text-decoration:none;
-  border-bottom:1px solid var(--hairline);
-  font-size:var(--t-lead);
-}
-/* the ink pill, not the brass one: the bar's own RSVP is 12px away and --brass
-   is capped at twice a screen, so a brass pill here would put three on one
-   phone screen with the hero's. */
-.sheet__go{width:100%;min-height:48px}
-
-@media (min-width:900px){
-  .nav__m{display:none}
-  .nav__links{
-    display:flex;list-style:none;margin:0;padding:0;gap:36px;
-    font-size:var(--t-body);line-height:var(--lh-body);
-  }
-  .nav__links a{
-    display:inline-block;padding:12px 0;text-decoration:none;color:var(--muted);
-    border-bottom:1px solid transparent;
-    transition:color .18s ease,border-color .18s ease;
-  }
-  .nav__links a:hover{color:var(--ink);border-bottom-color:var(--ink)}
+/* A dark chapter is an inset rounded panel. Never an edge-to-edge square band.
+   Its outer edge lands exactly on the content edge of a .wrap section. */
+.panel{
+  width:min(calc(1360px - 2 * var(--gutter)),calc(100% - 2 * var(--gutter)));
+  margin-inline:auto;
+  padding:var(--panelpad);
+  background:var(--ink);
+  color:var(--on-ink);
+  border-radius:var(--radius);
+  display:flow-root;
 }
 
-/* Anchors land clear of the bar. scroll-margin is layout, not motion, so it
-   applies with or without JavaScript and under reduced motion. The smooth part
-   is deliberately NOT html{scroll-behavior:smooth}: a global smooth scroll
-   breaks every measuring tool in tools/, which walks the page with scrollTo()
-   to fire reveals. main.js smooth-scrolls the bar anchors on click instead. */
-:target,#record,#evening,#questions{scroll-margin-top:96px}
-
-/* ── the bento ──────────────────────────────────────────────────────
-   Two columns on a fine 108px row track from 768 up, and ONE column below it.
-   The single column is a client instruction dated 2026-08-22 and it replaces
-   the 155px two-up rows the teardown measured; design-system §3 records it, and
-   the interlock requirement now applies at >=900 only, because two columns are
-   what an interlock is made of. */
-.bento{
-  display:grid;
-  grid-template-columns:minmax(0,1fr);
-  gap:var(--gap);
-}
-.bento > *{border-radius:var(--radius);overflow:hidden}
-
-@media (min-width:768px){
-  .bento{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    /* Between the two design widths the same copy wraps to more lines, and a
-       fixed track would clip it against overflow:hidden. Outside them the track
-       may grow rather than cut a speaker's title in half. */
-    grid-auto-rows:minmax(var(--row),auto);
-  }
-}
-@media (min-width:1360px){
-  .bento{grid-auto-rows:var(--row)}
-}
-
-/* Cards centre their content in whatever height the span bought, so leftover
-   space splits above and below instead of pooling at the foot. Deliberately NOT
-   space-between: that produced 276px voids in round one. */
 .card{
   background:var(--card);
-  padding:var(--pad);
   border-radius:var(--radius);
-  display:flex;flex-direction:column;justify-content:center;
+  padding:var(--pad);
 }
-.card--ink{background:var(--ink);color:var(--on-ink)}
-.card--navy{background:var(--navy-deep);color:var(--on-ink)}
-.card--navy .t-meta{color:var(--on-ink-dim)}
+.card--raised{background:var(--ink-2);color:var(--on-ink)}
+.card--ink{background:var(--ink-2);color:var(--on-ink)}
 
-
-
-/* ── text cards: one measure, one padding ───────────────────────────
-   The body block is held to 65% of the card and centred in it, which is the
-   reference's proportion and what stops a 584px card reading as a page of
-   prose. Below 900 the full content box IS the measure: 65% of a 278px card is
-   26 characters, and design-system §3 forbids running text narrower than 28. */
-.tx{width:100%}
-@media (min-width:900px){
-  .card--text .tx{width:calc((100% + 2 * var(--pad)) * .65);margin-inline:auto}
-}
-
-/* ── photo cards: ONE aspect ────────────────────────────────────────
-   Every photograph in every bento sits in the same box shape. The measured page
-   ran 1.99 / 1.40 / 1.08 / 0.88 in one section.
-
-   The ratio is 584:480 — a four-row card at 1440, and the same 1.217 at 390.
-   4:3 exactly is unreachable at 584px on the 108px row track the KEEP list
-   protects: it needs 438px, which falls between the three-row 356 and the
-   four-row 480. One ratio everywhere was the requirement; this is the nearest
-   value the track can actually produce, and it is used without exception. */
-.card--photo{
-  padding:0;background:var(--card);position:relative;
-  aspect-ratio:584/480;
-}
-.card--photo img{width:100%;height:100%;object-fit:cover}
-.card--photo picture{display:contents}
-
-/* ── the chip, page-wide ────────────────────────────────────────────
-   Fauna's construction, measured off its own page and corrected to the safer
-   contrast direction: a frosted pill sitting ON the photograph, horizontally
-   CENTRED, 36px above the card's bottom edge, 20px of side padding, dark type
-   on a light frosted ground.
-
-   Two chips, because the evidence has to survive. The upper one names the
-   frame; the lower one carries the date and the venue, which are the entire
-   reason a caption exists. They replace the old 62px caption strip AND the
-   ghost bottom-left label in one element, and both render at both widths.
-
-   Every chip lives inside an element carrying data-onphoto, so tools/piece.mjs
-   reports it sanctioned; contrast is checked worst-pixel by tools/contrast.mjs
-   at 1440 and at 390. An unmarked label over a photograph is still a fail. */
+/* One caption construction, page-wide: two frosted chips on the frame. */
 .chips{
-  position:absolute;left:12px;right:12px;bottom:24px;
+  position:absolute;left:0;right:0;bottom:24px;
   display:flex;flex-direction:column;align-items:center;gap:8px;
-  /* NOT pointer-events:none. Nothing under a chip is interactive, and the
-     hit test tools/contrast.mjs runs to confirm an element is really the thing
-     painted at its own centre returns the image instead when the chip is
-     transparent to the pointer — so every chip on the page was being SKIPPED by
-     the one gate that checks it. A chip that cannot be measured is a chip that
-     is not verified. */
+  padding-inline:16px;
 }
 .chip{
-  max-width:100%;
-  padding:7px 20px;border-radius:var(--pill);
-  background:var(--chip-ground);
-  -webkit-backdrop-filter:blur(10px) saturate(1.05);
-  backdrop-filter:blur(10px) saturate(1.05);
-  color:var(--ink);
-  font-size:var(--t-body);line-height:1.35;
-  text-align:center;
+  background:var(--chip);color:var(--ink);
+  font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
+  text-transform:uppercase;font-weight:500;
+  border-radius:var(--pill);
+  padding:7px 20px;
+  max-width:100%;text-align:center;
 }
-.chip--sub{
-  padding:5px 16px;
-  font-size:var(--t-meta);line-height:var(--lh-meta);
-  letter-spacing:var(--tr-meta);text-transform:uppercase;font-weight:500;
-}
-@media (min-width:900px){
-  .chips{left:20px;right:20px;bottom:36px;gap:9px}
-}
+.chip--sub{font-weight:500;opacity:1}
 
-/* ── plate cards: the branded abstract composition ──────────────────
-   bar.md §7, rewritten 2026-08-22 under client instruction: stock icon
-   vocabulary stays banned, and a composition built from the site's own shape
-   language in the client's own poster palette is CONTENT. Three of them.
-
-   Fauna's construction: one centred line at the top, then the composition
-   breathing in the lower two-thirds. object-fit:contain guarantees the
-   composition is never cropped, and each plate was composited onto the exact
-   token its card is painted in, so the letterbox bands are invisible. */
-.card--plate{
-  background:var(--card);
-  justify-content:flex-start;align-items:center;
-  padding:36px var(--pad) 40px;
-}
-/* the two plates composited onto --card sit on --card; the one composited onto
-   --navy sits on --navy. A plate's ground and its card's ground are the same
-   value on purpose: object-fit:contain then letterboxes into a band nobody can
-   see, and the composition is never cropped. */
-.card--plate-navy{background:var(--navy);color:var(--on-ink)}
-.plate__l{text-align:center;text-wrap:balance}
-.plate__i{
-  width:100%;flex:1 1 auto;min-height:0;margin-top:20px;
-  /* capped at 390, where the card is sized by its content and an uncapped
-     portrait plate ran 415px tall — the composition should breathe in the lower
-     two-thirds of a card, not become the card */
-  max-height:300px;
-  object-fit:contain;object-position:50% 100%;
-}
-@media (min-width:900px){
-  .card--plate{padding:44px var(--pad) 48px}
-  .plate__i{margin-top:28px;max-height:none}
-}
-
-/* ── one poster-label rule, page-wide ───────────────────────────────
-   A photograph needs a caption to say what it shows; the client's posters say
-   it themselves, in type he set. So a poster carries the two things it cannot
-   say at any size we can print it — the date and the venue — and, where it
-   names a keynote, that name at reading size. */
-.pcap__d,.pcap__v{display:block}
-.pcap__w{margin-top:6px;text-wrap:pretty}
-@media (min-width:900px){
-  .pcap__d,.pcap__v{display:inline}
-  .pcap__v::before{content:" \00b7 "}
-}
-
-/* ── the section header, one system, three instances ────────────────
-   The measured page put the right body column at +28 / +28 / +60 from the
-   headline's first line and gave it measures of 498 / 467 / 301. Both are now
-   one value set once: align-items:start plus one padding-top is the offset, and
-   one max-width is the measure. The right column's anchor stays at x=791 at
-   1440, which is what the 1.15fr / 1fr split with a 64px gap produces inside a
-   1184px content box. */
-.sh{display:grid;margin-bottom:var(--headgap)}
-.sh__kick{margin-bottom:20px}
-.sh__h{margin:0}
-.sh__lead{color:var(--muted);margin-top:24px;text-wrap:pretty}
-
-@media (min-width:900px){
-  .sh{
-    grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
-    column-gap:64px;align-items:start;
-  }
-  .sh__kick{grid-column:1/-1;margin-bottom:40px}
-  .sh__h{grid-column:1}
-  .sh__lead{grid-column:2;margin-top:0;padding-top:16px;max-width:420px}
-}
-
-/* ── controls ───────────────────────────────────────────────── */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
-  min-height:48px;padding:0 26px;border:0;border-radius:var(--pill);
-  background:var(--ink);color:var(--on-ink);
-  font-weight:500;font-size:var(--t-body);text-decoration:none;cursor:pointer;
+  min-height:48px;padding:0 24px;
+  border:0;border-radius:var(--pill);
+  font-size:var(--t-body);font-weight:600;line-height:1.2;
+  text-decoration:none;cursor:pointer;
+  transition:background-color .16s ease,color .16s ease,border-color .16s ease,transform .16s ease;
 }
-.btn--brass{background:var(--brass);color:var(--ink)}
+.btn--brass{background:var(--brass);color:#1A1206;box-shadow:var(--lift)}
+.btn--brass:hover,.btn--brass:focus-visible{background:#C68C48;transform:translateY(-1px)}
+.btn--ghost{border:1px solid rgba(242,237,228,.45);color:var(--on-ink);background:transparent}
+.btn--ghost:hover,.btn--ghost:focus-visible{border-color:var(--on-ink);background:rgba(242,237,228,.08)}
 
-/* no border-radius here: the outline already follows the element's own radius,
-   and forcing 4px squared off every pill button. */
-:where(a,button,input,summary):focus-visible{
-  outline:2px solid var(--brass-text);outline-offset:3px;
-}
-
-/* ── motion ─────────────────────────────────────────────────────
-   .reveal only hides itself once main.js has confirmed it can show it again.
-   Without that class — JS absent, JS failed, reduced motion — the element is
-   simply visible. A section must never be able to strand itself at opacity 0. */
-.can-reveal .reveal{
-  opacity:0;transform:translateY(18px);
-  transition:opacity .6s ease-out,transform .6s ease-out;
-}
-.can-reveal .reveal.is-in{opacity:1;transform:none}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .reveal{opacity:1;transform:none}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{
+  outline:2px solid var(--brass);outline-offset:3px;
 }
 
-.sr-only{
-  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
-  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
-}
-.sr-only:focus{
-  position:fixed;top:16px;left:16px;z-index:30;
-  width:auto;height:auto;margin:0;padding:12px 22px;
-  clip:auto;overflow:visible;white-space:nowrap;
-  background:var(--ink);color:var(--on-ink);
-  border-radius:var(--pill);font-weight:500;text-decoration:none;
-}
+/* section rhythm — ONE seam value between sections, ONE heading value inside.
+   The negative top margin slides the first viewport up under the sticky bar so
+   the hero photograph is the full first screen. */
+main{margin-top:-64px;padding-bottom:var(--section)}
+main>section+section{margin-top:var(--section)}
+main>section,#questions{scroll-margin-top:88px}
 
-/* ═══ piece 1: the opening ═══════════════════════════════════════════
-   claude.com/programs/startups, measured: paper ground with nothing painted
-   behind the type, a tracked eyebrow, the display line centred, one lead
-   sentence, ONE pill — and ONE photographic tile, ~245x150, bled off one edge,
-   sitting OUTSIDE the type column with a clear channel of 128px to the nearest
-   display glyph. Its media mass is 3.1% of the band.
+.wrap>*+*,.panel>*+*{margin-top:var(--headgap)}
+.wrap>.head,.panel>.head{margin-top:12px;max-width:22ch}
+.wrap>.lead,.panel>.lead,.panel>.next__sub{margin-top:20px;max-width:62ch}
+.wrap>.kick,.panel>.kick{color:var(--brass-text)}
+.panel>.kick{color:var(--brass-lift)}
+.kick{color:var(--brass-text)}
+.card--ink .kick,.card--raised .kick,.panel .kick{color:var(--brass-lift)}
+.lead{color:var(--muted)}
+/* One measure ceiling for running text, so a single-column render at 768 does
+   not set body copy 88 characters wide. Narrower per-role caps win over it. */
+main p,main dd{max-width:66ch}
 
-   The measured version of this page carried FIVE tiles, 21.6% of the band, one
-   of them 25px from the headline's full stop. Four are deleted. They are not
-   lost: the room, the panel, the question and the frame after the talk are
-   redistributed into the three bentos below, where each one gets a real caption.
-
-   TWO REGIMES, because a floating field and a 1060px centred column cannot both
-   fit under about 1360px:
-     < 1360   type, then --cta-air of nothing, then the tile
-     >= 1360  the tile floats left of the type, cut by the viewport edge      */
-
-#hero{padding-block:0}
-
-.hz{
+/* ═══ §5.0 the bar ═════════════════════════════════════════════ */
+.bar{position:sticky;top:0;z-index:50;isolation:isolate}
+.bar__in{
   position:relative;
-  overflow-x:clip;
-  display:flex;flex-direction:column;
-  padding-block:24px 0;
+  width:min(1360px,100%);margin-inline:auto;padding-inline:var(--gutter);
+  height:64px;display:flex;align-items:center;gap:12px;
+}
+.bar::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:118px;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(20,16,12,.68) 0,rgba(20,16,12,.42) 55%,rgba(20,16,12,0) 100%);
+  transition:opacity .18s ease;
+}
+/* solid state: paper at 96%, hairline, one shadow token */
+.bar::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:rgba(242,237,228,.96);
+  border-bottom:1px solid var(--rule);
+  box-shadow:var(--lift);
+  opacity:0;transition:opacity .18s ease;
+}
+.bar-solid .bar::after{opacity:1}
+.bar-solid .bar::before{opacity:0}
+@supports (backdrop-filter:blur(12px)){
+  .bar-solid .bar::after{backdrop-filter:blur(12px)}
 }
 
-.hz__type{
-  order:1;
-  max-width:1060px;margin-inline:auto;width:100%;
-  padding-inline:var(--gutter);
-  text-align:center;
+.lock{
+  display:flex;align-items:center;text-decoration:none;flex:0 0 auto;
+  color:var(--on-ink);
 }
+.lock__c{
+  font-family:Zodiak,Georgia,serif;font-weight:400;font-size:21px;
+  letter-spacing:-.03em;line-height:1;
+}
+.lock__r{width:1px;align-self:stretch;background:var(--brass);margin-inline:8px}
+.lock__n{
+  font-size:8.5px;font-weight:500;line-height:1.25;letter-spacing:.07em;
+  text-transform:uppercase;color:rgba(242,237,228,.80);
+}
+.bar-solid .lock{color:var(--ink)}
+.bar-solid .lock__n{color:var(--muted)}
 
-.hz__brow{display:flex;flex-wrap:wrap;justify-content:center;gap:0 10px}
-.hz__bx::before{content:"\00b7";margin-right:10px}
+.bar__links{display:none;margin-left:auto;gap:16px;align-items:center}
+.bar__links a{
+  display:inline-block;padding:6px 0;font-size:14px;font-weight:500;
+  text-decoration:none;color:var(--on-ink);
+  background-image:linear-gradient(var(--brass),var(--brass));
+  background-repeat:no-repeat;background-position:0 100%;background-size:0 1px;
+  transition:background-size .16s ease,color .16s ease;
+}
+.bar-solid .bar__links a{color:var(--ink)}
+.bar__links a:hover,.bar__links a:focus-visible{background-size:100% 1px}
 
-.hz__h{margin-top:18px}
-.hz__l{display:block}
-.hz__w{display:block}
+.bar__right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.bar__go{min-height:40px;padding:0 16px;font-size:14px;white-space:nowrap}
 
-.hz__lead{margin:20px auto 0;max-width:54ch;text-wrap:balance}
-.hz__lead .ev__title,.hz__lead .ev__open{color:var(--ink)}
-
-.ev__go{margin-top:24px;transition:background-color .18s ease}
-.ev__go:hover{background:var(--brass-text);color:var(--on-ink)}
-
-/* THE TILE. One page margin at 390: the gutter, 32px, the same margin every
-   card below it keeps. The measured page had the tiles at x16 beside cards at
-   x32 and the 16px stair was visible down the whole phone scroll.
-   The air above it is --cta-air, 100px, against the 27px the teardown measured
-   between the CTA and the first image. */
-.ht{
-  order:2;
-  position:relative;
-  margin:var(--cta-air) var(--gutter) 0;
+.menu{position:relative}
+.menu__b{
+  list-style:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  min-width:44px;height:40px;padding:0 5px;
+  font-size:14px;font-weight:500;color:var(--on-ink);
+  border:1px solid rgba(242,237,228,.45);border-radius:var(--pill);
+  transition:border-color .16s ease,color .16s ease;
+}
+.menu__b::-webkit-details-marker{display:none}
+.bar-solid .menu__b{color:var(--ink);border-color:var(--rule)}
+.sheet{
+  position:absolute;top:calc(100% + 12px);right:0;
+  min-width:240px;padding:8px;
+  background:var(--paper);
+  border:1px solid var(--rule);
   border-radius:var(--radius);
-  overflow:hidden;
-  background:var(--card);
-  /* 326x204 at 390, against Claude's own 322x181. The extra 23px of height is
-     bought back from the two chips: they are 90% opaque, so tools/fold.mjs
-     correctly subtracts the pixels of photograph they cover, and at 16:9 the
-     tile measured 14.8% of the fold after that subtraction — a tenth of a point
-     under the floor. At 8:5 it measures 16.9%. */
-  aspect-ratio:8/5;
+  box-shadow:var(--lift);
 }
-.ht img{width:100%;height:100%;object-fit:cover}
-.ht .chips{bottom:20px}
-
-@media (min-width:768px){
-  .ht{max-width:640px;margin-inline:auto}
+.sheet a{
+  display:flex;align-items:center;height:44px;padding-inline:16px;
+  text-decoration:none;color:var(--ink);font-weight:500;border-radius:var(--pill);
+  transition:background-color .16s ease;
 }
+.sheet a:hover,.sheet a:focus-visible{background:var(--card)}
 
-@media (min-width:900px){
-  .hz{padding-block:56px 0}
-  .hz__h{margin-top:26px}
-  /* the connective gets roman beside it on the same line, which is Word on
-     Fire's own setting and the thing the 390 column cannot afford */
-  .hz__w{display:inline}
-  .hz__lead{margin-top:30px}
-  .ev__go{margin-top:34px}
+/* ═══ §5.1 hero ════════════════════════════════════════════════ */
+.hero{position:relative;min-height:88svh;display:flex;isolation:isolate}
+.hero__img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center 42%;z-index:-2;
 }
-
-/* ── >= 1360: the tile floats, cut by the frame edge ────────────────
-   The zone is given a fixed height and the type is centred in it, so the tile
-   does not move when the headline changes line count.
-
-   THE CLEAR CHANNEL IS ARITHMETIC, NOT TASTE, and it is what decides where
-   this tile can be. Measured at 1440: display line 1 "Take faith" boxes
-   x480..960 and line 2 "into the workplace." boxes x259..1181, y336..468. Our
-   headline is 922px wide where Claude's second line is 694, so the corridor
-   beside the type is 259px rather than 372 — a tile there that kept a 96px
-   channel could show 155px, which is a sliver, and its caption would not fit.
-
-   So the tile takes the other hole in the composition: the band beside the
-   lead sentence and the pill, still bled off the left edge, still outside the
-   type column. Its top clears the second display line's box by 96px and its
-   right edge clears the lead's own measure by 106px, so the 96px floor holds
-   against display type and against every other kind of type on the screen.
-   Visible area is 73,800px of a 1440x855 band, 6.0%, against the reference's
-   3.1% — the measured version of this page ran five tiles at 21.6%, with one of
-   them 25px from the headline's full stop. */
-@media (min-width:1360px){
-  .hz{
-    display:block;
-    min-height:740px;
-    padding:0;
-  }
-  .hz__type{
-    position:absolute;left:0;right:0;top:38%;transform:translateY(-50%);
-    z-index:1;
-  }
-  .ht{
-    position:absolute;margin:0;
-    left:-114px;width:414px;bottom:44px;
-    aspect-ratio:414/246;
-    max-width:none;
-  }
-  /* the visible strip is the right three-quarters of the box, so the frame is
-     pushed into it rather than centred and cut by the viewport edge */
-  .ht img{object-position:66% 44%}
-  /* the chip group is centred in the VISIBLE strip, not in the tile's box:
-     114px of the box is off the left edge of the viewport, and a group centred
-     on the box put "7 J" of the date outside the frame */
-  .ht .chips{left:130px;right:20px;bottom:18px;align-items:center}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(20,16,12,.34) 0,rgba(20,16,12,.06) 26%,rgba(20,16,12,.10) 100%);
 }
-@media (min-width:1600px){
-  /* past the design width the type stops growing, so the tile is pulled in
-     rather than left stranded in the corner of a very wide frame */
-  .ht{left:-88px}
+/* The scrim is construction, not decoration: it is anchored to the type block,
+   so the ground under the words is the same density at every breakpoint and at
+   any content height. */
+.hero__scrim{
+  margin-top:auto;width:100%;
+  padding:150px var(--gutter) 40px;
+  background:linear-gradient(180deg,rgba(20,16,12,0) 0,rgba(20,16,12,.90) 150px,rgba(20,16,12,.94) 100%);
 }
+/* the type column lands on the same left edge as every .wrap section below it */
+.hero__type{width:min(calc(1360px - 2 * var(--gutter)),100%);margin-inline:auto;color:var(--on-ink)}
+.hero__brow{color:var(--brass-lift)}
+.hero__h{margin-top:18px;max-width:none}
+.hero__h span{display:block}
+.hero__lead{margin-top:24px;max-width:46ch;color:#EDE6DA}
+.hero__next{margin-top:24px;color:var(--brass-lift)}
+.hero__acts{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
 
-/* ── the speakers card ─────────────────────────────────────────────
-   One card, not a bento: the hero's own media is the single tile now, and a
-   four-photograph bento under it would have said the same thing twice. */
-.hero__body{display:flex;flex-direction:column;margin-top:var(--cta-air)}
-.ev{}
-.ev__kicker{color:var(--on-ink-dim);margin-bottom:22px}
-.ev__cols{display:flex;flex-direction:column;gap:26px}
-.ev__ti{color:var(--on-ink-dim);margin-top:10px;text-wrap:pretty}
-.ev__terms{margin-top:28px;color:var(--on-ink-dim);text-wrap:pretty}
+/* ═══ §5.2 what this is ════════════════════════════════════════ */
+.facts{display:grid;gap:var(--gap)}
+.facts>li{display:flex;flex-direction:column;gap:12px}
+.wide{position:relative;border-radius:var(--radius);overflow:hidden}
+.wide img{width:100%;aspect-ratio:1533/640;object-fit:cover;border-radius:var(--radius)}
+.wide--native img{aspect-ratio:auto}
 
-@media (min-width:900px){
-  .hero__body{margin-top:var(--headgap)}
+/* ═══ §5.3 the next evening ════════════════════════════════════ */
+#next>.kick{margin-top:0}
+.next__sub{color:var(--brass-lift)}
+.deets{display:grid;grid-template-columns:auto 1fr}
+.deets dt,.deets dd{padding-block:14px;border-top:1px solid var(--rule-dark)}
+.deets dt{color:var(--on-ink-dim);padding-top:18px;padding-right:24px}
+.next__body{margin-top:28px;max-width:62ch;color:var(--on-ink-dim)}
+.spk{display:grid;gap:var(--gap)}
+.spk h3{margin-bottom:10px}
+.spk p{color:var(--on-ink-dim)}
+.next__go{margin-top:var(--headgap)}
+.next__note{margin-top:14px;color:var(--on-ink-dim)}
+.next__fig img{width:100%;border-radius:var(--radius)}
 
-  .ev__cols{flex-direction:row;gap:64px}
-  .ev__p{flex:1 1 0}
-  .ev__ti{margin-top:14px}
-  .ev__terms{margin-top:40px}
+/* ═══ §5.4 the record ══════════════════════════════════════════ */
+.entries{margin-top:var(--headgap)}
+.entry{padding-block:32px;border-top:1px solid var(--rule)}
+.entry__fig{position:relative;border-radius:var(--radius);overflow:hidden}
+.entry__fig img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--radius)}
+.entry__meta{color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tag{
+  display:inline-block;padding:5px 14px;border-radius:var(--pill);
+  background:var(--brass);color:#1A1206;letter-spacing:var(--tr-meta);
 }
+.entry__t{margin-top:10px}
+.entry__t a{text-decoration:none;background-image:linear-gradient(var(--brass),var(--brass));
+  background-repeat:no-repeat;background-position:0 100%;background-size:100% 1px;
+  transition:background-size .16s ease}
+.entry__t a:hover,.entry__t a:focus-visible{background-size:100% 2px}
+.entry__l{margin-top:8px;color:var(--muted)}
+.lab{color:var(--brass-text);margin-right:8px}
 
-/* ═══ piece 2: the record ════════════════════════════════════════════
-   The evenings are told in the client's own navy-and-gold posters, which carry
-   the title, the subtitle, the address, the hour and the faces AS IMAGERY. Our
-   type beside them is a date, a venue and one keynote name.
+.two{display:grid;gap:var(--gap);margin-top:var(--headgap);align-items:start}
+.two>li{display:flex;flex-direction:column;gap:12px}
+.card__go a{display:inline-block;padding-block:4px;color:var(--brass-text);
+  text-underline-offset:4px;text-decoration-color:var(--brass);
+  transition:text-decoration-color .16s ease}
+.card__go .btn{color:#1A1206;text-decoration:none}
 
-   THE POSTER BAND SITS OUTSIDE THE BENTO. `.bento > *` is overflow:hidden over
-   a fixed row track, and a three-poster band does not fit the span it was given
-   — which is why the second poster shipped sliced through its own emblem. Out
-   of the grid it is exactly as tall as three square graphics need, and the
-   posters print at their native 1:1 with no object-fit at all.
+/* The one interlocked grid on the page (design-system.md §3, SPEC §6.3). Two
+   columns, both ending dead level because the wide column's cards span exactly
+   two of the narrow column's rows. */
+.bento{display:grid;gap:var(--gap)}
+.bento figure{position:relative;border-radius:var(--radius);overflow:hidden;height:100%}
+.bento img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius)}
+.bento>li{border-radius:var(--radius)}
+.bento>li>figure{aspect-ratio:584/480}
 
-   THE BENTO. Six half-width cards, three to a column.
-     column 1   the Spanish evening 3 (356)   the replica 4 (480)   the van door 4 (480)
-     column 2   the shelter 4 (480)   four parishes 4 (480)   the outing card 3 (356)
-   Running totals are 3/7/11 against 4/8/11: no interior boundary coincides and
-   both columns end level on 11 rows, 1348px. Each column alternates a
-   photograph with something that is not one, which is what the interlock needs
-   now that every photograph is the same height. */
+/* ═══ §5.5 an evening ══════════════════════════════════════════ */
+.clock{margin-top:var(--headgap)}
+.clock__l{display:grid;gap:var(--gap);margin-top:24px}
+.clock__l>li{padding-top:18px;border-top:1px solid var(--rule-dark)}
+.clock__n{display:flex;align-items:baseline;gap:8px;color:var(--on-ink)}
+.clock__n .t-meta{color:var(--brass-lift)}
+.clock__l p+p{margin-top:10px;color:var(--on-ink-dim)}
 
-#record figure{margin:0}
+.quad{display:grid;gap:var(--gap)}
+.quad>li{display:flex;flex-direction:column;gap:12px}
+.quad figure{position:relative;border-radius:var(--radius);overflow:hidden;height:100%}
+.quad img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius)}
+.quad>li:not(.card){padding:0;aspect-ratio:584/480}
 
-.rc__band{margin-bottom:var(--gap)}
-.rc__bk{color:var(--gold);margin-bottom:30px;max-width:16ch;text-wrap:balance}
-.rc__posters{list-style:none;margin:0;padding:0;display:grid;gap:0}
-.rc__poster img{width:100%;height:auto;border-radius:var(--radius)}
-.pcap{color:var(--on-ink-dim)}
-.rc__pt .pcap__w{color:var(--on-ink)}
+/* ═══ §5.6 on the record ═══════════════════════════════════════ */
+.quotes{display:grid;gap:var(--gap);align-items:start}
+.quotes>li{display:flex;flex-direction:column;gap:16px}
+.quotes blockquote p{font-size:var(--t-lead);line-height:var(--lh-lead)}
+.q__who{margin-top:4px}
+.q__src{color:var(--muted)}
+.orgs{display:grid;gap:0 24px}
+.orgs li{padding-block:10px;border-top:1px solid var(--rule);color:var(--muted);font-weight:500}
+.orgs__k{color:var(--brass-text)}
 
-/* Under 900 the band shows ONE poster as a thumbnail and the other two evenings
-   as rows. Three flyers at 277px was 1,471px of scroll in which the posters'
-   own printed body copy renders under 4px — a graphic nobody can read is not
-   evidence, it is texture. */
-.rc__poster{
-  display:grid;grid-template-columns:132px minmax(0,1fr);
-  column-gap:20px;align-items:center;
-  padding:20px 0;
-  border-top:1px solid var(--muted);
-}
-.rc__poster + .rc__poster{grid-template-columns:minmax(0,1fr)}
-.rc__poster + .rc__poster img{display:none}
-/* the thumbnail keeps the page's ONE radius. A half-value here was the third
-   shape on the page, which is exactly what design-system §3 was amended to
-   forbid. */
-.rc__poster img{border-radius:var(--radius)}
+/* ═══ §5.7 close, questions, footer ════════════════════════════ */
+.acts{display:grid;gap:var(--gap);align-items:start}
+.acts>li{display:flex;flex-direction:column;gap:12px}
+.acts h3{margin-top:4px}
+.acts p{color:var(--on-ink-dim)}
+.acts .card__go{padding-top:8px}
 
-@media (min-width:900px){
-
-  .rc__posters{grid-template-columns:repeat(3,minmax(0,1fr));gap:36px}
-  .rc__poster{
-    display:block;padding:0;border-top:0;
-  }
-  .rc__poster + .rc__poster{grid-template-columns:none}
-  .rc__poster + .rc__poster img{display:block}
-  .rc__poster img{border-radius:var(--radius)}
-  .rc__pt{margin-top:18px}
-}
-
-/* ── the two evenings that are not lecture nights ──────────────── */
-.rc__k{margin-bottom:14px}
-.rc__d{color:var(--muted)}
-.rc__t{margin-top:2px}
-.rc__at{margin-top:14px;text-wrap:pretty;color:var(--muted)}
-@media (min-width:900px){
-  .rc__k{margin-bottom:18px}
-  .rc__at{margin-top:20px}
-}
-
-/* Crops, one per frame, never the default centre:
-   p3 the replica on its stand, held left of centre so the stand is whole;
-   s1 the sister and the van door, the loose ground dropped off the foot;
-   s4 the sister in profile at the shelter mouth, because uncut the frame is
-      three backs. */
-.rc-p3 img{object-position:22% 50%}
-.rc-s1 img{object-position:50% 26%}
-.rc-s4 img{object-position:18% 30%}
-
-@media (min-width:900px){
-  .rc__grid > *{grid-column:auto}
-  .rc-t3{grid-column:1;grid-row:1/span 3}
-  .rc-p3{grid-column:1;grid-row:4/span 4}
-  .rc-s1{grid-column:1;grid-row:8/span 4}
-
-  .rc-s4{grid-column:2;grid-row:1/span 4}
-  .rc-a1{grid-column:2;grid-row:5/span 4}
-  .rc-t4{grid-column:2;grid-row:9/span 3}
-}
-
-/* ═══ piece 3: an evening ════════════════════════════════════════════
-   THE BENTO. Six half-width cards, three to a column.
-     column 1   the chaplain 3 (356)   before the talk 4   the panel 4
-     column 2   in conversation 4   from the back 4   three hours 3 (356)
-   Running totals 3/7/11 against 4/8/11; both columns 1348px.
-   No two cards stacked in a column carry the same date and venue.
-
-   The timeline is a card ABOVE the block rather than a span-2 card inside it:
-   after a full-width card both columns resume on the same row, and that is a
-   shared boundary by construction. */
-
-#evening figure{margin:0}
-
-.ev3__tl{margin-bottom:var(--gap)}
-.ev3__k{margin-bottom:14px}
-
-/* ── the order of the night: four even columns, four paired rules ───
-   Set as 1fr 3fr 1fr auto this row measured column gaps of 51 / 438 / 47px and
-   left one unpaired hairline hanging at x940 with nothing on the other side of
-   it. Four equal columns, and every entry opens on the same rule, so the rule
-   is a system rather than an orphan. The interval is carried by the times. */
-.tl__list{list-style:none;margin:0;padding:0;display:grid;gap:0}
-.tl__i{border-top:1px solid var(--muted);padding-top:22px}
-.tl__i + .tl__i{margin-top:22px}
-.tl__n{display:flex;align-items:baseline;gap:9px}
-.tl__num{color:var(--gold)}
-.tl__ap{color:var(--on-ink-dim)}
-.tl__t{margin-top:12px;text-wrap:pretty;color:var(--on-ink)}
-
-@media (min-width:900px){
-  .tl__list{grid-template-columns:repeat(4,minmax(0,1fr));column-gap:32px;margin-top:40px}
-  .tl__i + .tl__i{margin-top:0}
-  .tl__i{padding-top:28px}
-  .tl__t{margin-top:26px}
-}
-
-/* ── the chaplain ──────────────────────────────────────────────── */
-.pr__nm{margin-top:2px}
-.pr__role{color:var(--muted);margin-top:14px;text-wrap:pretty}
-.pr__t{color:var(--muted);text-wrap:pretty;margin-top:26px}
-.pr__t + .pr__t{margin-top:16px}
-@media (min-width:900px){
-  .ev3__pr .ev3__k{margin-bottom:22px}
-  .pr__t{margin-top:30px}
-  .pr__t + .pr__t{margin-top:18px}
-}
-
-/* Crops.
-   p1 both women at the wide box, the pair centred
-   p2 the panel table, the slide and the seated rows in front of it
-   p3 the two who are talking
-   p4 the room from the back row */
-.ev-p1 img{object-position:36% 42%}
-.ev-p2 img{object-position:56% 46%}
-.ev-p3 img{object-position:50% 26%}
-.ev-p4 img{object-position:50% 40%}
-
-@media (min-width:900px){
-  .ev3__grid > *{grid-column:auto}
-  .ev3__pr{grid-column:1;grid-row:1/span 3}
-  .ev-p1  {grid-column:1;grid-row:4/span 4}
-  .ev-p2  {grid-column:1;grid-row:8/span 4}
-
-  .ev-p3  {grid-column:2;grid-row:1/span 4}
-  .ev-p4  {grid-column:2;grid-row:5/span 4}
-  .ev-a1  {grid-column:2;grid-row:9/span 3}
-}
-
-/* ═══ piece 4: the close, and it is the dark chapter ═════════════════
-   THE PANEL IS INSET AND ROUNDED. It used to be a square-cornered full-bleed
-   band 3,284px tall — 31% of the phone page — sitting between neighbours that
-   were all rounded, which is exactly the inconsistency the client named. It now
-   sits on the page gutter at --radius, like every card above it, with the full
-   section token above it.
-
-   At 1440 the panel's border box is the wrap's border box and its padding is
-   the gutter, so its content box is the SAME 1184px column the paper sections
-   use and the section header's right column still anchors at x=791.
-
-   Every pair on the dark ground was measured rather than eyeballed:
-     --on-ink on --ink 16.24 · --on-ink on --card-ink 14.65
-     --on-ink-dim on --ink 8.28 · --on-ink-dim on --card-ink 7.47
-     --ink on --brass (RSVP pill) 5.34
-   The focus ring is --brass, 5.34 on ink, because --brass-text is 3.06 there
-   and a ring is the one thing a keyboard user cannot do without.
-
-   THE BENTO. Six half-width cards, three to a column.
-     column 1   ages 21 to 40 3 (356)   hands up 4   the room 4
-     column 2   the outing 4   after the talk 4   the quotation 3 (356)
-   Running totals 3/7/11 against 4/8/11; both columns 1348px.
-
-   THE QUESTIONS CARD SITS OUTSIDE THE BENTO ON PURPOSE. A card whose height
-   changes when a <details> opens would silently clip its own answer under
-   overflow:hidden.
-
-   THE FORM IS HONEST. data-endpoint is empty until the client deploys
-   backend/Code.gs, and main.js never reports success while it is. */
-
-#close figure{margin:0}
-#close .wrap{padding-inline:0;max-width:calc(1312px + 2 * var(--gutter))}
-
-.panel{
-  border-radius:var(--radius);
-  margin-inline:var(--gutter);
-  /* the panel's OUTER edge sits on the page gutter, the same inset every card
-     above it keeps. Its inner padding is 24 at 390 so a 32px chapter head is
-     not squeezed to four lines, and the gutter at 1440 so the panel's content
-     box is the identical 1184px column the paper sections use — which is what
-     keeps the section header's right column anchored at x=791 in all three
-     instances. */
-  padding:64px 24px;
-}
-.panel--ink{background:var(--ink);color:var(--on-ink)}
-.panel--ink .card{background:var(--card-ink)}
-.panel--ink .card--photo{background:var(--card-ink)}
-.panel--ink .card--plate{background:var(--card)}
-.panel--ink .card--plate-navy{background:var(--navy);color:var(--on-ink)}
-.panel--ink .t-meta{color:var(--on-ink-dim)}
-.panel--ink .sh__lead{color:var(--on-ink-dim)}
-.panel--ink :where(a,button,input,summary):focus-visible{outline-color:var(--brass)}
-/* the chip keeps its own light ground everywhere on the page; on the dark
-   chapter its ground steps to --card so it belongs to the panel it sits in */
-.panel--ink .chip{background:var(--chip-ground-ink)}
-
-@media (min-width:900px){
-  .panel{padding:var(--headgap) var(--gutter)}
-}
-
-.cl__head{border-top:1px solid var(--on-ink-dim);padding-top:26px}
-.cl__k{margin-bottom:14px}
-@media (min-width:900px){
-  .cl__head{padding-top:30px}
-  .cl__k{margin-bottom:18px}
-}
-
-/* ── the exits, and the September title card ────────────────────────
-   Also outside the bento: the title card is printed at its native 1:1 with no
-   object-fit, and a graphic cropped to fill a row track is a graphic with its
-   own border taken off. Out of the grid it can never be clipped at all. */
-/* The title card is LAST in the source and first on screen at 1440. At 390 a
-   poster at the head of this card left 1,675px of scroll between it and the
-   next image, over bar.md §9's ~1,600px ceiling, and it pushed both exits down
-   the phone. Ordered rather than duplicated: one element, two positions. */
-.cl__acts{margin-bottom:var(--gap);display:flex;flex-direction:column}
-.cl__plate{display:flex;flex-direction:column;justify-content:center}
-/* Native aspect, no object-fit, --radius: our box never cuts this graphic.
-   The file itself is a source-side crop of the client's square export, which is
-   one slice of a wider banner and severs its own emblem, chevron row and
-   closing line at the right edge — see tools note in the report. */
-.cl__plate img{width:100%;height:auto;border-radius:var(--radius);max-width:300px;margin-inline:auto}
-.cl__plate .pcap{margin-top:16px;text-align:center}
-.act{display:flex;flex-direction:column;align-items:flex-start}
-.cl__acts > * + *{margin-top:36px;padding-top:36px;border-top:1px solid var(--muted)}
-.act__t{margin-top:2px}
-.act__b{color:var(--on-ink-dim);margin-top:16px;text-wrap:pretty}
-.act__go{margin-top:32px;transition:background-color .18s ease}
-.act__go:hover{background:var(--brass-text);color:var(--on-ink)}
-
-/* ── the phone field ────────────────────────────────────────────────
-   Placeholder and border are both --on-ink-dim: 8.28 on the field's own ground,
-   so the hint clears AA and the border clears the 3:1 a control needs. */
-.tel{align-self:stretch;margin-top:30px}
-.tel__l{display:block;margin-bottom:10px}
-.tel__row{display:flex;flex-direction:column;gap:12px}
+.tel{margin-top:8px}
+.tel__l{display:block;color:var(--on-ink-dim)}
+.tel__row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
 .tel__in{
-  /* min-width in ch, not 0: at 1440 this input was left ~100px of content box
-     and the placeholder clipped to "(415) 555 0", which reads as a bug in the
-     page's second most important control. */
-  flex:1 1 auto;min-width:16ch;min-height:48px;padding:0 20px;
-  border:1px solid var(--on-ink-dim);border-radius:var(--pill);
-  background:var(--ink);color:var(--on-ink);
-  font-family:inherit;font-size:var(--t-body);line-height:var(--lh-body);
+  flex:1 1 180px;min-height:48px;padding:0 20px;
+  font:inherit;font-size:var(--t-body);
+  color:var(--on-ink);background:rgba(242,237,228,.07);
+  border:1px solid var(--rule-dark);border-radius:var(--pill);
+  transition:border-color .16s ease,background-color .16s ease;
 }
-.tel__in::placeholder{color:var(--on-ink-dim);opacity:1}
-.tel__go{flex:0 0 auto;background:var(--on-ink);color:var(--ink)}
-.signup__msg{margin-top:16px;color:var(--on-ink-dim);text-wrap:pretty}
-.signup__msg[data-state="err"],.signup__msg[data-state="ok"]{color:var(--on-ink)}
+.tel__in::placeholder{color:rgba(242,237,228,.5)}
+.tel__in:focus{border-color:var(--brass);background:rgba(242,237,228,.12)}
+.tel__go{background:transparent;border:1px solid rgba(242,237,228,.45);color:var(--on-ink)}
+.tel__go:hover,.tel__go:focus-visible{border-color:var(--on-ink);background:rgba(242,237,228,.08)}
+.tel__note{margin-top:12px;color:var(--on-ink-dim)}
+.tel__note[data-state=err]{color:var(--brass-lift)}
+.tel__consent{margin-top:8px;color:var(--on-ink-dim)}
+.pot{display:none}
 
+.qs{background:var(--ink-2);color:var(--on-ink)}
+.q{border-top:1px solid var(--rule-dark);margin-top:0}
+.qs>.q:first-of-type{margin-top:24px}
+.q summary{
+  list-style:none;cursor:pointer;padding-block:18px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  transition:color .16s ease;
+}
+.q summary::-webkit-details-marker{display:none}
+.q summary::after{content:"+";font-family:Switzer,system-ui,sans-serif;font-size:var(--t-body);flex:0 0 auto;color:var(--brass-lift)}
+.q[open] summary::after{content:"\2212"}
+.q summary:hover{color:var(--brass-lift)}
+.q>p{padding-bottom:22px;max-width:70ch;color:var(--on-ink-dim)}
+
+.foot{margin-top:var(--headgap);padding-top:32px;border-top:1px solid var(--rule-dark)}
+.foot__links{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:24px}
+.foot__links a{display:inline-block;padding-block:4px;color:var(--on-ink);
+  text-underline-offset:4px;text-decoration-color:rgba(242,237,228,.45);
+  transition:text-decoration-color .16s ease}
+.foot__links a:hover,.foot__links a:focus-visible{text-decoration-color:var(--brass-lift)}
+.foot__where{margin-top:14px;color:var(--on-ink-dim)}
+.foot__credit{margin-top:24px;color:var(--on-ink-dim);max-width:64ch}
+
+/* ═══ motion — SPEC §7.2, and this is the whole of it ══════════
+   The pre-state class is added by JavaScript only, and only to blocks that
+   start below 90% of the first viewport, so a JS-off render has nothing to
+   resolve and nothing in the first screen ever animates. */
+.reveal{opacity:.001;transform:translateY(10px)}
+.revealed{
+  opacity:1;transform:none;
+  transition:opacity .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1);
+}
+
+/* ═══ ≥900px ═══════════════════════════════════════════════════ */
 @media (min-width:900px){
-  /* Three cells across, all three the full height of the card. align-items:start
-     used to size each cell to its own content, which drew the two rules between
-     them to two different lengths and left about 190px of bare ink hanging under
-     the two shorter columns. `stretch` sizes every cell to the card, so the rules
-     are equal by construction, and each cell then centres its own block so the
-     leftover splits above and below instead of pooling at the foot. */
-  .cl__acts{
-    display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);
-    align-items:stretch;
+  .bar__in{height:72px;gap:24px}
+  .bar__links{display:flex}
+  .bar__right{gap:12px}
+  .bar__go{padding:0 20px}
+  .menu{display:none}
+  .lock__c{font-size:26px}
+  .lock__r{margin-inline:12px}
+  .lock__n{font-size:10px;letter-spacing:.16em}
+
+  main{margin-top:-72px}
+  .hero{min-height:min(92vh,900px)}
+  .hero__scrim{padding:150px var(--gutter) 56px}
+  .hero__type{padding-inline:0}
+  /* the measure is set on the reading lines; the display line is allowed the
+     full column so the headline sets on the two spans it is written in */
+  .hero__brow,.hero__next,.hero__acts{max-width:720px}
+  .hero__lead{max-width:46ch}
+
+  .facts{grid-template-columns:repeat(2,1fr)}
+  /* one card, held to the bento's left-column measure so it reads as a
+     deliberate half-width note rather than a stretched panel */
+  .two{grid-template-columns:minmax(0,604px)}
+  .spk{grid-template-columns:repeat(2,1fr)}
+  .quad{grid-template-columns:repeat(2,1fr);align-items:start}
+  .clock__l{grid-template-columns:repeat(4,1fr)}
+  .orgs{grid-template-columns:repeat(2,1fr)}
+  .acts{grid-template-columns:repeat(2,1fr)}
+
+  /* the record entries: one 12-column grid, image in 1–3, text in 4–12 */
+  .entry{
+    display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(5,auto);
+    column-gap:var(--gap);row-gap:0;padding-block:40px;
   }
-  .cl__acts .act{justify-content:center}
-  .cl__plate{order:-1}
-  .cl__acts > *{
-    margin-top:0;padding-top:0;padding-left:48px;
-    border-top:0;border-left:1px solid var(--muted);
+  .entry__fig{grid-column:1 / 4;grid-row:1 / -1;align-self:start}
+  .entry>:not(.entry__fig){grid-column:4 / -1}
+  .entry>.entry__meta{align-self:start}
+
+  /* the interlock */
+  .bento{grid-template-columns:2.05fr 1fr;grid-template-rows:repeat(4,auto)}
+  .bento>li:nth-child(1){grid-column:1;grid-row:1 / span 2}
+  .bento>li:nth-child(2){grid-column:1;grid-row:3 / span 2}
+  .bento>li:nth-child(3){grid-column:2;grid-row:1}
+  .bento>li:nth-child(4){grid-column:2;grid-row:2}
+  .bento>li:nth-child(5){grid-column:2;grid-row:3}
+  .bento>li:nth-child(6){grid-column:2;grid-row:4}
+  .bento>li:nth-child(-n+2)>figure{aspect-ratio:auto}
+
+  /* §5.3 two columns, poster on the right, text on the left */
+  .next__fig{float:right;width:min(430px,32%);margin:0 0 32px 48px}
+
+  .foot{display:grid;grid-template-columns:auto 1fr;column-gap:48px;align-items:start}
+  .foot__name{grid-row:1 / span 3}
+  .foot__links{margin-top:0}
+}
+
+@media (min-width:1100px){
+  .facts{grid-template-columns:repeat(4,1fr)}
+  .quotes{grid-template-columns:repeat(3,1fr)}
+  .orgs{grid-template-columns:repeat(4,1fr)}
+}
+
+@media (min-width:700px) and (max-width:899px){
+  .orgs{grid-template-columns:repeat(2,1fr)}
+  .spk{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ═══ <900px ═══════════════════════════════════════════════════ */
+@media (max-width:899px){
+  .hero__type>*{max-width:none}
+  .hero__scrim{padding:130px var(--gutter) 40px}
+  .hero__acts .btn{width:100%}
+  /* §5.0 The sheet is a panel of the bar, not a dropdown hung off the trigger.
+     .menu goes static so the containing block is .bar__in, which spans the
+     viewport here; the sheet then runs edge to edge directly under the bar and
+     its links are inset by the gutter, so they line up with the lockup. */
+  .menu{position:static}
+  .sheet{position:static;margin-top:12px;min-width:0}
+  .menu[open] .sheet{
+    position:absolute;left:0;right:0;top:100%;margin-top:0;
+    padding:8px var(--gutter) 12px;
+    border-radius:0 0 var(--radius) var(--radius);border-inline:0;border-top:0;
   }
-  .cl__plate{padding-left:0;padding-right:48px;border-left:0}
-  .cl__plate .pcap{text-align:left}
-  .act__b{margin-top:18px}
-  .act__go{margin-top:30px}
-  .tel{margin-top:26px}
-  .tel__row{flex-direction:row;align-items:center;flex-wrap:wrap}
-  /* the cell that holds only a link runs shorter than the cell that holds a
-     label, a field, a button and a message. Its own margins are opened to close
-     the gap rather than pushing the button down with margin-top:auto, which is
-     what produced the 276px voids in the first round. */
-  .cl__acts .act:first-of-type .act__b{margin-top:26px}
-  .cl__acts .act:first-of-type .act__go{margin-top:40px}
+  .bento>li>figure,.quad>li:not(.card){aspect-ratio:584/480}
+  .entry__fig{margin-bottom:20px}
+  .entry__fig img{aspect-ratio:1}
+  .next__fig{margin-bottom:var(--headgap)}
+  .deets{grid-template-columns:1fr;column-gap:0}
+  .deets dt{padding-bottom:0;border-top:1px solid var(--rule-dark)}
+  .deets dd{padding-top:6px;border-top:0}
 }
 
-/* ── the quotation. Reproduced, not authored. ───────────────────── */
-.sy__nm{margin-top:2px}
-.sy__role{color:var(--muted);margin-top:12px;text-wrap:pretty}
-.sy__q{margin:26px 0 0}
-.sy__q p{font-size:var(--t-lead);line-height:var(--lh-lead);text-wrap:pretty}
-.sy__src{margin-top:22px;text-wrap:pretty}
-.panel--ink .sy__role{color:var(--on-ink-dim)}
-
-/* Crops.
-   f1 the seated rows, cut above the empty chairs at the front
-   f2 the room across the hall, held on the faces
-   f3 the sisters and the shelter, the loose ground dropped off the foot
-   f4 the group after the talk, centred on the front row of faces */
-.cl-f1 img{object-position:50% 56%}
-.cl-f2 img{object-position:50% 44%}
-.cl-f3 img{object-position:34% 8%}
-.cl-f4 img{object-position:50% 40%}
-
-@media (min-width:900px){
-  .cl__grid > *{grid-column:auto}
-  .cl-a1  {grid-column:1;grid-row:1/span 3}
-  .cl-f1  {grid-column:1;grid-row:4/span 4}
-  .cl-f2  {grid-column:1;grid-row:8/span 4}
-
-  .cl-f3  {grid-column:2;grid-row:1/span 4}
-  .cl-f4  {grid-column:2;grid-row:5/span 4}
-  .cl__sy {grid-column:2;grid-row:9/span 3}
+@media (max-width:359px){
+  /* under 360 the second half of the lockup is dropped rather than the CTA */
+  .lock__r,.lock__n{display:none}
 }
 
-/* ── the questions ─────────────────────────────────────────────── */
-.cl__qs{margin-bottom:var(--gap)}
-.qs__note{color:var(--on-ink-dim);text-wrap:balance;margin-bottom:26px}
-.qs{border-top:1px solid var(--muted)}
-.q{border-bottom:1px solid var(--muted)}
-/* the disclosure mark is two hairlines, drawn in CSS. It is a control
-   affordance in the same language as the section rules, not an icon: the page
-   ships zero svg, zero icon fonts and zero emoji. */
-.q__q{
-  display:block;list-style:none;cursor:pointer;position:relative;
-  padding:16px 40px 16px 0;
-}
-.q__q::-webkit-details-marker{display:none}
-.q__q::before,.q__q::after{content:"";position:absolute;background:var(--on-ink)}
-.q__q::before{right:2px;top:50%;width:15px;height:1px;margin-top:-1px}
-.q__q::after{right:9px;top:50%;width:1px;height:15px;margin-top:-8px;transition:opacity .18s ease}
-.q[open] .q__q::after{opacity:0}
-.q__a{color:var(--on-ink-dim);padding:0 40px 20px 0;text-wrap:pretty}
-@media (min-width:900px){
-  .qs__note{margin-bottom:30px;max-width:640px}
-  .q__q{padding:20px 48px 20px 0}
-  .q__a{padding:0 40px 24px 0;max-width:640px}
+@media (max-width:419px){
+  .hero__acts{flex-direction:column}
+  /* the bar keeps its CTA at every width; below 420 the date drops off the
+     label rather than the control dropping off the bar */
+  .go__when{display:none}
 }
 
-/* ── the footer: the closing wordmark, then the credentials ─────────
-   The oversized wordmark is sanctioned as a closing statement because it
-   replaces clutter rather than adding it: the lockup, the city line and the
-   name that used to run three separate blocks are one object now. */
-.cl__foot{border-top:1px solid var(--on-ink-dim);margin-top:64px;padding-top:40px}
-.foot__name{margin:0}
-.foot__row{
-  display:flex;flex-direction:column;gap:20px;
-  margin-top:36px;
-}
-.foot__links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.foot__links a{
-  display:inline-block;padding:11px 0;
-  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;
-}
-
-/* ── the institutions: a fixed-column list, one name to a row ───────
-   Eleven names set as flowing text ragged out to a 145px orphan on the last
-   line at 1440 and eight uneven lines at 390. As rows in a fixed-column list
-   there is no rag to watch: every name owns its own line box and wraps inside
-   it. The non-breaking spaces that used to bind the names are gone with the
-   rag, which is what binds the 320px overflow case at the source — no atom on
-   this page is now wider than its column. overflow-wrap stays as a backstop. */
-.foot__orgk{margin-top:44px;margin-bottom:0}
-.foot__orgs{
-  list-style:none;margin:0;padding:0;
-  display:grid;grid-template-columns:minmax(0,1fr);
-}
-.foot__org{
-  min-width:0;overflow-wrap:break-word;
-  padding:11px 0;
-  border-top:1px solid var(--card-ink);
-  font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
-  text-transform:uppercase;font-weight:500;color:var(--on-ink-dim);
-}
-.foot__credit{margin-top:36px;text-wrap:pretty}
-
-@media (min-width:900px){
-  .cl__foot{margin-top:var(--headgap);padding-top:48px}
-  .foot__row{
-    flex-direction:row;justify-content:space-between;align-items:flex-end;
-    margin-top:44px;
+/* ═══ reduced motion — SPEC §7.3 ═══════════════════════════════
+   The contract: identical DOM, identical layout, identical images, identical
+   text. The only difference is that nothing fades. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
   }
-  .foot__links{flex-direction:row;gap:44px}
-  .foot__orgs{grid-template-columns:repeat(4,minmax(0,1fr));column-gap:40px}
-  .foot__credit{margin-top:44px}
-}
-
-/* ═══ scrollcraft, the real engine ═════════════════════════════════
-   scrollcraft.css (the skill's engine floor) loads BEFORE this file, and
-   scrollcraft.js drives the data-sc-* attributes in the markup. This block
-   does four jobs: retheme the engine's tokens to the house palette, keep two
-   house invariants the engine does not promise (full visibility without JS,
-   zero motion under reduced motion), compose the two pinned stages, and
-   style the bespoke clock. main.js mounts the engine only when
-   prefers-reduced-motion is not set — under reduce the engine never runs and
-   the overrides below un-hide everything its stylesheet hides. */
-
-:root{
-  --sc-canvas:var(--paper);
-  --sc-surface:var(--card);
-  --sc-ink:var(--ink);
-  --sc-ink-soft:var(--muted);
-  --sc-accent:var(--brass);
-  --sc-accent-ink:var(--on-ink);
-  --sc-font-display:'Zodiak',Georgia,serif;
-  --sc-font-text:'Switzer',system-ui,sans-serif;
-  --sc-r-lg:var(--radius);
-}
-
-/* the engine sets a global smooth scroll; the measuring tools scroll
-   programmatically and a glide makes two shots of one position disagree.
-   The three nav anchors keep their glide in main.js. */
-html{scroll-behavior:auto}
-
-/* HOUSE INVARIANT 1 — the page works in full with JavaScript absent. The
-   engine's floor hides cue and reveal targets until it drives them; when the
-   bootstrap script never runs, .no-js stays on <html> and this un-hides all
-   of them. */
-html.no-js [data-sc-cue],
-html.no-js [data-sc-in],
-html.no-js [data-sc-stagger] > *{opacity:1;transform:none}
-
-/* HOUSE INVARIANT 2 — reduced motion means zero motion, not gentler motion.
-   main.js skips the mount entirely, so nothing is driven; this shows the
-   static page the reader was promised. */
-@media (prefers-reduced-motion: reduce){
-  [data-sc-cue],
-  [data-sc-in],
-  [data-sc-stagger] > *{opacity:1 !important;transform:none !important}
-}
-
-/* the hero photograph settles from a slight push-in as the pin is scrolled,
-   read straight off the engine's published progress. The default of 1 means
-   no engine, no scale: reduced motion and no-JS both get the still page. */
-html.sc-ready .hz__act .ht img{
-  transform:scale(calc(1.10 - var(--sc-p, 1) * 0.10));
-  transform-origin:50% 40%;
-}
-
-/* ── the hero stage ──
-   Pinned only at >=1360 (main.js downgrades the act to flow below that,
-   where the full hero does not fit one small viewport). When pinned, the
-   engine's .sc-stage height replaces the min-height and everything keeps
-   its absolute composition. */
-@media (min-width:1360px){
-  .hz__act.sc-act--pinned .hz{min-height:0}
-}
-
-/* ── the poster stage — the peak ──
-   The engine pins .rc__stage for 3.4 viewport-heights and drives the three
-   posters' cues. This block only composes: band centred in the stage, the
-   list as a deck, every poster in the same cell. All of it gated on
-   html.sc-ready, so the flat band is what no-JS and reduced motion get. */
-html.sc-ready .rc__stage{
-  display:flex;align-items:center;
-}
-html.sc-ready .rc__band{
-  width:100%;
-  margin-bottom:0;
-  min-height:min(88svh,680px);
-  display:flex;flex-direction:column;justify-content:center;
-}
-html.sc-ready .rc__posters{
-  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);
-}
-html.sc-ready .rc__poster,
-html.sc-ready .rc__poster + .rc__poster{
-  grid-area:1/1;position:relative;
-  display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;
-  justify-items:center;align-content:center;
-  padding:0;border-top:0;column-gap:0;
-}
-html.sc-ready .rc__poster + .rc__poster img{display:block}
-html.sc-ready .rc__poster img{
-  width:auto;max-width:100%;
-  max-height:min(56svh,460px);
-  border-radius:var(--radius);
-}
-html.sc-ready .rc__pt{margin-top:16px;text-align:center}
-html.sc-ready .rc__bk{margin-bottom:24px}
-@media (min-width:900px){
-  html.sc-ready .rc__band{
-    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
-    align-items:center;column-gap:56px;
+  main *,main *::before,main *::after{
+    transition:none !important;
+    animation:none !important;
   }
-  html.sc-ready .rc__bk{margin-bottom:0;max-width:14ch}
-  html.sc-ready .rc__poster img{max-height:min(64svh,560px)}
-}
-
-/* ── the clock — the signature move, created by main.js only when the
-   engine is mounted. Chip language borrowed from the photo captions. ── */
-.clock{
-  position:fixed;right:16px;bottom:16px;z-index:60;
-  pointer-events:none;
-  display:flex;align-items:baseline;gap:8px;
-  padding:9px 16px;border-radius:var(--pill);
-  background:var(--chip-ground);
-  border:1px solid var(--hairline);
-  font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
-  text-transform:uppercase;font-weight:500;color:var(--ink);
-}
-.clock__t{font-variant-numeric:tabular-nums}
-.clock__bar{
-  width:44px;height:2px;border-radius:1px;
-  background:var(--hairline);
-  overflow:hidden;
-}
-.clock__fill{
-  display:block;width:100%;height:100%;
-  background:var(--brass);
-  transform:scaleX(0);transform-origin:left center;
-}
-@media (min-width:900px){
-  .clock{right:24px;bottom:24px}
 }
