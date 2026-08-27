@@ -1,14 +1,15 @@
 /* CLIA — progressive enhancement only, and nothing else.
 
-   SPEC §7: the page is complete at paint. Every section, every image and every
+   SPEC §4: the page is complete at paint. Every section, every image and every
    word is laid out and legible with this file absent, with JavaScript off, and
    with prefers-reduced-motion on. Nothing here creates content, pins a section,
-   reads layout per frame or drives anything from a scroll offset.
+   reads layout per frame, or drives anything from a scroll offset. No frame
+   loop is scheduled anywhere in this file, and none ever will be.
 
    Four behaviours, and this is the complete list:
      1. the bar's two states
      2. the menu sheet's aria-expanded mirror and tap-to-close
-     3. one entrance fade for blocks that start below the first viewport
+     3. the entrance reveal — M1, M2 and the §4.3 failsafe
      4. the phone field                                                       */
 (function () {
   'use strict';
@@ -58,57 +59,65 @@
     });
   }
 
-  /* ── 3. the entrance, SPEC §7.2.1 ─────────────────────────────
-     opacity and 10px, 300ms, once, then unobserved. The pre-state class is
-     added HERE and never written into the HTML, so a JS-off render has nothing
-     to resolve. Only blocks starting below 90% of the first viewport are ever
-     touched, so nothing above the fold moves. A 900ms failsafe then clears
-     every remaining pre-state class unconditionally, which is what makes a
-     cold screenshot at any offset a screenshot of a finished page. */
-  if (!reduced && 'IntersectionObserver' in window) {
-    var blocks = [];
-    var sections = document.querySelectorAll('main > section');
-    for (var s = 0; s < sections.length; s++) {
-      var kids = sections[s].children;
+  /* ── 3. the entrance — SPEC §4.1 M1/M2 and §4.3 ───────────────
+     M1: opacity 0.001 -> 1 plus 16px of rise, 480ms, once per element, one
+     IntersectionObserver, then unobserved. M2: inside a [data-stagger] group,
+     children step 70ms apart to a maximum of four steps / 280ms.
+
+     Three things make this safe against the failure that got round 2 rejected:
+
+       · the pre-state lives behind [data-rv=on], which the inline head script
+         sets and which is absent under reduced motion or with JS off;
+       · elements in the first viewport are never given .rv at all, so the
+         whole hero is final at paint at 1440 and at 390;
+       · the failsafe below removes data-rv unconditionally 1200ms after load,
+         which is 400ms before cold.mjs takes its 1600ms measurement.
+
+     Anything that goes wrong here — an observer that never fires, a thrown
+     error, a browser without IntersectionObserver — ends with the page fully
+     opaque, because removing the attribute is what "final state" means. */
+  var marked = document.querySelectorAll('.rv');
+  var release = function () { root.removeAttribute('data-rv'); };
+
+  if (reduced || !('IntersectionObserver' in window)) {
+    release();
+  } else {
+    var i, el;
+
+    // §4.3.3 — nothing above the fold ever animates.
+    for (i = 0; i < marked.length; i++) {
+      el = marked[i];
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.remove('rv');
+    }
+
+    // M2 — the stagger, capped at four steps. Written once, here, never per
+    // frame, and expressed as transition-delay so R4 can measure it.
+    var groups = document.querySelectorAll('[data-stagger]');
+    for (i = 0; i < groups.length; i++) {
+      var kids = groups[i].querySelectorAll('.rv');
       for (var k = 0; k < kids.length; k++) {
-        if (kids[k].getBoundingClientRect().top > window.innerHeight * 0.9) blocks.push(kids[k]);
+        kids[k].style.transitionDelay = Math.min(k * 70, 280) + 'ms';
       }
     }
 
-    var clear = function (el) { el.classList.remove('reveal'); el.classList.add('revealed'); };
-
-    if (blocks.length) {
+    var live = document.querySelectorAll('.rv');
+    if (live.length) {
       var io = new IntersectionObserver(function (entries) {
-        for (var i = 0; i < entries.length; i++) {
-          if (entries[i].isIntersecting) { clear(entries[i].target); io.unobserve(entries[i].target); }
+        for (var n = 0; n < entries.length; n++) {
+          if (entries[n].isIntersecting) {
+            entries[n].target.classList.add('is-in');
+            io.unobserve(entries[n].target);
+          }
         }
-      }, { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
+      }, { threshold: 0.12, rootMargin: '0px 0px -12% 0px' });
 
-      for (var b = 0; b < blocks.length; b++) {
-        blocks[b].classList.add('reveal');
-        io.observe(blocks[b]);
-      }
-
-      setTimeout(function () {
-        var left = document.querySelectorAll('.reveal');
-        for (var i = 0; i < left.length; i++) { clear(left[i]); io.unobserve(left[i]); }
-        io.disconnect();
-      }, 900);
+      for (i = 0; i < live.length; i++) io.observe(live[i]);
     }
-  }
 
-  /* smooth anchor scrolling, skipped entirely under reduced motion */
-  if (!reduced) {
-    document.addEventListener('click', function (ev) {
-      var a = ev.target.closest && ev.target.closest('a[href^="#"]');
-      if (!a) return;
-      var id = a.getAttribute('href').slice(1);
-      if (!id) return;
-      var t = document.getElementById(id);
-      if (!t) return;
-      ev.preventDefault();
-      t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    // §4.3.4 — the failsafe. After 1.2s the page is opaque no matter what the
+    // observer did or did not do.
+    window.addEventListener('load', function () { setTimeout(release, 1200); });
+    setTimeout(release, 4000);
   }
 
   /* ── 4. the phone field ───────────────────────────────────────
@@ -147,7 +156,7 @@
     if (pot && pot.value) return;
     var d = digits(input && input.value);
     if (d.length !== 10) {
-      say('That needs to be a 10 digit US number.', false);
+      say('That needs to be 10 digits, US numbers only.', false);
       if (input) input.focus();
       return;
     }
