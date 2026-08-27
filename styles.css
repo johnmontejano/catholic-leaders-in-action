@@ -1,12 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════
-   CLIA — one stylesheet, in the order SPEC §9 fixes:
+   CLIA — one stylesheet, in the order SPEC §10.2 fixes:
      fonts · tokens · reset · type roles · layout primitives ·
      sections in page order · motion · <900px · reduced motion
 
-   The governing rule of this build is SPEC §7: THE PAGE IS COMPLETE
-   AT PAINT. Nothing below makes composition, hierarchy or legibility
-   depend on a scroll position, a cue or a frame loop. A screenshot at
-   any offset, with or without JavaScript, shows a finished page.
+   Two governing rules, and everything below answers to them.
+
+   1. THE PAGE IS COMPLETE AT PAINT (SPEC §3.4). Nothing here makes
+      composition, hierarchy or legibility depend on a scroll
+      position, a cue or a frame loop. A screenshot at any offset,
+      with or without JavaScript, shows a finished page.
+
+   2. DEPTH IS BOUGHT WITH SURFACES, OVERLAP AND ELEVATION, IN THAT
+      ORDER (SPEC §5). Never with gradients on text, glows, or a
+      border-radius change. Three elevation steps, three radii, four
+      overlaps, one ground rhythm.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── fonts (local woff2, Fontshare) ───────────────────────────── */
@@ -18,42 +25,59 @@
 @font-face{font-family:Switzer;src:url(assets/fonts/Switzer-400.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:Switzer;src:url(assets/fonts/Switzer-500.woff2) format("woff2");font-weight:500;font-display:swap}
 @font-face{font-family:Switzer;src:url(assets/fonts/Switzer-600.woff2) format("woff2");font-weight:600;font-display:swap}
-/* Zodiak-700 is deliberately never declared. */
+/* Zodiak-700 is deliberately never declared. Neither is a third family: A8
+   adopts the micro-label BEHAVIOUR (tabular numerals, real data, 12px band)
+   without the monospace file. */
 
 /* ── tokens ───────────────────────────────────────────────────── */
 :root{
-  /* colour, SPEC §6.1 */
-  --paper:#F2EDE4;
-  --card:#E9E2D5;
-  --ink:#14100C;
-  --ink-2:#1F1913;
-  --muted:#5A5148;
-  --brass:#B37D3E;
-  --brass-text:#835829;
-  --brass-lift:#D8A45C;
+  /* grounds and surfaces, SPEC §5.1. No #000 and no #FFF anywhere: not one
+     site in the awwwards survey used pure black on pure white. */
+  --paper:#F2EDE4;      /* page ground */
+  --stage:#E7E0D2;      /* a band photo groups sit ON, so cards do not float */
+  --card:#E9E2D5;       /* card fill on paper */
+  --ink:#14100C;        /* ink panel ground, type on paper */
+  --ink-2:#1F1913;      /* a raised card inside an ink panel */
+  --navy:#1B2A4A;       /* #next ONLY — their own poster navy */
+  --gold:#E5C15C;       /* rules and meta on navy ONLY */
+  --ink-soft:#3B342C;   /* secondary body text everywhere (9.5:1 on card) */
+  --muted:#5A5148;      /* meta labels at >=12px only (6.0:1 on card) */
+  --brass:#B37D3E;      /* pill fills, rules */
+  --brass-deep:#6E4820; /* brass-coloured meta on paper or card (6.2:1) */
+  --brass-lift:#D8A45C; /* brass-coloured type on ink */
   --on-ink:#F2EDE4;
   --on-ink-dim:rgba(242,237,228,.74);
   --rule:rgba(20,16,12,.16);
   --rule-dark:rgba(242,237,228,.18);
-  --navy:#1B2A4A;
-  --chip:rgba(242,237,228,.92);
+  --rule-gold:rgba(229,193,92,.30);
+  --chip:rgba(242,237,228,.94);
 
-  /* shape: exactly two values, page-wide (SPEC §6.3) */
+  /* elevation, SPEC §5.2 — three steps, and every step is TWO layers: a tight
+     contact shadow plus a wide ambient cast. One soft centred box-shadow is
+     the template look (survey §2.5 rule 3); two doing two jobs is Raycast's. */
+  --e1:0 1px 2px rgba(20,16,12,.05), 0 4px 10px rgba(20,16,12,.05);
+  --e2:0 2px 4px rgba(20,16,12,.06), 0 14px 30px rgba(20,16,12,.10);
+  --e3:0 6px 14px rgba(20,16,12,.10), 0 34px 70px rgba(20,16,12,.20);
+  --edge:inset 0 0 0 1px rgba(20,16,12,.07);
+  --edge-dark:inset 0 1px 0 rgba(242,237,228,.07);
+
+  /* shape, SPEC §5.4 — three values and no fourth. A --radius-in element is
+     inset EXACTLY 12px from its parent's border box, so 32 - 12 = 20 and the
+     curves are concentric. Equal radii on frame and screen are the survey's
+     named #1 tell of a template. */
   --radius:32px;
+  --radius-in:20px;
+  --nest:12px;
   --pill:999px;
 
-  /* one elevation token, used in exactly three places (SPEC §6.4) */
-  --lift:0 1px 2px rgba(20,16,12,.10), 0 10px 28px rgba(20,16,12,.09);
-
-  /* type — six roles. Sizes are fixed per breakpoint so the rendered set is
-     exactly six values at 1440 and five at 390; leading and tracking never
-     move across the breakpoint (bar.md §4's named failure). */
+  /* type — six roles at 1440, five at 390. Sizes and leading are unchanged
+     from the build that passed; TRACKING is what now scales with size (A4). */
   --t-display:56px;
   --t-chapter:32px;
   --t-head:24px;
   --t-lead:16px;
   --t-body:16px;
-  --t-meta:11px;
+  --t-meta:12px;
 
   --lh-display:0.90;
   --lh-chapter:1.03;
@@ -62,18 +86,31 @@
   --lh-body:1.50;
   --lh-meta:1.60;
 
-  --tr-display:-0.02em;
+  --tr-display:-0.035em;
   --tr-chapter:-0.025em;
-  --tr-head:-0.01em;
-  --tr-meta:0.05em;
+  --tr-head:-0.02em;
+  --tr-meta:0.08em;
+  /* A17, the footer nameplate. The tracking has to FILL the footer's measure,
+     and the footer's measure is fluid, so a fixed em value either wraps or
+     runs off the page — at 900px a 2.78em nameplate is 1039px wide inside a
+     644px footer. This is the arithmetic instead: 26 characters of Switzer 500
+     at 12px advance 172px of glyph, so the tracking that puts the line at 95%
+     of a measure F is (0.95F - 172) / 26. The max() floor keeps R36's
+     letter-spacing / font-size >= 0.28 true at every width. */
+  --tr-name:max(3.5px, calc(3.65vw - 9px));
 
-  /* space: ONE seam token and ONE heading token (SPEC §4.1, §6.3) */
+  /* space */
   --section:80px;
   --headgap:28px;
   --gutter:32px;
-  --gap:16px;
-  --pad:24px;        /* one card padding per breakpoint */
+  --gap-c:16px;         /* A3, the editorial gap ratio: 42 / 16 = 2.63 */
+  --gap-r:42px;
+  --pad:24px;
   --panelpad:32px;
+  --overlap:24px;       /* how far the three --e3 cards break their edge */
+
+  /* A18 — one named easing token, and it is the only easing in this file. */
+  --ease:cubic-bezier(.16,1,.3,1);
 }
 
 @media (min-width:900px){
@@ -81,15 +118,20 @@
     --t-display:clamp(72px,7.3vw,104px);
     --t-chapter:clamp(40px,4vw,56px);
     --t-lead:20px;
-    --t-meta:12px;
+    --tr-display:-0.05em;
+    --tr-chapter:-0.035em;
+    --tr-name:max(3.5px, calc(3.65vw - 16px));
     --section:128px;
     --headgap:40px;
     --gutter:64px;
-    --gap:24px;
+    --gap-c:24px;       /* 64 / 24 = 2.67, Obama's measured 2.66 : 1 */
+    --gap-r:64px;
     --pad:40px;
     --panelpad:64px;
+    --overlap:40px;
   }
 }
+@media (min-width:1424px){ :root{ --tr-name:33.6px } }
 @media (max-width:359px){ :root{ --gutter:20px } }
 
 /* ── reset ────────────────────────────────────────────────────── */
@@ -122,27 +164,44 @@ button{font:inherit;color:inherit}
 .skip:focus{left:16px;top:12px}
 
 /* Decorative separator. It is drawn, never typed, so it stays out of the
-   accessibility tree and out of the reading order. */
+   accessibility tree, out of the reading order and out of the word count. */
 .dot::before{content:"\00B7";padding-inline:.5em}
 
 /* ── type roles ───────────────────────────────────────────────── */
+/* A5, native leading-trim. `text-box: cap alphabetic` sits the cap-height
+   flush with adjacent rules and image edges instead of floating the type on
+   its font box. This is Eladio Dieste's .text-trim, and it is also the
+   mechanical fix for the button the owner called out (§6.8). */
 .t-display{
   font-family:Zodiak,Georgia,serif;font-weight:300;
   font-size:var(--t-display);line-height:var(--lh-display);letter-spacing:var(--tr-display);
+  text-box:cap alphabetic;
 }
 .t-display em{font-style:italic;font-weight:inherit}
 .t-chapter{
   font-family:Zodiak,Georgia,serif;font-weight:400;
   font-size:var(--t-chapter);line-height:var(--lh-chapter);letter-spacing:var(--tr-chapter);
+  text-box:cap alphabetic;
 }
 .t-head{
   font-family:Zodiak,Georgia,serif;font-weight:400;
   font-size:var(--t-head);line-height:var(--lh-head);letter-spacing:var(--tr-head);
+  text-box:cap alphabetic;
 }
 .t-lead{font-size:var(--t-lead);line-height:var(--lh-lead)}
+/* A8 — the micro-label behaviour without the third font. Every instance on
+   the page carries real data: a date, a venue, a count or a sequence. */
 .t-meta{
   font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
-  text-transform:uppercase;font-weight:500;
+  text-transform:uppercase;font-weight:500;font-variant-numeric:tabular-nums;
+}
+/* Chromium 128+, Safari 18.2+. Where the property is not supported the type
+   simply sits on its font box, which is what every build before this one did;
+   the measured per-role compensation keeps the rhythm identical. */
+@supports not (text-box:cap alphabetic){
+  .t-display{--tb-fallback:cap alphabetic;margin-block:-0.09em -0.06em}
+  .t-chapter{--tb-fallback:cap alphabetic;margin-block:-0.13em -0.09em}
+  .t-head{--tb-fallback:cap alphabetic;margin-block:-0.24em -0.16em}
 }
 
 /* ── layout primitives ────────────────────────────────────────── */
@@ -159,43 +218,75 @@ button{font:inherit;color:inherit}
   border-radius:var(--radius);
   display:flow-root;
 }
+.panel--navy{background:var(--navy);box-shadow:var(--edge-dark)}
 
 .card{
   background:var(--card);
   border-radius:var(--radius);
   padding:var(--pad);
+  box-shadow:var(--e1),var(--edge);
 }
-.card--raised{background:var(--ink-2);color:var(--on-ink)}
-.card--ink{background:var(--ink-2);color:var(--on-ink)}
+/* Shadows do not read on ink or navy. There, depth is an --ink-2 fill plus the
+   top-edge rim highlight (A15, Raycast's inset 0 .5px 0 rgba(255,255,255,.3)). */
+.card--raised,.card--ink{background:var(--ink-2);color:var(--on-ink);box-shadow:var(--edge-dark)}
 
-/* One caption construction, page-wide: two frosted chips on the frame. */
+/* One framed photograph construction, page-wide. The photograph sits IN a
+   frame and the frame is what has elevation — real prints do not float
+   (survey §4.2). No aspect-ratio is imposed: the file is already the crop
+   build-assets.py chose, so the rendered ratio IS the intrinsic ratio (A2). */
+.fr{position:relative;border-radius:var(--radius);box-shadow:var(--e2),var(--edge);isolation:isolate}
+.fr img{width:100%;border-radius:inherit}
+
+/* One caption construction, page-wide: frosted chips on the frame. A9 — a
+   dated, located photograph is evidence; an undated one is decoration. */
 .chips{
-  position:absolute;left:0;right:0;bottom:24px;
+  position:absolute;left:0;right:0;bottom:16px;
   display:flex;flex-direction:column;align-items:center;gap:8px;
   padding-inline:16px;
 }
 .chip{
   background:var(--chip);color:var(--ink);
   font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
-  text-transform:uppercase;font-weight:500;
+  text-transform:uppercase;font-weight:500;font-variant-numeric:tabular-nums;
   border-radius:var(--pill);
-  padding:7px 20px;
+  padding:6px 18px;
   max-width:100%;text-align:center;
 }
-.chip--sub{font-weight:500;opacity:1}
 
+.pill{
+  display:inline-block;
+  background:var(--card);color:var(--brass-deep);
+  border-radius:var(--pill);padding:9px 18px;
+  box-shadow:var(--e1),var(--edge);
+}
+
+/* ── §6.8 the control, and this is the whole of it ─────────────
+   `.btn` is an inline-flex with align-items:center, and flex centres the LINE
+   BOX, not the ink. Switzer's ascent and descent are asymmetric, so the
+   glyphs land above optical centre and no amount of padding fixes it at every
+   size. `text-box: trim-both cap alphabetic` makes the label's box the cap
+   band itself, so what flexbox centres is the ink. tools/align.mjs is the
+   gate: |dy| <= 1px, |dx| <= 1px, no wrap, every .btn, at 1440 and 390. */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
   min-height:48px;padding:0 24px;
   border:0;border-radius:var(--pill);
-  font-size:var(--t-body);font-weight:600;line-height:1.2;
-  text-decoration:none;cursor:pointer;
-  transition:background-color .16s ease,color .16s ease,border-color .16s ease,transform .16s ease;
+  font-size:var(--t-body);font-weight:600;line-height:1;
+  white-space:nowrap;text-decoration:none;cursor:pointer;
+  transition:background-color .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease);
 }
-.btn--brass{background:var(--brass);color:#1A1206;box-shadow:var(--lift)}
-.btn--brass:hover,.btn--brass:focus-visible{background:#C68C48;transform:translateY(-1px)}
-.btn--ghost{border:1px solid rgba(242,237,228,.45);color:var(--on-ink);background:transparent}
-.btn--ghost:hover,.btn--ghost:focus-visible{border-color:var(--on-ink);background:rgba(242,237,228,.08)}
+.btn>.btn__t{
+  display:block;line-height:1;
+  text-box:trim-both cap alphabetic;
+}
+@supports not (text-box:trim-both cap alphabetic){
+  .btn>.btn__t{--tb-fallback:trim-both cap alphabetic;padding-top:.06em}
+}
+.btn--brass{background:var(--brass);color:#1A1206;box-shadow:var(--e2)}
+.btn--brass:hover,.btn--brass:focus-visible{background:#C68C48}
+.btn--ghost{box-shadow:inset 0 0 0 1px rgba(242,237,228,.45);color:var(--on-ink);background:transparent}
+.btn--ghost:hover,.btn--ghost:focus-visible{box-shadow:inset 0 0 0 1px var(--on-ink);background:rgba(242,237,228,.08)}
+@media (max-width:419px){ .btn{padding:0 18px} }
 
 a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{
   outline:2px solid var(--brass);outline-offset:3px;
@@ -208,19 +299,18 @@ main{margin-top:-64px;padding-bottom:var(--section)}
 main>section+section{margin-top:var(--section)}
 main>section,#questions{scroll-margin-top:88px}
 
-.wrap>*+*,.panel>*+*{margin-top:var(--headgap)}
-.wrap>.head,.panel>.head{margin-top:12px;max-width:22ch}
-.wrap>.lead,.panel>.lead,.panel>.next__sub{margin-top:20px;max-width:62ch}
-.wrap>.kick,.panel>.kick{color:var(--brass-text)}
-.panel>.kick{color:var(--brass-lift)}
-.kick{color:var(--brass-text)}
-.card--ink .kick,.card--raised .kick,.panel .kick{color:var(--brass-lift)}
-.lead{color:var(--muted)}
+.wrap>*+*{margin-top:var(--headgap)}
+.wrap>.head{margin-top:12px;max-width:22ch}
+.wrap>.lead{margin-top:20px;max-width:56ch}
+.kick{color:var(--brass-deep)}
+.card--ink .kick,.card--raised .kick,.panel .kick,.themes .kick{color:var(--brass-lift)}
+.panel--navy .kick{color:var(--gold)}
+.lead{color:var(--ink-soft)}
 /* One measure ceiling for running text, so a single-column render at 768 does
    not set body copy 88 characters wide. Narrower per-role caps win over it. */
 main p,main dd{max-width:66ch}
 
-/* ═══ §5.0 the bar ═════════════════════════════════════════════ */
+/* ═══ §6.0 the bar ═════════════════════════════════════════════ */
 .bar{position:sticky;top:0;z-index:50;isolation:isolate}
 .bar__in{
   position:relative;
@@ -230,30 +320,23 @@ main p,main dd{max-width:66ch}
 .bar::before{
   content:"";position:absolute;inset:0 0 auto 0;height:118px;z-index:-1;pointer-events:none;
   background:linear-gradient(180deg,rgba(20,16,12,.68) 0,rgba(20,16,12,.42) 55%,rgba(20,16,12,0) 100%);
-  transition:opacity .18s ease;
+  transition:opacity .18s var(--ease);
 }
-/* solid state: paper at 96%, hairline, one shadow token */
 .bar::after{
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:rgba(242,237,228,.96);
+  background:color-mix(in srgb, var(--paper) 92%, transparent);
   border-bottom:1px solid var(--rule);
-  box-shadow:var(--lift);
-  opacity:0;transition:opacity .18s ease;
+  box-shadow:var(--e2);
+  opacity:0;transition:opacity .18s var(--ease);
 }
 .bar-solid .bar::after{opacity:1}
 .bar-solid .bar::before{opacity:0}
-@supports (backdrop-filter:blur(12px)){
-  .bar-solid .bar::after{backdrop-filter:blur(12px)}
+@supports (backdrop-filter:blur(14px)){
+  .bar-solid .bar::after{backdrop-filter:blur(14px)}
 }
 
-.lock{
-  display:flex;align-items:center;text-decoration:none;flex:0 0 auto;
-  color:var(--on-ink);
-}
-.lock__c{
-  font-family:Zodiak,Georgia,serif;font-weight:400;font-size:21px;
-  letter-spacing:-.03em;line-height:1;
-}
+.lock{display:flex;align-items:center;text-decoration:none;flex:0 0 auto;color:var(--on-ink)}
+.lock__c{font-family:Zodiak,Georgia,serif;font-weight:400;font-size:21px;letter-spacing:-.03em;line-height:1}
 .lock__r{width:1px;align-self:stretch;background:var(--brass);margin-inline:8px}
 .lock__n{
   font-size:8.5px;font-weight:500;line-height:1.25;letter-spacing:.07em;
@@ -268,13 +351,13 @@ main p,main dd{max-width:66ch}
   text-decoration:none;color:var(--on-ink);
   background-image:linear-gradient(var(--brass),var(--brass));
   background-repeat:no-repeat;background-position:0 100%;background-size:0 1px;
-  transition:background-size .16s ease,color .16s ease;
+  transition:background-size .16s var(--ease),color .16s var(--ease);
 }
 .bar-solid .bar__links a{color:var(--ink)}
 .bar__links a:hover,.bar__links a:focus-visible{background-size:100% 1px}
 
 .bar__right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.bar__go{min-height:40px;padding:0 16px;font-size:14px;white-space:nowrap}
+.bar__go{min-height:40px;padding:0 16px;font-size:14px}
 
 .menu{position:relative}
 .menu__b{
@@ -283,7 +366,7 @@ main p,main dd{max-width:66ch}
   min-width:44px;height:40px;padding:0 5px;
   font-size:14px;font-weight:500;color:var(--on-ink);
   border:1px solid rgba(242,237,228,.45);border-radius:var(--pill);
-  transition:border-color .16s ease,color .16s ease;
+  transition:border-color .16s var(--ease),color .16s var(--ease);
 }
 .menu__b::-webkit-details-marker{display:none}
 .bar-solid .menu__b{color:var(--ink);border-color:var(--rule)}
@@ -293,129 +376,203 @@ main p,main dd{max-width:66ch}
   background:var(--paper);
   border:1px solid var(--rule);
   border-radius:var(--radius);
-  box-shadow:var(--lift);
+  box-shadow:var(--e2);
 }
 .sheet a{
   display:flex;align-items:center;height:44px;padding-inline:16px;
   text-decoration:none;color:var(--ink);font-weight:500;border-radius:var(--pill);
-  transition:background-color .16s ease;
+  transition:background-color .16s var(--ease);
 }
 .sheet a:hover,.sheet a:focus-visible{background:var(--card)}
 
-/* ═══ §5.1 hero ════════════════════════════════════════════════ */
-.hero{position:relative;min-height:88svh;display:flex;isolation:isolate}
-.hero__img{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:center 42%;z-index:-2;
+/* ═══ §6.1 hero ════════════════════════════════════════════════
+   bar.md §10: the image is the dominant object of screen one. The top 55% of
+   the photograph is unobstructed — the room is the argument. */
+.hero{
+  position:relative;isolation:isolate;
+  min-height:88svh;display:flex;align-items:flex-end;
+  padding-bottom:32px;
 }
+.hero__pic{display:contents}
+.hero__img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:center 40%}
 .hero::after{
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(20,16,12,.34) 0,rgba(20,16,12,.06) 26%,rgba(20,16,12,.10) 100%);
+  background:linear-gradient(180deg,rgba(20,16,12,0) 45%,rgba(20,16,12,.70) 100%);
 }
-/* The scrim is construction, not decoration: it is anchored to the type block,
-   so the ground under the words is the same density at every breakpoint and at
-   any content height. */
-.hero__scrim{
-  margin-top:auto;width:100%;
-  padding:150px var(--gutter) 40px;
-  background:linear-gradient(180deg,rgba(20,16,12,0) 0,rgba(20,16,12,.90) 150px,rgba(20,16,12,.94) 100%);
+/* §5.3.1 overlap 1 of 4 — the glass plate. The type block is a CARD ON the
+   photograph, not a wash across it. Two layers, because one is not enough to
+   clear worst-pixel antialiasing over a bright frame. */
+.plate{
+  position:relative;
+  width:min(720px,calc(100% - 2 * var(--gutter)));
+  margin-left:max(var(--gutter),calc((100% - 1360px) / 2 + var(--gutter)));
+  padding:24px;
+  color:var(--on-ink);
+  background:rgba(20,16,12,.78);
+  border:1px solid rgba(242,237,228,.14);
+  border-radius:var(--radius);
+  box-shadow:var(--e3);
 }
-/* the type column lands on the same left edge as every .wrap section below it */
-.hero__type{width:min(calc(1360px - 2 * var(--gutter)),100%);margin-inline:auto;color:var(--on-ink)}
-.hero__brow{color:var(--brass-lift)}
-.hero__h{margin-top:18px;max-width:none}
-.hero__h span{display:block}
-.hero__lead{margin-top:24px;max-width:46ch;color:#EDE6DA}
-.hero__next{margin-top:24px;color:var(--brass-lift)}
-.hero__acts{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px}
+@supports (backdrop-filter:blur(20px)){
+  .plate{backdrop-filter:blur(20px) saturate(1.08)}
+}
+.plate__brow{color:var(--brass-lift)}
+.plate__h{margin-top:18px}
+.plate__h span{display:block}
+.plate__lead{margin-top:22px;max-width:46ch;color:#EDE6DA}
+.plate__next{margin-top:20px;color:var(--brass-lift);text-wrap:balance}
+.plate__acts{margin-top:26px;display:flex;flex-wrap:wrap;gap:12px}
 
-/* ═══ §5.2 what this is ════════════════════════════════════════ */
-.facts{display:grid;gap:var(--gap)}
-.facts>li{display:flex;flex-direction:column;gap:12px}
-.wide{position:relative;border-radius:var(--radius);overflow:hidden}
-.wide img{width:100%;aspect-ratio:1533/640;object-fit:cover;border-radius:var(--radius)}
-.wide--native img{aspect-ratio:auto}
+/* ═══ §6.2 what this is ════════════════════════════════════════ */
 
-/* ═══ §5.3 the next evening ════════════════════════════════════ */
-#next>.kick{margin-top:0}
-.next__sub{color:var(--brass-lift)}
-.deets{display:grid;grid-template-columns:auto 1fr}
-.deets dt,.deets dd{padding-block:14px;border-top:1px solid var(--rule-dark)}
-.deets dt{color:var(--on-ink-dim);padding-top:18px;padding-right:24px}
-.next__body{margin-top:28px;max-width:62ch;color:var(--on-ink-dim)}
-.spk{display:grid;gap:var(--gap)}
-.spk h3{margin-bottom:10px}
-.spk p{color:var(--on-ink-dim)}
+/* The artefact: the USCCB's seven themes as a numbered ladder. A6 — a numeral
+   carries hierarchy, sequence and scale, three jobs an icon does badly. Only
+   rows 3 and 4 are marked; row 5 is NOT marked for September, because that
+   mapping is inference and inference does not ship. */
+.themes{
+  background:var(--ink);color:var(--on-ink);
+  border-radius:var(--radius);padding:var(--nest);
+  box-shadow:var(--e2),var(--edge-dark);
+}
+/* --nest on the panel, the reading inset on the rows: that is what makes
+   32 - 12 = 20 true and the curves concentric (A13). */
+.themes>.kick{padding:calc(var(--pad) - var(--nest)) 16px 0}
+.themes__l{margin-top:20px}
+.themes__l>li{
+  display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:baseline;
+  padding:14px 12px;border-top:1px solid var(--rule-dark);border-radius:var(--radius-in);
+}
+.themes__l>li.is-held{background:var(--ink-2)}
+.themes__n{color:var(--brass-lift);font-variant-numeric:tabular-nums}
+.themes__t{font-weight:500}
+.themes__s{color:var(--brass-lift);grid-column:2;text-align:left}
+.themes__s:empty{display:none}
+.themes__src{margin-top:18px;padding:0 16px calc(var(--pad) - var(--nest));color:var(--on-ink-dim)}
+
+.fr--feature{margin-inline-end:auto}
+
+/* ═══ §6.3 the next evening — their own navy ═══════════════════ */
+#next{padding-top:calc(var(--panelpad) + var(--overlap))}
+.next__kick{color:var(--gold)}
+.lockup{margin-top:20px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.lockup__d{color:var(--on-ink);text-transform:uppercase}
+.lockup__m{color:var(--gold)}
+#next .head{margin-top:16px;max-width:22ch}
+.next__sub{margin-top:14px;color:var(--gold);max-width:56ch}
+.deets{margin-top:var(--headgap);display:grid;grid-template-columns:auto 1fr}
+.deets dt,.deets dd{padding-block:14px;border-top:1px solid var(--rule-gold)}
+.deets dt{color:var(--gold);padding-top:18px;padding-right:24px}
 .next__go{margin-top:var(--headgap)}
 .next__note{margin-top:14px;color:var(--on-ink-dim)}
-.next__fig img{width:100%;border-radius:var(--radius)}
-
-/* ═══ §5.4 the record ══════════════════════════════════════════ */
-.entries{margin-top:var(--headgap)}
-.entry{padding-block:32px;border-top:1px solid var(--rule)}
-.entry__fig{position:relative;border-radius:var(--radius);overflow:hidden}
-.entry__fig img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--radius)}
-.entry__meta{color:var(--muted);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.tag{
-  display:inline-block;padding:5px 14px;border-radius:var(--pill);
-  background:var(--brass);color:#1A1206;letter-spacing:var(--tr-meta);
+/* §5.3.2 overlap 2 of 4 — the title card breaks the panel's top edge. */
+/* A drop shadow does not read navy-on-navy (§5.2), so the card's own edge is
+   what separates it from the panel: their poster gold, one hairline. */
+.next__fig{
+  border-radius:var(--radius);box-shadow:var(--e3);isolation:isolate;
+  border:1px solid var(--rule-gold);
 }
-.entry__t{margin-top:10px}
-.entry__t a{text-decoration:none;background-image:linear-gradient(var(--brass),var(--brass));
+.next__fig img{width:100%;border-radius:inherit}
+
+/* ═══ §6.4 the record — the poster wall on a stage ═════════════ */
+.strip{margin-top:14px;color:var(--brass-deep)}
+.entries{display:grid;column-gap:var(--gap-c);row-gap:var(--gap-r);margin-top:var(--headgap)}
+/* Each entry is a real card: a surface, a hairline and elevation. At 390 the
+   old build was a flat stack on bare paper — it passed WCAG at 6.66:1 and it
+   still read weak, because weak is a design property and not a ratio. */
+.entry{
+  background:var(--card);border-radius:var(--radius);padding:var(--nest);
+  box-shadow:var(--e2),var(--edge);
+}
+.entry__fig{position:relative;border-radius:var(--radius-in);isolation:isolate}
+.entry__fig img{width:100%;border-radius:inherit}
+.entry__top{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:18px}
+.entry__n{color:var(--brass-deep);font-variant-numeric:tabular-nums;line-height:1}
+.entry__d{color:var(--ink)}
+.tag{
+  display:inline-block;padding:6px 14px;border-radius:var(--pill);
+  background:var(--brass);color:#1A1206;
+}
+.entry__t{margin-top:14px}
+.entry__t a{
+  text-decoration:none;
+  background-image:linear-gradient(var(--brass),var(--brass));
   background-repeat:no-repeat;background-position:0 100%;background-size:100% 1px;
-  transition:background-size .16s ease}
+  transition:background-size .16s var(--ease);
+}
 .entry__t a:hover,.entry__t a:focus-visible{background-size:100% 2px}
-.entry__l{margin-top:8px;color:var(--muted)}
-.lab{color:var(--brass-text);margin-right:8px}
+.entry__gloss{margin-top:8px;color:var(--ink-soft)}
+.entry__l{margin-top:8px;color:var(--ink-soft)}
 
-.two{display:grid;gap:var(--gap);margin-top:var(--headgap);align-items:start}
-.two>li{display:flex;flex-direction:column;gap:12px}
-.card__go a{display:inline-block;padding-block:4px;color:var(--brass-text);
+.serve{margin-top:var(--headgap)}
+.serve p+p{margin-top:12px}
+/* :not(.btn) is load-bearing, and tools/align.mjs is what proved it. Without
+   it this rule sets display:inline-block on the RSVP control inside the close
+   card, which throws away the inline-flex box that centres the label — and
+   that control is the one the owner pointed at by name. */
+.card__go a:not(.btn){
+  display:inline-block;padding-block:4px;color:var(--brass-deep);
   text-underline-offset:4px;text-decoration-color:var(--brass);
-  transition:text-decoration-color .16s ease}
-.card__go .btn{color:#1A1206;text-decoration:none}
+  transition:text-decoration-color .16s var(--ease);
+}
 
-/* The one interlocked grid on the page (design-system.md §3, SPEC §6.3). Two
-   columns, both ending dead level because the wide column's cards span exactly
-   two of the narrow column's rows. */
-.bento{display:grid;gap:var(--gap)}
-.bento figure{position:relative;border-radius:var(--radius);overflow:hidden;height:100%}
-.bento img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius)}
-.bento>li{border-radius:var(--radius)}
-.bento>li>figure{aspect-ratio:584/480}
+/* §5.3.4 overlap 4 of 4 — the one bleed. Below 900 this band runs edge to
+   edge, wider than the gutter, using negative margins. Obama's inset(0 -100vw)
+   band escape, done without a clip. EXACTLY one element on the page is wider
+   than the content column. */
+.stage{
+  margin-top:var(--headgap);
+  background:var(--stage);border-radius:var(--radius);
+  padding:var(--nest);box-shadow:var(--e2);
+}
+.bento{display:grid;gap:16px}
+.stage .fr{border-radius:var(--radius-in)}
 
-/* ═══ §5.5 an evening ══════════════════════════════════════════ */
+/* ═══ §6.5 an evening — the proportional timeline ══════════════
+   30 min, 120 min, 30 min. The stops sit at 0, 16.7%, 83.3% and 100% of the
+   rail, so the spacing is the durations. Even spacing contradicts them and
+   reads as three statistics rather than a night. Each <li> is a zero-width
+   marker AT its stop, so the measured centre-to-centre distances are the
+   ratio 1 : 4 : 1 exactly, whatever a gate chooses to measure. */
 .clock{margin-top:var(--headgap)}
-.clock__l{display:grid;gap:var(--gap);margin-top:24px}
-.clock__l>li{padding-top:18px;border-top:1px solid var(--rule-dark)}
-.clock__n{display:flex;align-items:baseline;gap:8px;color:var(--on-ink)}
+/* The rail's own height is the timeline, so the label of the last stop hangs
+   BELOW it — the margin is the room it needs to stay on the ink. Without it
+   the 9:30 line lands on paper, where --on-ink-dim is invisible, which is what
+   tools/contrast.mjs reported. The rail is 430px so the shortest interval
+   (430 / 6 = 72px) still clears a 60px label. */
+.clock__l{position:relative;margin-top:44px;height:430px;margin-bottom:62px}
+.clock__l::before{
+  content:"";position:absolute;background:var(--rule-dark);
+  left:0;top:0;bottom:0;width:1px;
+}
+.clock__l>li{position:absolute;left:0;top:calc(var(--at) / 6 * 100%);width:0}
+.clock__l>li::before{
+  content:"";position:absolute;left:-4px;top:0;width:9px;height:9px;
+  border-radius:var(--pill);background:var(--brass-lift);
+}
+.clock__l>li>*{width:max(180px,calc(100vw - 2 * var(--gutter) - 2 * var(--pad) - 34px))}
+.clock__n{display:flex;align-items:baseline;gap:8px;color:var(--on-ink);margin-left:34px}
 .clock__n .t-meta{color:var(--brass-lift)}
-.clock__l p+p{margin-top:10px;color:var(--on-ink-dim)}
+.clock__c{margin-top:8px;margin-left:34px;color:var(--on-ink-dim)}
 
-.quad{display:grid;gap:var(--gap)}
-.quad>li{display:flex;flex-direction:column;gap:12px}
-.quad figure{position:relative;border-radius:var(--radius);overflow:hidden;height:100%}
-.quad img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius)}
-.quad>li:not(.card){padding:0;aspect-ratio:584/480}
+.pair{display:grid;column-gap:var(--gap-c);row-gap:var(--gap-r);align-items:start;margin-top:var(--headgap)}
 
-/* ═══ §5.6 on the record ═══════════════════════════════════════ */
-.quotes{display:grid;gap:var(--gap);align-items:start}
+/* ═══ §6.6 on the record ═══════════════════════════════════════ */
+.pair--voices{margin-top:var(--headgap)}
+.quotes{display:grid;column-gap:var(--gap-c);row-gap:var(--gap-r);align-items:start}
 .quotes>li{display:flex;flex-direction:column;gap:16px}
-.quotes blockquote p{font-size:var(--t-lead);line-height:var(--lh-lead)}
-.q__who{margin-top:4px}
+.deets__more{grid-column:2;border-top:0;padding-top:0;padding-bottom:14px;margin-top:-8px}
+.q__who{margin-top:-4px}
 .q__src{color:var(--muted)}
-.orgs{display:grid;gap:0 24px}
-.orgs li{padding-block:10px;border-top:1px solid var(--rule);color:var(--muted);font-weight:500}
-.orgs__k{color:var(--brass-text)}
 
-/* ═══ §5.7 close, questions, footer ════════════════════════════ */
-.acts{display:grid;gap:var(--gap);align-items:start}
-.acts>li{display:flex;flex-direction:column;gap:12px}
-.acts h3{margin-top:4px}
-.acts p{color:var(--on-ink-dim)}
-.acts .card__go{padding-top:8px}
+/* ═══ §6.7 close, questions, footer ════════════════════════════ */
+#close{padding-top:calc(var(--panelpad) + var(--overlap))}
+#close .head{margin-top:12px;max-width:22ch}
+.cta,.signup{margin-top:var(--headgap)}
+.cta h3,.signup h3{margin-top:6px}
+.cta p,.signup p{color:var(--on-ink-dim)}
+.cta .card__go{padding-top:12px}
 
-.tel{margin-top:8px}
+.tel{margin-top:14px}
 .tel__l{display:block;color:var(--on-ink-dim)}
 .tel__row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
 .tel__in{
@@ -423,24 +580,24 @@ main p,main dd{max-width:66ch}
   font:inherit;font-size:var(--t-body);
   color:var(--on-ink);background:rgba(242,237,228,.07);
   border:1px solid var(--rule-dark);border-radius:var(--pill);
-  transition:border-color .16s ease,background-color .16s ease;
+  transition:border-color .16s var(--ease),background-color .16s var(--ease);
 }
-.tel__in::placeholder{color:rgba(242,237,228,.5)}
+.tel__in::placeholder{color:rgba(242,237,228,.62)}
 .tel__in:focus{border-color:var(--brass);background:rgba(242,237,228,.12)}
-.tel__go{background:transparent;border:1px solid rgba(242,237,228,.45);color:var(--on-ink)}
-.tel__go:hover,.tel__go:focus-visible{border-color:var(--on-ink);background:rgba(242,237,228,.08)}
+.tel__go{background:transparent;box-shadow:inset 0 0 0 1px rgba(242,237,228,.45);color:var(--on-ink)}
+.tel__go:hover,.tel__go:focus-visible{box-shadow:inset 0 0 0 1px var(--on-ink);background:rgba(242,237,228,.08)}
 .tel__note{margin-top:12px;color:var(--on-ink-dim)}
 .tel__note[data-state=err]{color:var(--brass-lift)}
 .tel__consent{margin-top:8px;color:var(--on-ink-dim)}
 .pot{display:none}
 
-.qs{background:var(--ink-2);color:var(--on-ink)}
-.q{border-top:1px solid var(--rule-dark);margin-top:0}
-.qs>.q:first-of-type{margin-top:24px}
+.qs{background:var(--ink-2);color:var(--on-ink);box-shadow:var(--edge-dark);margin-top:var(--headgap)}
+.q{border-top:1px solid var(--rule-dark)}
+.qs>.q:first-of-type{margin-top:20px}
 .q summary{
   list-style:none;cursor:pointer;padding-block:18px;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
-  transition:color .16s ease;
+  transition:color .16s var(--ease);
 }
 .q summary::-webkit-details-marker{display:none}
 .q summary::after{content:"+";font-family:Switzer,system-ui,sans-serif;font-size:var(--t-body);flex:0 0 auto;color:var(--brass-lift)}
@@ -449,25 +606,40 @@ main p,main dd{max-width:66ch}
 .q>p{padding-bottom:22px;max-width:70ch;color:var(--on-ink-dim)}
 
 .foot{margin-top:var(--headgap);padding-top:32px;border-top:1px solid var(--rule-dark)}
-.foot__links{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:24px}
-.foot__links a{display:inline-block;padding-block:4px;color:var(--on-ink);
+/* A17, the tracked nameplate. Paradiso sets "institute" at 50px with 1.0em of
+   tracking; the same move at the micro size, spanning the footer's full
+   measure on one line. A nameplate, not a heading. */
+.nameplate{
+  font-size:var(--t-meta);font-weight:500;line-height:1.2;
+  letter-spacing:var(--tr-name);text-transform:uppercase;
+  white-space:nowrap;color:var(--on-ink);
+  /* the 66ch running-text ceiling is for reading lines. This is a nameplate:
+     its whole job is to span the measure. fit-content so the BOX is the line
+     — a block <p> would report 100% of the footer whatever the type did, and
+     R36 is measuring how far the letters actually reach. */
+  max-width:none;width:fit-content;justify-self:start;
+}
+.foot__links{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:28px}
+.foot__links a{
+  display:inline-block;padding-block:4px;color:var(--on-ink);
   text-underline-offset:4px;text-decoration-color:rgba(242,237,228,.45);
-  transition:text-decoration-color .16s ease}
+  transition:text-decoration-color .16s var(--ease);
+}
 .foot__links a:hover,.foot__links a:focus-visible{text-decoration-color:var(--brass-lift)}
-.foot__where{margin-top:14px;color:var(--on-ink-dim)}
-.foot__credit{margin-top:24px;color:var(--on-ink-dim);max-width:64ch}
+.foot__where{margin-top:16px;color:var(--on-ink-dim)}
+.foot__credit{margin-top:16px;color:var(--on-ink-dim);max-width:64ch}
 
-/* ═══ motion — SPEC §7.2, and this is the whole of it ══════════
+/* ═══ motion — SPEC §3.5, and this is the whole of it ══════════
    The pre-state class is added by JavaScript only, and only to blocks that
    start below 90% of the first viewport, so a JS-off render has nothing to
    resolve and nothing in the first screen ever animates. */
 .reveal{opacity:.001;transform:translateY(10px)}
 .revealed{
   opacity:1;transform:none;
-  transition:opacity .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1);
+  transition:opacity .3s var(--ease),transform .3s var(--ease);
 }
 
-/* ═══ ≥900px ═══════════════════════════════════════════════════ */
+/* ═══ >=900px ══════════════════════════════════════════════════ */
 @media (min-width:900px){
   .bar__in{height:72px;gap:24px}
   .bar__links{display:flex}
@@ -479,71 +651,95 @@ main p,main dd{max-width:66ch}
   .lock__n{font-size:10px;letter-spacing:.16em}
 
   main{margin-top:-72px}
-  .hero{min-height:min(92vh,900px)}
-  .hero__scrim{padding:150px var(--gutter) 56px}
-  .hero__type{padding-inline:0}
-  /* the measure is set on the reading lines; the display line is allowed the
-     full column so the headline sets on the two spans it is written in */
-  .hero__brow,.hero__next,.hero__acts{max-width:720px}
-  .hero__lead{max-width:46ch}
+  .hero{min-height:min(92vh,900px);padding-bottom:56px}
+  .plate{padding:40px}
 
-  .facts{grid-template-columns:repeat(2,1fr)}
-  /* one card, held to the bento's left-column measure so it reads as a
-     deliberate half-width note rather than a stretched panel */
-  .two{grid-template-columns:minmax(0,604px)}
-  .spk{grid-template-columns:repeat(2,1fr)}
-  .quad{grid-template-columns:repeat(2,1fr);align-items:start}
-  .clock__l{grid-template-columns:repeat(4,1fr)}
-  .orgs{grid-template-columns:repeat(2,1fr)}
-  .acts{grid-template-columns:repeat(2,1fr)}
+  /* §6.2 the feature photograph, 8 of 12 columns */
+  .fr--feature{width:calc((100% - 11 * var(--gap-c)) / 12 * 8 + 7 * var(--gap-c))}
+  .themes__l>li{grid-template-columns:auto 1fr auto;padding:16px 16px}
+  .themes__s{grid-column:auto;text-align:right}
 
-  /* the record entries: one 12-column grid, image in 1–3, text in 4–12 */
-  .entry{
-    display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(5,auto);
-    column-gap:var(--gap);row-gap:0;padding-block:40px;
+  /* §6.3 two columns, the title card on the right, breaking the top edge */
+  #next{display:grid;grid-template-columns:1.3fr 1fr;column-gap:48px}
+  #next>:not(.next__fig){grid-column:1}
+  .next__fig{
+    grid-column:2;grid-row:1 / span 9;align-self:start;
+    margin-top:calc(-1 * var(--panelpad) - 2 * var(--overlap));
   }
-  .entry__fig{grid-column:1 / 4;grid-row:1 / -1;align-self:start}
-  .entry>:not(.entry__fig){grid-column:4 / -1}
-  .entry>.entry__meta{align-self:start}
 
-  /* the interlock */
-  .bento{grid-template-columns:2.05fr 1fr;grid-template-rows:repeat(4,auto)}
-  .bento>li:nth-child(1){grid-column:1;grid-row:1 / span 2}
-  .bento>li:nth-child(2){grid-column:1;grid-row:3 / span 2}
-  .bento>li:nth-child(3){grid-column:2;grid-row:1}
-  .bento>li:nth-child(4){grid-column:2;grid-row:2}
-  .bento>li:nth-child(5){grid-column:2;grid-row:3}
-  .bento>li:nth-child(6){grid-column:2;grid-row:4}
-  .bento>li:nth-child(-n+2)>figure{aspect-ratio:auto}
+  /* §6.4 the record entries: one 12-column grid, poster in 1-3, text in 5-12 */
+  /* the spare 1fr row is load-bearing: the poster spans every row, and without
+     somewhere for its extra height to go the grid shares that slack out
+     between the auto rows and opens a hole under the card's header. */
+  .entry{
+    display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gap-c);
+    grid-template-rows:repeat(5,auto) 1fr;align-items:start;
+  }
+  .entry__fig{grid-column:1 / 4;grid-row:1 / -1}
+  .entry>:not(.entry__fig){grid-column:5 / -1;padding-right:20px}
+  /* the status tag holds the far edge of the text column, so the header row
+     spans the card instead of huddling at the left with 500px of air beside it */
+  .entry__top .tag{margin-left:auto}
+  .entry>.entry__top{margin-top:20px}
+  .entry>:last-child{padding-bottom:20px}
 
-  /* §5.3 two columns, poster on the right, text on the left */
-  .next__fig{float:right;width:min(430px,32%);margin:0 0 32px 48px}
+  .serve{width:calc((100% - 11 * var(--gap-c)) / 12 * 6 + 5 * var(--gap-c))}
 
-  .foot{display:grid;grid-template-columns:auto 1fr;column-gap:48px;align-items:start}
-  .foot__name{grid-row:1 / span 3}
-  .foot__links{margin-top:0}
-}
+  /* the interlock (bar.md §6). Varied native ratios are the point; ending
+     level is the constraint, so the two columns are proportioned 0.907 : 1 —
+     which is 2 x (1/0.7505) against (2/1.849 + 1/1.898 + 1/1.318). */
+  .bento{grid-template-columns:0.889fr 1fr;align-items:start}
+  .bento>li:nth-child(1),.bento>li:nth-child(2){grid-column:1}
+  .bento>li:nth-child(n+3){grid-column:2}
 
-@media (min-width:1100px){
-  .facts{grid-template-columns:repeat(4,1fr)}
-  .quotes{grid-template-columns:repeat(3,1fr)}
-  .orgs{grid-template-columns:repeat(4,1fr)}
+  /* §6.5 / §6.6 the two-up rows */
+  .pair{grid-template-columns:repeat(2,1fr)}
+  .clock__l{height:auto;margin-top:56px;padding-top:120px}
+  .clock__l::before{left:0;right:0;top:0;bottom:auto;width:auto;height:1px}
+  .clock__l>li{top:0;left:calc(var(--at) / 6 * 100%)}
+  .clock__l>li>*{width:22ch;margin-left:0}
+  .clock__n{margin-left:0;margin-top:26px}
+  .clock__c{margin-left:0}
+  /* the two late stops hang their labels to the LEFT of the dot, so the rail's
+     ends are anchored and nothing overflows the card */
+  .clock__l>li:nth-child(n+3)>*{transform:translateX(-100%);text-align:right}
+  .clock__l>li:nth-child(n+3) .clock__n{justify-content:flex-end}
+
+
+  /* §6.7 the CTA card breaks #close's top edge, same construction */
+  #close{display:grid;grid-template-columns:1.3fr 1fr;column-gap:48px;align-items:start}
+  .close__kick{grid-column:1;grid-row:1}
+  #close .head{grid-column:1;grid-row:2}
+  .cta{
+    grid-column:2;grid-row:1 / span 2;
+    margin-top:calc(-1 * var(--panelpad) - 2 * var(--overlap));
+    box-shadow:var(--e3),var(--edge-dark);
+  }
+  .signup{grid-column:1 / -1;grid-row:3}
+  .signup .tel__row{max-width:520px}
+  .qs,.foot{grid-column:1 / -1}
+
+  .foot{display:grid;grid-template-columns:1fr auto;column-gap:48px;align-items:end}
+  .nameplate{grid-column:1 / -1;margin-bottom:36px}
+  .foot__links{margin-top:0;grid-column:2;grid-row:2 / span 2;justify-content:flex-end;align-self:start}
+  .foot__where{grid-column:1;grid-row:2;margin-top:0}
+  .foot__credit{grid-column:1;grid-row:3}
 }
 
 @media (min-width:700px) and (max-width:899px){
-  .orgs{grid-template-columns:repeat(2,1fr)}
-  .spk{grid-template-columns:repeat(2,1fr)}
+  .quotes,.pair{grid-template-columns:repeat(2,1fr)}
+  .bento{grid-template-columns:0.889fr 1fr;align-items:start}
+  .bento>li:nth-child(1),.bento>li:nth-child(2){grid-column:1}
+  .bento>li:nth-child(n+3){grid-column:2}
 }
 
 /* ═══ <900px ═══════════════════════════════════════════════════ */
 @media (max-width:899px){
-  .hero__type>*{max-width:none}
-  .hero__scrim{padding:130px var(--gutter) 40px}
-  .hero__acts .btn{width:100%}
-  /* §5.0 The sheet is a panel of the bar, not a dropdown hung off the trigger.
+  .plate__lead{max-width:none}
+  .plate__acts .btn{width:100%}
+  /* §6.0 The sheet is a panel of the bar, not a dropdown hung off the trigger.
      .menu goes static so the containing block is .bar__in, which spans the
-     viewport here; the sheet then runs edge to edge directly under the bar and
-     its links are inset by the gutter, so they line up with the lockup. */
+     viewport here; the sheet then runs edge to edge directly under the bar. */
   .menu{position:static}
   .sheet{position:static;margin-top:12px;min-width:0}
   .menu[open] .sheet{
@@ -551,30 +747,53 @@ main p,main dd{max-width:66ch}
     padding:8px var(--gutter) 12px;
     border-radius:0 0 var(--radius) var(--radius);border-inline:0;border-top:0;
   }
-  .bento>li>figure,.quad>li:not(.card){aspect-ratio:584/480}
-  .entry__fig{margin-bottom:20px}
-  .entry__fig img{aspect-ratio:1}
-  .next__fig{margin-bottom:var(--headgap)}
+  .entry>.entry__top{margin-top:18px}
+  .entry>:not(.entry__fig){padding-inline:8px}
+  .entry>:last-child{padding-bottom:8px}
+  .next__fig{margin-bottom:var(--headgap);margin-top:calc(-1 * var(--panelpad) - 2 * var(--overlap))}
+  #next .head,#next .lockup,#next .next__kick{max-width:none}
   .deets{grid-template-columns:1fr;column-gap:0}
-  .deets dt{padding-bottom:0;border-top:1px solid var(--rule-dark)}
+  .deets dt{padding-bottom:0;border-top:1px solid var(--rule-gold)}
   .deets dd{padding-top:6px;border-top:0}
+  /* the one bleed */
+  .stage{margin-inline:calc(var(--gutter) * -1)}
+  /* The nameplate needs the panel's whole width to read as a nameplate, and a
+     negative margin would have bought it by making the footer a SECOND element
+     that escapes its container. So the padding moves off the panel and onto
+     its children instead: every child is inset exactly as before, the footer
+     simply is not, and the bento stage stays the only escape on the page. */
+  #close{padding-inline:0}
+  #close>:not(.foot){margin-inline:var(--panelpad)}
+  .serve p{max-width:none}
 }
 
 @media (max-width:359px){
   /* under 360 the second half of the lockup is dropped rather than the CTA */
   .lock__r,.lock__n{display:none}
+  /* the headline is the only thing on the page that cannot be padded out of
+     trouble: "who intend to lead." sets 238px at 56px and the plate's measure
+     here is 232px. The type comes down; the words do not change. */
+  :root{--t-display:50px}
 }
 
 @media (max-width:419px){
-  .hero__acts{flex-direction:column}
+  .plate__acts{flex-direction:column}
+  /* §6.8 rule 3: the label NEVER changes, so the box gives way instead. Below
+     420 the panel, its cards and the control all give back the millimetres
+     that "RSVP for September 1" needs to stay on one line. */
+  :root{--panelpad:24px;--pad:20px}
+  .btn{padding:0 14px}
+  .cta .card__go .btn{width:100%}
   /* the bar keeps its CTA at every width; below 420 the date drops off the
      label rather than the control dropping off the bar */
   .go__when{display:none}
 }
 
-/* ═══ reduced motion — SPEC §7.3 ═══════════════════════════════
+/* ═══ reduced motion — SPEC §3.5 ═══════════════════════════════
    The contract: identical DOM, identical layout, identical images, identical
-   text. The only difference is that nothing fades. */
+   text. The only difference is that nothing fades. 10 of the 20 surveyed
+   sites ship substantial motion with zero prefers-reduced-motion handling
+   (A20); this page renders identically and cold.mjs proves it. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
     animation-duration:.001ms !important;
