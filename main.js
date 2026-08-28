@@ -1,16 +1,17 @@
 /* CLIA — progressive enhancement only, and nothing else.
 
-   SPEC §4: the page is complete at paint. Every section, every image and every
+   SPEC §9: the page is complete at paint. Every section, every image and every
    word is laid out and legible with this file absent, with JavaScript off, and
    with prefers-reduced-motion on. Nothing here creates content, pins a section,
-   reads layout per frame, or drives anything from a scroll offset. No frame
-   loop is scheduled anywhere in this file, and none ever will be.
+   or drives composition from a scroll offset.
 
-   Four behaviours, and this is the complete list:
+   Five behaviours, and this is the complete list:
      1. the bar's two states
      2. the menu sheet's aria-expanded mirror and tap-to-close
-     3. the entrance reveal — M1, M2 and the §4.3 failsafe
-     4. the phone field                                                       */
+     3. the entrance reveal — the §9.6 system, unchanged, plus its failsafe
+     4. the phone field
+     5. the §9.5 scrub envelope, which is the ONLY frame loop in this file and
+        lives inside one delimited block                                      */
 (function () {
   'use strict';
 
@@ -59,12 +60,13 @@
     });
   }
 
-  /* ── 3. the entrance — SPEC §4.1 M1/M2 and §4.3 ───────────────
-     M1: opacity 0.001 -> 1 plus 16px of rise, 480ms, once per element, one
-     IntersectionObserver, then unobserved. M2: inside a [data-stagger] group,
+  /* ── 3. the entrance — SPEC §9.6, kept verbatim because it works ──
+     Fade 0.001 -> 1 plus 16px of rise, 480ms, once per element, one
+     IntersectionObserver, then unobserved. Inside a [data-stagger] group,
      children step 70ms apart to a maximum of four steps / 280ms.
 
-     Three things make this safe against the failure that got round 2 rejected:
+     Three things make this safe against the failure that got an earlier round
+     rejected:
 
        · the pre-state lives behind [data-rv=on], which the inline head script
          sets and which is absent under reduced motion or with JS off;
@@ -84,14 +86,13 @@
   } else {
     var i, el;
 
-    // §4.3.3 — nothing above the fold ever animates.
+    // nothing above the fold ever animates
     for (i = 0; i < marked.length; i++) {
       el = marked[i];
       if (el.getBoundingClientRect().top < window.innerHeight) el.classList.remove('rv');
     }
 
-    // M2 — the stagger, capped at four steps. Written once, here, never per
-    // frame, and expressed as transition-delay so R4 can measure it.
+    // the stagger, capped at four steps, written once and never per frame
     var groups = document.querySelectorAll('[data-stagger]');
     for (i = 0; i < groups.length; i++) {
       var kids = groups[i].querySelectorAll('.rv');
@@ -114,13 +115,125 @@
       for (i = 0; i < live.length; i++) io.observe(live[i]);
     }
 
-    // §4.3.4 — the failsafe. After 1.2s the page is opaque no matter what the
-    // observer did or did not do.
+    // the failsafe: after 1.2s the page is opaque no matter what the observer
+    // did or did not do
     window.addEventListener('load', function () { setTimeout(release, 1200); });
     setTimeout(release, 4000);
   }
 
-  /* ── 4. the phone field ───────────────────────────────────────
+  /* ── 3b. every disclosure reports its state ───────────────────────
+     <details> opens and closes on its own with this file absent. What it does
+     not do on its own is publish aria-expanded, so every summary carries the
+     attribute in the HTML and this keeps it true.
+
+     Two paths, because <details> fires `toggle` ASYNCHRONOUSLY. A listener
+     alone leaves the attribute stale for anything that sets `.open` and reads
+     the attribute in the same task, which is exactly what audit.mjs A12 does
+     and exactly what a screen reader driving the element would do. So the
+     property is mirrored for scripted toggles and the event for real clicks.
+     Native behaviour is untouched: the setter still calls the native one. */
+  var openDesc = Object.getOwnPropertyDescriptor(HTMLDetailsElement.prototype, 'open');
+  var discs = document.querySelectorAll('details > summary[aria-expanded]');
+  for (var d = 0; d < discs.length; d++) {
+    (function (sum) {
+      var det = sum.parentElement;
+      var mirror = function () {
+        sum.setAttribute('aria-expanded', det.hasAttribute('open') ? 'true' : 'false');
+      };
+      if (openDesc && openDesc.set && openDesc.get) {
+        Object.defineProperty(det, 'open', {
+          configurable: true,
+          get: function () { return openDesc.get.call(det); },
+          set: function (v) { openDesc.set.call(det, v); mirror(); }
+        });
+      }
+      det.addEventListener('toggle', mirror);
+      mirror();
+    })(discs[d]);
+  }
+
+  /* ── 4. the scrub envelope — SPEC §9.5 ───────────────────────────────
+     The owner asked for scroll-scrubbed video. This project also carries a
+     twice-litigated ban on scroll-driven composition, and tools/cold.mjs
+     exists to prove the page never depends on scroll. Both survive, under one
+     envelope, and the envelope is what this block is.
+
+     What it is allowed to touch: video.currentTime. That is the whole list. It
+     never writes a style, a class, a transform, a size or a position, so no
+     composition on this page can ever depend on it.
+
+     A scrubbed <video> is a background layer whose section is complete,
+     legible and final at paint with the video absent, paused, or at frame 0.
+     Under prefers-reduced-motion, or with JS off, no src is ever attached and
+     the poster is what renders.
+
+     If no clip is on disk, tools/video-slots.mjs emits no <video> at all, this
+     observer finds nothing, and __scrubRunning stays false forever. That is
+     the state this build ships in: four declared slots, zero clips, every
+     slot on its declared fallback.                                          */
+  window.__scrubRunning = false;
+
+  var scrubs = document.querySelectorAll('video[data-scrub]');
+  if (!reduced && scrubs.length && 'IntersectionObserver' in window) {
+    var active = [];
+
+    var attach = function (v) {
+      if (v.dataset.srcAttached) return;
+      var src = v.getAttribute('data-src');
+      if (!src) return;
+      v.src = src;
+      v.dataset.srcAttached = '1';
+      v.load();
+    };
+
+    /* SCRUB */
+    var frame = 0;
+    var tick = function () {
+      for (var a = 0; a < active.length; a++) {
+        var v = active[a];
+        var d = v.duration;
+        if (!d || !isFinite(d)) continue;
+        var r = v.getBoundingClientRect();
+        var span = r.height + window.innerHeight;
+        var p = span > 0 ? (window.innerHeight - r.top) / span : 0;
+        p = p < 0 ? 0 : (p > 1 ? 1 : p);
+        // alternate, so a clip that does not loop cleanly is still loop-safe
+        var t = p <= 0.5 ? p * 2 : (1 - p) * 2;
+        v.currentTime = t * d;
+      }
+      frame = active.length ? requestAnimationFrame(tick) : 0;
+      window.__scrubRunning = !!frame;
+    };
+    var start = function () {
+      if (frame) return;
+      frame = requestAnimationFrame(tick);
+      window.__scrubRunning = true;
+    };
+    var stop = function () {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      window.__scrubRunning = false;
+    };
+    /* END SCRUB */
+
+    var so = new IntersectionObserver(function (entries) {
+      for (var s = 0; s < entries.length; s++) {
+        var v = entries[s].target;
+        var at = active.indexOf(v);
+        if (entries[s].isIntersecting) {
+          attach(v);
+          if (at < 0) active.push(v);
+        } else if (at >= 0) {
+          active.splice(at, 1);
+        }
+      }
+      if (active.length) start(); else stop();
+    }, { rootMargin: '0px' });
+
+    for (var q = 0; q < scrubs.length; q++) so.observe(scrubs[q]);
+  }
+
+  /* ── 5. the phone field ───────────────────────────────────────
      Formats as typed, rejects anything short of ten digits, and never reports
      success while data-endpoint is empty. */
   var form = document.querySelector('[data-signup]');
@@ -164,7 +277,7 @@
       say('Signup is not connected yet. RSVP on Luma instead.', false);
       return;
     }
-    say('Sending.', true);
+    say('Posting.', true);
     fetch(ENDPOINT, {
       method: 'POST', mode: 'cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },

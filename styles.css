@@ -1,790 +1,663 @@
-/* ═══════════════════════════════════════════════════════════════
-   CLIA — one stylesheet. Visual-first pass, SPEC 2026-08-26c.
+/* ═══════════════════════════════════════════════════════════════════════════
+   CLIA — one stylesheet. Homepage redesign, SPEC 2026-08-27.
 
-   Three governing rules, and everything below answers to them.
+   The sentence that outranks everything else, from the owner:
+   "what i DONT want is more ai website template designs."
 
-   1. THE PAGE IS COMPLETE AT PAINT (§4). Nothing here makes
-      composition, hierarchy or legibility depend on a scroll
-      position, a cue or a frame loop. Things move AFTER they are
-      already there, once, for 480ms, and never again.
+   His template signature was cream ground, serif display, metallic accents,
+   decorative line icons, inconsistent radii, wandering spacing, and text
+   leading the page instead of the image. Every one of those is gone by
+   construction here, not by taste:
 
-   2. THE DISPLAY BOX IS SIZED TO THE FILE, NEVER THE REVERSE
-      (§5.3, Rule I). No photograph on this page is displayed wider
-      than half of what its own negative holds. That is the whole
-      answer to "las imágenes están bien borrosas": a smaller sharp
-      photograph beats a larger soft one, every time.
+     · the ground is bone and near-black, alternating, never cream
+     · the display face is Switzer 600 sans; the page holds exactly one
+       serif block and exactly one italic, both inside #voice
+     · one accent, --signal vermilion, and nothing else
+     · two radii page-wide, 0 and 6px, and 6px only on controls and the two
+       hero teaser cards
+     · zero box-shadow inside <main>: depth comes from photography and from
+       the ground changing under your feet
+     · every band is full-bleed and square and butts its neighbour, one
+       padding token, one left line, in all eight bands
+     · the first screen is a photograph with three declaratives on it
 
-   3. ONE GRID, ONE LEFT LINE, ONE SEAM. Every section is the same
-      width, every section's content starts on the same column
-      line, and the gap between every pair of sections is the same
-      number. That is what "ritmo" is; it is not a vibe.
-   ═══════════════════════════════════════════════════════════════ */
+   390 IS THE DESIGN WIDTH. 1440 is the adaptation. Sizes scale; ratios never
+   do — t-hero, t-chapter and t-display carry the same leading and the same
+   tracking at both widths, as hard-coded constants, because a display face
+   that loosens to 1.2 on a phone is the single clearest tell of a generic
+   build (bar.md, reaffirmed).
+   ═══════════════════════════════════════════════════════════════════════ */
 
-/* ── fonts (local woff2, Fontshare) ───────────────────────────── */
-@font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-300.woff2) format("woff2");font-weight:300;font-style:normal;font-display:swap}
+/* ── fonts: local woff2, no network request, no third family ───────────── */
+@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-400.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-500.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-600.woff2) format("woff2");font-weight:600;font-style:normal;font-display:swap}
+/* Zodiak is loaded for exactly one block, #voice, and for exactly one italic
+   inside it. The 700 weight is never declared and never referenced. */
 @font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-400.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
-/* The one italic on the page, in the <h1>. Declared at 400, used at an
-   inherited 300, because an italic changes style and never weight. */
 @font-face{font-family:Zodiak;src:url(assets/fonts/Zodiak-400i.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
-@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-400.woff2) format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-500.woff2) format("woff2");font-weight:500;font-display:swap}
-@font-face{font-family:Switzer;src:url(assets/fonts/Switzer-600.woff2) format("woff2");font-weight:600;font-display:swap}
 
-/* ── tokens ───────────────────────────────────────────────────── */
+/* ── tokens: every value a single number, never a range ────────────────── */
 :root{
-  --paper:#F2EDE4;
-  --stage:#E7E0D2;
-  --card:#E9E2D5;
-  --ink:#14100C;
-  --ink-2:#1F1913;
-  --navy:#1B2A4A;
-  --gold:#E5C15C;
-  --ink-soft:#3B342C;
-  --muted:#5A5148;
-  --brass:#B37D3E;
-  --brass-deep:#6E4820;
-  --brass-lift:#D8A45C;
-  --on-ink:#F2EDE4;
-  --on-ink-dim:rgba(242,237,228,.74);
-  --rule:rgba(20,16,12,.16);
-  --rule-dark:rgba(242,237,228,.18);
-  --rule-gold:rgba(229,193,92,.30);
-  --chip:rgba(242,237,228,.94);
+  --ink:#0D0D0E;
+  --bone:#EFEEEB;
+  --signal:#B2381A;
+  --signal-lift:#F0805A;
+  --on-ink-2:#A8A6A1;
+  --ink-2:#4A4A4E;
+  --rule-ink:rgba(239,238,235,.16);
+  --rule-bone:rgba(13,13,14,.14);
 
-  /* elevation — three steps, every step two layers: a tight contact shadow
-     plus a wide ambient cast. Exactly three --e3 elements exist (§6.5). */
-  --e1:0 1px 2px rgba(20,16,12,.05), 0 4px 10px rgba(20,16,12,.05);
-  --e2:0 2px 4px rgba(20,16,12,.06), 0 14px 30px rgba(20,16,12,.10);
-  --e3:0 6px 14px rgba(20,16,12,.10), 0 34px 70px rgba(20,16,12,.20);
-  --edge:inset 0 0 0 1px rgba(20,16,12,.07);
-  --edge-dark:inset 0 1px 0 rgba(242,237,228,.07);
+  --sans:Switzer,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:Zodiak,Georgia,"Times New Roman",serif;
+  /* Ships zero bytes, makes no request, and is the clearest 2026 editorial
+     signal in the primary reference. Capped to eyebrows, numerals, times,
+     dates, captions and attributions. */
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
 
-  /* shape — three values and no fourth. 32 outer, 20 nested (inset exactly
-     12), 999 pills. §6.6. */
-  --radius:32px;
-  --radius-in:20px;
-  --nest:12px;
-  --pill:999px;
-
-  /* type — §6.7. The ladder is the visual event now, because there is almost
-     no copy left to carry weight. display ÷ body = 3.75 at 390, 7.5 at 1440.
-     Six rendered sizes at 1440 and not a seventh: 120 · 60 · 24 · 20 · 16 · 12. */
-  --t-display:60px;
+  --t-hero:48px;
   --t-chapter:34px;
-  --t-head:24px;
-  --t-lead:16px;
+  --t-display:34px;
+  --t-head:20px;
+  --t-statement:20px;
   --t-body:16px;
-  --t-meta:12px;
+  --t-meta:11px;
 
-  --lh-display:0.90;
-  --lh-chapter:1.03;
-  --lh-head:1.25;
-  --lh-lead:1.50;
-  --lh-body:1.50;
-  --lh-meta:1.60;
-
-  --tr-display:-0.035em;
-  --tr-chapter:-0.025em;
-  --tr-head:-0.02em;
-  --tr-meta:0.08em;
-  --tr-name:max(3.5px, calc(3.65vw - 9px));
-
-  /* space */
-  --section:80px;      /* the one seam between sections */
-  --headgap:28px;
-  --gutter:24px;       /* page margin outside every section */
-  --panelpad:24px;     /* the inset from a section's edge to its content */
-  --gap-c:16px;        /* editorial gap ratio, 42 / 16 = 2.63 */
-  --gap-r:42px;
-  --pad:20px;
-  --overlap:24px;
-
-  /* one named easing token, and it is the only easing in this file */
+  --pad-block:64px;
+  --gap:12px;
   --ease:cubic-bezier(.16,1,.3,1);
 }
-
 @media (min-width:900px){
   :root{
-    --t-display:clamp(72px,8.4vw,120px);
-    --t-chapter:clamp(40px,4.2vw,60px);
-    --t-lead:20px;
-    --tr-display:-0.05em;
-    --tr-chapter:-0.035em;
-    --tr-name:max(3.5px, calc(3.65vw - 16px));
-    --section:128px;
-    --headgap:40px;
-    --gutter:64px;
-    --panelpad:64px;
-    --gap-c:24px;      /* 64 / 24 = 2.67 */
-    --gap-r:64px;
-    --pad:28px;
-    --overlap:40px;
+    --t-hero:112px;
+    --t-chapter:64px;
+    --t-display:64px;
+    --t-head:24px;
+    --t-statement:34px;
+    --t-body:17px;
+    --t-meta:12px;
+    --pad-block:96px;
+    --gap:24px;
   }
 }
-@media (min-width:1424px){ :root{ --tr-name:33.6px } }
-@media (max-width:359px){ :root{ --gutter:20px } }
 
-/* ── reset ────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;
-  background:var(--paper);
+  background:var(--bone);
   color:var(--ink);
-  font-family:Switzer,system-ui,sans-serif;
+  font-family:var(--sans);
   font-size:var(--t-body);
-  line-height:var(--lh-body);
+  font-weight:400;
+  line-height:1.55;
   -webkit-font-smoothing:antialiased;
-  overflow-x:clip;
 }
-img{max-width:100%;display:block;height:auto}
+img{display:block;max-width:100%;height:auto}
 a{color:inherit}
-h1,h2,h3,h4,p,dd,dl,figure,blockquote{margin:0}
-ul,ol{margin:0;padding:0;list-style:none}
-b,strong{font-weight:500}
-button{font:inherit;color:inherit}
+input,button,textarea,select{font-family:inherit;background:transparent}
+h1,h2,p,ol,ul,dl,dd,figure,blockquote{margin:0;padding:0}
+ol,ul{list-style:none}
 
-.skip{
-  position:absolute;left:-9999px;top:0;z-index:60;
-  background:var(--ink);color:var(--on-ink);
-  padding:12px 20px;border-radius:var(--pill);text-decoration:none;
+/* Two radii, page-wide, and this is where that is made true rather than
+   asserted: everything is square, and three named things are 6px. */
+main,main *{border-radius:0}
+main .btn,main input,main .ev{border-radius:6px}
+
+/* Zero box-shadow inside <main>. Hairlines are borders. Focus is an outline. */
+main *{box-shadow:none}
+
+.skip{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip:focus{
+  position:absolute;top:8px;left:8px;width:auto;height:auto;clip-path:none;
+  z-index:20;padding:12px 16px;background:var(--ink);color:var(--bone);
+  font-family:var(--mono);font-size:var(--t-meta);letter-spacing:.08em;text-transform:uppercase;
 }
-.skip:focus{left:16px;top:12px}
 
-/* Drawn, never typed: out of the accessibility tree, out of the reading order
-   and out of the 350-word count. */
-.dot::before{content:"\00B7";padding-inline:.5em}
-
-/* ── type roles ───────────────────────────────────────────────── */
-.t-display{
-  font-family:Zodiak,Georgia,serif;font-weight:300;
-  font-size:var(--t-display);line-height:var(--lh-display);letter-spacing:var(--tr-display);
+/* ═══ type roles ════════════════════════════════════════════════════════
+   Six rendered sizes at 1440, five at 390. Leading and tracking on the three
+   display roles are the same numbers at both widths. */
+.t-hero{
+  font-family:var(--sans);font-weight:600;
+  font-size:var(--t-hero);line-height:1.02;letter-spacing:-.03em;
   text-box:cap alphabetic;
 }
-.t-display em{font-style:italic;font-weight:inherit}
 .t-chapter{
-  font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:var(--t-chapter);line-height:var(--lh-chapter);letter-spacing:var(--tr-chapter);
+  font-family:var(--sans);font-weight:600;
+  font-size:var(--t-chapter);line-height:1.06;letter-spacing:-.02em;
   text-box:cap alphabetic;
+}
+.t-display{
+  font-family:var(--serif);font-weight:400;
+  font-size:var(--t-display);line-height:1.12;letter-spacing:-.015em;
 }
 .t-head{
-  font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:var(--t-head);line-height:var(--lh-head);letter-spacing:var(--tr-head);
-  text-box:cap alphabetic;
+  font-family:var(--sans);font-weight:600;
+  font-size:var(--t-head);line-height:1.25;letter-spacing:-.01em;
 }
-.t-lead{font-size:var(--t-lead);line-height:var(--lh-lead)}
-.t-meta{
-  font-size:var(--t-meta);line-height:var(--lh-meta);letter-spacing:var(--tr-meta);
-  text-transform:uppercase;font-weight:500;font-variant-numeric:tabular-nums;
+.t-statement{
+  font-family:var(--sans);font-weight:500;
+  font-size:var(--t-statement);line-height:1.30;letter-spacing:-.01em;
 }
 @supports not (text-box:cap alphabetic){
-  .t-display{margin-block:-0.09em -0.06em}
-  .t-chapter{margin-block:-0.13em -0.09em}
-  .t-head{margin-block:-0.24em -0.16em}
+  .t-hero,.t-chapter{padding-top:.02em}
 }
 
-/* ── the one grid ─────────────────────────────────────────────
-   Every section is the same box: 1232px at 1440, centred, with its content
-   inset by --panelpad. So every section's content starts on the same column
-   line — 168px at 1440 — with no optical nudges anywhere. A panel is that
-   same box with an ink fill and a radius; a wrap is that same box with none. */
+/* The eyebrow, and the rule under it: the Oregon construction. The block is
+   sized to its own text, so the 2px rule is exactly as wide as the words
+   above it — measured off oregon-outdoor-alliance-hero.png at 1440, where a
+   283px eyebrow carries a 284px rule 8px beneath it. */
+.eb{
+  width:max-content;max-width:100%;
+  font-family:var(--mono);font-weight:500;
+  font-size:var(--t-meta);line-height:1.4;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-2);
+}
+.eb__r{display:block;width:100%;height:2px;margin-top:8px;background:var(--signal)}
+.eb--on{color:var(--on-ink-2)}
+
+.cap,.meta,.attrib,.en__d,.en__c,.en__g,.nm__r,.ld__n,.ld__t,
+.ev__date,.ev__where,.ev__open,.lock__y,.dl dt,.sign__l,.sign__c,.sign__n,
+.foot__l,.foot__c{
+  font-family:var(--mono);font-weight:500;
+  font-size:var(--t-meta);line-height:1.4;letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+/* ═══ the band system ═══════════════════════════════════════════════════
+   Eight full-bleed square bands, butting directly, one padding token, one
+   left line. The rhythm is the padding; there is no gap and no margin. */
+main{display:block}
 main>section{
-  width:min(1232px,calc(100% - 2 * var(--gutter)));
-  margin-inline:auto;
-  padding-inline:var(--panelpad);
-  display:flow-root;
+  --pad:20px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  column-gap:var(--gap);
+  row-gap:0;
+  margin-block:0;
+  padding-block:var(--pad-block);
+  padding-inline:var(--pad);
+  position:relative;
 }
-.panel{
-  padding-block:var(--panelpad);
+@media (min-width:900px){
+  main>section{
+    --pad:max(20px,(100% - 1232px) / 2);
+    grid-template-columns:repeat(12,minmax(0,1fr));
+  }
+}
+main>section>*{min-width:0}
+
+/* Anchor navigation. The bar floats OVER the page on a negative margin, so a
+   jump that lands a band's top edge at y=0 lands its eyebrow exactly on the
+   bar's hairline — 64px of padding under a 64px bar leaves nothing. Every
+   anchor target reserves the air itself: 24px clear at 390, 48px at 1440
+   where the band padding is already taller than the bar. */
+main>section,#main{scroll-margin-top:24px}
+
+#what,#record,#allies,#close{background:var(--bone);color:var(--ink)}
+#next,#leaders,#top,#voice{background:var(--ink);color:var(--bone)}
+#next .eb,#leaders .eb{color:var(--on-ink-2)}
+#top .eb{color:var(--bone)}
+
+/* ═══ 1 · #top ══════════════════════════════════════════════════════════
+   The most important screen in the build. Full-bleed photograph, two scrims,
+   type lower-left, two opaque teaser cards lower-right. The lower card is cut
+   by the fold at 390 on purpose: that cut is the "there is more" signal, and
+   it is what the primary reference's own mobile hero does. */
+#top{
+  padding:0;
+  height:100svh;
+  min-height:640px;
+  max-height:900px;
+  overflow:hidden;
+  display:block;
+}
+.hero__m{position:absolute;inset:0;display:block}
+.hero__m img{width:100%;height:100%;object-fit:cover;object-position:50% 42%}
+
+/* The page's only gradients. Both carry data-scrim, both sit on the hero,
+   and a third lives in #voice. Nothing else on the page has one. */
+.scrim{position:absolute;inset:0;display:block;pointer-events:none}
+.scrim--flat{background-image:linear-gradient(rgba(13,13,14,.34),rgba(13,13,14,.34))}
+.scrim--foot{background-image:linear-gradient(180deg,rgba(13,13,14,0) 34%,rgba(13,13,14,.88) 100%)}
+
+.hero__in{
+  position:absolute;left:0;right:0;bottom:-84px;
+  padding:0 20px 20px;
+}
+.hero__t{display:block}
+#top .eb{margin-bottom:18px}
+.t-hero#hero-h{color:var(--bone);width:max-content;max-width:100%}
+.hero__c{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+
+/* Opaque, never translucent: a translucent card over a photograph cannot be
+   guaranteed on the worst pixel, and tools/contrast.mjs measures exactly
+   that pixel. */
+.ev{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px;
   background:var(--ink);
-  color:var(--on-ink);
-  border-radius:var(--radius);
+  border:1px solid var(--rule-ink);
+  color:var(--bone);
+  text-decoration:none;
+  transition:border-color .18s var(--ease);
 }
-.panel--navy{background:var(--navy);box-shadow:var(--edge-dark)}
-
-main{margin-top:-64px;padding-bottom:var(--section)}
-main>section+section{margin-top:var(--section)}
-main>section,#questions{scroll-margin-top:88px}
-
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:var(--pad);
-  box-shadow:var(--e1),var(--edge);
+.ev:hover,.ev:focus-visible{border-color:var(--on-ink-2)}
+.ev img{width:96px;height:96px;flex:0 0 96px;object-fit:cover}
+.ev__x{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ev__date{color:var(--signal-lift);width:max-content;max-width:100%}
+.ev__title{
+  font-family:var(--sans);font-weight:600;font-size:var(--t-body);
+  line-height:1.25;letter-spacing:-.01em;color:var(--bone);
+  width:max-content;max-width:100%;
 }
-.card--raised{background:var(--ink-2);color:var(--on-ink);box-shadow:var(--edge-dark)}
-
-/* One framed photograph construction, page-wide. The photograph sits IN a
-   frame, the frame is what has elevation, and the frame never moves while the
-   picture inside it does (M3). No aspect-ratio is imposed: the file is already
-   the crop build-assets.py chose, so the rendered ratio IS the intrinsic one. */
-.fr{
-  position:relative;border-radius:var(--radius-in);
-  box-shadow:var(--e2),var(--edge);
-  overflow:hidden;isolation:isolate;
+.ev__where,.ev__open{color:var(--on-ink-2);width:max-content;max-width:100%}
+.ev__go{
+  margin-top:2px;display:inline-flex;align-items:center;min-height:24px;
+  font-family:var(--sans);font-weight:500;font-size:var(--t-body);
+  line-height:1.25;color:var(--bone);width:max-content;max-width:100%;
 }
-.fr img{width:100%;border-radius:inherit}
+.ev:hover .ev__go,.ev:focus-visible .ev__go{color:var(--signal-lift)}
+.ev--b .ev__x{justify-content:space-between}
 
-/* ── §6.8 the control ─────────────────────────────────────────── */
+@media (min-width:900px){
+  #top{height:min(100svh,900px)}
+  .hero__in{
+    bottom:64px;padding:0 var(--pad);
+    display:flex;align-items:flex-end;justify-content:space-between;gap:48px;
+  }
+  .hero__c{width:353px;flex:0 0 353px;gap:16px;margin-top:0}
+  .ev{padding:14px}
+}
+
+/* ═══ 2 · #what ═════════════════════════════════════════════════════════ */
+.what__h .t-statement{margin-top:24px;max-width:22ch}
+.ladder{margin-top:40px}
+.ladder li{
+  display:grid;
+  grid-template-columns:auto auto 1fr;
+  align-items:center;
+  gap:16px;
+  min-height:64px;
+  border-top:1px solid var(--rule-bone);
+}
+.ld__n{color:var(--signal)}
+.ld__t{color:var(--ink-2)}
+.ld__l{color:var(--ink)}
+.what__f{margin-top:40px}
+.cap{margin-top:10px;color:var(--ink-2)}
+
+@media (min-width:900px){
+  .what__h{grid-column:1 / 8;grid-row:1}
+  .ladder{grid-column:1 / 8;grid-row:2;margin-top:56px}
+  .ladder li{min-height:72px}
+  .what__f{grid-column:8 / 13;grid-row:2;margin-top:56px;justify-self:end;align-self:start;width:424px}
+  .what__h .t-statement{max-width:none}
+}
+
+/* ═══ 3 · #next ═════════════════════════════════════════════════════════ */
+#next .cap,#next .meta{color:var(--on-ink-2)}
+.lock{display:flex;align-items:baseline;gap:16px;margin-top:28px}
+.lock__d{color:var(--bone)}
+.lock__y{color:var(--signal-lift)}
+#next .t-chapter{margin-top:16px;color:var(--bone)}
+.dl{margin-top:36px;display:grid;grid-template-columns:auto 1fr;gap:0 20px}
+.dl dt{
+  color:var(--on-ink-2);
+  border-top:1px solid var(--rule-ink);
+  padding:14px 0;
+}
+.dl dd{
+  margin:0;color:var(--bone);
+  border-top:1px solid var(--rule-ink);
+  padding:14px 0;
+}
+.next__r{margin-top:40px}
+.next__r .btn{margin-top:20px}
+
+@media (min-width:900px){
+  .next__l{grid-column:1 / 7}
+  .next__r{grid-column:7 / 13;margin-top:0;justify-self:end;width:457px}
+}
+
+/* ═══ 4 · #record ═══════════════════════════════════════════════════════ */
+.rec__h .t-chapter{margin-top:24px}
+.meta{margin-top:16px;color:var(--ink-2)}
+.rec{margin-top:40px}
+.en{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  grid-auto-rows:min-content;
+  gap:4px 20px;
+  align-content:center;
+  padding-block:22px;
+  border-top:1px solid var(--rule-bone);
+}
+.en img{
+  grid-column:1;grid-row:1 / 5;
+  width:96px;height:96px;object-fit:cover;
+}
+.en__d,.en__t,.en__g,.en__c{grid-column:2}
+.en__d{color:var(--signal)}
+.en__t{color:var(--ink);text-decoration:none;display:inline-block;width:max-content;max-width:100%}
+.en__t:hover,.en__t:focus-visible{color:var(--signal)}
+.en__g{color:var(--ink-2);text-transform:none;letter-spacing:.04em}
+.en__c{color:var(--ink-2)}
+
+.gal{margin-top:48px;display:grid;gap:32px}
+
+@media (min-width:900px){
+  .rec__h{grid-column:1 / 13}
+  .rec{grid-column:1 / 13;margin-top:56px}
+  .gal{grid-column:1 / 13;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:64px;align-items:start}
+  /* The Louisiana staggered gallery: equal widths, three different top edges. */
+  .gal li:nth-child(2){margin-top:64px}
+  .gal li:nth-child(3){margin-top:128px}
+}
+
+/* ═══ 5 · #leaders ══════════════════════════════════════════════════════
+   The Kononenko construction. The head is the only centred text block on the
+   page; the eyebrow above it is centred by its own box, not by text-align. */
+.ldr__h{text-align:start}
+.ldr__t{margin-top:24px;text-align:center;color:var(--bone)}
+.names{margin-top:48px}
+.names li{
+  display:flex;flex-direction:column;gap:6px;
+  padding-block:18px;
+  border-top:1px solid var(--rule-ink);
+}
+.nm__n{color:var(--bone)}
+.nm__r{color:var(--on-ink-2)}
+.crew{margin-top:48px;display:grid;grid-template-columns:minmax(0,1fr);gap:40px}
+/* The stagger at 390. Two columns of 165 is what §6.5 asks for, and it is
+   measurably out of reach: halving the frames removes 1478px of scroll and
+   takes density.mjs from 30 words/screen to 36, past R6's ceiling, while the
+   photographic share of the scroll falls 55.5% -> 47.9%. So the row keeps the
+   full-width frames the phone deserves and takes its stagger from the
+   horizontal axis instead: odd frames sit on the band's left rule, even frames
+   run off the right edge of the screen. Equal widths (R14), same 3:4 crop,
+   left content x unchanged at 20 (R24), no height cost. */
+.crew li:nth-child(even){margin-left:20px;margin-right:-20px}
+#leaders .cap{color:var(--on-ink-2)}
+
+@media (min-width:900px){
+  .ldr__h{grid-column:1 / 13}
+  .names{grid-column:1 / 13;margin-top:64px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
+  .names li:nth-child(4){border-top:1px solid var(--rule-ink)}
+  .crew{grid-column:1 / 13;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-top:72px;align-items:start}
+  /* Four equal frames, top offsets 0 / 56 / 112 / 56. */
+  .crew li:nth-child(1){margin-top:0}
+  .crew li:nth-child(2){margin-top:56px}
+  .crew li:nth-child(3){margin-top:112px}
+  .crew li:nth-child(4){margin-top:56px}
+}
+
+/* ═══ 6 · #allies ═══════════════════════════════════════════════════════
+   The only element on the page wider than the content column. It scrolls
+   inside its own rail, so <body> never overflows at any width. */
+.rail{
+  margin-top:32px;
+  margin-inline:calc(-1 * var(--pad));
+  padding-inline:var(--pad);
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+}
+.rail__row{display:flex;width:max-content;gap:40px;align-items:baseline}
+.rail__row li{
+  scroll-snap-align:start;
+  white-space:nowrap;
+  font-family:var(--sans);font-weight:500;font-size:16px;
+  line-height:1.4;color:var(--ink);
+}
+@media (min-width:900px){
+  #allies>header{grid-column:1 / 13}
+  .rail{grid-column:1 / 13}
+  .rail{margin-top:40px}
+  .rail__row{gap:56px}
+  .rail__row li{font-size:17px}
+}
+
+/* ═══ 7 · #voice ════════════════════════════════════════════════════════
+   The Namaha construction: type set directly on a real photograph below
+   900px, the photograph inset beside the quote above it. The page's only
+   serif and the page's only italic. */
+#voice{
+  padding-block:0;
+  height:min(88svh,720px);
+  overflow:hidden;
+  display:block;
+}
+#voice .scrim--voice{
+  background-image:
+    linear-gradient(180deg,rgba(13,13,14,0) 26%,rgba(13,13,14,.90) 100%),
+    linear-gradient(rgba(13,13,14,.34),rgba(13,13,14,.34));
+  z-index:1;
+}
+.voice__f{position:absolute;inset:0;display:block}
+.voice__f>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+#voice blockquote,#voice blockquote *{font-family:var(--serif)}
+#voice blockquote{
+  position:absolute;left:20px;right:20px;bottom:66px;z-index:2;
+  color:var(--bone);
+  font-weight:400;font-size:var(--t-display);line-height:1.12;letter-spacing:-.015em;
+}
+#voice blockquote em{font-style:italic;font-weight:inherit}
+.attrib{position:absolute;left:20px;right:20px;bottom:32px;z-index:2;color:var(--on-ink-2)}
+
+@media (min-width:900px){
+  #voice{
+    height:auto;padding-block:var(--pad-block);
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gap);
+    overflow:visible;
+  }
+  #voice .scrim--voice{display:none}
+  .voice__f{position:static;grid-column:1 / 13;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--gap);align-items:center}
+  .voice__f>img{position:static;grid-column:1 / 6;width:400px;height:auto;object-fit:fill}
+  #voice blockquote{position:static;grid-column:6 / 13;left:auto;right:auto;bottom:auto}
+  .attrib{position:static;grid-column:6 / 13;margin-top:20px;align-self:start}
+}
+
+/* ═══ 8 · #close ════════════════════════════════════════════════════════ */
+#close .t-chapter{margin-top:24px;color:var(--ink)}
+.sold{margin-top:20px;color:var(--ink-2);font-size:var(--t-body);line-height:1.55}
+.close__go{margin-top:28px;justify-self:start}
+
+.sign{margin-top:44px;display:block}
+.sign__l{display:block;color:var(--ink-2)}
+.sign__i{
+  display:block;width:100%;margin-top:10px;
+  min-height:52px;padding:0 14px;
+  background:transparent;color:var(--ink);
+  border:1px solid var(--rule-bone);
+  font-family:var(--sans);font-size:var(--t-body);
+  transition:border-color .18s var(--ease);
+}
+.sign__i::placeholder{color:var(--ink-2)}
+.sign__i:hover{border-color:var(--ink)}
+.sign__b{margin-top:14px}
+.sign__n{margin-top:12px;color:var(--signal);min-height:1px}
+.sign__n:empty{display:none}
+.sign__c{margin-top:12px;color:var(--ink-2)}
+/* display:none, not an off-screen 1px box: an off-screen input is still an
+   input, and audit A13 measures every one of them. */
+.pot{display:none}
+
+.faq{margin-top:48px}
+.faq li{border-top:1px solid var(--rule-bone)}
+.faq summary{
+  display:flex;align-items:center;min-height:56px;
+  cursor:pointer;list-style:none;
+  font-family:var(--sans);font-weight:600;font-size:var(--t-head);
+  line-height:1.25;letter-spacing:-.01em;color:var(--ink);
+  transition:color .18s var(--ease);
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--signal)}
+.faq p{padding-bottom:20px;color:var(--ink-2);font-size:var(--t-body);line-height:1.55;max-width:52ch}
+
+.foot{margin-top:56px;padding-top:28px;border-top:1px solid var(--rule-bone)}
+.foot__n{font-family:var(--sans);font-weight:600;font-size:var(--t-head);line-height:1.25;letter-spacing:-.01em;color:var(--ink)}
+.foot__l{margin-top:16px;display:flex;gap:28px}
+.foot__l a{
+  display:inline-flex;align-items:center;min-height:24px;
+  color:var(--ink-2);text-decoration:none;
+  transition:color .18s var(--ease);
+}
+.foot__l a:hover,.foot__l a:focus-visible{color:var(--signal)}
+.foot__c{margin-top:16px;color:var(--ink-2)}
+
+@media (min-width:900px){
+  .close__l{grid-column:1 / 7;grid-row:1}
+  .close__go{grid-column:1 / 7;grid-row:2}
+  .sign{grid-column:1 / 7;grid-row:3;margin-top:48px}
+  .faq{grid-column:7 / 13;grid-row:1 / 4;margin-top:0;align-self:center}
+  .foot{grid-column:1 / 13;grid-row:4;margin-top:88px}
+  .faq p{padding-bottom:24px}
+}
+
+/* ═══ the control ═══════════════════════════════════════════════════════
+   .btn is an inline-flex and flex centres the LINE BOX, not the ink. The
+   label span carries native leading-trim so what gets centred is the ink.
+   tools/align.mjs makes that binary at both widths. */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
-  min-height:48px;padding:0 24px;
-  border:0;border-radius:var(--pill);
-  font-size:var(--t-body);font-weight:600;line-height:1;
-  white-space:nowrap;text-decoration:none;cursor:pointer;
-  transition:background-color .16s var(--ease),color .16s var(--ease),box-shadow .16s var(--ease);
+  min-height:52px;padding:0 22px;
+  border:0;
+  background:var(--signal);color:var(--bone);
+  font-family:var(--sans);font-size:var(--t-body);font-weight:600;line-height:1;
+  text-align:start;white-space:nowrap;text-decoration:none;cursor:pointer;
+  transition:background-color .18s var(--ease);
 }
 .btn>.btn__t{display:block;line-height:1;text-box:trim-both cap alphabetic}
 @supports not (text-box:trim-both cap alphabetic){
   .btn>.btn__t{padding-top:.06em}
 }
-.btn--brass{background:var(--brass);color:#1A1206;box-shadow:var(--e2)}
-.btn--brass:hover,.btn--brass:focus-visible{background:#C68C48;box-shadow:var(--e3)}
-.btn--ghost{box-shadow:inset 0 0 0 1px rgba(242,237,228,.45);color:var(--on-ink);background:transparent}
-.btn--ghost:hover,.btn--ghost:focus-visible{box-shadow:inset 0 0 0 1px var(--on-ink);background:rgba(242,237,228,.08)}
-@media (max-width:419px){ .btn{padding:0 18px} }
+.btn:hover,.btn:focus-visible{background:#C74522}
+.btn--go{width:100%}
+@media (min-width:900px){
+  .btn--go{width:auto}
+}
 
 a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{
-  outline:2px solid var(--brass);outline-offset:3px;
+  outline:2px solid var(--signal);outline-offset:3px;
+}
+#top a:focus-visible,#next a:focus-visible,#leaders a:focus-visible,
+#voice a:focus-visible{
+  outline-color:var(--signal-lift);
 }
 
-.wrap>*+*{margin-top:var(--headgap)}
-.wrap>.head{margin-top:12px;max-width:22ch}
-.kick{color:var(--brass-deep)}
-.card--raised .kick,.panel .kick{color:var(--brass-lift)}
-.panel--navy .kick{color:var(--gold)}
-.lead{color:var(--ink-soft)}
-main p,main dd{max-width:60ch}
-
-/* ═══ §6.0 the bar ═════════════════════════════════════════════ */
-.bar{position:sticky;top:0;z-index:50;isolation:isolate}
+/* ═══ the bar ═══════════════════════════════════════════════════════════
+   Transparent over the hero, solid --ink with a 1px bottom hairline past it.
+   The only position:sticky element in the document, and it drives nothing. */
+/* The bar floats OVER the hero rather than pushing it down: a sticky element
+   stays in flow, and 64px of ink above the photograph is exactly the strip
+   the primary reference does not have. The negative margin is the overlap. */
+.bar{position:sticky;top:0;z-index:10;margin-bottom:-64px;background:transparent;border-bottom:1px solid transparent}
 .bar__in{
-  position:relative;
-  width:min(1360px,100%);margin-inline:auto;padding-inline:var(--gutter);
-  height:64px;display:flex;align-items:center;gap:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  min-height:64px;padding-inline:20px;
 }
-.bar::before{
-  content:"";position:absolute;inset:0 0 auto 0;height:118px;z-index:-1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(20,16,12,.68) 0,rgba(20,16,12,.42) 55%,rgba(20,16,12,0) 100%);
-  transition:opacity .18s var(--ease);
+.hero__name span{display:block}
+.hero__name{
+  display:inline-block;padding-block:8px;
+  font-family:var(--sans);font-weight:600;font-size:15px;line-height:1.1;
+  letter-spacing:-.01em;color:var(--bone);text-decoration:none;
 }
-.bar::after{
-  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:color-mix(in srgb, var(--paper) 92%, transparent);
-  border-bottom:1px solid var(--rule);
-  box-shadow:var(--e2);
-  opacity:0;transition:opacity .18s var(--ease);
-}
-.bar-solid .bar::after{opacity:1}
-.bar-solid .bar::before{opacity:0}
-@supports (backdrop-filter:blur(14px)){
-  .bar-solid .bar::after{backdrop-filter:blur(14px)}
-}
-
-.lock{display:flex;align-items:center;text-decoration:none;flex:0 0 auto;color:var(--on-ink)}
-.lock__c{font-family:Zodiak,Georgia,serif;font-weight:400;font-size:var(--t-head);letter-spacing:-.03em;line-height:1}
-.lock__r{width:1px;align-self:stretch;background:var(--brass);margin-inline:10px}
-.lock__n{
-  font-size:var(--t-meta);font-weight:500;line-height:1.15;letter-spacing:.07em;
-  text-transform:uppercase;color:rgba(242,237,228,.80);
-}
-.bar-solid .lock{color:var(--ink)}
-.bar-solid .lock__n{color:var(--muted)}
-
-.bar__links{display:none;margin-left:auto;gap:20px;align-items:center}
-.bar__links a{
-  display:inline-block;padding:6px 0;font-size:var(--t-body);font-weight:500;
-  text-decoration:none;color:var(--on-ink);
-  background-image:linear-gradient(var(--brass),var(--brass));
-  background-repeat:no-repeat;background-position:0 100%;background-size:0 1px;
-  transition:background-size .2s var(--ease),color .16s var(--ease);
-}
-.bar-solid .bar__links a{color:var(--ink)}
-.bar__links a:hover,.bar__links a:focus-visible{background-size:100% 1px}
-
-.bar__right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.bar__go{min-height:40px;padding:0 16px}
-
-.menu{position:relative}
+.bar__links{display:none}
+.bar__right{display:flex;align-items:center;gap:12px}
 .menu__b{
-  list-style:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  min-width:44px;height:40px;padding:0 8px;
-  font-size:var(--t-body);font-weight:500;color:var(--on-ink);
-  border:1px solid rgba(242,237,228,.45);border-radius:var(--pill);
-  transition:border-color .16s var(--ease),color .16s var(--ease);
+  display:inline-flex;align-items:center;min-height:44px;padding-inline:4px;
+  cursor:pointer;list-style:none;
+  font-family:var(--mono);font-size:var(--t-meta);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--bone);
 }
 .menu__b::-webkit-details-marker{display:none}
-.bar-solid .menu__b{color:var(--ink);border-color:var(--rule)}
-/* M5 — the sheet transitions rather than snapping. allow-discrete is what lets
-   a <details> panel fade in at all: without it the display:none -> block flip
-   cancels the transition before its first frame. */
 .sheet{
-  position:absolute;top:calc(100% + 12px);right:0;
-  min-width:240px;padding:8px;
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:var(--radius);
-  box-shadow:var(--e2);
-  opacity:1;transform:none;
-  transition:opacity .22s var(--ease),transform .22s var(--ease);
+  position:absolute;left:0;right:0;top:100%;
+  background:var(--ink);border-top:1px solid var(--rule-ink);
+  padding:8px 20px 16px;
 }
-@starting-style{ .menu[open] .sheet{opacity:0;transform:translateY(-8px)} }
 .sheet a{
-  display:flex;align-items:center;height:44px;padding-inline:16px;
-  text-decoration:none;color:var(--ink);font-weight:500;border-radius:var(--pill);
-  transition:background-color .16s var(--ease);
+  display:flex;align-items:center;min-height:48px;
+  color:var(--bone);text-decoration:none;
+  font-family:var(--sans);font-weight:500;font-size:var(--t-body);
+  border-bottom:1px solid var(--rule-ink);
 }
-.sheet a:hover,.sheet a:focus-visible{background:var(--card)}
+.sheet li:last-child a{border-bottom:0}
+.bar__go{min-height:40px;padding:0 16px;border-radius:6px}
+.bar-solid .bar{background:var(--ink);border-bottom-color:var(--rule-ink)}
 
-/* ═══ §6.1 hero — SPEC §5.3 ════════════════════════════════════
-   The photograph is inset to the content column and the ink of the band fills
-   the rest. The band is painted by a pseudo-element, so the ONE element on
-   this page wider than its column stays the bento stage and nothing else. */
-#top{padding-inline:0;position:relative;isolation:isolate}
-#top::before{
-  content:"";position:absolute;z-index:-2;
-  top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);
-  background:var(--ink);
+@media (min-width:900px){
+  .bar{margin-bottom:-72px}
+  .bar__in{min-height:72px;padding-inline:var(--pad, 20px)}
+  .bar__in{padding-inline:max(20px,(100vw - 1232px) / 2)}
+  .hero__name{font-size:17px}
+  .hero__name span{display:inline}
+  .hero__name{white-space:nowrap}
+  .bar__links{display:flex;gap:28px}
+  .bar__links a{
+    display:inline-flex;align-items:center;min-height:24px;
+    color:var(--bone);text-decoration:none;
+    font-family:var(--mono);font-size:var(--t-meta);letter-spacing:.08em;
+    text-transform:uppercase;
+    transition:color .18s var(--ease);
+  }
+  .bar__links a:hover{color:var(--signal-lift)}
+  .menu{display:none}
 }
-.hero__in{
-  position:relative;isolation:isolate;
-  min-height:88svh;display:flex;align-items:flex-end;
-  padding-bottom:24px;
-  border-radius:0;
-}
-.hero__pic{display:contents}
-.hero__img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:center 40%}
-.hero__in::after{
-  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(20,16,12,0) 42%,rgba(20,16,12,.72) 100%);
-}
-/* overlap 1 of 3 — the glass plate. The type block is a CARD ON the
-   photograph, not a wash across it. Its left edge is the page's column line. */
-.plate{
-  position:relative;
-  width:min(1000px,calc(100% - 2 * var(--panelpad)));
-  margin-left:var(--panelpad);
-  padding:24px;
-  color:var(--on-ink);
-  background:rgba(20,16,12,.78);
-  border:1px solid rgba(242,237,228,.14);
-  border-radius:var(--radius);
-  box-shadow:var(--e3);
-}
-@supports (backdrop-filter:blur(20px)){
-  .plate{backdrop-filter:blur(20px) saturate(1.08)}
-}
-.plate__brow{color:var(--brass-lift)}
-.plate__h{margin-top:16px}
-.plate__h span{display:block}
-.plate__lead{margin-top:20px;max-width:46ch;color:#EDE6DA}
-.plate__acts{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px}
 
-/* ═══ §6.2 what this is ════════════════════════════════════════ */
-/* The only centred block on the page besides the footer nameplate. */
-.mid{text-align:center}
-.mid>*{max-width:44ch;margin-inline:auto}
-.mid .head{margin-top:12px}
-.mid .lead{margin-top:16px;color:var(--ink-soft)}
-.about__row{margin-top:var(--headgap);display:grid;gap:var(--gap-r) var(--gap-c);align-items:start}
-
-/* The seven USCCB theme names as a numbered ladder. The numeral is DRAWN by a
-   counter, like the .dot: a sequence marker is data, not prose, and at 350
-   words for the page it may not cost seven of them. */
-.themes{
-  background:var(--ink);color:var(--on-ink);
-  border-radius:var(--radius);padding:var(--nest);
-  box-shadow:var(--e2),var(--edge-dark);
-}
-.themes__l{counter-reset:th}
-.themes__l>li{
-  counter-increment:th;
-  display:grid;grid-template-columns:auto 1fr;column-gap:16px;align-items:baseline;
-  padding:14px 16px;border-top:1px solid var(--rule-dark);border-radius:var(--radius-in);
-}
-.themes__l>li:first-child{border-top:0}
-.themes__l>li::before{
-  content:counter(th);
-  font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:var(--t-head);line-height:1;
-  color:var(--brass-lift);font-variant-numeric:tabular-nums;
-}
-.themes__l>li.is-held{background:var(--ink-2)}
-.themes__t{font-weight:500}
-.themes__src{margin-top:16px;padding:0 16px var(--nest);color:var(--on-ink-dim)}
-
-/* ═══ §6.3 the next evening — their own navy ═══════════════════ */
-#next{padding-top:calc(var(--panelpad) + var(--overlap))}
-.next__kick{color:var(--gold)}
-.lockup{margin-top:16px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
-.lockup__d{color:var(--on-ink);text-transform:uppercase}
-.lockup__m{color:var(--gold)}
-#next .head{margin-top:16px;max-width:22ch}
-.next__sub{margin-top:14px;color:var(--gold);max-width:48ch}
-.deets{margin-top:var(--headgap);display:grid;grid-template-columns:auto 1fr}
-.deets dt,.deets dd{padding-block:14px;border-top:1px solid var(--rule-gold)}
-.deets dt{color:var(--gold);padding-top:18px;padding-right:24px}
-.next__go{margin-top:var(--headgap)}
-/* overlap 2 of 3 — the title card breaks the panel's top edge. A drop shadow
-   does not read navy on navy, so their own poster gold is the separation. */
-.next__fig{
-  border-radius:var(--radius);box-shadow:var(--e3);isolation:isolate;overflow:hidden;
-  border:1px solid var(--rule-gold);
-}
-.next__fig img{width:100%;border-radius:inherit}
-
-/* ═══ §6.4 the record ══════════════════════════════════════════ */
-.strip{margin-top:14px;color:var(--brass-deep)}
-.entries{counter-reset:en;display:grid;column-gap:var(--gap-c);row-gap:var(--gap-r);margin-top:var(--headgap)}
-.entry{
-  background:var(--card);border-radius:var(--radius);padding:var(--nest);
-  box-shadow:var(--e2),var(--edge);height:100%;
-}
-/* The rail is a rail: four cards, four identical picture boxes. Entry 04 has
-   no poster, so its photograph fills the same square with object-fit: cover. */
-.entry__fig{position:relative;border-radius:var(--radius-in);overflow:hidden;isolation:isolate;aspect-ratio:1}
-.entry__fig img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
-.entry{counter-increment:en}
-.entry__top{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;margin-top:16px;padding-inline:8px}
-/* A6 again: the sequence numeral is data, drawn like the .dot, so 01 to 04
-   cost four of the page's 350 words instead of being typed. */
-.entry__top::before{
-  content:"0" counter(en);
-  font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:var(--t-head);line-height:1;
-  color:var(--brass-deep);font-variant-numeric:tabular-nums;
-}
-.entry__d{color:var(--muted)}
-.entry__t{margin-top:10px;padding-inline:8px}
-.entry__t a{
-  text-decoration:none;
-  background-image:linear-gradient(var(--brass),var(--brass));
-  background-repeat:no-repeat;background-position:0 100%;background-size:100% 1px;
-  transition:background-size .2s var(--ease);
-}
-.entry__t a:hover,.entry__t a:focus-visible{background-size:100% 2px}
-.entry__gloss{margin-top:6px;padding-inline:8px;color:var(--muted);font-size:var(--t-meta);line-height:var(--lh-meta)}
-.entry__l{margin-top:8px;padding-inline:8px;padding-bottom:8px;color:var(--ink-soft)}
-
-/* §5.4 THE BENTO ON ITS STAGE — the one element on the page wider than its
-   column (A11). Twelve columns, spans 5 / 4 / 3, gap in container units so the
-   three columns stay level at EVERY width and not only at 1440. */
-.stage{
-  margin-top:var(--headgap);
-  /* Full bleed, but capped at 1440: past that width the stage would keep
-     growing and the bento cells would walk straight through their own files'
-     honest ceilings. Rule I outranks the bleed. */
-  width:min(100vw,1440px);
-  margin-left:calc(50% - min(50vw,720px));margin-right:0;
-  background:var(--stage);
-  padding:var(--panelpad) var(--panelpad);
-  container-type:inline-size;
-}
-.stage.bento{display:grid;gap:12px;grid-template-columns:repeat(2,1fr);align-items:start}
-.bento__col{display:contents}
-.bento .fr{margin-bottom:12px}
-
-/* ═══ §7 THE CLOCK STRIP ═══════════════════════════════════════
-   The old bulleted timeline is deleted, not tuned. One duration bar, three
-   filled segments at 1 : 4 : 1 — thirty minutes, two hours, thirty minutes —
-   four discs on the boundaries and four numerals at chapter scale. The long
-   middle segment IS the night. Nothing to read; the shape is the content. */
-.clock{
-  margin-top:var(--headgap);
-  background:var(--ink-2);color:var(--on-ink);
-  border-radius:var(--radius);padding:var(--nest);
-  box-shadow:var(--edge-dark);
-}
-.clock__bar{
-  position:relative;
-  display:flex;flex-direction:column;
-  height:420px;
-  border-radius:var(--radius-in);overflow:hidden;
-}
-.clock__seg{flex:var(--f);background:rgba(179,125,62,.45)}
-.clock__seg--long{background:var(--brass-lift)}
-.clock__l{position:absolute;inset:0}
-.clock__s{position:absolute;left:20px;right:20px;display:flex;flex-direction:column;justify-content:center}
-.clock__t{
-  font-family:Zodiak,Georgia,serif;font-weight:400;
-  font-size:max(40px,var(--t-chapter));line-height:var(--lh-display);
-  letter-spacing:var(--tr-chapter);font-variant-numeric:tabular-nums;
-  text-box:cap alphabetic;
-}
-.clock__c{margin-top:6px}
-.clock__s--1{top:16px;color:var(--on-ink)}
-.clock__s--2{top:calc(16.6667% + 16px);color:var(--ink)}
-.clock__s--3{bottom:calc(16.6667% + 16px);color:var(--ink)}
-.clock__s--4{bottom:16px;color:var(--on-ink)}
-.clock__pins{position:absolute;inset:0;pointer-events:none}
-.clock__pins i{
-  position:absolute;left:0;top:calc(var(--p) * 1%);
-  width:12px;height:12px;margin-top:-6px;
-  border-radius:var(--pill);background:var(--brass-lift);
-  box-shadow:0 0 0 3px var(--ink);
-}
-.clock__pins i:first-child{margin-top:0}
-.clock__pins i:last-child{margin-top:-12px}
-
-.pair{display:grid;column-gap:var(--gap-c);row-gap:var(--gap-r);align-items:start;margin-top:var(--headgap)}
-.who{align-self:stretch;display:flex;flex-direction:column;justify-content:center}
-.who__n{margin-top:10px;color:var(--on-ink)}
-.who__c{margin-top:14px;color:var(--on-ink-dim)}
-
-/* ═══ §6.6 on the record ═══════════════════════════════════════ */
-.voices__row{margin-top:var(--headgap);display:grid;column-gap:var(--gap-c);row-gap:var(--gap-r);align-items:start}
-.quotes{display:grid;column-gap:var(--gap-c);row-gap:var(--gap-r);align-items:start}
-.quotes>li{display:flex;flex-direction:column;gap:14px}
-.q__who{color:var(--muted)}
-.deets__more{grid-column:2;border-top:0;padding-top:0;padding-bottom:14px;margin-top:-8px}
-
-/* ═══ §6.7 close, questions, footer ════════════════════════════ */
-#close{padding-top:calc(var(--panelpad) + var(--overlap))}
-#close .head{margin-top:12px;max-width:22ch}
-.cta,.signup{margin-top:var(--headgap)}
-.cta p,.signup p{color:var(--on-ink-dim)}
-.cta .t-meta{margin-top:10px}
-.cta h3{margin-bottom:2px}
-.cta .card__go{padding-top:16px}
-
-.tel{margin-top:16px}
-.tel__l{display:block;color:var(--on-ink-dim)}
-.tel__row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-.tel__in{
-  flex:1 1 180px;min-height:48px;padding:0 20px;
-  font:inherit;font-size:var(--t-body);
-  color:var(--on-ink);background:rgba(242,237,228,.07);
-  border:1px solid var(--rule-dark);border-radius:var(--pill);
-  transition:border-color .16s var(--ease),background-color .16s var(--ease);
-}
-.tel__in::placeholder{color:rgba(242,237,228,.62)}
-.tel__in:focus{border-color:var(--brass);background:rgba(242,237,228,.12)}
-.tel__go{background:transparent;box-shadow:inset 0 0 0 1px rgba(242,237,228,.45);color:var(--on-ink)}
-.tel__go:hover,.tel__go:focus-visible{box-shadow:inset 0 0 0 1px var(--on-ink);background:rgba(242,237,228,.08)}
-.tel__note{margin-top:12px;color:var(--on-ink-dim)}
-.tel__note[data-state=err]{color:var(--brass-lift)}
-.tel__consent{margin-top:8px;color:var(--on-ink-dim)}
-.pot{display:none}
-
-.qs{background:var(--ink-2);color:var(--on-ink);box-shadow:var(--edge-dark);margin-top:var(--headgap)}
-.q{border-top:1px solid var(--rule-dark)}
-.qs>.q:first-of-type{margin-top:16px}
-.q summary{
-  list-style:none;cursor:pointer;padding-block:18px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  transition:color .16s var(--ease);
-}
-.q summary::-webkit-details-marker{display:none}
-.q summary::after{content:"+";font-family:Switzer,system-ui,sans-serif;font-size:var(--t-body);flex:0 0 auto;color:var(--brass-lift)}
-.q[open] summary::after{content:"\2212"}
-.q summary:hover{color:var(--brass-lift)}
-.q>p{padding-bottom:22px;max-width:60ch;color:var(--on-ink-dim)}
-
-.foot{margin-top:var(--headgap);padding-top:32px;border-top:1px solid var(--rule-dark)}
-.nameplate{
-  font-size:var(--t-meta);font-weight:500;line-height:1.2;
-  letter-spacing:var(--tr-name);text-transform:uppercase;
-  white-space:nowrap;color:var(--on-ink);
-  max-width:none;width:fit-content;justify-self:start;
-}
-.foot__links{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:28px}
-.foot__links a{
-  display:inline-block;padding-block:4px;color:var(--on-ink);
-  text-underline-offset:4px;text-decoration-color:rgba(242,237,228,.45);
-  transition:text-decoration-color .16s var(--ease);
-}
-.foot__links a:hover,.foot__links a:focus-visible{text-decoration-color:var(--brass-lift)}
-.foot__credit{margin-top:16px;color:var(--on-ink-dim);max-width:64ch}
-
-/* ═══ MOTION — SPEC §4, and this is the whole of it ════════════
-   M1 entrance, M2 stagger, M3 hover depth, M4 control feedback. No scroll
-   drives anything; nothing is pinned; nothing is invisible in a cold
-   screenshot. The pre-state exists only while <html data-rv="on">, which the
-   inline head script sets only when reduced motion is off, and which a 1200ms
-   failsafe removes unconditionally after load. */
-
-/* M3 — the frame lifts, the photograph inside it scales, and the frame's own
-   box never moves relative to the picture. Declared before .rv so .rv's
-   longer opacity curve wins where both apply. */
-.card,.entry,.fr,.plate,.themes,.clock,.qs{
-  transition:transform .18s var(--ease),box-shadow .18s var(--ease);
-}
-.fr img{transition:transform .5s var(--ease)}
-.fr:hover{transform:translateY(-3px);box-shadow:var(--e3),var(--edge)}
-.fr:hover img{transform:scale(1.03)}
-.card:hover,.entry:hover,.themes:hover,.qs:hover{transform:translateY(-3px)}
-.card:hover,.entry:hover{box-shadow:var(--e2),var(--edge)}
-.themes:hover{box-shadow:var(--e3),var(--edge-dark)}
-
-/* M1 / M2 — 0.001, never 0: invisible to a human, and it keeps the element in
-   the paint tree so cold.mjs's box count still sees it at 0ms. */
-.rv{
-  transition:opacity .48s var(--ease),transform .18s var(--ease),box-shadow .18s var(--ease);
-}
+/* ═══ entrance motion — unchanged from the shipped build, because it works ══
+   .rv fades 0.001 -> 1 and rises 16px over 480ms, fired once by a single
+   observer. The pre-state exists only while <html data-rv="on">,
+   which the head script sets and which never appears under reduced motion or
+   with JS off. Nothing in the first viewport at either width carries .rv. */
+.rv{transition:opacity .48s var(--ease),transform .48s var(--ease)}
 [data-rv=on] .rv{opacity:.001;transform:translateY(16px)}
 [data-rv=on] .rv.is-in{opacity:1;transform:none}
-[data-rv=on] .fr.rv.is-in:hover{transform:translateY(-3px)}
 
-/* ═══ ≥900px ═══════════════════════════════════════════════════ */
-@media (min-width:900px){
-  .bar__in{height:72px;gap:24px}
-  .bar__links{display:flex}
-  .bar__right{gap:12px}
-  .bar__go{padding:0 20px}
-  .menu{display:none}
-  .lock__r{margin-inline:12px}
-  .lock__n{letter-spacing:.16em}
-
-  main{margin-top:-72px}
-  .hero__in{min-height:min(92vh,880px);padding-bottom:40px}
-  .plate{padding:32px}
-
-  /* §6.2 — the ladder takes 7 of 12 columns, the photograph 5. 446 CSS px
-     against a 1080px file: half of it, exactly as Rule I requires. */
-  .about__row{grid-template-columns:repeat(12,1fr)}
-  .themes{grid-column:span 7}
-  .about__row>.fr{grid-column:span 5}
-
-  /* §6.3 two columns, the title card on the right, breaking the top edge */
-  #next{display:grid;grid-template-columns:1.3fr 1fr;column-gap:48px}
-  #next>:not(.next__side){grid-column:1}
-  .next__side{
-    grid-column:2;grid-row:1 / span 8;align-self:start;
-    margin-top:calc(-1 * var(--panelpad) - 2 * var(--overlap));
-  }
-  .next__go{margin-top:24px}
-
-  /* §6.4 four cards on a rail */
-  .entries{grid-template-columns:repeat(4,1fr)}
-
-  /* §6.5 / §6.6 the two-up rows, proportioned to their files: 352 against a
-     867px negative, 352 against 815. Never the reverse. */
-  .pair{grid-template-columns:repeat(12,1fr)}
-  .pair>.fr{grid-column:span 4}
-  .pair>.who{grid-column:span 8}
-  .voices__row{grid-template-columns:repeat(12,1fr)}
-  .voices__row>.quotes{grid-column:span 8}
-  .voices__row>.fr{grid-column:span 4}
-  .quotes{grid-template-columns:repeat(2,1fr)}
-
-  /* §6.7 the CTA card breaks #close's top edge, same construction */
-  #close{display:grid;grid-template-columns:1.3fr 1fr;column-gap:48px;align-items:start}
-  .close__kick{grid-column:1;grid-row:1}
-  #close .head{grid-column:1;grid-row:2}
-  .cta{
-    grid-column:2;grid-row:1 / span 2;
-    margin-top:calc(-1 * var(--panelpad) - 2 * var(--overlap));
-    box-shadow:var(--e3),var(--edge-dark);
-  }
-  .signup{grid-column:1 / -1;grid-row:3}
-  .signup .tel__row{max-width:520px}
-  .qs,.foot{grid-column:1 / -1}
-
-  .foot{display:grid;grid-template-columns:1fr auto;column-gap:48px;align-items:end}
-  .nameplate{grid-column:1 / -1;margin-bottom:36px}
-  .foot__links{margin-top:0;grid-column:2;grid-row:2;justify-content:flex-end;align-self:start}
-  .foot__credit{grid-column:1;grid-row:2}
-
-  /* §7 the clock strip runs horizontally: the bar is a duration, left to
-     right, and the mass of the evening is visibly in the middle. */
-  .clock{padding:var(--nest)}
-  .clock__bar{flex-direction:row;height:168px}
-  .clock__s{left:auto;right:auto;top:0;bottom:0;max-width:32%}
-  .clock__s--1{left:20px}
-  .clock__s--2{left:calc(16.6667% + 20px)}
-  .clock__s--3{right:calc(16.6667% + 20px);left:auto;text-align:right;align-items:flex-end}
-  .clock__s--4{right:20px;text-align:right;align-items:flex-end}
-  .clock__pins i{left:calc(var(--p) * 1%);top:0;margin-top:0;margin-left:-6px}
-  .clock__pins i:first-child{margin-left:0}
-  .clock__pins i:last-child{margin-left:-12px}
+/* Hover moves colour and border, never position, and never a shadow step,
+   because there are no shadows. */
+.gal img,.crew img,.what__f img,.next__r img{
+  filter:contrast(1.03) saturate(.97);
+}
+#top .hero__m img,#voice .voice__f>img,.en img,.ev img{
+  filter:contrast(1.03) saturate(.97);
 }
 
-/* ═══ ≥1000px — the bento interlock ════════════════════════════
-   Three columns on the twelve, spans 5 / 4 / 3. The gap is stated in
-   container-width units, so the columns are level at 1000px for exactly the
-   same reason they are level at 1440: everything in the box scales together. */
-@media (min-width:1000px){
-  .stage.bento{
-    grid-template-columns:repeat(12,1fr);
-    gap:1.21951cqw;
-  }
-  .bento__col{display:flex;flex-direction:column;gap:1.21951cqw}
-  .bento .fr{margin-bottom:0}
-  .bento__col--a{grid-column:span 5}
-  .bento__col--b{grid-column:span 4}
-  .bento__col--c{grid-column:span 3}
-}
+/* ═══ the four video slots — SPEC §9.2, §9.5 ════════════════════════════
+   Nothing below renders in this build: no clip is on disk, so
+   tools/video-slots.mjs emits no <video> at all and every slot is on its
+   declared fallback (§9.1). The rules exist so that the day a clip is graded
+   and dropped in, the layer it lands in is already correct.
 
-@media (min-width:700px) and (max-width:999px){
-  .quotes{grid-template-columns:repeat(2,1fr)}
-}
-
-/* ═══ <900px ═══════════════════════════════════════════════════ */
-@media (max-width:899px){
-  #top{padding-inline:0}
-  #close{display:flex;flex-direction:column}
-  .cta{
-    order:-1;
-    margin-top:calc(-1 * var(--panelpad) - 2 * var(--overlap));
-    box-shadow:var(--e3),var(--edge-dark);
-  }
-  /* the hero plate sits on the page's left column line, not on the bleed's */
-  .plate{
-    margin-left:calc(var(--gutter) + var(--panelpad));
-    width:calc(100% - 2 * (var(--gutter) + var(--panelpad)));
-  }
-  .hero__in{margin-inline:calc(50% - 50vw);width:100vw}
-  .plate__lead{max-width:none}
-  .plate__acts .btn{width:100%}
-  /* the sheet is a panel of the bar, not a dropdown hung off the trigger */
-  .menu{position:static}
-  .sheet{position:static;margin-top:12px;min-width:0}
-  .menu[open] .sheet{
-    position:absolute;left:0;right:0;top:100%;margin-top:0;
-    padding:8px var(--gutter) 12px;
-    border-radius:0 0 var(--radius) var(--radius);border-inline:0;border-top:0;
-  }
-  #next{display:flex;flex-direction:column}
-  .next__side{order:-1;margin-bottom:var(--headgap);margin-top:calc(-1 * var(--panelpad) - 2 * var(--overlap))}
-  .next__side .next__go{margin-top:var(--headgap)}
-  #next .head,#next .lockup,#next .next__kick{max-width:none}
-  .deets{grid-template-columns:1fr;column-gap:0}
-  .deets dt{padding-bottom:0;border-top:1px solid var(--rule-gold)}
-  .deets dd{padding-top:6px;border-top:0}
-  .deets__more{grid-column:1}
-  /* Masonry by span, two columns (§5.4.4). The van photograph takes both
-     columns because a 165px picture on a phone is not a picture; everything
-     else pairs off. 342 CSS px against a 1080px file is still half of it. */
-  .bento .fr{order:9}
-  .bento__col--a .fr{order:1;grid-column:span 2}
-  .bento__col--c .fr:first-child{order:2}
-  .bento__col--c .fr:last-child{order:3}
-  .bento__col--b .fr:nth-child(1){order:4}
-  .bento__col--b .fr:nth-child(2){order:5}
-  .bento__col--b .fr:nth-child(3){order:6;grid-column:span 2}
-  #close>.foot{margin-inline:0}
-}
-
-/* The bar keeps its CTA at every width. What gives way below it, in order, is
-   the date on the label and then the second half of the wordmark — never the
-   control itself, and never the label's words. */
-@media (max-width:559px){ .lock__r,.lock__n{display:none} }
-@media (max-width:519px){ .go__when{display:none} }
-
-@media (max-width:419px){
-  .plate__acts{flex-direction:column}
-  .btn{padding:0 14px}
-  .cta .card__go .btn{width:100%}
-}
+   A scrubbed <video> is a BACKGROUND LAYER. Its section is complete, legible
+   and final at paint with the video absent, paused, or at frame 0. */
+.hero__v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:contrast(1.03) saturate(.97)}
+.what__v{display:block;width:100%;aspect-ratio:1.9196;object-fit:cover;
+  filter:contrast(1.03) saturate(.97)}
+/* The band layer sits under a flat 88% ink veil, expressed as filter:opacity()
+   and never as the opacity property: tools/cold.mjs fails any element inside
+   <main> sitting at opacity < 0.9, and it is right to. This keeps the computed
+   opacity at 1 while the layer paints at 12%, which is what §6.3 asks for. */
+.band__v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:opacity(.12);z-index:0;pointer-events:none}
+#next>:not(.band__v),#close>:not(.band__v){position:relative;z-index:1}
+/* §9.3.2, made structural: where a slot carries a clip, its fallback frame
+   stops rendering, so no <video> box can ever intersect an
+   <img data-people="yes"> box at either width. */
+#top:has(.hero__v) .hero__m{display:none}
+.what__f:has(.what__v)>img{display:none}
 
 @media (max-width:359px){
-  :root{--t-display:52px}
+  :root{--t-hero:44px}
 }
 
-/* ═══ reduced motion ═══════════════════════════════════════════
-   Identical DOM, identical layout, identical images, identical text. The only
-   difference is that nothing moves — and nothing is ever left mid-fade,
+/* ═══ reduced motion ════════════════════════════════════════════════════
+   Identical DOM, identical layout, identical images, identical text. The one
+   difference is that nothing moves, and nothing is ever left mid-fade,
    because the pre-state is never applied at all. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
