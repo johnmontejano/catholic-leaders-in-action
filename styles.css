@@ -190,8 +190,9 @@ main>section>*{min-width:0}
 /* Anchor navigation. The bar floats OVER the page on a negative margin, so a
    jump that lands a band's top edge at y=0 lands its eyebrow exactly on the
    bar's hairline — 64px of padding under a 64px bar leaves nothing. Every
-   anchor target reserves the air itself: 24px clear at 390, 48px at 1440
-   where the band padding is already taller than the bar. */
+   anchor target reserves 24px of air itself, at both widths, as one flat
+   value: that is already enough at 1440, where the band's own padding-block
+   is 96px rather than 64px and carries the rest of the clearance. */
 main>section,#main{scroll-margin-top:24px}
 
 #what,#record,#allies,#close{background:var(--bone);color:var(--ink)}
