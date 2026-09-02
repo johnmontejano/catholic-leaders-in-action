@@ -33,13 +33,16 @@
                           at reading distance nothing distinguishes a 6px
                           button from an 8px frame, so the page was paying
                           three names for one corner.
-       5px   --r-inset   NOT a scale value and never chosen. It is
-                          calc(--r-object - --ring): the radius an image must
-                          take to sit concentrically inside a 3px frame ring.
-                          It is arithmetic, so it follows --r-object wherever
-                          that goes and it cannot drift.
-       12px  --r-panel   the mobile menu panel
-       16px  --r-pill    the nav pill
+       8px   --r-inset   THE SAME CORNER, and the name is kept only so the
+                          three inset-image rules read as what they are. It
+                          was calc(--r-object - --ring) = 5px, concentric
+                          inside a 3px ring; a derived radius is still a
+                          radius on screen, and a page with 5 and 8 on it has
+                          two corners for one job. See the token.
+       16px  --r-pill    the floating chrome: the nav pill AND the menu panel
+                          that hangs under it. --r-panel's 12 was a fourth
+                          corner four pixels off this one, on two halves of
+                          one object. See the token.
        0     --r-rise    a full-bleed band rising over its neighbour: square,
                           because everything that touches both edges is square
        50%   —           round close button
@@ -92,31 +95,34 @@
   --signal:#3A56F0;
   --signal-deep:#2439B0;
   --signal-lift:#8AA4FF;
-  /* ── AND THE BIG FIELD IS NOT THE ACCENT ANY MORE ────────────────────────
-     The 2026-09-01 assessment put a number on the one thing the palette was
-     doing wrong: `tools/_accent.mjs` read 0.858 screens of brand colour at
-     1440 and 97% of it was ONE field — #close's ground — painted in
-     --signal-deep. A colour spent as 1,075,365 px² of ground is not an
-     accent, it is a third ground, and this one was the wrong kind of third
-     ground: at HSL saturation 0.66 it ran 2.4x the mean of the sixteen
-     photographs the page grades so carefully to 0.273, and it separated from
-     the client's own --navy by CHROMA — 13 degrees of hue apart, 0.22 of
-     saturation apart. Oregon Outdoor Alliance and Namaha separate their
-     grounds the other way round: by HUE, at low chroma.
+  /* ── AND THE BIG FIELD IS GONE, WHICH IS THE END OF A TWO-PASS ARGUMENT ──
+     Two passes ago #close's ground was --signal-deep: `tools/_accent.mjs`
+     read 0.858 screens of brand colour at 1440 and 97% of it was that one
+     field. A colour spent as 1,075,365 px2 of ground is not an accent, it is
+     a third ground — so a third ground was declared for it, --field #423663,
+     graded to sit inside the photographs' own saturation band.
 
-     So the ground and the accent split into two jobs:
+     The 2026-09-01 assessment measured what that bought and what it cost:
+     "cinco suelos … el morado aparece una vez y no tiene eco en ningun otro
+     componente". A hex that appears exactly once is not a system, whatever
+     its saturation is, and this one appeared once at 1,075,365 px2 — the
+     largest single surface on the page, in a colour nothing else on the page
+     is.
 
-       --field   #423663   H 256  S 0.30  L 0.30   the ground of #close
-       --signal-deep  #2439B0   H 231  S 0.66  L 0.42   the controls
+     THE SECOND SITE WAS ALREADY ON THE PAGE AND IT WAS --navy. #next and
+     #close are the same act — "September 1" and "Take a seat.", the two
+     bands that ask for an RSVP — and the navy is the client's own, sampled
+     off their own poster, already carrying #next and the poster wall in
+     #record. Giving it #close makes it a GROUND (three bands) instead of an
+     artwork mount (two), and it makes the page say with colour what its copy
+     says twice: these two bands are one request.
 
-     --field is 38 degrees of hue off --navy's 218 and sits at 0.30 HSL
-     saturation, INSIDE the photographs' own 0.187-0.460 band and 1.1x their
-     mean, so the page's largest coloured surface is now graded like the
-     pictures on it instead of shouting over them. Bone on it is 9.33:1
-     against the 7.91:1 the lapis gave, so the band got quieter AND more
-     legible. And the lapis it replaces is now only ever a control: four
-     buttons and a dock, which is what an accent is. */
-  --field:#423663;
+     Measured, every number improves. Bone on --navy is 13.2:1 against the
+     9.33:1 --field gave. The phone dock, which is --signal-deep and stands
+     at the foot of this band, measured 1.17:1 against --field — a control
+     that was legible and invisible — and 2.4:1 against navy. And the grounds
+     census goes from five to four: ink, bone, navy, and the lapis that is
+     only ever a control. */
   --on-ink-2:#A8A6A1;
   --ink-2:#4A4A4E;
   /* TWO BONE HAIRLINES, ONE SYSTEM, AND THEY USED TO BE TWO NOTATIONS.
@@ -251,11 +257,22 @@
   --t-chapter:clamp(28px, 23.4px + 1.18vw, 34px);
   --t-head:20px;
   --t-body:17px;
-  --t-meta:11px;
-  /* the phone bar's own size, and the only reason it is not --t-meta is that
-     11px beside a 28px seal measured 2.5:1 and read as a caption on a logo.
-     Apple sets its phone nav links at 12. */
-  --t-nav:12px;
+  /* 12, NOT 11, AND THE PAGE LOSES A SIZE RATHER THAN GAINING ONE.
+     900 has declared 12 since the section scale was written, so 11 was a
+     phone-and-tablet-only size doing the same job — and the 2026-09-01
+     assessment counted what it cost: "44 nodos a 11px (mono) a 390; Apple y
+     sharplink no bajan de 12–13 en meta", and research/spacing-2026.md
+     prescribes 13/1.4 for caption and meta off Apple's 12-14 and sharplink's
+     13. One value at every width puts the label voice inside the measured
+     band instead of under it, and the type census goes from five rendered
+     sizes at 390 to four. */
+  --t-meta:12px;
+  /* --t-nav IS GONE WITH THE 11 IT WAS ESCAPING. It existed for one reason,
+     written here: "the only reason it is not --t-meta is that 11px beside a
+     28px seal measured 2.5:1 and read as a caption on a logo. Apple sets its
+     phone nav links at 12." --t-meta IS 12 now, at every width, so the token
+     and the thing it was avoiding are the same number and the bar takes the
+     label voice like every other label on the page. */
 
   /* space — ONE module. Every spacing token is an integer multiple of it, so
      every spacing ratio is identical at both widths. */
@@ -332,8 +349,26 @@
      gone and the one that was DERIVED is written as the arithmetic it always
      was. See the scale note at the top of this file. */
   --r-object:8px;
-  --r-inset:calc(var(--r-object) - var(--ring));
-  --r-panel:12px;
+  /* ONE RADIUS FOR A PHOTOGRAPH, AND IT IS --r-object.
+     This was calc(--r-object - --ring) = 5px: the radius an image has to
+     take to sit CONCENTRICALLY inside a 3px frame ring. The arithmetic was
+     right and the result was still a fourth corner on the page -- the
+     2026-09-01 assessment counted the radii it could see, not the ones that
+     were derived, and read 5 / 8 / 12 / 16 off one screen. An inset
+     photograph takes 8px now, the same corner as the control and as the
+     frame around it, and a full-bleed one takes 0. Two treatments, one
+     radius each, and no third number anywhere between them. What it costs
+     is that the 3px ring runs 4.2px at the corner instead of 3 -- at a 3px
+     ring that is not a thing anyone sees, and a radius that IS is. */
+  --r-inset:var(--r-object);
+  /* --r-panel IS GONE INTO --r-pill. It was 12px and it had one user: the
+     mobile menu panel, which hangs 8px under the nav pill, takes the pill's
+     own left and right insets and the pill's own inner padding, and is the
+     only other object on the page that floats over the document. Two corners
+     four pixels apart on two halves of one piece of chrome is not a scale,
+     it is a rounding. The radius census is three values now and each has a
+     job the other two cannot do: 0 for what bleeds to the viewport, 8 for
+     an inset object, 16 for the floating chrome. */
   --r-pill:16px;
   /* --r-rise IS 0 NOW, AND THE ZERO IS THE MEASUREMENT.
      It was 24px: the accent floor rising over #allies and the footer rising
@@ -532,10 +567,33 @@
      SYMMETRIC: it starts slow, so at 180ms the first third of the change is
      invisible and what is left reads as a late jump. 240ms is the most
      frequent duration in Apple's own CSS (58 uses) and it is the duration the
-     curve asks for. */
+     curve asks for.
+
+     ── AND THERE ARE TWO DURATIONS NOW, WHICH IS ONE MORE THAN THIS PAGE HAD.
+     The 2026-09-01 assessment scored motion at 5.0 against every other
+     dimension at 6.5-7.5, and the census under it was one number: twenty
+     transitions, all 240ms, all `color` or `background-color`. One duration
+     cannot separate a pointer answering from an object arriving, so every
+     move on the page was the same length and the page had no tempo.
+
+     Measured on the references it is always two, and the ratio is about
+     1:2 — apple.com/iphone runs 243 transitions at 0.32s beside its long
+     0.6s reveals, hobro 65 at 0.3s beside 16 at 0.4s, kononenko 0.6s and
+     1.109s. So:
+
+       --dur-ui    320ms   a pointer answering: colour, fill, a 2px shift,
+                           a hairline growing. Apple's own
+                           --motion-duration-long, and the value the fallback
+                           entrance at the foot of this file already quoted.
+       --dur-long  600ms   an object arriving: the photograph settling out of
+                           1.04, the fold's two lines rising at load.
+
+     Both take --ease unless they are an ENTRANCE, which takes --ease-enter:
+     that split is unchanged and is the whole of §2.2 above. */
   --ease:cubic-bezier(.4, 0, .6, 1);
   --ease-enter:cubic-bezier(0, 0, .2, 1);
-  --dur-ui:240ms;
+  --dur-ui:320ms;
+  --dur-long:600ms;
   /* 8px, and the number is a measurement. Apple's 30px reveal only works
      because an opacity is doing half the work; every Apple displacement
      WITHOUT a fade lives between 4 and 8px — globalnav-flyout-item -4px,
@@ -640,7 +698,6 @@
     --t-chapter:clamp(34px, 3.13vw + 5.9px, 44px);
     --t-head:24px;
     --t-body:18px;
-    --t-meta:12px;
     --nav-top:32px;
     /* 80 and not 200. 200 was a flat rectangle carrying three numerals and
        the largest graphic in the footer; the real seal is a badge with a
@@ -827,7 +884,31 @@ main *,footer *{box-shadow:none}
 
    Two voices at two sizes instead of three voices sharing one, and no step of
    the scale is spent: --t-body already existed. */
-.eb__t,.meta,.figure{font-family:var(--mono);font-weight:400}
+/* ── AND THE LABEL IS NOT MONO ANY MORE, WHICH IS THE LAST HALF OF THIS ──
+   The split below was drawn twice and both times it kept the label in IBM
+   Plex. tools/_chars.mjs still read 28.4% of the page's characters in a
+   monospace after the second pass, and the owner's own reference list names
+   the pattern outright: mono used as a costume rather than as a data face.
+   Every reference this page is measured against does the same thing — Apple
+   sets its eyebrows in the body sans, kononenko and hobro have no monospace
+   in the document at all — and the one thing they all reserve a monospace
+   for is a value you could copy down.
+
+   So the rule is by CONTENT, and it is now complete in both directions:
+
+     .figure   MONO. A date, an hour, a street number, a run of show — a
+               value. Tabular by construction, slashed zero, unchanged.
+     .eb__t /  SWITZER 500 at --t-meta. A label is a word that names the
+     .meta     thing beside it, and a name is language, not data.
+
+   Weight 500 rather than 400 because a 12px sans label at 400 against 17px
+   body at 400 has nothing but size to separate it, where the mono had a
+   whole skeleton. Tracking .04em rather than .06: the +.06 was measured for
+   capitals in a monospace drawn for lowercase, whose sidebearings are
+   already tight; Switzer's caps at 12 want less. The size, the case and the
+   colour are untouched, so nothing on the page changes rank. */
+.eb__t,.meta{font-family:var(--sans);font-weight:500}
+.figure{font-family:var(--mono);font-weight:400}
 .eb__t,.meta{font-size:var(--t-meta);line-height:1.4}
 /* ONE TRACKING FOR ONE JOB, AND THE SIGN WAS SIMPLY WRONG.
    `.eb__t` carried -.012em — -0.144px at 12px — while all 27 other 12px
@@ -839,7 +920,7 @@ main *,footer *{box-shadow:none}
    "typographer's mark" note that stood here was defending a defect.
    Three instances move: WHY IT EXISTS (#rule), SIX INSTITUTIONS, IN
    PARTNERSHIP (#allies), NEXT STEP (#close). */
-.eb__t,.meta{letter-spacing:.06em;text-transform:uppercase}
+.eb__t,.meta{letter-spacing:.04em;text-transform:uppercase}
 /* Neither Switzer nor Zodiak ships tnum, and the browser does not synthesise
    it. A monospace is tabular by construction, so every figure that forms a
    column lives here. "zero" is the slashed zero: in a page that publishes
@@ -876,9 +957,16 @@ main *,footer *{box-shadow:none}
    243 characters at 1440, which takes mono from 38.7% of the page to 28.4%
    and hands every one of them to the face that was already carrying the
    body copy. tools/_chars.mjs measures it. */
-.say__a,.act__a,.idx__s,.foot__bar .meta{
-  font-family:var(--sans);letter-spacing:0;text-transform:none;
-}
+/* and the three that are SENTENCES or NAMES keep the case and the tracking
+   off as well — the family is the page's own sans for every label now, so
+   this rule is down to the two properties it always meant. */
+.say__a,.act__a,.idx__s,.foot__bar .meta{letter-spacing:0;text-transform:none}
+/* THE ONE LABEL THAT IS A VALUE. The record's figcaption reads "JULY 30 ·
+   The Shroud, at St Philip": a date and a name, and the date is a date. It
+   carries `.meta` for its size rather than `.figure`, which is --t-body, so
+   the family has to be restored here by hand — the alternative is a fourth
+   class doing what two already do. */
+.cap .meta{font-family:var(--mono);letter-spacing:.06em}
 /* The separator between two facts is a mark, not a word: it lives in CSS so
    it never counts as copy and never reads as a link. */
 .dot{display:inline-block;padding-inline:calc(var(--u) / 2)}
@@ -891,6 +979,40 @@ main *,footer *{box-shadow:none}
 .eb{display:inline-flex;flex-direction:column;align-items:stretch;gap:var(--mark-gap);max-width:100%}
 .eb__r{display:block;height:var(--mark-h);background:var(--mark)}
 .eb__r--quiet{background:var(--bone)}
+/* ── AND TWO BANDS KEEP THE MARK WITHOUT THE LABEL ─────────────────────
+   Seven eyebrows came off this page in one pass. The label above a heading
+   is the tell the owner's own reference list puts first — a word that names
+   what the heading underneath it already says — and "Why it exists" over a
+   quote and "Next step" over "Take a seat." were exactly that.
+
+   The MARK is a different object and it was doing structural work, which
+   tools/slab.mjs measured the moment it went: three screens at 768x1024
+   opened a 344x284 rectangle of bone beside #rule's quote (12.4% of the
+   screen against a 10% ceiling) and two at 1024x768 opened 520x172 in
+   #close's left column, because in both bands the eyebrow's rule was the
+   only full-width ink above the block. A band that opens on a rule is one
+   of the oldest devices in print and it says nothing at all; a band that
+   opens on a word that repeats its own heading is the thing that had to
+   go. So the words go and the rules stay, as pseudo-elements, in the two
+   bands that were carrying them.
+
+   #allies keeps its label: "Six institutions, in partnership" is a count
+   and it is that section's accessible name. */
+#rule .say::before,#close .hd::before{
+  content:"";display:block;
+  height:var(--mark-h);background:var(--mark);
+  margin-bottom:var(--su-20);
+}
+/* AND BELOW 900 IT RUNS THE BAND, NOT THE BLOCK IT SITS ON. Both hosts
+   carry --measure-head, so the rule came out 447px wide inside a 688px
+   column at 768 — and slab read the ground to the right of it as one
+   276x300 rectangle, 10.5%, because the mark stopped 241px short of the
+   edge. A band's opening rule is the band's width by definition. Above 900
+   the two hosts are grid items on real columns and the rule is already the
+   column, so this is scoped to the single-column tiers where it is not. */
+@media (max-width:899.98px){
+  #rule .say::before,#close .hd::before{width:calc(100vw - 2 * var(--pad-i))}
+}
 
 /* ═══ the band system ═══════════════════════════════════════════════════
    Eight full-bleed bands, one padding token, one left line, one rhythm.
@@ -1125,14 +1247,15 @@ main>section>*{min-width:0}
      is flat on purpose, and it is the one band with no photograph, no plate
      and no hairline list to want a surface.
 
-     THE GROUND CHANGED AND SO DID THAT ARITHMETIC. The band is --field now,
-     not --signal-deep (see the token), and bone on it is 9.33:1 rather than
-     4.80. The pair that made this the one grain-free ground on the page is
-     gone, so the grain comes back and the four grounds — ink, navy, field and
-     the fold's photograph — carry one surface between them. It is kept only
-     as long as tools/contrast.mjs still reads no glyph pixel under 4.5:1
-     anywhere; that is the gate, not this comment. */
-  background:var(--field) var(--grain);background-blend-mode:overlay;color:var(--bone);
+     THE GROUND CHANGED TWICE AND SO DID THAT ARITHMETIC. The band was
+     --signal-deep, then --field, and it is --navy now (see the token): bone
+     on it is 13.2:1 rather than 4.80. The pair that made this the one
+     grain-free ground on the page is gone, so the grain comes back and the
+     three grounds — ink, navy and the fold's photograph — carry one surface
+     between them. It is kept only as long as tools/contrast.mjs still reads
+     no glyph pixel under 4.5:1 anywhere; that is the gate, not this
+     comment. */
+  background:var(--navy) var(--grain);background-blend-mode:overlay;color:var(--bone);
   --rule:color-mix(in srgb, var(--bone) 26%, transparent);
   --mark:var(--bone);
   --on-2:var(--bone);
@@ -1535,12 +1658,15 @@ main>section>*{min-width:0}
    decides nothing about the picture's height. */
 .hero__gr img{
   display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  /* the one filter every photograph on this page renders through, with the
-     contrast term one notch up — the veil below takes a large fraction of the
-     range out at the type's own line, and a notch back is what keeps the
-     shadows the slab gate lives on from crushing. It is one notch and no
-     more: the veil is doing the work, not this. */
-  filter:contrast(1.09) saturate(.97);
+  /* THE ONE FILTER EVERY PHOTOGRAPH ON THIS PAGE RENDERS THROUGH, AND NOW
+     WITH THE SAME NUMBER IN IT. The contrast term stood one notch up at 1.09
+     because the old veil took a large fraction of the range out over the WHOLE
+     frame and a notch back was what kept the shadows off the floor. The veil
+     below is written to the type now and the top of this picture is untouched,
+     so the notch has nothing left to compensate for — and a hero graded one
+     notch away from every other frame is the thing this pass exists to remove.
+     One grade, in the pipeline and in the stylesheet. */
+  filter:contrast(1.03) saturate(.97);
   /* 32%, AND IT IS THE SISTER'S FACE THAT SETS IT.
      Below a 5/6 window this is the negative at 0.7505 into a box as narrow as
      0.462, so `cover` binds on HEIGHT: the whole height renders, the crop is
@@ -1560,32 +1686,73 @@ main>section>*{min-width:0}
    with room to spare; over it `cover` gives up height and 50% takes the same
    sliver off the van's roofline and off the asphalt. */
 @media (min-aspect-ratio:5/6){.hero__gr img{object-position:50% 50%}}
-/* ── THE VEIL. Written to the type, derived from the brightest pixel ──────
-   The full note is in index.html beside the element. The stops:
+/* ── THE VEIL. Written to the type, and MEASURED FROM THE BOTTOM ──────────
+   The full note is in index.html beside the element.
 
-     0%    0.10   the frame is a photograph — the van, the door, the three
-     30%   0.16   figures and every face are above 46% and none is under ink
-     46%   0.61   the derived floor: (1-a)*255 + a*13 <= 108  ->  a >= 0.607
-     62%   0.78
-     100%  0.92   the 12px mono of the fact line sits in the last 60px
+   WHAT WAS WRONG WITH IT. The stops were percentages of the cell — .10 at the
+   top, .16 at 30%, .61 at 46% — so the veil covered the WHOLE photograph and
+   the top of it was never clear: every pixel of the frame was multiplied by at
+   least 0.90 before it was seen, and the band from 30% to 46%, which is where
+   the sister's face is at every landscape shape, ran from 0.16 to 0.61. The
+   2026-09-01 assessment read it as the picture being covered, and it was:
+   "el héroe lleva un velo que tapa el sujeto".
 
-   THE RAMP IS WHY THE PICTURE SURVIVES IT. A FLAT veil at 0.92 multiplies the
-   whole dynamic range by 0.08 in one step: a 255-level frame becomes a
-   20-level frame, every 8-level gradient in it becomes a sub-level gradient,
-   and one round of 8-bit quantisation turns it into a slab. Oregon Outdoor
-   Alliance does not do that either — its hero is dark at the corner the type
-   is in and nearly clear at the top — and tools/slab.mjs is the gate that
-   holds this page to the same. Above 46% of the cell the frame keeps 90% to
-   84% of its range. */
+   THE VEIL IS THE TYPE'S GROUND, SO IT IS MEASURED IN THE TYPE'S OWN UNITS.
+   Percentages of the cell cannot do that, because the type block is a fixed
+   number of pixels tall — the headline plus the control plus the padding —
+   while the cell is whatever the window is. At 390x844 that block is 229px,
+   which is 27% of the screen; at 1728x568 the same kind of block is 443px,
+   which is 78% of it. One set of percentages has to cover the worst case at
+   every shape, and covering the worst case in percent means covering the whole
+   picture at all the others.
+
+   So the stops are LENGTHS from the bottom edge, and `--veil-h` is the tallest
+   the type block gets at that width — measured, not guessed (the sweep is
+   tools/.scratch, the numbers are in the commit):
+
+     width      tallest block, any window height     --veil-h
+     < 640      300px  (430x500, the fact line up)     310px
+     640-899    327px  (899x844)                       340px
+     >= 900     461px  (1180x844)                      470px
+
+   and the ramp above it:
+
+     0                        0.92   the 12px mono of the fact line, last 60px
+     96px                     0.80
+     --veil-h                 0.62   the derived floor: (1-a)*255 + a*13 <= 108
+                                     -> a >= 0.607, and .62 is at or ABOVE the
+                                     top of the type block at every shape, so
+                                     no glyph on this page ever stands on less
+     --veil-h + --veil-f      0      the photograph, untouched
+
+   WHAT THE PICTURE GETS BACK. At 390x844 the top 45% of the frame is now
+   exactly the file — no multiply at all, where it used to be 0.90 — and the
+   0.62 floor moved from 46% of the cell down to 63%. At 1440x900 the top 31%
+   is clear. At 1366x768, the shape where tools/_heroink.mjs found the page's
+   worst inked pixel, the veil is slightly DARKER at the headline than it was
+   (0.654 against 0.631), because a veil written to the type follows the type
+   up when the window is short instead of hoping a percentage catches it.
+
+   THE RAMP IS STILL WHY THE PICTURE SURVIVES IT. A FLAT veil at 0.92
+   multiplies the whole dynamic range by 0.08 in one step: a 255-level frame
+   becomes a 20-level frame, every 8-level gradient in it becomes a sub-level
+   gradient, and one round of 8-bit quantisation turns it into a slab. Oregon
+   Outdoor Alliance does not do that either — its hero is dark at the corner
+   the type is in and nearly clear at the top — and tools/slab.mjs is the gate
+   that holds this page to the same. */
 .hero__gv{
+  --veil-h:310px;
+  --veil-f:150px;
   position:absolute;inset:0;display:block;pointer-events:none;z-index:1;
-  background:linear-gradient(to bottom,
-    rgba(13,13,14,.10) 0%,
-    rgba(13,13,14,.16) 30%,
-    rgba(13,13,14,.61) 46%,
-    rgba(13,13,14,.78) 62%,
-    rgba(13,13,14,.92) 100%);
+  background:linear-gradient(to top,
+    rgba(13,13,14,.92) 0,
+    rgba(13,13,14,.80) 96px,
+    rgba(13,13,14,.62) var(--veil-h),
+    rgba(13,13,14,0)   calc(var(--veil-h) + var(--veil-f)));
 }
+/* the two widths where the headline steps up, and the block with it */
+@media (min-width:640px){.hero__gv{--veil-h:340px}}
+@media (min-width:900px){.hero__gv{--veil-h:470px}}
 /* ── THE TYPE CELL ────────────────────────────────────────────────────────
    Bottom-left of its own cell, INSIDE the photograph above, on the same left
    edge every band below it starts on. */
@@ -2295,7 +2462,19 @@ main>section>*{min-width:0}
 }
 .duo>li{min-width:0}
 .duo figure{margin:0}
-.duo__m{display:block;overflow:hidden;aspect-ratio:4 / 5}
+/* `clip`, NOT `hidden`, AND THE DIFFERENCE IS A SCROLL CONTAINER.
+   `overflow: hidden` makes an element a SCROLLPORT — one that cannot be
+   scrolled, but a scrollport all the same — and `animation-timeline: view()`
+   resolves against the subject's nearest scroll container. So the photograph
+   inside this box measured its own visibility against a box it exactly
+   fills: `settle` computed a constant progress of 0.909 at every scroll
+   offset in the document and rendered 0.02% of its 4%. `overflow: clip`
+   clips identically and establishes no scrollport, so the picture reads the
+   document the way its own `.rv` parent does. `hidden` stays on the line
+   ahead of it for the browsers that predate `clip` — they are the browsers
+   that predate `view()` too, and they take the transition fallback at the
+   foot of this file, which needs the clip just the same. */
+.duo__m{display:block;overflow:hidden;overflow:clip;aspect-ratio:4 / 5}
 .duo__m img{display:block;width:100%;height:100%;object-fit:cover;
   filter:contrast(1.03) saturate(.97)}
 /* AND THE ACTION FRAME IS ANCHORED TO ITS FACES, WHICH IS THE ONLY REASON IT
@@ -2786,21 +2965,26 @@ img[src*="laughing-"]{object-position:30% 50%}
   border-collapse:collapse;
   text-align:left;
 }
-/* THE SPINE'S UPPER LENGTH. See the block above `.two`. Every row rule in this
-   table already starts on the table's own left edge; this is the line they
-   start FROM, and it turns four parallel hairlines into one ladder hanging off
-   a single vertical. It runs from the head rule to the last row's rule and is
-   then picked up by `.two::after` across the gap, so the record and its
-   evidence are on one continuous line.
+/* THE SPINE IS OFF THE TABLE, AND THE ROWS DO NOT HANG OFF ANYTHING NOW.
+   What stood here drew a vertical hairline down the table's left edge and
+   argued that it turned four parallel rules into "one ladder hanging off a
+   single vertical". The 2026-09-01 assessment read the same object from the
+   other side and it is right: a vertical rule plus a mono label on every row
+   is the grammar of a 2022 dashboard, and the references this page is
+   measured against separate rows with horizontals and nothing else — Apple,
+   kononenko and sstr all list with no left edge at all.
 
-   It is a pseudo-element on the table rather than a `border-left`, because a
-   border on a `border-collapse: collapse` table is resolved against every
-   cell's own borders and would be drawn at the head row's weight in one place
-   and the body's in another. */
-.idx::before{
-  content:"";position:absolute;left:0;top:0;bottom:0;
-  border-left:var(--rim) solid var(--spine);
-}
+   The horizontals stay, and so does the fork below the last row: the elbow
+   under August 5 is the record's one branch and it is a MARK, not a grid.
+   `.two::after` still carries the line across the gap to the evidence, which
+   is the part of the spine that was doing work.
+
+   The gutter that went with it goes too. `.idx th:first-child` carried
+   `padding-left: --sp-1` for exactly one reason, written in the note that
+   stood under this one: "THE INSET IS A FUNCTION OF HAVING A RULE BESIDE
+   YOU". There is no rule beside it, so the date column starts on the table's
+   own left edge — which is the page's single left axis, the one thing every
+   assessment of this page has praised. */
 /* THE 1px COLUMN SPLIT, AND IT WAS THE USER AGENT'S. `Date` was reported at
    x=627.3 at 1440 and the <time> cells in its own column at 628.3 — a
    one-pixel split inside a single table, directly under a hairline spanning
@@ -2813,25 +2997,6 @@ img[src*="laughing-"]{object-position:30% 50%}
    Zeroing the inline padding is the whole fix; the block padding and the
    right-hand gutter below are this file's own and are untouched. */
 .idx th,.idx td{padding-inline:0}
-/* ── AND THE ONE COLUMN WITH A RULE BESIDE IT GETS A GUTTER FROM IT ─────
-   Zeroing the inline padding above was right and it left one thing wrong.
-   The spine (`.idx::before`, directly below) is drawn at the table's own left
-   edge — x 522.7 at 1440, 20.0 at 390 — and the date cells' text boxes start
-   at exactly that number, so the 1px hairline is painted over the first pixel
-   column of every glyph in the column it is supposed to bound. The
-   2026-09-01 assessment read it off the render at both widths: "the mono
-   glyph begins 0.3px to the left of the rule that is supposed to bound it,
-   and at 1x the 'D' of DATE and the 'J' of June read as clipped by it … the
-   two sibling columns in the same table get 103px and 12px of gutter. One
-   column out of three has none."
-
-   THE INSET IS A FUNCTION OF HAVING A RULE BESIDE YOU, which is why it lands
-   on this column and no other: Evening and Subject have a column edge to
-   their left, not a hairline, and a column edge needs no clearance. The spine
-   does not move and neither does a single row rule — the ladder still hangs
-   off x 522.7 with the gallery frames below it — so the alignment this table
-   was built on is untouched. The type steps off the line it hangs from. */
-.idx th:first-child,.idx td:first-child{padding-left:var(--sp-1)}
 /* ── THE HEAD THAT HOLDS ───────────────────────────────────────────────
    research/design-2026.md §1.1 / §2.1. The one thing measured in eighteen of
    twenty-five 2026 winners and absent from every element of this page: a
@@ -3083,7 +3248,30 @@ img[src*="laughing-"]{object-position:30% 50%}
   vertical-align:baseline;
 }
 .idx td:last-child{padding-right:0}
+/* ── THE DATE IS A LABEL, AND IT WAS SET AS BODY COPY ───────────────────
+   THE COLLISION, measured at 1440 on 2026-09-01: the ink of "August 5" ended
+   3.4px from the ink of "Called to Serve", against 25.7, 25.7 and 14.5 on
+   the other three rows. The cause is upstream of the column arithmetic that
+   was written to fix it — the block at `#record .idx thead th` sizes the date
+   column at one track plus a gutter on the strength of "the widest date's
+   67px of glyphs", and the widest date is 86.4px, because the cell was set in
+   --t-body: 18px of IBM Plex Mono at 0.6em advance, eight characters.
+
+   A date beside a title is the same object as the eyebrow beside a band and
+   the caption under a photograph: it is a LABEL, and this page has one voice
+   for that. --t-meta at 12, uppercase, +.06em — `.meta`'s own three lines,
+   applied here rather than by adding a class, because the cell keeps
+   `.figure` for its tabular figures and its slashed zero and the two roles
+   would fight over `font-size` in the markup.
+
+   Measured after, same four rows: 45.9 / 45.9 / 34.7 / 34.7px of ink gap.
+   Every one of them clears the 24px the assessment asked for, the widest
+   date now fits its cell with 23px to spare instead of overflowing it by 6,
+   and not one column line moves — the title still starts on the c6s
+   gridline at x 627.3. The two-track override below 1312 is untouched: it
+   pays for narrow tracks, not for a large date. */
 .idx__d{color:var(--on-2);white-space:nowrap;width:1%}
+.idx td.idx__d{font-size:var(--t-meta);line-height:1.4;letter-spacing:.06em;text-transform:uppercase}
 .idx__a{
   color:var(--ink);text-decoration:none;
   transition:color var(--dur-ui) var(--ease);
@@ -3229,25 +3417,24 @@ img[src*="laughing-"]{object-position:30% 50%}
      static, so tools/frozen.mjs has nothing to hold against it. */
   transform:translateZ(0);
 }
-/* AND THE THREE ROWS THAT DO NOT FORK NOW SAY SO.
-   The page states its rule in display type — each lecture is allied with a
-   direct ministry action — and then draws it once in four rows. The 2026-09-01
-   assessment called the silence on the other three "the highest-leverage
-   unspent move on the site": a juror does not audit provenance, a juror reads
-   one fork in four and concludes the rule is aspirational. The constraint that
-   made this page honest was indistinguishable from thin evidence.
+/* AND THE THREE ROWS THAT DO NOT FORK SAY SO ONCE, UNDER THE TABLE.
+   The paragraph that stood here argued for the sentence and it was right: a
+   juror who reads one fork in four concludes the rule is aspirational, and
+   three words fix that. What it got wrong was the PLACE. Written into every
+   row that lacks a pair, "No action recorded" is three copies of one
+   statement stacked down a column — and a mono caps label repeating under
+   three of four titles is the single loudest thing in the object the
+   2026-09-01 assessment read as a dashboard.
 
-   Three words fix that, and they are the only three that can be written
-   without inventing anything: the record does not hold a paired action for
-   June 2, July 7 or July 30. It is a statement about this record, not about
-   what those evenings did.
-
-   It stands in the elbow's own column — same indent as `.idx__pr`, so the
-   three absences and the one pair form a column a reader compares down — and
-   it is drawn at --on-2 with no elbow, because an absence does not get a line
-   of the spine. The label makes the fork mean something by contrast, which is
-   what it could not do while it was alone. */
-.idx__pr--none{color:var(--on-2)}
+   It is a statement about the record, so it stands under the record: one
+   `<caption>` at `caption-side: bottom`, on the table's own left edge, in
+   the label voice. The fork under August 5 still says which row is the
+   exception; the caption says what the other three are; and the column the
+   reader compares down is four titles rather than three disclaimers. */
+.idx__cap{
+  caption-side:bottom;text-align:left;color:var(--on-2);
+  padding-top:var(--su-20);
+}
 .idx__s{color:var(--on-2)}
 /* Below 640 three columns cannot each hold a phrase, so the SUBJECT column is
    the one that goes: it is the only cell whose content is also carried by the
@@ -3451,7 +3638,9 @@ img[src*="laughing-"]{object-position:30% 50%}
 .two__r--room{grid-column:1;grid-template-rows:auto auto auto minmax(0,1fr)}
 .two__r--room>li:last-child img{height:100%;object-fit:cover}
 .two__r--street{grid-column:2}
-.two__r>li{min-width:0;overflow:hidden}
+/* `clip` rather than `hidden`: see the note beside `.duo__m`. These six tiles
+   are the rest of `settle`'s subjects and they had the same defect. */
+.two__r>li{min-width:0;overflow:hidden;overflow:clip}
 /* EVERY FRAME KEEPS ITS OWN NATIVE RATIO AND NOTHING DECLARES ONE.
    `aspect-ratio: 1.85` and `3/4` used to be written here over files that are
    1.8557, 1.8485, 1.8981 and 0.7506 — a squash of up to 0.7%, invisible and
@@ -3539,14 +3728,14 @@ img[src*="laughing-"]{object-position:30% 50%}
    rather than staying on disk as a selector nothing selects. The elbow's
    geometry is untouched: the label was `position: absolute` and took no
    height, so the crossbar, the trunk and the two prongs are where they were. */
-/* THE TRUNK crossing the gap between the record and its evidence. It is the
-   same x as the table's left edge above it and the same x as the left prong
-   below it, so the three read as one line and not as three. */
-.two::after{
-  content:"";position:absolute;z-index:1;
-  left:var(--fork-x);top:calc(-1 * var(--fork-gap));height:var(--fork-gap);
-  border-left:var(--rim) solid var(--spine);
-}
+/* THE TRUNK IS GONE WITH THE SPINE IT ROSE FROM. It read "the same x as the
+   table's left edge above it and the same x as the left prong below it, so
+   the three read as one line and not as three" — and that was exactly true
+   while the table drew a vertical. The table does not (see the note beside
+   `.idx`), so what was left was a 32px riser standing on nothing, which is
+   the one shape a line of this kind must not be. The crossbar and its two
+   prongs are the fork, and they are enough: a rule divides, two prongs name
+   the halves, and nothing rises out of a table that has no edge. */
 /* THE TWO PRONGS. They hang from the crossbar for --sp-2 and stop --sp-1
    above their label's cap line, so the labels stand in the clear rather than
    on the ink — the fork is drawn, then it is named, which is the order the
@@ -4368,7 +4557,7 @@ img[src*="laughing-"]{object-position:30% 50%}
    a floor was the one that did not have one. */
 .faq{border-bottom:var(--rim) solid var(--rule)}
 .faq summary{
-  display:flex;align-items:center;gap:var(--sp-2);
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);
   padding-block:var(--sp-1);min-height:var(--tap);
   cursor:pointer;list-style:none;
   font-family:var(--sans);font-weight:500;font-size:var(--t-head);
@@ -4397,10 +4586,27 @@ img[src*="laughing-"]{object-position:30% 50%}
 }
 /* The control inverts on the field, and the arithmetic that says so survived
    the ground change. It used to be a lapis slab on a lapis ground; it is now a
-   lapis slab on --field, and their luminances are 0.0645 and 0.0470 — 1.24:1,
+   lapis slab on --navy, and their luminances are 0.0645 and 0.0470 — 1.24:1,
    which is not a control either. Bone fill, ink label, and the same
    --signal-lift the other three coloured bands already hover to. */
 #close .btn{background:var(--bone);color:var(--ink)}
+/* ── AND THE INVERTED CONTROL GETS ITS LIFT BACK ────────────────────────
+   The note beside `.btn:hover` ends "It is `#close` alone that inverts …
+   and it was already lifting to exactly this value". It was not. `#close
+   .btn` is an ID selector and `.btn:hover` is two classes, so from the day
+   the inversion was written the band's primary control had NO hover, NO
+   focus fill and NO active state — measured 2026-09-01 at 390, 768 and 1440:
+   background, colour, transform and opacity all identical before and after
+   the pointer arrived, on the largest call to action on the page.
+
+   The lift is the one every other control on this page takes, restated at
+   the specificity the inversion is written at. Ink on --signal-lift is
+   8.17:1, and against the --navy ground the slab is standing on it is the
+   move a control should make: up in brightness, towards the hand. */
+#close .btn:focus-visible,#close .btn:active{background:var(--signal-lift);color:var(--ink)}
+@media (hover:hover) and (pointer:fine){
+  #close .btn:hover{background:var(--signal-lift);color:var(--ink)}
+}
 /* and its lift is the page's one lift, so there is no rule to write here:
    `.btn:hover/:active/:focus-visible` already says --signal-lift with an ink
    label, and that is what this control wants too. */
@@ -4423,10 +4629,18 @@ img[src*="laughing-"]{object-position:30% 50%}
    asset, no new colour, and the icon census in tools/piece.mjs is unchanged
    because there is no <svg> here to count. Under prefers-reduced-motion the
    global rule kills the rotation and the two states still differ. */
+/* AND IT IS PUSHED BY THE ROW, NOT BY A MARGIN OF ITS OWN.
+   `margin-inline-start: auto` computes to whatever distance the row happens
+   to leave, so a single declaration entered the page's spacing census as
+   three different lengths at 390 — 23.63, 31.31 and 101.27px, one per
+   question, none of them a decision anybody made. `justify-content:
+   space-between` on the row puts the marker at the same pixel and leaves
+   nothing behind: the summary's own `gap` still guards the minimum, the
+   marker still centres on the line, and the census loses three values. */
 .dsc{
   position:relative;flex:0 0 var(--sp-2);
   width:var(--sp-2);height:var(--sp-2);
-  margin-inline-start:auto;align-self:center;
+  align-self:center;
 }
 .dsc::before,.dsc::after{
   content:"";position:absolute;left:0;right:0;top:50%;
@@ -4982,7 +5196,19 @@ img[src*="laughing-"]{object-position:30% 50%}
    Instagram line and every <summary> because 8px of padding around a 25px
    line is 41. A 3px miss is still a miss, and on the two iPads in portrait
    these are finger targets, not pointer targets. */
-.lockup{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:var(--tap);text-decoration:none;color:var(--bone)}
+.lockup{display:inline-flex;align-items:center;gap:var(--sp-1);min-height:var(--tap);text-decoration:none;color:var(--bone);
+  transition:color var(--dur-ui) var(--ease)}
+/* AND IT ANSWERS THE POINTER, WHICH IT DID NOT. Two links on this page were
+   measured inert on 2026-09-01 — this one and #close's control — and this is
+   the one a reader meets first: the mark in the pill and the same mark under
+   the fold, both `a.lockup`, both taking a pointer and returning nothing.
+   The seal is `fill: currentColor`, so one property moves the whole lockup —
+   mark and wordmark together, as one object rather than as a logo beside a
+   label that dims. --on-ink-2 is the muted tier this page already owns; the
+   RESTING colour stays --bone, so nothing about the mark's legibility over
+   an unknown ground changes. */
+@media (hover:hover) and (pointer:fine){ .lockup:hover{color:var(--on-ink-2)} }
+.lockup:focus-visible,.lockup:active{color:var(--on-ink-2)}
 .seal--bar{width:var(--seal-bar);height:var(--seal-bar);flex:0 0 var(--seal-bar);display:block}
 /* THE WORDMARK'S THREE LINES ARE THE PHONE'S THREE CHEAPEST BLOCKS.
    research/visual-first.md holds the fold at 390 to six distinct text blocks
@@ -5200,11 +5426,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible,
   box-shadow:inset 0 0 0 var(--rim) var(--chrome-hi),
              inset 0 0 0 calc(2 * var(--rim)) var(--chrome-lo);
   color:var(--bone);
-  /* 240ms, down from 350. Chrome getting out of the way should be quick, and
-     350ms with the symmetric house curve reads as reluctant; 230ms is what
-     Apple's own bar wrapper measures at. The pill's geometry still does not
-     change as it retracts — it does not shrink, gain a shadow or change
-     ground — and that part was always right. */
+  /* --dur-ui, down from 350. Chrome getting out of the way should be quick,
+     and 350ms with the symmetric house curve reads as reluctant. The pill is
+     a control, not an arriving object, so it takes the SHORT of the two
+     durations rather than the long one — the same 320ms every hover on this
+     page answers in. Its geometry still does not change as it retracts: it
+     does not shrink, gain a shadow or change ground. */
   transition:transform var(--dur-ui) var(--ease);
 }
 /* ── AND AT 320 THE PILL'S INSIDE STEPS DOWN ONE MODULE ─────────────────
@@ -5284,8 +5511,15 @@ html.no-js .mnu{display:none}
      57.9 x 44.4. */
   padding-block:var(--sp-1);padding-inline:var(--sp-2);
   cursor:pointer;color:var(--bone);
+  transition:color var(--dur-ui) var(--ease);
 }
-.mnu__r{display:block;height:var(--mark-h);background:var(--bone);transition:width .2s var(--ease)}
+/* the word and its rule are ONE object, so the rule takes currentColor rather
+   than a second declaration of --bone: at rest the two are the same value to
+   the byte, and under the pointer the control answers as a unit instead of as
+   a word that dims over a rule that does not. */
+.mnu__r{display:block;height:var(--mark-h);background:currentColor;transition:width .2s var(--ease)}
+@media (hover:hover) and (pointer:fine){ .mnu:hover{color:var(--on-ink-2)} }
+.mnu:active{color:var(--on-ink-2)}
 
 /* visibility flips at once on the way IN and 280ms late on the way OUT. It
    used to be transitioned like opacity, which under the CSS interpolation
@@ -5321,7 +5555,7 @@ html.no-js .mnu{display:none}
   left:var(--pad-i);right:var(--pad-i);
   padding-block:var(--sp-2);padding-inline:var(--sp-1);
   background:var(--ink);
-  border-radius:var(--r-panel);
+  border-radius:var(--r-pill);
   box-shadow:inset 0 0 0 var(--rim) var(--glass-rim);
   transform:translateY(calc(-1 * var(--sp-2)));
   transition:transform .28s var(--ease);
@@ -5676,7 +5910,94 @@ html.no-js .mnu{display:none}
     [data-stagger]>.rv:nth-child(n+4){animation-range:cover 14% cover 39%}
     [data-stagger]>.rv:nth-child(n+6){animation-range:cover 16% cover 41%}
     [data-stagger]>.rv:nth-child(n+8){animation-range:cover 18% cover 43%}
+
+    /* ── AND THE PHOTOGRAPH SETTLES, WHICH IS THE FOURTH SEAT ────────────
+       The budget note above closes the inventory at three and says a move
+       enters only by displacing one. Nothing is displaced here, and the
+       reason the seat is added rather than traded is the 2026-09-01
+       assessment's own arithmetic: it scored motion 5.0 — the lowest of the
+       nine dimensions with image — on a census of "one keyframe and twenty
+       transitions, all of them colour". The references it measured at the
+       same widths run 65 to 243 timed transitions and two durations. Three
+       moves was not the discipline; three moves ON A PAGE WHOSE PHOTOGRAPHS
+       DO NOT MOVE AT ALL was an absence.
+
+       So: the eight full-bleed photographs come to rest out of 1.04 while
+       they rise. It is the one entrance the corpus is unanimous about —
+       every one of the five references opened at 390 scales its own imagery
+       on arrival — and it is the cheapest one to keep honest, because
+       unlike `wipe` (which the budget note is right about) NOTHING IS
+       WITHHELD: the frame is full and final at every instant of it. A
+       reader who stops mid-range sees the whole photograph, 2% large.
+
+       WHY IT IS NOT `wipe` IN NEW CLOTHES. The move the budget removed took
+       58px off the BOTTOM of a picture inside a box that already had its
+       final size — an image that reads as still painting. This changes no
+       edge and hides no pixel; the box is fixed, the subject is complete,
+       and every parent here computes `overflow: hidden` already (measured
+       at 390 and 1440), so the 4% is cropped by a box the layout already
+       drew rather than by a mask the move invented.
+
+       THE RANGE IS LONGER THAN rise'S AND THAT IS THE SECOND DURATION.
+       `cover 10% -> 54%` is 44% of a `viewport + subject` crossing: 547px
+       of scroll at 390x844 on a 400px frame, which at a normal trackpad
+       velocity of 900-1,200px/s is 456-608ms. --dur-long, in scroll. rise's
+       25% is 260-345ms in the same units, which is --dur-ui. Two durations,
+       measured the same way, in a 1:2 ratio — hobro 0.3/0.4, kononenko
+       0.6/1.1, Apple 0.32 beside its long reveals.
+
+       `scale`, never `transform`: the same gate the note above `rise`
+       states, for the same reason, and it is why the two moves can sit on a
+       photograph and its own `.rv` parent without either one clobbering the
+       other. The two framed pictures are excluded — a mount with a 3px ring
+       does not clip, and a picture growing over its own frame is a defect,
+       not an entrance. */
+    .rv img:not([data-graphic]):not(.frame img){
+      animation-name:settle;
+      animation-duration:auto;
+      animation-timing-function:var(--ease-enter);
+      animation-fill-mode:both;
+      animation-timeline:view();
+      animation-range:cover 10% cover 54%;
+    }
   }
+}
+/* the keyframe itself, written where `rise` is written and to the same two
+   rules: individual property, and a start pose that is the finished picture
+   at a different size rather than a picture with something missing. */
+@keyframes settle{
+  from{scale:1.04}
+  to  {scale:1}
+}
+
+/* ═══ THE FOLD ARRIVES, AND IT USED TO BE THE ONE THING THAT DID NOT ═════
+   Every band below the fold has had an entrance since the scroll block above
+   was written. The fold itself had none: `getAnimations()` at load returned
+   exactly the 27 scroll subjects and nothing else, so the first screen — the
+   only screen most readers see — was the one screen that appeared all at
+   once, fully formed, with no evidence that anything on this page moves.
+   Apple opens /iphone/ on a staggered pair; kononenko opens on one; hobro
+   opens on four.
+
+   It is `rise` — the page's own entrance verb, the same 8px and the same
+   deceleration curve — run on a clock instead of on a scroll position,
+   because the fold is the one place where there IS a clock: the element is
+   on screen at t=0, so the range that a scroll timeline cannot guarantee is
+   guaranteed by the animation ending.
+
+   TWO SUBJECTS AND ONE RUNG. The headline and the line under it, 60ms apart:
+   Apple's own staggered lists step at 20ms over four rungs, and a rung is
+   proportional to how much there is to take in — two blocks of display type
+   are not a list of eight, so the step is three of those and it stops after
+   one. The controls do not enter. A call to action that arrives late is a
+   call to action a reader has already reached for and missed.
+
+   It is inside `prefers-reduced-motion: no-preference`, so under `reduce`
+   the pre-state is never written — the same structural guarantee, stated the
+   same way, as the scroll block above. */
+@media (prefers-reduced-motion:no-preference){
+  #top .hd>*{animation:rise var(--dur-long) var(--ease-enter) both}
+  #top .hd>*:nth-child(2){animation-delay:60ms}
 }
 
 /* AND THE OPACITY, WHICH THIS BLOCK USED TO ARGUE AGAINST.
@@ -5825,6 +6146,14 @@ img[data-graphic]{filter:contrast(1.03) saturate(.42)}
       transition:opacity .42s var(--ease-enter),translate .42s var(--ease-enter);
     }
     html.js .rv.is-in{opacity:1;translate:0 0}
+    /* and the photograph settles here too, on the same observer that lights
+       the block it stands in — see the settle note above. The duration is
+       the token rather than the scrub's measured equivalent, because on this
+       branch there is a clock and it can simply be asked for. */
+    html.js .rv img:not([data-graphic]):not(.frame img){
+      scale:1.04;transition:scale var(--dur-long) var(--ease-enter);
+    }
+    html.js .rv.is-in img:not([data-graphic]):not(.frame img){scale:1}
     html.js [data-stagger]>.rv:nth-child(2){transition-delay:.02s}
     html.js [data-stagger]>.rv:nth-child(3){transition-delay:.04s}
     html.js [data-stagger]>.rv:nth-child(4){transition-delay:.06s}
@@ -5843,11 +6172,154 @@ img[data-graphic]{filter:contrast(1.03) saturate(.42)}
 @media (max-width:899.98px){
   .bar{padding-block:0;align-items:center}
   .lockup{gap:var(--su-12)}
-  .wm{font-size:var(--t-nav)}
+  .wm{font-size:var(--t-meta)}
   .mnu{justify-content:center}
-  .mnu__t{font-size:var(--t-nav)}
+  .mnu__t{font-size:var(--t-meta)}
   /* the rule stays — it is the open/closed indicator and it animates its own
      width — but drawn at the hairline every other rule on this page uses,
      rather than at five times it. */
   .mnu__r{height:var(--rim)}
+}
+
+
+/* ═══ THE TABLET IS A COMPOSITION, AND IT USED TO BE THE PHONE STRETCHED ════
+   DESIGN-SCORE 2026-09-01 scored 768 at 6.0, the lowest of the three views,
+   with one sentence under it: "hoy no tiene ninguna regla propia visible".
+   The measurements it took at 768x1024 were all the same defect seen from
+   different sides — a single-column phone layout given 378 more pixels and
+   no instruction about what to do with them:
+
+     the controls   688 x 52, edge to edge. No reference in the corpus
+                    serves a 688px button; Apple's widest at this width is a
+                    two-column card.
+     the headline   51.9 / 0.94 in a 688px column — one line, 36px tall, in
+                    a 1024px fold. The phone's ramp, arriving at a width the
+                    phone's ramp was never asked about.
+     the copy       688 and 509px measures at 17px: 90 and 67 characters,
+                    against the 45-55 every line on the phone holds.
+     the footer     three columns at 202px with the address breaking in
+                    three lines, and its mono at 11px where 900 sets 12.
+     the pair       two 384px frames butted at 0, which is the phone's
+                    mosaic at twice the size and reads as one wide picture
+                    rather than as two photographs.
+
+   THE BAND IS 640-899 AND EVERY RULE IN IT IS THE TABLET'S OWN. Nothing here
+   reaches below 640 (the phone is measured and correct) or at 900 (the grid
+   arrives with its own composition). It is the last block in the file so it
+   settles ties with the 640-and-up block above it without a single added
+   specificity weight. */
+@media (min-width:640px) and (max-width:899.98px){
+  :root{
+    /* the reading measure, as a length rather than as 60ch. 480px at 17px is
+       ~55 characters — the top of the 45-75 band and the bottom of the
+       corpus's own 345-358 at 390 scaled to this column. */
+    --measure:480px;
+  }
+
+  /* ── 1 · THE CONTROL IS A CONTROL ──────────────────────────────────────
+     360 is the phone's own control at the width the phone stops: `.btn--wide`
+     measures 350 at 390 and 360 is that number on this band's 40px inset.
+     A control that grows with the window is a band with a word in it. */
+  .btn--wide{max-width:360px}
+  /* AND THE SPACE THE CONTROL GIVES BACK IS OWNED, NOT LEFT.
+     Capping the button on its own is half a composition and the meter says
+     so: at 768x1024 the freed ground read 364x268 beside #close's control
+     (12.4% of the screen) and 284x456 beside #next's (16.5%), against
+     tools/slab.mjs's 10% corpus ceiling. "An unfinished cell in a grid
+     rather than air" is this file's own phrase for it, from the pass that
+     fixed the same defect at 900.
+
+     #close takes the arrangement 900 already uses, brought down: the
+     Instagram line stands at the end of the control's own row instead of
+     under it. The section is already `display: grid` at this width with one
+     track, so this adds a second and pins everything else across both — no
+     element changes parent, order or document position.
+
+     #next cannot take the same one and the arithmetic says why: its quote is
+     capped at the 480 measure and its control at 360, and 480 + 20 + 360 is
+     860 in a 688px column. Side by side, one of the two has to be wrong. So
+     the control crosses to the other edge instead — which is the same thing
+     the desktop's `8 / 13` does, expressed as an alignment rather than as a
+     track — and the ground beside the quote stops being one rectangle
+     because the button is standing in it. */
+  #close{grid-template-columns:1fr auto;column-gap:var(--su-20)}
+  #close>*{grid-column:1 / -1}
+  #close>.close__go{grid-column:1;justify-self:start}
+  #close>.close__ig{grid-column:2;justify-self:end;align-self:center}
+  #next>.next__go{justify-self:end}
+  /* AND THE RUN OF SHOW TAKES THE ROW IT ALWAYS WAS. The 640-and-up
+     placement pairs the four terms 1|2 / 3|4, and #next's list has THREE:
+     the third sat in the left track with the right one empty, and the hole
+     it opened ran straight down into the quote below it — 284x348 as one
+     unbroken rectangle, 12.6% of the screen. Spanning it is not a repair,
+     it is what the value is: "6:30 wine · 7:00 keynote · 9:00 reception ·
+     9:30 ends" is a sequence, it sets on ONE line across 688px where it took
+     two across 336, and the list loses a row while gaining a reading. */
+  .dl dt:nth-of-type(3),.dl dd:nth-of-type(3){grid-column:1 / -1}
+
+  /* ── 2 · THE HEADLINE IS SIZED FOR THIS COLUMN ─────────────────────────
+     Only where the PORTRAIT ramp is in charge. Above an aspect of 5:6 the
+     fold already runs `#top`'s own two-segment ramp, cut to the type column
+     it stands in (see the note beside it), and that ramp is right at every
+     shape it covers — 61.9 at 899x1024, 58 at 853. This is the other half of
+     the window, where the global phone ramp was arriving unasked: 47.9 at
+     640 and 51.9 at 768.
+
+     8.33vw is 64px at 768 — 0.67 of the 96 the desktop fold sets, between
+     the phone's 0.59 and the desktop's 1.00, which is the ratio the
+     assessment asked for — and it is floored at 56 so 640 steps rather than
+     ramps into the band, and capped at 64 so the two real tablet widths in
+     portrait (768 and 834) set the same headline.
+
+     AND THE LEADING IS DECLARED IN A MEDIA QUERY, WHICH THIS FILE SAYS IT
+     NEVER DOES. The invariant is stated beside --t-display and it is about a
+     RAMP: a size that moves continuously has to keep its ratios or the
+     setting changes shape mid-scroll. This is not a ramp, it is a
+     composition — one size, two widths, its own band — and 0.94 is a
+     ratio measured for a 96px desktop headline. At 64 in a 688px column the
+     same 0.94 sets two lines 60px apart with 45px of cap between them, which
+     is a poster. 1.04 is the corpus median (research/spacing-2026.md: H1
+     48/1.04) and it is the leading this size asks for. */
+  @media (max-aspect-ratio:5/6){
+    #top{--t-display:clamp(56px, 8.33vw, 64px)}
+    #top .t-hero{line-height:1.04}
+  }
+
+  /* ── 3 · THE COPY GETS A MEASURE ───────────────────────────────────────
+     Three roles were running past it: the fold's sub-line, the pull quote in
+     #next and the answers in #close. `.t-lead` already carried --measure and
+     is therefore already inside it. */
+  .why p,.faq p,#top .hero__when{max-width:var(--measure)}
+
+  /* ── 4 · THE FOOTER FOLDS TWO BY TWO ───────────────────────────────────
+     Three 202px columns is the desktop's arrangement at half its width, and
+     the address is what measured it: "725 Diamond St" and "San Francisco, CA
+     94114" in a 202px column at 11px. Two tracks give each column 324px, the
+     address sets on its own three lines because it IS three lines, and the
+     third column drops to a second row — which is the 2x2 the assessment
+     asked for and the shape Apple gives its own footer at this width.
+
+     AND THE THIRD BLOCK TURNS ITS LIST ON ITS SIDE, WHICH IS THE HALF OF
+     THIS THAT IS NOT ARITHMETIC. Left as a column in the first of two
+     tracks, "Go to" put four 104px links down the left edge and left a
+     624x260 rectangle of ink beside them — 20.6% of a 768x1024 screen, twice
+     the corpus ceiling tools/slab.mjs holds this page to, and the largest
+     hole the page has had at any width. A destination list in a footer row
+     is a row: it spans both tracks and reads across, which is what the bar
+     under it already does. */
+  .foot__cols,.foot__bar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .foot__col:nth-child(3){grid-column:1 / -1}
+  .foot__col:nth-child(3) .foot__nav ul{
+    display:flex;flex-wrap:wrap;column-gap:var(--su-56);row-gap:0;
+  }
+
+  /* ── 5 · THE PAIR IS TWO PHOTOGRAPHS ───────────────────────────────────
+     At 390 the two frames butt at 0 and that is the point: at 195px each they
+     are one object with a seam. At 384 each they are two pictures with no air
+     between them, which reads as a single wide photograph badly joined. One
+     gutter off the section scale — --su-20, the value this band already uses
+     for its inter-block step — separates them without introducing a number.
+     The band seam between #rule and #act, which is the union the record says
+     not to touch, is untouched: this is inside the pair, not between bands. */
+  .duo{gap:var(--su-20)}
 }
