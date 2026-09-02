@@ -1,137 +1,215 @@
 /* CLIA — progressive enhancement only, and nothing else.
 
-   SPEC §9: the page is complete at paint. Every section, every image and every
-   word is laid out and legible with this file absent, with JavaScript off, and
-   with prefers-reduced-motion on. Nothing here creates content, pins a section,
-   or drives composition from a scroll offset.
+   The page is complete at paint. Every section, every image and every word is
+   laid out and legible with this file absent, with JavaScript off, and with
+   prefers-reduced-motion on. Nothing here creates content, pins a section, or
+   drives composition from a scroll offset.
 
    Five behaviours, and this is the complete list:
-     1. the bar's two states
-     2. the menu sheet's aria-expanded mirror and tap-to-close
-     3. the entrance reveal — the §9.6 system, unchanged, plus its failsafe
-     4. the phone field
-     5. the §9.5 scrub envelope, which is the ONLY frame loop in this file and
-        lives inside one delimited block                                      */
+     1. the nav pill retracting on the way down and returning on the way up
+     2. the mobile menu panel — open, close, Esc, focus return, scroll lock
+     3. the section the reader is standing in, mirrored into aria-current
+     4. every disclosure mirrors its open state into aria-expanded
+     5. the scrub envelope, which is the ONLY frame loop in this file and is
+        dormant in this build because no clip is on disk                      */
 (function () {
   'use strict';
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var root = document.documentElement;
 
-  /* ── 1. the bar ───────────────────────────────────────────────
-     One class toggle at the hero boundary. The threshold is measured once on
-     load and once on resize, never per scroll event, so the listener reads a
-     number and sets a class and does no layout work at all. */
-  var hero = document.getElementById('top');
-  if (hero) {
-    var barH = 0, edge = 0, solid = false;
-
-    var remeasure = function () {
-      barH = window.matchMedia('(min-width: 900px)').matches ? 72 : 64;
-      edge = hero.offsetHeight - barH;
-      apply();
+  /* ── 0. the entrance, where the stylesheet cannot run it ─────────────
+     See styles.css, "THE ENTRANCE, ON THE BROWSERS THAT CANNOT SCRUB IT".
+     Safari before 26 has no `animation-timeline`, so on most iPhones the CSS
+     reveal never existed. The html.js class is what lets the fallback
+     pre-state be written at all; without script it is never applied. */
+  document.documentElement.classList.add('js');
+  var canScrub = window.CSS && CSS.supports && CSS.supports('animation-timeline: view()');
+  if (!reduced && !canScrub) {
+    var rvs = document.querySelectorAll('.rv');
+    var showAll = function () {
+      for (var i = 0; i < rvs.length; i++) rvs[i].classList.add('is-in');
     };
-    var apply = function () {
-      var want = window.scrollY > edge;
-      if (want !== solid) { solid = want; root.classList.toggle('bar-solid', want); }
-    };
-
-    window.addEventListener('scroll', apply, { passive: true });
-    window.addEventListener('resize', remeasure);
-    remeasure();
-  }
-
-  /* ── 2. the menu sheet ────────────────────────────────────────
-     <details> already opens, closes and takes keyboard focus with this file
-     absent. Added here: the explicit aria-expanded mirror, and closing the
-     sheet after a link inside it is used. */
-  var menu = document.querySelector('[data-menu]');
-  if (menu) {
-    var mb = menu.querySelector('summary');
-    var sync = function () { if (mb) mb.setAttribute('aria-expanded', menu.open ? 'true' : 'false'); };
-    sync();
-    menu.addEventListener('toggle', sync);
-    menu.addEventListener('click', function (ev) {
-      var a = ev.target.closest && ev.target.closest('a[href]');
-      if (a) { menu.open = false; sync(); }
-    });
-    document.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Escape' && menu.open) { menu.open = false; sync(); if (mb) mb.focus(); }
-    });
-  }
-
-  /* ── 3. the entrance — SPEC §9.6, kept verbatim because it works ──
-     Fade 0.001 -> 1 plus 16px of rise, 480ms, once per element, one
-     IntersectionObserver, then unobserved. Inside a [data-stagger] group,
-     children step 70ms apart to a maximum of four steps / 280ms.
-
-     Three things make this safe against the failure that got an earlier round
-     rejected:
-
-       · the pre-state lives behind [data-rv=on], which the inline head script
-         sets and which is absent under reduced motion or with JS off;
-       · elements in the first viewport are never given .rv at all, so the
-         whole hero is final at paint at 1440 and at 390;
-       · the failsafe below removes data-rv unconditionally 1200ms after load,
-         which is 400ms before cold.mjs takes its 1600ms measurement.
-
-     Anything that goes wrong here — an observer that never fires, a thrown
-     error, a browser without IntersectionObserver — ends with the page fully
-     opaque, because removing the attribute is what "final state" means. */
-  var marked = document.querySelectorAll('.rv');
-  var release = function () { root.removeAttribute('data-rv'); };
-
-  if (reduced || !('IntersectionObserver' in window)) {
-    release();
-  } else {
-    var i, el;
-
-    // nothing above the fold ever animates
-    for (i = 0; i < marked.length; i++) {
-      el = marked[i];
-      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.remove('rv');
-    }
-
-    // the stagger, capped at four steps, written once and never per frame
-    var groups = document.querySelectorAll('[data-stagger]');
-    for (i = 0; i < groups.length; i++) {
-      var kids = groups[i].querySelectorAll('.rv');
-      for (var k = 0; k < kids.length; k++) {
-        kids[k].style.transitionDelay = Math.min(k * 70, 280) + 'ms';
-      }
-    }
-
-    var live = document.querySelectorAll('.rv');
-    if (live.length) {
+    if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
-        for (var n = 0; n < entries.length; n++) {
-          if (entries[n].isIntersecting) {
-            entries[n].target.classList.add('is-in');
-            io.unobserve(entries[n].target);
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            entries[i].target.classList.add('is-in');
+            io.unobserve(entries[i].target);
           }
         }
-      }, { threshold: 0.12, rootMargin: '0px 0px -12% 0px' });
-
-      for (i = 0; i < live.length; i++) io.observe(live[i]);
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+      for (var r = 0; r < rvs.length; r++) io.observe(rvs[r]);
+      /* NO GLOBAL TIMER. A "light everything after n seconds" lock would
+         light every band a slow reader had not reached yet, and then nothing
+         below would ever enter — the fallback would defeat itself for exactly
+         the reader it exists for. IntersectionObserver is universal where this
+         branch runs; the only fence needed is the no-IO branch below. */
+    } else {
+      showAll();
     }
+  }
+  var root = document.documentElement;
 
-    // the failsafe: after 1.2s the page is opaque no matter what the observer
-    // did or did not do
-    window.addEventListener('load', function () { setTimeout(release, 1200); });
-    setTimeout(release, 4000);
+  /* ── 1. the pill retracts ─────────────────────────────────────────────
+     The whole bar leaves on the way down and comes back on the way up. Its
+     geometry never changes: it does not shrink, it does not gain a shadow, it
+     does not swap ground. That is the difference between a 2021 nav and this
+     one, and the listener does no layout work at all. */
+  var lastY = window.scrollY;
+  if (!reduced) {
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY;
+      var down = y > lastY && y > 160;
+      root.classList.toggle('is-down', down);
+      lastY = y;
+    }, { passive: true });
   }
 
-  /* ── 3b. every disclosure reports its state ───────────────────────
-     <details> opens and closes on its own with this file absent. What it does
-     not do on its own is publish aria-expanded, so every summary carries the
-     attribute in the HTML and this keeps it true.
+  /* ── 2. the menu panel ────────────────────────────────────────────────
+     A card that drops under the nav, not a full-screen takeover. The trigger
+     is the word MENU with the page's own 5px marker under it; opening swaps
+     the word to CLOSE and the marker animates its width. */
+  var menu = document.querySelector('[data-menu]');
+  var mb = document.querySelector('[data-menu-btn]');
+  if (menu && mb) {
+    var label = mb.querySelector('.mnu__t');
+    var mark = mb.querySelector('.mnu__r');
+    var open = false;
 
-     Two paths, because <details> fires `toggle` ASYNCHRONOUSLY. A listener
-     alone leaves the attribute stale for anything that sets `.open` and reads
-     the attribute in the same task, which is exactly what audit.mjs A12 does
-     and exactly what a screen reader driving the element would do. So the
-     property is mirrored for scripted toggles and the event for real clicks.
-     Native behaviour is untouched: the setter still calls the native one. */
+    /* CONTAINMENT. The page behind the panel is scroll-locked, so a keyboard
+       user who tabbed out of the panel used to land on controls in a page they
+       could not scroll to see. Everything outside the panel and its own
+       trigger goes `inert` while the panel is open, and focus is moved into
+       the panel on open. Escape and focus-return were already correct.
+       toggleAttribute is a no-op where inert is unsupported, which leaves the
+       old behaviour rather than a broken one.
+
+       THE LIST IS DERIVED, NOT WRITTEN DOWN. It used to be seven hand-named
+       selectors, and one of them was `footer` — which stopped meaning the page
+       footer the day a section caption was marked up as a <footer> inside
+       <main>. `querySelector` took the caption, the real footer kept its six
+       tabbable links, and the trap this comment describes had been gone for
+       several passes before a review walked the tabs and found them. A list of
+       names cannot survive the document changing under it, so the list is now
+       computed from the tree: every child of <body> that holds neither the
+       panel nor its trigger, plus, inside the branch that does hold the
+       trigger, every sibling branch that is not on the path to the button.
+       Anything added to the page in future is muted by construction. */
+    var muted = (function () {
+      var out = [];
+      var walk = function (parent) {
+        for (var i = 0; i < parent.children.length; i++) {
+          var el = parent.children[i];
+          if (el === menu || el.contains(menu)) continue;   // the panel itself
+          if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
+          if (el === mb) continue;                          // the trigger stays live
+          if (el.contains(mb)) { walk(el); continue; }      // on the path: descend
+          out.push(el);
+        }
+      };
+      walk(document.body);
+      return out;
+    })();
+
+    var sizeMark = function () {
+      if (mark && label) mark.style.width = label.getBoundingClientRect().width + 'px';
+    };
+    var setMenu = function (want) {
+      open = want;
+      root.classList.toggle('is-menu', want);
+      document.body.style.overflow = want ? 'hidden' : '';
+      mb.setAttribute('aria-expanded', want ? 'true' : 'false');
+      if (label) label.textContent = want ? 'Close' : 'Menu';
+      sizeMark();
+      for (var v = 0; v < muted.length; v++) muted[v].toggleAttribute('inert', want);
+      if (want) {
+        /* The panel is visibility:hidden until the class lands, and a hidden
+           subtree cannot take focus. Reading a layout property flushes the
+           new style synchronously, so the focus below always sticks. */
+        void menu.offsetWidth;
+        var first = menu.querySelector('a[href]');
+        if (first) first.focus();
+      }
+    };
+
+    sizeMark();
+    window.addEventListener('resize', sizeMark);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeMark);
+
+    mb.addEventListener('click', function () { setMenu(!open); });
+    menu.addEventListener('click', function (ev) {
+      var t = ev.target;
+      if (t.closest && t.closest('a[href]')) { setMenu(false); return; }
+      if (t.hasAttribute && t.hasAttribute('data-menu-close')) { setMenu(false); mb.focus(); }
+    });
+    /* THE RING IS CLOSED BY HAND. `inert` removes the page behind the panel
+       from the tab order, which is most of the job but not the end of it: with
+       everything else muted, the last link in the panel still tabs to the end
+       of the DOCUMENT, and the browser hands focus to its own chrome. A
+       keyboard walk reads that as leaving the page — which is what a trap is
+       supposed to make impossible. So Tab wraps explicitly across the panel
+       and its trigger, which is also the Close control. Four links, then
+       Close, then round again; Shift+Tab runs the same ring backwards. */
+    var ring = function () {
+      var live = [mb].concat([].slice.call(menu.querySelectorAll('a[href],button,[tabindex]:not([tabindex="-1"])')));
+      return live.filter(function (el) {
+        var r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      });
+    };
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Tab' && open) {
+        var list = ring();
+        if (!list.length) return;
+        var at = list.indexOf(document.activeElement);
+        var to = at < 0 ? 0 : at + (ev.shiftKey ? -1 : 1);
+        if (to < 0) to = list.length - 1;
+        if (to >= list.length) to = 0;
+        ev.preventDefault();
+        list[to].focus();
+        return;
+      }
+      if (ev.key === 'Escape' && open) { setMenu(false); mb.focus(); }
+    });
+  }
+
+  /* ── 3. the section you are standing in ───────────────────────────────
+     Reported, never styled with the accent: the marker is a hairline. */
+  var navLinks = document.querySelectorAll('.bar__nav a[href^="#"]');
+  if (navLinks.length && 'IntersectionObserver' in window) {
+    var byId = {};
+    for (var n = 0; n < navLinks.length; n++) byId[navLinks[n].getAttribute('href').slice(1)] = navLinks[n];
+    var here = new IntersectionObserver(function (entries) {
+      for (var e = 0; e < entries.length; e++) {
+        var a = byId[entries[e].target.id];
+        if (!a) continue;
+        if (entries[e].isIntersecting) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      }
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    for (var id in byId) {
+      var sec = document.getElementById(id);
+      if (sec) here.observe(sec);
+    }
+  }
+
+  /* ── 4. the entrance is GONE FROM THIS FILE ───────────────────────────
+     It used to be an IntersectionObserver writing .is-in, a per-child
+     transition-delay ladder, and two timers whose only job was to guarantee
+     that nothing was left invisible if any of it failed. All of it is now
+     eleven lines of CSS: `animation-timeline: view()` behind an @supports
+     guard and a prefers-reduced-motion guard (styles.css, "entrance motion").
+
+     Three things came out of that trade and they are the whole argument for
+     it: the reveal now exists with JavaScript off, the pre-state that needed
+     an inline <head> script no longer exists at all, and there is no timer
+     left that could fail to fire. See research/design-2026.md §1.4. */
+
+  /* ── 4b. every disclosure reports its state ───────────────────────────
+     <details> opens and closes on its own with this file absent. What it does
+     not do on its own is publish aria-expanded. Two paths, because `toggle`
+     fires ASYNCHRONOUSLY: the property is mirrored for scripted toggles and
+     the event for real clicks. Native behaviour is untouched. */
   var openDesc = Object.getOwnPropertyDescriptor(HTMLDetailsElement.prototype, 'open');
   var discs = document.querySelectorAll('details > summary[aria-expanded]');
   for (var d = 0; d < discs.length; d++) {
@@ -152,25 +230,15 @@
     })(discs[d]);
   }
 
-  /* ── 4. the scrub envelope — SPEC §9.5 ───────────────────────────────
-     The owner asked for scroll-scrubbed video. This project also carries a
-     twice-litigated ban on scroll-driven composition, and tools/cold.mjs
-     exists to prove the page never depends on scroll. Both survive, under one
-     envelope, and the envelope is what this block is.
-
+  /* ── 5. the scrub envelope ────────────────────────────────────────────
      What it is allowed to touch: video.currentTime. That is the whole list. It
      never writes a style, a class, a transform, a size or a position, so no
      composition on this page can ever depend on it.
 
-     A scrubbed <video> is a background layer whose section is complete,
-     legible and final at paint with the video absent, paused, or at frame 0.
-     Under prefers-reduced-motion, or with JS off, no src is ever attached and
-     the poster is what renders.
-
-     If no clip is on disk, tools/video-slots.mjs emits no <video> at all, this
+     No clip is on disk, so tools/video-slots.mjs emits no <video> at all, this
      observer finds nothing, and __scrubRunning stays false forever. That is
-     the state this build ships in: four declared slots, zero clips, every
-     slot on its declared fallback.                                          */
+     the state this build ships in: four declared slots, zero clips, every slot
+     on its declared fallback.                                                */
   window.__scrubRunning = false;
 
   var scrubs = document.querySelectorAll('video[data-scrub]');
@@ -191,15 +259,14 @@
     var tick = function () {
       for (var a = 0; a < active.length; a++) {
         var v = active[a];
-        var d = v.duration;
-        if (!d || !isFinite(d)) continue;
+        var dur = v.duration;
+        if (!dur || !isFinite(dur)) continue;
         var r = v.getBoundingClientRect();
         var span = r.height + window.innerHeight;
         var p = span > 0 ? (window.innerHeight - r.top) / span : 0;
         p = p < 0 ? 0 : (p > 1 ? 1 : p);
-        // alternate, so a clip that does not loop cleanly is still loop-safe
         var t = p <= 0.5 ? p * 2 : (1 - p) * 2;
-        v.currentTime = t * d;
+        v.currentTime = t * dur;
       }
       frame = active.length ? requestAnimationFrame(tick) : 0;
       window.__scrubRunning = !!frame;
@@ -232,59 +299,11 @@
 
     for (var q = 0; q < scrubs.length; q++) so.observe(scrubs[q]);
   }
-
-  /* ── 5. the phone field ───────────────────────────────────────
-     Formats as typed, rejects anything short of ten digits, and never reports
-     success while data-endpoint is empty. */
-  var form = document.querySelector('[data-signup]');
-  if (!form) return;
-
-  var input = form.querySelector('input[type="tel"]');
-  var note = form.querySelector('[data-signup-note]');
-  var pot = form.querySelector('input[name="company"]');
-  var ENDPOINT = form.getAttribute('data-endpoint') || '';
-
-  function digits(v) { return (v || '').replace(/\D/g, '').slice(0, 10); }
-  function format(d) {
-    if (d.length < 4) return d;
-    if (d.length < 7) return '(' + d.slice(0, 3) + ') ' + d.slice(3);
-    return '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + ' ' + d.slice(6);
-  }
-  function say(msg, ok) {
-    if (!note) return;
-    note.textContent = msg;
-    note.setAttribute('data-state', ok ? 'ok' : 'err');
-  }
-
-  if (input) {
-    input.addEventListener('input', function () {
-      var atEnd = input.selectionStart === input.value.length;
-      input.value = format(digits(input.value));
-      if (atEnd) input.setSelectionRange(input.value.length, input.value.length);
-    });
-  }
-
-  form.addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    if (pot && pot.value) return;
-    var d = digits(input && input.value);
-    if (d.length !== 10) {
-      say('That needs to be 10 digits, US numbers only.', false);
-      if (input) input.focus();
-      return;
-    }
-    if (!ENDPOINT) {
-      say('Signup is not connected yet. RSVP on Luma instead.', false);
-      return;
-    }
-    say('Posting.', true);
-    fetch(ENDPOINT, {
-      method: 'POST', mode: 'cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ phone: '+1' + d, source: 'site', consent: true })
-    })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-      .then(function () { say('Added. We will text you when the next date is set.', true); form.reset(); })
-      .catch(function () { say('That did not go through. Use the RSVP link instead.', false); });
-  });
 })();
+
+/* THE POSTER WALL'S SCRUB CONTROL WENT WITH THE WALL. It was 45 lines that
+   moved `object-position` on three plates under pointer, arrow keys and tap.
+   It worked — and what it revealed, two steps down the June plate, was a
+   third-party logo lockup and two named individuals that no fold audit had
+   ever read, because none of it was in the fold at rest. The page does not
+   keep a surface that can paint un-audited pixels. */

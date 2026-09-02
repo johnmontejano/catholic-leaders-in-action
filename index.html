@@ -10,24 +10,25 @@
 <meta property="og:url" content="https://catholicleadersinaction.org/">
 <meta property="og:title" content="Catholic Leaders in Action">
 <meta property="og:description" content="A monthly evening series on Catholic social teaching in San Francisco, formed in partnership with the Archdiocese. Ages 21 to 40. Next: Tuesday September 1 2026.">
-<meta property="og:image" content="https://catholicleadersinaction.org/assets/og/og-wide.jpg">
+<meta property="og:image" content="https://catholicleadersinaction.org/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Young adults gathered in a San Francisco parish hall at a Catholic Leaders in Action evening.">
+<meta property="og:image:alt" content="The Catholic Leaders in Action seal over a photograph of the evening, with the organisation's name beside it.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://catholicleadersinaction.org/assets/og/og-wide.jpg">
+<meta name="twitter:image" content="https://catholicleadersinaction.org/assets/og.png">
 
 <link rel="canonical" href="https://catholicleadersinaction.org/">
-<link rel="icon" href="assets/og/favicon.png">
-<link rel="apple-touch-icon" href="assets/og/apple-touch-icon.png">
-<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Switzer-600.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Switzer-400.woff2" crossorigin>
+<link rel="icon" href="assets/brand/mark-64.png" sizes="64x64" type="image/png">
+<link rel="icon" href="assets/brand/mark-256.png" sizes="256x256" type="image/png">
+<link rel="apple-touch-icon" href="assets/brand/mark-256.png">
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Zodiak-300.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/Switzer-500.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/IBMPlexMono-Regular-Latin1.woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
-<!-- SPEC §9.6. The reveal pre-state exists ONLY while <html data-rv="on">, and
-     only this one line ever turns it on. No JavaScript, a script error, or
-     prefers-reduced-motion and every element renders at its final state. -->
-<script>document.documentElement.classList.remove('no-js');
-if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-rv','on')</script>
+<!-- The entrance is a native scroll-driven animation now (styles.css, "entrance
+     motion"), so there is no pre-state to guard and no failsafe to arm. This
+     line does one thing and it is not the reveal. -->
+<script>document.documentElement.classList.remove('no-js')</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -39,16 +40,17 @@ if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElem
   "eventStatus": "https://schema.org/EventScheduled",
   "location": {
     "@type": "Place",
-    "name": "St Philip the Apostle Church Hall",
+    "name": "Saint Philip the Apostle Church",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "725 Diamond St",
       "addressLocality": "San Francisco",
       "addressRegion": "CA",
+      "postalCode": "94114",
       "addressCountry": "US"
     }
   },
-  "image": "https://catholicleadersinaction.org/assets/og/og-wide.jpg",
+  "image": "https://catholicleadersinaction.org/assets/og.png",
   "description": "A monthly evening series on Catholic social teaching in San Francisco, formed in partnership with the Archdiocese. Ages 21 to 40. Next: Tuesday September 1 2026.",
   "performer": [
     { "@type": "Person", "name": "Fr. Michael Sweeney, OP" },
@@ -72,376 +74,1356 @@ if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElem
 
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- §6.0 The bar. Transparent over #top, solid --ink past the hero edge. The
-     class toggle is the only thing the scroll listener does. -->
-<nav class="bar" aria-label="Site">
-  <div class="bar__in">
-    <a class="hero__name" href="#top"><span>Catholic Leaders</span> <span>in Action</span></a>
+<!-- ══ the bar ══ A floating pill, 56px, radius 16, glass, no border-bottom.
+     It never changes geometry: it leaves whole on the way down and comes back
+     whole on the way up. -->
+<header class="hdr">
+  <nav class="bar" aria-label="Site">
+    <a class="lockup hero__name" href="#top">
+      <img class="seal--bar" src="assets/brand/mark-64.png"
+           srcset="assets/brand/mark-64.png 1x, assets/brand/mark-128.png 2x"
+           width="64" height="64" decoding="async" aria-hidden="true"
+           alt="The Catholic Leaders in Action mark">
+      <span class="wm">Catholic Leaders in&#160;Action</span>
+    </a>
 
-    <ul class="bar__links">
-      <li><a href="#next">September 1</a></li>
-      <li><a href="#record">The record</a></li>
-      <li><a href="#leaders">Who runs it</a></li>
+    <!-- THE NAV LOST FOUR WORDS AND IT IS THE CHEAPEST FOUR THIS PAGE HAD.
+         research/visual-first.md holds the desktop fold to <= 32 words and the
+         bar is fixed, so every word in it is a word in the fold at every
+         width. "The record" / "Who runs it" cost three words more than
+         "Record" / "Leaders" and say the same thing — and the footer's own nav
+         has been using the short set all along. -->
+    <ul class="bar__nav">
+      <li><a class="t-ui" href="#next">September 1</a></li>
+      <li><a class="t-ui" href="#record">Record</a></li>
+      <li><a class="t-ui" href="#leaders">Leaders</a></li>
+      <li><a class="t-ui" href="#allies">Partners</a></li>
     </ul>
 
-    <div class="bar__right">
-      <details class="menu" data-menu>
-        <summary class="menu__b" aria-expanded="false">Menu</summary>
-        <ul class="sheet">
-          <li><a href="#next">September 1</a></li>
-          <li><a href="#record">The record</a></li>
-          <li><a href="#leaders">Who runs it</a></li>
-        </ul>
-      </details>
+    <span class="bar__r">
+      <button class="mnu eb" type="button" data-menu-btn aria-expanded="false" aria-controls="menu">
+        <span class="eb__t mnu__t">Menu</span><span class="mnu__r" aria-hidden="true"></span>
+      </button>
       <a class="btn bar__go" href="https://luma.com/me6t2z7s"><span class="btn__t">RSVP</span></a>
-    </div>
-  </div>
-</nav>
+    </span>
+  </nav>
+</header>
+
+<!-- The panel drops UNDER the nav, inset 16px, radius 12, on an ink ground,
+     over a backdrop that is only 20% dark: the blur does the separating. -->
+<div class="menu" id="menu" data-menu role="dialog" aria-modal="true" aria-label="Menu">
+  <span class="menu__bd" data-menu-close aria-hidden="true"></span>
+  <nav class="menu__p" aria-label="Sections">
+    <ul>
+      <li><a class="t-ui" href="#next">September 1</a></li>
+      <li><a class="t-ui" href="#record">Record</a></li>
+      <li><a class="t-ui" href="#leaders">Leaders</a></li>
+      <li><a class="t-ui" href="#allies">Partners</a></li>
+    </ul>
+  </nav>
+</div>
 
 <main id="main">
 
-  <!-- ══ 1 · #top ══ media over ink. Full-bleed photograph, type lower-left,
-       two opaque teaser cards lower-right. Oregon Outdoor Alliance hero +
-       mobile hero. Nothing here carries .rv: the first screen is final at
-       paint at both widths (§9.6).
+  <!-- ══ 1 · #top ══ ONE PHOTOGRAPH WITH A SUBJECT IN IT, AND THE HEADLINE
+       BESIDE IT AT THE SIZE THE CORPUS SETS ITS FIRST LINE.
 
-       V0 (real CLIA footage only) is not on disk, so per §9.1 no <video> is
-       emitted and the slot renders its declared fallback: the photograph,
-       which §9.2 names as the preferred outcome anyway. -->
-  <section id="top" aria-labelledby="hero-h" data-onphoto>
+       WHAT THE LAST BUILD OPENED ON, AND WHAT IT COST. A generated empty hall,
+       full bleed, with the headline in its lower-left corner. The 2026-08-31
+       assessment put that fold beside 39 awwwards winners at 1440 and 38 at
+       390 and it was "the darkest and emptiest tile in the set" — "the first
+       three seconds are an empty generated room with small type in a corner".
+       Two numbers under that verdict, and both of them are ours:
 
-    <picture class="hero__m">
-      <source media="(min-width:900px)" srcset="assets/img/hero-1440.jpg 1440w, assets/img/hero-1920.jpg 1920w, assets/img/hero-2880.jpg 2880w" sizes="100vw">
-      <img src="assets/img/hero-tall-1196.jpg" srcset="assets/img/hero-tall-1196.jpg 1196w" sizes="100vw"
-           width="1196" height="1508" data-cover data-people="yes" fetchpriority="high"
-           alt="Young adults standing and talking in a parish hall after a Catholic Leaders in Action evening.">
-    </picture>
-    <!-- V:hero --><!-- /V:hero -->
-    <span class="scrim scrim--flat" data-scrim aria-hidden="true"></span>
-    <span class="scrim scrim--foot" data-scrim aria-hidden="true"></span>
+         focus falloff, near third over far third, variance of Laplacian
+           hall (generated)   0.56 landscape / 0.17 tall     ZERO people
+           room-back (photo)  5.18                           ~30 people
 
-    <div class="hero__in">
+         BELOW ONE means the near field is flatter than the far field: the
+         frame has no plane of focus, because nothing photographed it. The hall
+         had already LOST its own A/B on that axis and on tonal spread (0.489
+         against 0.767) and was kept anyway, for one reason — it was the only
+         frame in the archive dark enough to stand display type bare. The fold
+         was being composed around a contrast problem instead of around a
+         subject, and the reader met the compromise before anything else.
 
-      <div class="hero__t">
-        <p class="eb eb--on">CATHOLIC SOCIAL TEACHING · SAN FRANCISCO<span class="eb__r" aria-hidden="true"></span></p>
-        <h1 class="t-hero" id="hero-h">Catholics.<br>Who intend.<br>To lead.</h1>
-      </div>
+       SO THE PICTURE IS CHOSEN FOR ITS SUBJECT AND THE TYPE IS MOVED OFF IT.
+       DbmTXzlGLPl_02 is the 29-August outing with the Missionaries of Charity:
+       a sister leaning out of the open side door of a white van, handing
+       something to a man standing on the asphalt with his back to the camera.
+       One transaction, two people, legible in a second, and it is the deed
+       half of this organisation's own thesis — the thing #rule spends a whole
+       band arguing and the thing the fold had never once shown.
 
-      <div class="hero__c">
+       IT IS 2160x2878 IN photos-up/, WHICH IS WHY IT CAN HOLD A COLUMN. The
+       hall could not: its master is 1734x938 and a full-bleed 1440 hero needs
+       2880. serve-van-1440.jpg is 1440x1919 and the desktop photo column is
+       662x900 at 1440 — 2.18x at DPR 2, with the frame very nearly uncropped,
+       because the column's shape (0.736) and the file's (0.751) are the same
+       shape. Nothing is being stretched to fill anything.
 
-        <a class="ev" href="https://luma.com/me6t2z7s">
-          <img src="assets/instagram/DcKANRuGtzj-640.jpg"
-               srcset="assets/instagram/DcKANRuGtzj-240.jpg 240w, assets/instagram/DcKANRuGtzj-640.jpg 640w"
-               sizes="96px" width="240" height="240" data-graphic data-people="no"
-               alt="Title card for The Work of Human Hands, the September evening.">
-          <span class="ev__x">
-            <span class="ev__date">SEP 1 · TUESDAY</span>
-            <span class="ev__title">The Work of Human Hands</span>
-            <span class="ev__where">6:30 PM · St Philip</span>
-            <span class="ev__open">Registration open</span>
-            <span class="ev__go">RSVP on Luma ↗</span>
-          </span>
-        </a>
+       AND THE TYPE STANDS ON INK, WHICH IS WHAT MAKES IT BIG.
+       tools/_herosweep.mjs already settled that no real photograph in this
+       archive can carry bare display type: nine positions on each frame, in
+       bone and in ink, ground-free glyph mask, and the BEST any of them
+       offered was 28.5% of the glyph core under 4.5:1. On this frame it is
+       worse — a white van and lit asphalt. That is not an argument for a
+       smaller headline or for a scrim; it is an argument for a ground. The
+       corpus makes the same move constantly and #rule already makes it on this
+       page: a band of one colour beside a band of picture, one hard seam, no
+       gap and no radius.
 
-        <a class="ev ev--b" href="#record">
-          <img src="assets/img/room-back-340.jpg" srcset="assets/img/room-back-340.jpg 340w"
-               sizes="96px" width="340" height="184" data-cover data-people="yes"
-               alt="The back of the parish hall filled with seated young adults.">
-          <span class="ev__x">
-            <span class="ev__title">Four evenings since June</span>
-            <span class="ev__go">See the record ↗</span>
-          </span>
-        </a>
+       On ink the headline is bone at 16.00:1 with no photograph under it at
+       any width — tools/_heroink.mjs sweeps fifteen shapes from 320x568 to
+       1920x1080 with the same ground-free three-pass glyph mask and reads the
+       same number at every one of them, 0.00% of core under 4.5 — so the size
+       is decided by composition alone, and composition says fill the measure. research/design-2026-measurements.json, first
+       line as a share of its own measure: love-and-money 114.3%,
+       tribe-of-giants 114.0%, louisiana-governors-mansion 102.8%, nodenza
+       87.7%, sfjazz 77.9%, mobilitylab 76.0%, bridgebio 75.0%. The last build
+       measured 38.7% at 1440. It is not a smaller number than the corpus
+       because the type is small — 76.8px is the corpus's 78th percentile for
+       SIZE — it was small because two short lines sat in the corner of a
+       1440-wide photograph and left 61% of the line bare. Given its own column
+       the same token fills it. tools/_fill.mjs holds the floor at 70%.
 
-      </div>
+       THE GENERATED IMAGE IS OFF THE PAGE ENTIRELY, and the footer credit that
+       named it goes with it. Every photograph on this site is now a photograph
+       somebody took of this organisation.
+
+       THE HEADLINE IS THEIRS. "Move beyond passive faith" is a verbatim
+       fragment of the boilerplate CLIA has published on every event listing
+       since 2 June — https://luma.com/u1a8k3dj, https://luma.com/5phxte1t —
+       and it names the enemy and the cure in four words. -->
+  <section id="top" aria-labelledby="hero-h">
+
+    <!-- ══ THE FIRST SCREEN IS ONE PHOTOGRAPH ═══════════════════════════════
+         THE FINDING THIS CLOSES WAS PRICED BY THE REVIEWER HIMSELF: "until the
+         first screen is ONE FRAME, no headline size reaches the register Namaha
+         and OOA occupy. Everything else on the list is worth ~0.3 of a point
+         combined; the fold is worth two."
+
+         WHAT STOOD HERE WAS THREE FRAMES. At 1440x900, measured: gaze-1000 at
+         917x460, serve-van-700 at 627x900 and qa-wide-900 at 789x440, joined by
+         1,689px of hard internal seam, with the fold's one vertical edge
+         jogging 104px at y=460 — x=917 above it and x=813 below — and a
+         24 x 440 strip of bare section ground standing between qa-wide and
+         serve-van as a black bar at 1024, 1280, 1440 and 1920.
+
+         research/awwwards-2026-08-live/namaha-healthcare-hero.png and
+         oregon-outdoor-alliance-hero.png are one frame, zero seams and no bare
+         ground, and both put the headline inside the picture. So does this now:
+         one figure, one file, edge to edge, with the type block standing in its
+         lower-left corner at every shape on the ladder.
+
+         WHY A PORTRAIT NEGATIVE AND NOT A LANDSCAPE ONE, IN THE NUMBERS THE
+         CHOICE WAS MADE ON. Under `object-fit: cover` the share of a negative
+         that survives a box is the ratio of the two aspect ratios, and a
+         full-bleed fold is two very different boxes:
+
+           frame       negative    390x844 (0.462)     1440x900 (1.600)
+           qa-wide     1.920       keeps 24.1%  FAIL   keeps 83.3%
+           serve-van   0.7505      keeps 61.6%         keeps 46.9%
+
+         tools/sharp.mjs holds a photograph to 40% of its own frame. A landscape
+         negative cannot be a phone's full-bleed fold at all — qa-wide would
+         arrive as three of its thirty people — and 80% of this page's traffic
+         is that phone.
+
+         AND THE FRAME IS DbmTXzlGLPl_05 NOW, WHICH IS THE SECOND TIME A MARK
+         HAS COME OFF THIS FOLD AND THE LAST TIME IT CAN BE DONE WITH A CROP.
+         The frame that stood here was DbmTXzlGLPl_03, cut at x0=0.26 to lose a
+         sponsor's printed t-shirt. What that cut left behind was a supplies
+         carton standing in the van's doorway carrying KIRKLAND — the Costco
+         house-brand wordmark, white on its own black lozenge — with BabyW... in
+         teal under it. Measured on the negative the carton is x 0.671-0.737 and
+         y 0.222-0.290; the near sister is x 0.39-0.70 and the far sister is
+         x 0.65-0.90, so it stands BETWEEN the two figures the picture is about.
+         No x window loses it and keeps both. No y window loses it either: the
+         crop would have to start below y=0.290 and the near sister's head ends
+         at y=0.284, nine native pixels above it. So the negative left the page.
+
+         DbmTXzlGLPl_05 is the same van, the same outing, the same minute — it
+         was already ON this page as #record's action column — and it is the
+         same shape to four decimals, 0.7505 against 0.751, so every number in
+         the table above carries over unmoved. A 4x sweep of the whole frame in
+         540px blocks found no printed word anywhere in it: the interior is a
+         concrete wall, two blue sacks and a seat back, the van carries no
+         livery on the side facing camera, and the man's sweatshirt is plain.
+         The two pictures traded places; DbmTXzlGLPl_01 — three sisters, three
+         faces, at the encampment — took the column this frame vacated, so
+         nothing new arrived from outside the 29-August set.
+
+         AND IT ANSWERS THE OTHER FINDING ON THE OLD FOLD, WHICH WAS THAT ITS
+         PHONE CROP HAD NO FOCAL POINT: two figures seen from behind, no face,
+         no eyeline. In this one the sister leaning out of the door is facing
+         camera. Her face is at 7-18% of the negative's height and 41-57% of its
+         width; below the 5/6 breakpoint `cover` keeps the middle 61.6% at
+         object-position 32%, which is x 0.115-0.731, so she is whole and left
+         of centre with the package crossing at the optical centre. Above the
+         breakpoint the <source> band is the top 46.9% of the frame and she
+         lands at 15-38% of its height — above the veil's 0.607 floor at 46%,
+         which falls between her face and the hands rather than on either.
+
+         THE OTHER TWO PHOTOGRAPHS DO NOT LEAVE THE PAGE, and neither needed a
+         new band to receive it. `gaze` was a tight cut of DawmlieFIHm_09, which
+         is `laughing`, the fourth frame of #record's talk column. `qa-wide` was
+         a 3.7%-off-the-top cut of DbuObFxFJY3_03, which is `qa-hands` — the
+         same frame whole — in #record's talk column and again in #close. What
+         came off disk is two sets of derivatives, not two pictures.
+
+         AND THE FRAME IS ART-DIRECTED, WHICH IS WHAT THE CORPUS DOES. Oregon
+         Outdoor Alliance's desktop fold is a figure at a van door and its phone
+         fold is a tight macro of one hand: same site, same second, different
+         cut. Below a 5/6 window this figure takes the negative's own 0.751 and
+         `cover` centres it; above it, the <source> hands over a 1.600 cut of
+         the SAME frame, made at exactly the object-position the page paints, so
+         no landscape viewport is served 2.7 megapixels of hedge it will crop.
+         One photograph, one seam count of zero, two honest shapes. -->
+    <figure class="hero__gr">
+      <!-- V:hero --><!-- /V:hero -->
+      <picture>
+        <!-- THE LANDSCAPE CUT. 2880 is what a 1440-wide box costs at DPR 2 and
+             it is the master's own width; see the WIDE table in
+             tools/upscale.py for the crop, the restoration and the honest
+             optical limit under it (the band is 1080 recorded pixels wide). -->
+        <source media="(min-aspect-ratio:5/6)"
+                srcset="assets/img/serve-wide-800.jpg 800w, assets/img/serve-wide-1100.jpg 1100w, assets/img/serve-wide-1440.jpg 1440w, assets/img/serve-wide-1800.jpg 1800w, assets/img/serve-wide-2160.jpg 2160w, assets/img/serve-wide-2880.jpg 2880w"
+                sizes="100vw">
+        <img src="assets/img/serve-van-900.jpg"
+             srcset="assets/img/serve-van-340.jpg 340w, assets/img/serve-van-540.jpg 540w, assets/img/serve-van-700.jpg 700w, assets/img/serve-van-900.jpg 900w, assets/img/serve-van-1440.jpg 1440w, assets/img/serve-van-1920.jpg 1920w"
+             sizes="100vw" width="2160" height="2876" data-cover data-people="yes" fetchpriority="high"
+             alt="A sister in the open side door of a white van, leaning out to hand a small package to two people standing on the asphalt beside it.">
+      </picture>
+
+      <!-- ══ THE VEIL, AND IT IS STILL WRITTEN TO THE TYPE ══════════════════
+           This is the one thing on the page an outside reading called its best
+           result, and it does not change because the photograph did: the ramp
+           is graduated rather than flat, so the frame keeps most of its range
+           over most of its area, and the floor alpha is DERIVED from the
+           brightest pixel in the frame rather than picked.
+
+           THE ARITHMETIC, RE-DERIVED FOR THIS FRAME. Bone is rgb(239,238,235),
+           Y = 0.855; 4.5:1 needs the ground at Y <= 0.151, which is sRGB 108.
+           The brightest thing in the old frame was a white shirt at 245. In
+           this one it is the side of a white van in direct sun, and it is
+           clipped: 255, at the 99.9th percentile as well as the maximum. Over
+           ink 13:
+
+             (1 - a) * 255 + a * 13 <= 108   ->   a >= 0.607
+
+           So 0.607 is the floor the ramp has to have REACHED by the topmost
+           inked row of the headline, not at the bottom of the cell. The stops
+           below cross it at 46% of the cell's height, and the lowest the type
+           block's ceiling ever sits is 55% (1024x600, the shortest landscape
+           window on the ladder). Everything above 46% is left as photograph:
+           the sisters, the man in the hard hat and the van door are all in the
+           top half of the frame and none of them is under a glyph.
+
+           The 0.92 at the floor is not the same number as the 0.607 above it,
+           and the difference is the 12px mono of the fact line: the smallest
+           type on the fold sits in the last 60px of the cell, and that row is
+           the one that needs the most ground. tools/contrast.mjs measures the
+           glyph and not the box, and is the only thing that decides whether any
+           of this is true. -->
+      <span class="hero__gv" aria-hidden="true"></span>
+    </figure>
+
+    <!-- THE TYPE COLUMN, INSIDE THE PHOTOGRAPH ABOVE. One block, bottom-left,
+         on the same left edge every band below it starts on — x=104 at 1440,
+         x=344 at 1920, x=20 at 390 — so the fold does not introduce an
+         alignment the rest of the document does not keep. -->
+    <div class="hero__b">
+      <header class="hd">
+        <h1 class="t-hero" id="hero-h">Move beyond passive&#160;faith.</h1>
+        <!-- ONE ELEMENT, TWO LINES, ONE BLOCK — AND THE FIRST LINE IS THE
+             MODEL, WHICH IS THE ONE THING THIS FOLD HAD NEVER SAID.
+
+             tools/density.mjs holds the 390 fold to six text BLOCKS and
+             twenty-two words, and it counts a block as a text node's parent
+             element — so a second <p> would be a seventh block and a <span>
+             around the first line would be too. A <br> inside one <p> is two
+             lines and one block. The words: 22, exactly at the ceiling.
+
+             The street address, the hour and the venue in full are in #next,
+             in the footer and in the JSON-LD, all three unchanged. -->
+        <p class="hero__when name">A talk, then the&#160;action.<br>September&#160;1, San&#160;Francisco</p>
+      </header>
+
+      <p class="hero__go">
+        <!-- GLASS, NOT A SECOND SLAB, AND ONLY WHERE THE DOCK IS STANDING.
+             The assessment, at 390x844: "the fold ends with a full-width
+             cobalt Reserve a seat button sitting directly above the full-bleed
+             cobalt RSVP dock. Two saturated blue blocks, the same hue, the
+             same message, separated by a thin strip of black. They read as one
+             malformed shape and they duplicate the call. No corpus fold stacks
+             its primary CTA on top of its own persistent CTA."
+
+             The glass is a STATE and not a class now. It used to be
+             `.btn--quiet`, a modifier this element was the only user of and
+             which styles.css then cancelled back to a solid slab at every
+             width of 900 and up — so a class called `--quiet` was painting the
+             loudest object on the desktop fold. The control is a plain `.btn`
+             here, on the one indigo the bar and every section CTA already use,
+             and styles.css puts it in glass under exactly one condition,
+             written in the dock's own words: where the dock stands. So the
+             fold always has exactly one filled control on it and never two,
+             and no class on this page means its opposite at some widths. -->
+        <a class="btn ev__go" href="https://luma.com/me6t2z7s"><span class="btn__t">Reserve a seat</span></a>
+      </p>
+
+      <!-- the fact line, on the floor of the band. See the note above the gaze
+           figure for why it is here and not in a grid row of its own. -->
+      <p class="duo__k hero__k"><span class="duo__k-t">One evening a month, ages 21 to 40</span><span class="duo__k-r" aria-hidden="true"></span><span class="figure duo__d">With the Archdiocese</span></p>
     </div>
   </section>
 
 
-  <!-- ══ 2 · #what ══ bone. Statement, then the 01-04 ladder on hairlines,
-       media right. Oregon full, band 3.
+  <!-- ══ 2 · #rule ══ THE BAND THIS PAGE DID NOT HAVE, AND THE ONE THE OWNER
+       SAID WAS MISSING: "it's not screaming their mission".
 
-       V1 (architecture or still life) is not on disk, so per §9.1 no <video>
-       is emitted and the right column renders its declared fallback: the
-       after-talk photograph. -->
-  <section id="what" aria-labelledby="what-h">
+       He was right, and the reason was structural rather than verbal. Every
+       band on this page described an EVENT — seven of them, a date, a record,
+       a roster, a partner list. Not one of them said what the organisation is
+       FOR. #what came closest and what it said was "7 evenings. One theme a
+       month. Ages 21 to 40." — a syllabus.
 
-    <header class="wrap what__h">
-      <p class="eb">WHAT THIS IS<span class="eb__r" aria-hidden="true"></span></p>
-      <p class="t-statement rv" id="what-h">Seven evenings on Catholic social teaching, one a month. Ages 21 to 40.</p>
-    </header>
+       research/mission.md §2 is the answer and it is the organisation's own
+       writing, unprompted, in its own marketing copy for September 1:
 
-    <ol class="wrap ladder" data-stagger>
-      <li class="rv"><span class="ld__n">01</span><span class="ld__t">6:30</span><span class="t-head ld__l">Wine and bites</span></li>
-      <li class="rv"><span class="ld__n">02</span><span class="ld__t">7:00</span><span class="t-head ld__l">Keynote and questions</span></li>
-      <li class="rv"><span class="ld__n">03</span><span class="ld__t">9:00</span><span class="t-head ld__l">Reception</span></li>
-      <li class="rv"><span class="ld__n">04</span><span class="ld__t">9:30</span><span class="t-head ld__l">Ends</span></li>
-    </ol>
+         "Most of us learned to pray, receive the sacraments, and help out at
+          the parish. And without ever quite deciding to, we can begin to act
+          as if holiness, faithfully pursued, will overflow into mission on its
+          own. Often it doesn't. Piety and devotion stay in one compartment;
+          work, social life, even family life remain in another."
 
-    <figure class="wrap what__f rv">
-      <!-- V:what --><!-- /V:what -->
-      <img src="assets/img/after-talk-860.jpg"
-           srcset="assets/img/after-talk-340.jpg 340w, assets/img/after-talk-430.jpg 430w, assets/img/after-talk-700.jpg 700w, assets/img/after-talk-860.jpg 860w"
-           sizes="(min-width:900px) 424px, 350px" width="860" height="448" data-people="yes"
-           alt="Two men talking closely at the end of an evening in the parish hall.">
-      <figcaption class="cap">The talk · August 5</figcaption>
-    </figure>
+       The enemy has a name and they named it: the compartment. So the biggest
+       line in this band is theirs, verbatim, and the cure under it is the
+       founder's, verbatim, and the evidence beside it is two photographs taken
+       twenty-four days apart.
+
+       AND THE TWO GALLERIES BECOME ONE OBJECT. Until this pass the hall
+       photographs lived in #record and the outreach photographs lived in
+       #leaders, filed as two unrelated sets. They are the same story told
+       twice. Here they are one row: the talk on the left, the deed on the
+       right, one hard seam between them and a date under each. The seam is the
+       compartment; the row is the answer to it.
+
+       "7 evenings" is not deleted. It is the opening line of #record now,
+       where a count of evenings belongs, next to the four that have happened.
+
+       The August pairing is the one the sources establish outright: the
+       August 5 evening was "Called to Serve: Option for the Poor &
+       Vulnerable", and CLIA's own feed documents the homeless ministry with
+       the Missionaries of Charity on August 3 and August 29
+       (instagram.com/p/DbmTXzlGLPl, instagram.com/p/DcrWAHQBWMU). Nothing
+       here pairs an evening the record does not pair. -->
+  <section id="rule" aria-labelledby="rule-h">
+    <!-- V:what --><!-- /V:what -->
+
+    <p class="eb"><span class="eb__t">Why it exists</span><span class="eb__r" aria-hidden="true"></span></p>
+
+    <blockquote class="say">
+      <p class="t-chapter" id="rule-h">Piety and devotion stay in one compartment; work, social life, even family life remain in&#160;another.</p>
+      <footer class="say__a meta">Catholic Leaders in Action, on its own listing</footer>
+    </blockquote>
+
+    <!-- THE PAIR, AND IT IS DRAWN NOW RATHER THAN ASSERTED.
+
+         The 2026-08-30 assessment put it exactly: "a reader comes away with
+         'this group holds talks and also does service', not 'each talk is
+         paired with an action'." The sequence was right and nothing on the
+         object said so. The two captions were `August 5 · Called to Serve` and
+         `August 29 · Missionaries of Charity` — two dates twenty-four days
+         apart presented as peers, with no arrow, no bracket, no shared label
+         and no "then" — and they were not even on a shared axis: measured at
+         1440, inset 104px from the left frame and 36px from the right.
+
+         Three changes, and they are the three the assessment asked for.
+
+         LABEL. Each frame now says which half of the founder's sentence it
+         is: "The talk" and "The action". Those are his own two nouns —
+         "each lecture and social event is designed to be allied with a direct
+         ministry action of some kind" — quoted whole in #act immediately
+         below, so the label and the proof are four hundred pixels apart.
+
+         CONNECT. The caption row is the page's own leader rule, which is the
+         one device in this document an outside reviewer called award-quality:
+         label, hairline, figure. Two of them on ONE baseline running the whole
+         width of the pair and crossing the seam is a single continuous line
+         with two stations on it. The seam itself carries down through the
+         caption row as the same hairline, so the thing that separates the two
+         frames is visibly the thing that joins them.
+
+         ALIGN. Both captions are inset by one page gutter from THEIR OWN
+         frame's left edge — 104 and 824 at 1440, one rule stated once,
+         instead of 104 and 756 arrived at two different ways. -->
+    <ul class="duo">
+      <li class="rv">
+        <figure>
+          <span class="duo__m">
+            <img src="assets/img/panel-table-800.jpg"
+                 srcset="assets/img/panel-table-430.jpg 430w, assets/img/panel-table-800.jpg 800w, assets/img/panel-table-1100.jpg 1100w, assets/img/panel-table-1440.jpg 1440w"
+                 sizes="(min-width:900px) 50vw, 100vw" width="1440" height="779" data-cover data-people="yes" loading="lazy" decoding="async"
+                 alt="Four panelists seated at a folding table, one speaking into a microphone, beside a screen reading Called to Serve.">
+          </span>
+          <figcaption>
+            <p class="duo__k"><span class="duo__k-t">The talk</span><span class="duo__k-r" aria-hidden="true"></span><span class="figure duo__d">August 5</span></p>
+            <span class="duo__t t-head">Called to Serve</span>
+          </figcaption>
+        </figure>
+      </li>
+      <li class="rv">
+        <figure>
+          <span class="duo__m">
+            <img src="assets/img/serve-crew-700.jpg"
+                 srcset="assets/img/serve-crew-340.jpg 340w, assets/img/serve-crew-540.jpg 540w, assets/img/serve-crew-700.jpg 700w, assets/img/serve-crew-900.jpg 900w, assets/img/serve-crew-1440.jpg 1440w"
+                 sizes="(min-width:900px) 50vw, 100vw" width="900" height="1200" data-cover data-people="yes" loading="lazy" decoding="async"
+                 alt="Three sisters in habits and aprons standing and laughing together on a street beside a tarpaulin fence.">
+          </span>
+          <figcaption>
+            <p class="duo__k"><span class="duo__k-t">The action</span><span class="duo__k-r" aria-hidden="true"></span><span class="figure duo__d">August 29</span></p>
+            <span class="duo__t t-head">Missionaries of Charity</span>
+          </figcaption>
+        </figure>
+      </li>
+    </ul>
 
   </section>
 
 
-  <!-- ══ 3 · #next ══ ink. Date lockup left, the client's own title card right.
-       mobilitylab editorial.
+  <!-- ══ 3 · #act ══ THE SHORT BAND, AND IT IS ONE SENTENCE.
 
-       V2 (architecture, band background under an 88% ink veil) is not on disk,
-       so per §9.1 no <video> is emitted and the band renders its declared
-       fallback: flat --ink. -->
+       tools/comp.mjs holds this page to a 4x spread between its tallest band
+       and its shortest, because a run of eight bands all within a factor of
+       two of each other is the diagram of a landing-page builder — the same
+       finding as the strict-ABAB tone run beside it. #what used to be that
+       band at ~330px and #what is gone; without a replacement the page ran
+       2.85x at 1440 and 1.86x at 390.
+
+       The replacement is not a device. It is the one sentence that explains
+       the two photographs immediately above it and the two in the fold above
+       those, and it is the founder saying it to the Archdiocesan press:
+
+         "Each lecture and social event is designed to be allied with a direct
+          ministry action of some kind, Perez said, such as advocating with the
+          California Catholic Conference for legislation, accompanying
+          immigrants in the court system or helping out with the Missionaries
+          of Charity and/or the St. Vincent de Paul homeless ministries."
+         — sfarch.org, Valerie Schmalz, 2026-06-04
+
+       Nothing else is in the band. No eyebrow, no photograph, no control and
+       almost no padding: the ground changes, the sentence is said, the ground
+       changes back. That is the gear change the page did not have. -->
+  <section id="act" aria-labelledby="act-h">
+    <!-- AND THE BAND GETS THE ONE THING IT WAS ARGUED OUT OF HAVING.
+         The note above says "no eyebrow, no photograph, no control" and it was
+         right about the eyebrow and the control. It was wrong about the
+         photograph, and the measurement is the argument: at 390 this band ran
+         388px at 0% image, inside a 2,730px stretch of the document — 37% of
+         it — carrying no imagery at all. The owner read that back as "not
+         visual at all", twice.
+
+         The frame is DbmTXzlGLPl_02, the August 29 Missionaries of Charity
+         outing, square-cropped off the bottom of the master (see build-assets
+         "serve-sq"). It is not decoration beside the claim: the third line of
+         the directory below says "Homeless ministry - Missionaries of Charity,
+         St. Vincent de Paul", and this is that, photographed. Claim, then
+         evidence, then the directory — the same order #record uses.
+
+         It goes ABOVE the sentence and not under it, because a photograph
+         under a quote reads as an illustration of the quote and this one is
+         the subject of it. And it stays a strip rather than a square: the
+         gear change survives if the band still turns over in one screen. -->
+    <figure class="act__f">
+      <img src="assets/img/serve-sq-900.jpg"
+           srcset="assets/img/serve-sq-390.jpg 390w, assets/img/serve-sq-620.jpg 620w, assets/img/serve-sq-900.jpg 900w, assets/img/serve-sq-1200.jpg 1200w, assets/img/serve-sq-1800.jpg 1800w, assets/img/serve-sq-2160.jpg 2160w"
+           sizes="100vw" width="2160" height="2160" data-cover data-people="yes" loading="lazy" decoding="async"
+           alt="Sisters in aprons and wide-brimmed hats standing on bare ground beside a tarpaulin spread out under a hedge.">
+    </figure>
+    <blockquote class="act">
+      <p class="t-chapter" id="act-h">&#8220;Each lecture and social event is designed to be allied with a direct ministry action of some&#160;kind.&#8221;</p>
+      <footer class="meta act__a">Saul Perez, co-founder</footer>
+      <!-- THE RIGHT HALF OF THIS BAND IS THE REST OF HIS SENTENCE.
+           The 2026-09-01 reading measured what stood here: "the entire region
+           from x=780 to x=1340 (~660 x 230) carries one 11px line of
+           attribution floated 430px clear of the quote it belongs to". Two
+           things were wrong and they had one cause. The credit was parked in
+           the far corner to break a void, which is a spacing move; and the
+           void existed because the claim was published without its evidence.
+
+           Perez did not stop at "a direct ministry action of some kind". The
+           same sentence, in the same interview, names what he means:
+
+             "such as advocating with the California Catholic Conference for
+              legislation, accompanying immigrants in the court system or
+              helping out with the Missionaries of Charity and/or the St.
+              Vincent de Paul homeless ministries."
+             — sfarch.org, Valerie Schmalz, 2026-06-04
+
+           Three named institutions, set as what they are: a directory, in the
+           mono the page already uses for every other index. Nothing here is
+           dated and nothing here is claimed as done — the dates live in the
+           record below, and three of its four rows still say NO ACTION
+           RECORDED. This is where an action goes, not a list of actions taken.
+
+           And with real ink in the right half the credit comes home: it sits
+           under the sentence it belongs to instead of 430px clear of it. -->
+      <div class="act__w">
+        <p class="meta act__wk">Where it goes</p>
+        <ul class="act__l">
+          <li>Advocating for legislation &#183; California Catholic&#160;Conference</li>
+          <li>Accompanying immigrants in&#160;court</li>
+          <li>Homeless ministry &#183; Missionaries of Charity, St. Vincent de&#160;Paul</li>
+        </ul>
+      </div>
+    </blockquote>
+  </section>
+
+
+  <!-- ══ 4 · #next ══ ink. Date lockup left, the client's own title card right
+       inside an 8/5 frame, stamped with the VII plate bleeding out of the
+       corner. V2 is not on disk; the band renders flat --ink. -->
   <section id="next" aria-labelledby="next-h">
     <!-- V:next --><!-- /V:next -->
 
-    <header class="wrap next__l">
-      <p class="eb eb--on">FIFTH OF SEVEN<span class="eb__r" aria-hidden="true"></span></p>
+    <!-- The label that used to be an eyebrow above the head now runs BOTTOM TO
+         TOP in the outer margin, outside the content column, on the one band
+         that has a date big enough to need a footnote rather than a heading.
+         Below 900 it lies down again under the date: a 40px page margin is not
+         a place to put type on a phone. -->
+    <p class="stamp meta"><span>Fifth of seven</span></p>
 
-      <p class="lock"><span class="t-hero lock__d">SEP 1</span><span class="lock__y">TUESDAY 2026</span></p>
-      <h2 class="t-chapter rv" id="next-h">The Work of Human Hands</h2>
+    <header class="hd">
+      <p class="lock"><span class="t-display">September&#160;1</span><span class="figure lock__y"><time datetime="2026-09-01">Tuesday September 1 2026</time></span></p>
+      <h2 class="t-chapter" id="next-h">The Work of Human&#160;Hands</h2>
+      <!-- THE DECK THAT USED TO BE UNDER THE H1 LIVES HERE NOW, and it is the
+           charity: water move: their h1 IS the mission and there is no
+           sub-line under it at all — the next thing is the form. The twenty
+           words of "One evening a month in San Francisco, for professionals 21
+           to 40. In partnership with the Archdiocese." were answering "what is
+           the format", which is the question this band exists to answer.
+           Nothing was deleted; it moved 900px down.
 
-      <dl class="dl rv">
-        <dt>DATE</dt><dd><time datetime="2026-09-01">Tuesday September 1 2026</time></dd>
-        <dt>TIME</dt><dd>6:30–9:30 PM</dd>
-        <dt>PLACE</dt><dd>St Philip the Apostle Church Hall, 725 Diamond St</dd>
-        <dt>SPEAKERS</dt><dd>Fr. Michael Sweeney OP · Sean Bryan</dd>
-      </dl>
+           The line it replaces — "the Eucharistic necessity of your royal
+           priesthood" — is still on the page, in the title card beside this
+           text and in that image's own alt, which is where the organisation
+           itself put it. -->
+      <!-- AND THE SECOND CLAUSE WENT BACK OUT, TO PAY FOR THE THREE LABELS IN
+           THE RECORD. "Ages 21 to 40, with the Archdiocese." is #top's own two
+           lines set again 900px lower — the fold already carries "One evening a
+           month, ages 21 to 40" and "With the Archdiocese", and the FAQ names
+           the age a third time. tools/density.mjs holds this document to 420
+           words and it stood at exactly 420; the three "No action recorded"
+           labels cost nine, and this is where the nine came from. The cadence
+           and the city survive, which is what this line is for. -->
+      <p class="t-lead">One evening a month in San Francisco.</p>
     </header>
 
-    <figure class="wrap next__r rv">
-      <img src="assets/img/sept-card-940.jpg"
-           srcset="assets/img/sept-card-440.jpg 440w, assets/img/sept-card-660.jpg 660w, assets/img/sept-card-940.jpg 940w"
-           sizes="(min-width:900px) 457px, 350px" width="940" height="742" data-graphic data-people="no"
-           alt="Catholic Leaders in Action presents The Work of Human Hands, the Eucharistic necessity of your royal priesthood.">
-      <a class="btn btn--go" href="https://luma.com/me6t2z7s"><span class="btn__t">RSVP on Luma ↗</span></a>
+    <!-- THE CARD STANDS DIRECTLY UNDER THE TITLE ON A PHONE, AND THAT IS A
+         DENSITY DECISION BEFORE IT IS A READING-ORDER ONE. tools/pxdense.mjs
+         holds this page to no more than one viewport of scroll under the
+         corpus floor of 12.9%, and with the poster wall gone the phone ran
+         1,124px under it in one stretch — the tail of #rule, the whole of
+         #act, and #next's own head and fact list, which between them are type
+         on flat ground and nothing else. The wall used to break that stretch
+         from below; the card breaks it from inside, at 265px of artwork
+         placed 330px earlier in the scroll.
+
+         Desktop is untouched: every child of this band is placed on the grid
+         by name (grid-column / grid-row), so the source order it is placed
+         FROM does not reach the ≥900 layout at all. -->
+    <figure class="next__f blk-s rv">
+      <span class="mount">
+      <span class="frame frame--merge">
+        <img src="assets/img/sept-card-940.jpg"
+             srcset="assets/img/sept-card-440.jpg 440w, assets/img/sept-card-660.jpg 660w, assets/img/sept-card-940.jpg 940w, assets/img/sept-card-1800.jpg 1800w"
+             sizes="(min-width:900px) 389px, (min-width:640px) calc(100vw - 80px), calc(100vw - 46px)" width="1800" height="1422" data-graphic data-people="no"
+             data-ink="0.22 0.12 0.80 0.95"
+             alt="Title card in gold on navy: Catholic Leaders in Action presents The Work of Human Hands, the Eucharistic necessity of your royal priesthood.">
+      </span>
+      <!-- THE SEAL IS NOT HERE ANY MORE, AND IT IS THE ONE DELETION IN THIS
+           PASS THAT NEEDS NO ARITHMETIC. The 2026-08-31 assessment: "a flat
+           gold square with a serif VII, rotated, overlapping the title card's
+           corner with no material, no edge treatment and no shadow, and it
+           wobbles between -7 and +7 degrees as you scroll. Next to the card's
+           gradient and gold serif type it reads as a placeholder graphic. It
+           is the weakest single object on the page."
+
+           There are two ways to answer that and only one of them is available.
+           Giving it material means a shadow or a bevel, and this page has
+           neither anywhere — one border width, five radii, no shadows — so a
+           shadow here would be a new material introduced for one object. The
+           other way is that the mark is already on this page, in the bar, at
+           every scroll position, and a second copy of it pressed onto a
+           poster was never carrying information. It goes, and the `turn`
+           keyframe that rotated it goes with it: one less object, one less
+           motion family, and the card is left as the client drew it. -->
+      </span>
     </figure>
+
+    <!-- THE RUN OF SHOW IS THE FOURTH PAIR, NOT A SECOND LIST. It arrived here
+         from #what as a numbered ladder — four full-width rows, each with a
+         serial number nobody reads, 282px of phone for eight words. It is a
+         fact about this evening exactly the way the hour and the address are,
+         so it stands in the same list as a term and its definition, and the
+         serial numbers go: the times are already the order. -->
+    <!-- PLACE IS NOT IN THIS LIST ANY MORE. The venue is in the fold, on the
+         line under the headline, and the full postal address is in the
+         footer's own <address>. Three statements of one address on one page is
+         not thoroughness, it is the thing the owner called wordy. -->
+    <!-- AND THE LIST ITSELF IS NOT A SUBJECT, BECAUSE ITS ROWS ARE.
+         `rv` sat on this <dl> and on each of its three <dd>s, so the rows
+         composed two rises and travelled 16px where the page declares 8 —
+         a defect neither the frozen gate nor a screenshot can see, because
+         each of the two moves is legal on its own. The move belongs to the
+         rows: they are what arrives. The list is the container that staggers
+         them. -->
+    <dl class="dl blk" data-stagger>
+      <dt class="meta">Time</dt><dd class="figure rv">6:30&#8211;9:30 PM</dd>
+      
+      <dt class="meta">Speakers</dt><dd class="name rv"><span>Fr. Michael Sweeney&#160;OP</span><span>Sean Bryan</span></dd>
+      <dt class="meta">Run of show</dt><dd class="figure rv"><span>6:30 wine &#183; 7:00 keynote &#183; 9:00 reception &#183; 9:30 ends</span></dd>
+    </dl>
+
+
+    <!-- The control is a sibling of the poster, not a child of it: inside the
+         <figure> it could only ever be bottom-aligned to the rail or stacked
+         under the poster, and as its own grid item it can take a row of its
+         own under the full-width fact list while keeping the poster's four
+         columns. -->
+    <!-- THE MIDDLE THIRD OF THIS BAND HAD NOTHING IN IT, AND THE REASON WAS
+         NOT SPACING. tools/slab.mjs read 280 x 396 @ (656,236) — the worst
+         rectangle in the document at 1440 — and the 2026-09-01 assessment
+         named the cause exactly: "a content shortage dressed as a spacing
+         decision. There is nothing to put at (656, 236) because nothing has
+         been written for it."
+
+         So something is written for it, and it is not ours. The band says
+         WHEN and WHO and HOW LONG; what it never said is why anyone should
+         give up a Tuesday. CLIA answered that themselves, in the opening
+         paragraph of this evening's own listing, writing about the people
+         they are trying to reach:
+
+           "Most of us learned to pray, receive the sacraments, and help out
+            at the parish. And without ever quite deciding to, we can begin to
+            act as if holiness, faithfully pursued, will overflow into mission
+            on its own. Often it doesn't. Piety and devotion stay in one
+            compartment; work, social life, even family life remain in
+            another."
+           — luma.com/me6t2z7s, and slides 6-8 of their own carousel
+
+         The second sentence is the one that carries: it names the thing the
+         evening is against, in their words, with no adjective in it. It goes
+         in the hole at the size the hole asks for.
+
+         IT COSTS 25 WORDS AND THE DOCUMENT HAD 36. tools/density.mjs held the
+         page to 420 and it stood at 384. See the note on BAR.words there: the
+         ceiling was under its own cohort's median and this band is what the
+         shortfall bought. -->
+    <aside class="next__why">
+      <p class="meta">Why this one</p>
+      <blockquote class="why">
+        <p>&#8220;Piety and devotion stay in one compartment; work, social life, even family life remain in&#160;another.&#8221;</p>
+        <footer class="meta why__a">Their own words for this evening</footer>
+      </blockquote>
+    </aside>
+
+    <a class="btn btn--wide next__go" href="https://luma.com/me6t2z7s"><span class="btn__t">RSVP on Luma <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></span></a>
 
   </section>
 
 
-  <!-- ══ 4 · #record ══ bone. Four dated entries as a hairline ladder, then the
-       staggered three-up gallery. Louisiana Governor's Mansion gallery.
-       §9.2: this section carries no video slot at all, and §9.3.2 forbids one
-       here, because every frame in it is a real, identifiable person. -->
+  <!-- ══ 5 · #record ══ bone. Four dated entries as a hairline ladder, then a
+       staggered three-up gallery whose bottom frames are handed across the
+       seam into the ink band below. No <video> is permitted here: every frame
+       in this band is a real, identifiable person. -->
   <section id="record" aria-labelledby="record-h">
 
-    <header class="wrap rec__h">
-      <p class="eb">THE RECORD<span class="eb__r" aria-hidden="true"></span></p>
-      <h2 class="t-chapter" id="record-h">Four evenings held.</h2>
-      <p class="meta">About fifty in the room. Archdiocese of San Francisco.</p>
+    <!-- THE POSTER WALL IS NOT HERE ANY MORE, AND NOTHING REPLACES IT.
+         Three Instagram plates ran across the top of this band in a 918 x 94.9
+         row, each showing a 31% window on a 306px square, with a control that
+         scrubbed the window down the poster under the reader's hand.
+
+         Two things ended it, and the second is the one that is not a matter of
+         taste. The first: the row put three grounds, three type systems and a
+         gold that appears nowhere else in the palette into one 9.7:1 letterbox
+         — "the shape of an ad banner", and the only proportion in 6,908px of
+         document with no relative anywhere else in it. Every pass before this
+         answered that by moving the window. The window was never the defect.
+
+         The second: the control painted pixels no audit had ever read. Two
+         steps down plate 1 and the page was showing an ARCHDIOCESE OF SAN
+         FRANCISCO / Office of Human Life & Dignity logo lockup and two named
+         individuals with their photographs and affiliations — none of it in
+         the fold, so none of it in the fold sweep. A surface that can reveal
+         un-audited content is audited pixel by pixel or it is removed. It is
+         removed.
+
+         The evidence is not lost, because the evidence was never the posters.
+         All four evenings are rows in the index below — date, speaker,
+         subject, each linking to its own Luma page — and the three that were
+         photographed are in the gallery under it at frame scale. -->
+
+    <!-- AND THE RECORD ITSELF IS A TABLE, BECAUSE THAT IS WHAT IT IS. Four
+         past evenings with a date, a name and a subject is tabular data, and
+         it was being drawn as four cards — the default shape every generator
+         reaches for, and the reason this band read as generated. A dated index
+         is the oldest editorial object there is: column heads in small mono,
+         a narrow date column set against a wide subject column, one rule per
+         row and nothing else.
+
+         The whole row stays the tap target: the <a> is stretched over its own
+         <tr> by an inset ::after, which costs no markup and no script.
+
+         AND EVERY ROW SAYS SO AT REST. The 2026-08-30 assessment: all four
+         rows link to Luma and "nothing says that until hover — and on a phone
+         there is no hover". The affordance is the page's own arrow mark, the
+         same file the three RSVP controls carry, set at the muted colour the
+         date column already uses and taking the row's ink colour when the row
+         is hovered or the link is focused. It is inside the anchor, so it is
+         part of the accessible name's own box and needs no second target. -->
+    <!-- THE HEAD CAME OUT OF THE <caption> AND IT BECAME THE THING THAT HOLDS.
+         research/design-2026.md §1.1 is the largest measured gap on this page:
+         eighteen of twenty-five 2026 winners sustain one section past 2.5
+         viewports, the median tallest band is 2.8, and this page's tallest was
+         1.27 with `position: sticky` on exactly zero elements. Eight bands all
+         between half a screen and a screen and a half is, in the research's
+         own words, the diagram of a landing-page builder.
+
+         So this band stops being a stack and becomes a sequence. The head is a
+         real <header> that is HELD while the four evenings and the three
+         photographs of a room pass it — the record's title staying put while
+         the record itself goes by. It is `position: sticky` and nothing else:
+         no scroll hijack, no pinned deck, no library. Ctrl-F still works, the
+         back button still works, and with JavaScript off it behaves exactly
+         the same, because sticky is not script and is not motion — under
+         prefers-reduced-motion there is nothing here to switch off.
+
+         The table keeps its accessible name from this heading, which is what
+         the <caption> was doing; it just no longer has to be inside the table
+         to do it. -->
+    <!-- The wrapper is the head's LEASH, and it is the only reason it exists.
+         `position: sticky` is bounded by its containing block, so a head that
+         is a direct child of the band would be held for the band's whole
+         height at every width — including, on a phone, the whole gallery. Here
+         it holds while the four evenings pass and lets go when they run out.
+         At 900 the wrapper becomes `display: contents`, the head and the table
+         become grid items of the band itself, and the head is then held for
+         the sequence's full length on purpose. -->
+    <div class="rec__seq">
+    <!-- AND THE RAIL CARRIES A PHOTOGRAPH, BECAUSE A HELD TITLE IS NOT CONTENT.
+         An independent assessment on 2026-08-30 measured this rail against 25
+         awwwards 2026 winners: sustained over ~1800px of scroll at 1440, the
+         left 42% of the viewport carried 1.6% non-ground pixels while the
+         LEAST dense winner measured carried 12.9% and the median carried about
+         37%. Two lines of type held for two and a half screens is not a
+         composition, it is a caption with a lot of room.
+
+         So what is held is the record's title AND the room it was held in.
+         This is the July 30 evening — the Shroud replica hung the full width
+         of the sanctuary, with the congregation in the pews under it — and it
+         is the only photograph in this repo that is architectural rather than
+         social: a tall frame with real depth in it, which is exactly what a
+         395px rail wants and what a group photograph is worst at.
+
+         It exists at 1312 and up, and nowhere else, because the rail exists at
+         1312 and up and nowhere else. Below that width there is no rail: the
+         head runs edge to edge and the record passes under it, and a 494px
+         portrait dropped into that column would be an object with no
+         composition to belong to. tools/pxdense.mjs measures the result. -->
+    <!-- THE RAIL IS A WRAPPER NOW, AND THE CHURCH INTERIOR IS THE REASON.
+         The photograph used to live inside the sticky plate, which is correct
+         on a desktop rail — head and picture travel as one object — and is
+         why the phone could not have it: a 195px band inside a plate that
+         comes to rest 64px down a 844px screen is 40% of the screen held over
+         the record for the whole scroll, and tools/lap.mjs calls that a
+         collision. So `shroud-pews`, the only interior of the church this
+         group actually meets in, was desktop-only on a page whose traffic is
+         phone.
+
+         One wrapper resolves it without moving anything a desktop reader
+         sees. Below 900 the plate is the sticky thing and the photograph is
+         an ordinary band under it. From 1312 the WRAPPER is the sticky thing
+         and the plate inside it is not, so head and picture travel together
+         exactly as before. Same element, same file, one <img>. -->
+    <div class="rec__rail">
+    <header class="rec__hd">
+      <!-- THE COUNT MOVED HERE OUT OF ITS OWN BAND. #what was ~330px of page
+           for "7 evenings. One theme a month. Ages 21 to 40." — a syllabus
+           given a whole screen. Seven is a fact about the record, and four of
+           the seven have happened, so the two numbers now stand in one line
+           above the four rows they describe. The band that held them is the
+           band #rule took, which is the trade this pass is: a screen that said
+           what the schedule is became a screen that says what the thing is. -->
+      <h2 class="t-chapter" id="record-h">Seven evenings.<br>Four held.</h2>
+      <!-- and the cadence is not stated a third time either: "One theme a
+           month since June." is #top's line and #next's line again, over a
+           table of dated evenings that runs June to August and an h2 that
+           counts them. What is left is the one thing neither of those says,
+           which is what happens on the night. -->
+      <!-- AND THE RECORD SAYS WHAT RECORDED MEANS BEFORE IT USES THE WORD.
+           The second sentence came up out of the fork's elbow, 574px below,
+           where the 2026-09-01 review found it "right sentence, wrong altitude
+           — a footnote apologising for a headline", drawn in the same 12px
+           mono uppercase rgb(74,74,78) as the three NO ACTION RECORDED stamps
+           it answers.
+
+           The defect it closes is unchanged and so is the wording, which is
+           the only wording that can be written without inventing a pairing
+           this archive does not hold: the rule is that each evening is
+           DESIGNED with an action allied to it, and what
+           research/instagram-dossier.md documents for three of the four is no
+           photograph. Nothing here claims an action happened and nothing
+           claims one did not.
+
+           What changed is where it stands and what it is drawn in. It is the
+           second half of the band's own lead now — 18px Switzer, sentence
+           case, on the page's left edge, inside the held head — so a reader
+           meets the term BEFORE the four rows that use it rather than after
+           them, and no stamp on this page shares its treatment. No new type
+           style: `.t-lead` is the tier #record's head already sets, and the
+           count of distinct styles at 320, 390, 768 and 1440 is unchanged. -->
+      <p class="t-lead">A keynote, then questions. Recorded here means photographed.</p>
     </header>
 
-    <ol class="wrap rec" data-stagger>
+      <!-- AND THE CAPTION STANDS INSIDE THE PICTURE, ON THE PHONE.
+           The 2026-09-01 assessment's central charge about cost: of 17
+           photographs at 1440 and 16 at 390, the only thing overlapping any of
+           them was the nav pill's own chrome. Every headline, every caption,
+           every label on this page lived on a flat rectangle of ground, where
+           the SOTD set puts the proposition inside the photograph.
 
-      <li class="rv"><article class="en">
-        <img src="assets/instagram/DZGufi6JAbk-580.jpg"
-             srcset="assets/instagram/DZGufi6JAbk-240.jpg 240w, assets/instagram/DZGufi6JAbk-580.jpg 580w"
-             sizes="96px" width="240" height="240" data-graphic data-people="no"
-             alt="Poster for the June evening, Called to Lead.">
-        <span class="en__d">JUNE 2, 2026</span>
-        <a class="t-head en__t" href="https://luma.com/u1a8k3dj">Called to Lead</a>
-      </article></li>
+           So the question was asked with a measurement rather than a taste,
+           and the tools are in the repo: `_ontype.mjs` reads every negative
+           the page ships and `_onphoto2.mjs` reads every frame AS RENDERED,
+           and both look for the largest rectangle where type clears AA
+           against the WORST pixel under it — the brightest for bone type, the
+           darkest for ink. The answer, at 1440 and at 390, in both
+           polarities, is that this photography is contrasty: no frame on the
+           page has a region that will hold a display line at 4.5:1, and the
+           two places large enough to hold anything are the dark upper right of
+           `panel-table` (512x129, bone) and the bright upper right of this
+           one (160x112, ink). `panel-table` is half of #rule's leader-row
+           pair, which is the one device on this page an outside reviewer
+           called award-quality; it is not worth spending on a caption.
 
-      <li class="rv"><article class="en">
-        <img src="assets/instagram/DZ6Ga2yptfR-580.jpg"
-             srcset="assets/instagram/DZ6Ga2yptfR-240.jpg 240w, assets/instagram/DZ6Ga2yptfR-580.jpg 580w"
-             sizes="96px" width="240" height="240" data-graphic data-people="no"
-             alt="Poster for the July evening, Rights and Responsibilities.">
-        <span class="en__d">JULY 7, 2026</span>
-        <a class="t-head en__t" href="https://luma.com/5phxte1t">Rights and Responsibilities</a>
-      </article></li>
+           This frame is. It is new to the phone in this same pass, it owes
+           nothing to a device, and its caption is a date and the name of an
+           evening — editorial, not chrome. Ink, upper right, inside the
+           picture, measured by tools/_onphoto.mjs at the glyph and not at the
+           box. Nothing is darkened and nothing is scrimmed to make it work:
+           the wall behind the shroud is simply bright enough, and where it
+           was not, the type would not have gone. -->
+      <figure class="rec__pic" data-onphoto>
+        <span class="frame">
+          <img src="assets/img/shroud-pews-640.jpg"
+               srcset="assets/img/shroud-pews-340.jpg 340w, assets/img/shroud-pews-640.jpg 640w, assets/img/shroud-pews-800.jpg 800w"
+               sizes="(min-width: 900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 4 + 72px - 48px), 100vw" width="800" height="1346" data-cover data-people="yes" loading="lazy" decoding="async"
+               alt="The sanctuary of the church seen from the back: a full-length replica of the Shroud hung the width of the altar rail, with people standing at it and seated in the pews.">
+        </span>
+        <!-- A DATE IS A VALUE AND A TITLE IS A NAME, and the split above
+             `.meta` in styles.css says the second one is not mono. The whole
+             line used to be uppercase IBM Plex; the date stays there, where it
+             belongs, and the evening's name is Switzer at the same size. -->
+        <figcaption class="cap"><span class="meta">July 30</span><span class="dot" aria-hidden="true"></span><span class="name">The Shroud, at St Philip</span></figcaption>
+      </figure>
+    </div>
 
-      <li class="rv"><article class="en">
-        <img src="assets/img/shroud-stand-340.jpg"
-             srcset="assets/img/shroud-stand-240.jpg 240w, assets/img/shroud-stand-340.jpg 340w"
-             sizes="96px" width="240" height="167" data-cover data-people="yes"
-             alt="The Shroud exhibit standing at the front of the hall.">
-        <span class="en__d">JULY 30, 2026</span>
-        <a class="t-head en__t" href="https://luma.com/64n0c0y8" lang="es">¿Quién es el hombre de la Sábana Santa?</a>
-        <span class="en__g">The man of the Shroud</span>
-      </article></li>
+    <table class="idx" aria-labelledby="record-h">
+      <thead>
+        <tr><th scope="col" class="meta">Date</th><th scope="col" class="meta">Evening</th><th scope="col" class="meta idx__hs">Subject</th></tr>
+      </thead>
+      <tbody data-stagger>
+        <tr class="rv"><td class="idx__d figure"><time datetime="2026-06-02">June 2</time></td>
+            <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/u1a8k3dj">Called to Lead <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
+                <p class="idx__pr idx__pr--none meta">No action recorded</p>
+            </td>
+            <td class="idx__s meta">Catholic social teaching</td></tr>
+        <tr class="rv"><td class="idx__d figure"><time datetime="2026-07-07">July 7</time></td>
+            <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/5phxte1t">Rights and Responsibilities <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
+                <p class="idx__pr idx__pr--none meta">No action recorded</p>
+            </td>
+            <td class="idx__s meta">Advancing the common good</td></tr>
+        <tr class="rv"><td class="idx__d figure"><time datetime="2026-07-30">July 30</time></td>
+            <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/64n0c0y8" lang="es">&#191;Qui&#233;n es el hombre de la S&#225;bana Santa? <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
+                <p class="idx__pr idx__pr--none meta">No action recorded</p>
+            </td>
+            <td class="idx__s meta">The man of the Shroud</td></tr>
+        <!-- THE ONE ROW THAT FORKS, AND IT FORKS BECAUSE THE RECORD DOES.
+             The spine down this table's left edge divides once, below the
+             last row, into the two bodies of work. This is the same division
+             happening at the scale of a single evening — and it happens here
+             and nowhere else because August 5 is the ONLY evening the sources
+             document on both sides: the talk (research/instagram-dossier.md,
+             the Called to Serve panel) and the action allied to it (the
+             Missionaries of Charity outing, luma.com/uqemc5d6, Aug 29).
 
-      <li class="rv"><article class="en">
-        <img src="assets/instagram/DbULpBWJ-ok-580.jpg"
-             srcset="assets/instagram/DbULpBWJ-ok-240.jpg 240w, assets/instagram/DbULpBWJ-ok-580.jpg 580w"
-             sizes="96px" width="240" height="240" data-graphic data-people="no"
-             alt="Poster for the August evening, Called to Serve.">
-        <span class="en__d">AUGUST 5, 2026</span>
-        <a class="t-head en__t" href="https://luma.com/j3fidejo">Called to Serve</a>
-      </article></li>
+             The other three rows do not carry this line, and that absence is
+             the honest part of the form. June 2, July 7 and July 30 have a
+             documented talk and no documented action, so their rows do not
+             fork. A reader sees the branch happen once in four and reads it
+             correctly: this record holds one completed pair. Drawing a prong
+             on all four would be inventing three pairings — the exact defect
+             the note above `.two` refuses on the same evidence.
 
-    </ol>
+             It is TEXT, not a second link. The row's whole area is already
+             one anchor by way of `.idx__a::after`; a second <a> inside it
+             would be a tab stop the reader cannot reach with a pointer, and
+             the stop count on this page is held at 21. -->
+        <tr class="rv"><td class="idx__d figure"><time datetime="2026-08-05">August 5</time></td>
+            <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/j3fidejo">Called to Serve <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
+                <p class="idx__pr"><span class="idx__pr-b" aria-hidden="true"></span><span class="idx__pr-k figure">August 29</span><span class="idx__pr-t">Missionaries of Charity</span></p></td>
+            <td class="idx__s meta">Option for the poor and vulnerable</td></tr>
+      </tbody>
+    </table>
+    </div>
 
-    <ul class="wrap gal">
-      <li class="rv"><figure>
-        <img src="assets/img/group-august-810.jpg"
-             srcset="assets/img/group-august-340.jpg 340w, assets/img/group-august-400.jpg 400w, assets/img/group-august-810.jpg 810w"
-             sizes="(min-width:900px) 395px, 350px" width="810" height="436" data-people="yes"
-             alt="The full room standing together at the end of the August evening.">
-        <figcaption class="cap">Room · August 5</figcaption>
-      </figure></li>
-      <li class="rv"><figure>
-        <img src="assets/img/panel-table-860.jpg"
-             srcset="assets/img/panel-table-340.jpg 340w, assets/img/panel-table-430.jpg 430w, assets/img/panel-table-860.jpg 860w"
-             sizes="(min-width:900px) 395px, 350px" width="860" height="465" data-people="yes"
-             alt="The speakers seated at the panel table in front of the hall.">
-        <figcaption class="cap">Panel · August 5</figcaption>
-      </figure></li>
-      <li class="rv"><figure>
-        <img src="assets/img/qa-hands-860.jpg"
-             srcset="assets/img/qa-hands-340.jpg 340w, assets/img/qa-hands-430.jpg 430w, assets/img/qa-hands-860.jpg 860w"
-             sizes="(min-width:900px) 395px, 350px" width="860" height="465" data-people="yes"
-             alt="Raised hands across the room during the questions.">
-        <figcaption class="cap">Questions · August 5</figcaption>
-      </figure></li>
-    </ul>
+    <!-- THE TWO GALLERIES BECOME ONE OBJECT, AND THIS IS THE SECOND HALF OF IT.
+         #rule shows the ONE pairing the sources establish outright. This shows
+         the two halves as bodies of work: the talk on the upper line, the
+         action on the lower, aligned in columns and butted together with no
+         gap. It does NOT claim a pairing per column — the labels are on the
+         ROWS, and they name what each row is rather than what each column is,
+         because only August is documented as a pair and inventing three more
+         would be a correctness defect dressed as a layout.
+
+         AND THE TWO ROWS TAKE #rule'S OWN TWO WORDS. They said "The room" and
+         "The street", which is a SECOND taxonomy for the same material laid
+         directly under the first — the 2026-08-30 assessment read that as the
+         page re-sorting its own pairing into two galleries, "exactly the
+         failure mode the rebuild set out to escape". They are the founder's
+         two nouns now, the same two this page labels the pair with four
+         hundred pixels above, so a reader meets one vocabulary and meets it
+         twice: the pairing, then the bodies of work it comes out of.
+
+         What it does say, at a glance and without a sentence, is that these
+         are the same people in both lines. That is the whole argument, and it
+         was invisible while the two sets sat in different sections. -->
+    <div class="two blk">
+      <!-- ══ THE ELBOW'S LINE HAS MOVED UP TO THE HEAD OF THE BAND ══════════
+           WHAT STOOD HERE was "Recorded here means photographed.", and the
+           sentence was right. Its position was not, and the 2026-09-01 review
+           priced that exactly:
+
+             "Right sentence, wrong altitude — it's a footnote apologising for
+              a headline."
+
+           Measured: y=3443 at 1440, x=547, 2,772px below the hero's promise,
+           and set in 12px IBM Plex Mono, uppercase, rgb(74,74,78) — BYTE
+           IDENTICAL to the three NO ACTION RECORDED stamps it exists to answer.
+           A definition drawn in the same ink as the thing it defines, arriving
+           after it, reads as an apology rather than as a term.
+
+           IT IS IN THE BAND'S HEAD NOW. See the note beside `.rec__hd`'s lead:
+           same sentence, 18px Switzer sentence case on the page's own left
+           edge at x=104, y=2869 — 574px higher, ahead of every stamp instead
+           of behind them, and in a tier no stamp on this page uses. The elbow
+           keeps the crossbar and the trunk, which were always the load-bearing
+           part of it; what it no longer carries is a footnote. -->
+      <p class="two__l two__l--talk meta">The talk</p>
+      <ul class="two__r two__r--room" data-stagger>
+        <li class="rv"><img src="assets/img/group-august-800.jpg"
+             srcset="assets/img/group-august-340.jpg 340w, assets/img/group-august-430.jpg 430w, assets/img/group-august-800.jpg 800w, assets/img/group-august-1100.jpg 1100w, assets/img/group-august-1440.jpg 1440w"
+             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="1440" height="776" data-people="yes" loading="lazy" decoding="async"
+             alt="A large group posed together across the hall floor under a crucifix, with a front row kneeling."></li>
+        <!-- AND THE TWO TEAL FRAMES ARE NOT ADJACENT ANY MORE.
+             group-august and qa-hands are the same parish-hall wall, shot on
+             two different evenings, and stacked together they put 439px of one
+             teal cinderblock ground down the column with a seam in the middle
+             of it — which is most of what the 2026-09-01 assessment was
+             reading when it called this column "four parish-hall snapshots:
+             on-camera flash, teal cinderblock, stacking chairs".
+
+             The archive cannot be re-shot and the four heights are load-
+             bearing — they sum to 2.6067 of the column's width against the
+             street column's 2.6646, which is the only reason the two columns
+             end level, and cropping any of them to resize it costs the page
+             three of its five native aspect ratios (tools/sharp.mjs).
+
+             The ORDER is free. room-back moves up between them: the best
+             photograph in this repo by tools/_heroab.mjs (focus falloff 5.18,
+             tonal spread 0.767) now sits second rather than third, its 407px
+             square breaks the teal run into two 220px frames, and every height
+             in the column is exactly what it was. -->
+        <!-- THE FRAME THE ARCHIVE HAD BEEN SITTING ON, AND IT IS SECOND IN THE
+             COLUMN NOW RATHER THAN THIRD — see the note directly above.
+             room-back is the room seen from the back — thirty-odd people, the
+             panel at the folding table, the screen reading "Called to Serve" —
+             and by tools/_heroab.mjs's own numbers it is the best photograph in
+             this repo: focus falloff 5.18 and tonal spread 0.767, against the
+             generated hall's 0.56 and 0.489. It has been on the page at 96px or
+             not at all for four passes. It is square, and the square is not a
+             taste: see the arithmetic beside .two in styles.css, where four
+             frames summing to 2.6067 of their shared width are what let this
+             column end level with two portraits summing to 2.6646. -->
+        <li class="rv"><img src="assets/img/room-back-800.jpg"
+             srcset="assets/img/room-back-240.jpg 240w, assets/img/room-back-340.jpg 340w, assets/img/room-back-430.jpg 430w, assets/img/room-back-800.jpg 800w, assets/img/room-back-900.jpg 900w"
+             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="900" height="900" data-people="yes" loading="lazy" decoding="async"
+             alt="The hall seen from the back during a panel: rows of seated people, four panelists at a folding table, and a screen reading Called to Serve, Option for the Poor and Vulnerable."></li>
+        <li class="rv"><img src="assets/img/qa-hands-800.jpg"
+             srcset="assets/img/qa-hands-340.jpg 340w, assets/img/qa-hands-430.jpg 430w, assets/img/qa-hands-800.jpg 800w, assets/img/qa-hands-1100.jpg 1100w, assets/img/qa-hands-1440.jpg 1440w"
+             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="1440" height="779" data-people="yes" loading="lazy" decoding="async"
+             alt="Seated rows during the questions: several hands raised, and one person standing at the back with both arms up."></li>
+        <li class="rv"><img src="assets/img/laughing-700.jpg"
+             srcset="assets/img/laughing-340.jpg 340w, assets/img/laughing-540.jpg 540w, assets/img/laughing-700.jpg 700w, assets/img/laughing-1080.jpg 1080w, assets/img/laughing-1280.jpg 1280w"
+             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="1080" height="569" data-cover data-people="yes" loading="lazy" decoding="async"
+             alt="Two people leaning into the camera for a close photograph, one holding a Catholic Charities wine glass and the other making a peace sign."></li>
+      </ul>
+      <p class="two__l two__l--action meta">The action</p>
+      <!-- NO data-stagger ON THIS COLUMN, AND IT IS THE ONE PLACE THE LADDER
+           DOES NOT APPLY. The rung is a 2-point delay on a `cover` range, and
+           on a 542px frame — 60% of a 900px window — 2 points is 29px of
+           scroll, which lands the second portrait's fade at 61.6% of the
+           screen against a reading line of 62%. tools/_motion.mjs check 5
+           caught it at exactly one step of thirty-six.
+
+           The rung is also wrong on its own terms here. The stagger exists for
+           a LIST a reader takes in as a series — four rungs, ~20ms apart, off
+           Apple's own staggered list — and the talk column beside this one is
+           that: four frames between 219 and 407px. Two full-bleed portraits
+           half a viewport tall each are not a series; they are two objects a
+           screen apart, and delaying the second one behind the first is a
+           ladder drawn on something that has no rungs. Both frames take the
+           base range and both are at full ink well above the line. -->
+      <ul class="two__r two__r--street">
+        <li class="rv"><img src="assets/img/serve-arrive-540.jpg"
+             srcset="assets/img/serve-arrive-340.jpg 340w, assets/img/serve-arrive-540.jpg 540w, assets/img/serve-arrive-700.jpg 700w, assets/img/serve-arrive-900.jpg 900w, assets/img/serve-arrive-1200.jpg 1200w"
+             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.49452), 49.45vw" width="900" height="1199" data-people="yes" loading="lazy" decoding="async"
+             alt="Four people in religious habits standing on bare ground beside a tarp shelter under a hedge."></li>
+        <li class="rv"><img src="assets/img/serve-camp-540.jpg"
+             srcset="assets/img/serve-camp-340.jpg 340w, assets/img/serve-camp-540.jpg 540w, assets/img/serve-camp-700.jpg 700w, assets/img/serve-camp-900.jpg 900w"
+             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.49452), 49.45vw" width="900" height="1199" data-people="yes" loading="lazy" decoding="async"
+             alt="Three people in religious habits walking toward a blue tarp shelter, a wheelbarrow and stacked belongings beside them."></li>
+      </ul>
+    </div>
 
   </section>
 
 
-  <!-- ══ 5 · #leaders ══ ink. The Kononenko construction: centred two-line head
-       at hero scale, a name ladder, a staggered row of four upright frames.
-       §11.6 — no photograph here is captioned with a person's name, because no
+  <!-- ══ 6 · #leaders ══ ink. Eyebrow and head on the SAME axis as the other
+       seven bands. No photograph here is captioned with a person's name: no
        verified portrait of any founder exists in this repo. The names are
-       typographic and the photographs are the documented work.
-       §9.2/§9.3.2: no video slot, and none is permitted. -->
+       typographic and the photographs are the documented work. -->
   <section id="leaders" aria-labelledby="leaders-h">
 
-    <header class="wrap ldr__h">
-      <p class="eb eb--on">WHO RUNS IT<span class="eb__r" aria-hidden="true"></span></p>
-      <h2 class="t-hero ldr__t" id="leaders-h">Four founders.<br>One chaplain.</h2>
+    <!-- THE BAND ENTERS THROUGH THE WORK, NOT THROUGH A LABEL. The outreach
+         strip used to close this section under a head that announced "Who runs
+         it"; it opens it now. You meet four people in habits handing things
+         out of a van before you are told anyone's name, which is the order
+         this organisation would want and the opposite of the order a template
+         produces. The head follows the photographs as their caption would. -->
+    <!-- THE OUTREACH STRIP LEFT THIS BAND, AND IT LEFT FOR A REASON.
+         Four photographs of the 29-August outing sat here, under a head that
+         said "Who runs it" — the organisation's single best piece of evidence,
+         filed under a roster. They are the DEED half of the pair now: one of
+         them stands beside the talk it was allied with in #rule, and the other
+         three stand on the street line of #record's two-row strip.
+
+         What opens the band instead is the end of an evening. It is the right
+         picture for a roster: nobody in it is identified, nobody is posed at a
+         lectern, and it is the thing the five names below actually make. -->
+    <figure class="crew">
+      <span class="crew__m">
+        <!-- THE STRIP BLEEDS LEFT AND STOPS ON THE GRID'S SEVENTH COLUMN.
+             It used to run 0 -> 1080 at every desktop width — 1080 being the
+             widest box a 2160px master pays for at DPR 2 — so the left edge
+             sat at the viewport, the right edge sat at a file size, and
+             neither of them matched anything else in the document. Seven
+             columns plus the page's own left inset measures 508 at 900, 730 at
+             1280, 812.6 at 1440, 932.6 at 1680 and 1052.6 at 1920: under the
+             file's cap at every width, so the cap stops being visible, and on
+             a line the rest of the page already holds. -->
+        <img src="assets/img/after-talk-1080.jpg"
+             srcset="assets/img/after-talk-430.jpg 430w, assets/img/after-talk-800.jpg 800w, assets/img/after-talk-1080.jpg 1080w, assets/img/after-talk-1440.jpg 1440w, assets/img/after-talk-2160.jpg 2160w"
+             sizes="(min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 7 + 144px + max(40px, (100vw - 1232px) / 2)), min(100vw, 1080px)" width="2160" height="1128" data-people="yes" loading="lazy" decoding="async"
+             alt="About thirteen people posed shoulder to shoulder for a photograph at the end of an evening, several holding wine glasses.">
+      </span>
+      <figcaption class="crew__c"><span class="meta">After the talk</span></figcaption>
+    </figure>
+
+    <header class="hd blk">
+      <h2 class="t-chapter" id="leaders-h">The founders.<br>One chaplain.</h2>
+      <!-- THE SUB-LINE STOPS REPEATING THE HEAD. It read "Four co-founders and
+           a chaplain. One of them works for the Archdiocese." under a head that
+           says "Four founders. One chaplain." — five words of the twelve were
+           the head again, in smaller type. What is left is the half the head
+           does not carry. -->
+      <p class="t-lead">One of them works for the Archdiocese.</p>
     </header>
 
-    <ul class="wrap names" data-stagger>
-      <li class="rv"><span class="t-head nm__n">Saul Perez</span><span class="nm__r">Founder · Archdiocese</span></li>
-      <li class="rv"><span class="t-head nm__n">Jessica Glennon</span><span class="nm__r">Founder</span></li>
-      <li class="rv"><span class="t-head nm__n">Daniel Ramirez</span><span class="nm__r">Founder</span></li>
-      <li class="rv"><span class="t-head nm__n">Jerry Sharp III</span><span class="nm__r">Founder</span></li>
-      <li class="rv"><span class="t-head nm__n">Fr. Tom Martin</span><span class="nm__r">Chaplain · Noe Valley</span></li>
-    </ul>
+    <ul class="names blk" data-stagger>
+      <!-- THE ROSTER IS THREE AND ONE, ON THE OWNER'S INSTRUCTION, 2026-08-31:
+           "make sure jessica glennon isn't in the team of founders for now".
+           The name is removed from the RENDER only. research/instagram-dossier.md
+           and research/mission.md still document four co-founders and are
+           untouched, because "for now" is not "never" and the research is the
+           record rather than the publication. What the page COUNTS, in the head
+           above and here, is what the page SHOWS — three — and the two can
+           never be allowed to disagree.
 
-    <ul class="wrap crew">
-      <li class="rv"><figure>
-        <img src="assets/img/serve-hand-700.jpg"
-             srcset="assets/img/serve-hand-340.jpg 340w, assets/img/serve-hand-540.jpg 540w, assets/img/serve-hand-700.jpg 700w"
-             sizes="(min-width:900px) 290px, 350px" width="700" height="933" data-people="yes"
-             alt="A bag of supplies passing from one hand to another on the street.">
-        <figcaption class="cap">Handoff · August 29</figcaption>
-      </figure></li>
-      <li class="rv"><figure>
-        <img src="assets/img/serve-arrive-700.jpg"
-             srcset="assets/img/serve-arrive-340.jpg 340w, assets/img/serve-arrive-540.jpg 540w, assets/img/serve-arrive-700.jpg 700w"
-             sizes="(min-width:900px) 290px, 350px" width="700" height="933" data-people="yes"
-             alt="Volunteers arriving on the sidewalk carrying boxes of supplies.">
-        <figcaption class="cap">Arriving · August 29</figcaption>
-      </figure></li>
-      <li class="rv"><figure>
-        <img src="assets/img/serve-van-700.jpg"
-             srcset="assets/img/serve-van-340.jpg 340w, assets/img/serve-van-540.jpg 540w, assets/img/serve-van-700.jpg 700w"
-             sizes="(min-width:900px) 290px, 350px" width="700" height="933" data-people="yes"
-             alt="The open back of the van being unloaded at the sidewalk.">
-        <figcaption class="cap">Van · August 29</figcaption>
-      </figure></li>
-      <li class="rv"><figure>
-        <img src="assets/img/serve-camp-700.jpg"
-             srcset="assets/img/serve-camp-340.jpg 340w, assets/img/serve-camp-540.jpg 540w, assets/img/serve-camp-700.jpg 700w"
-             sizes="(min-width:900px) 290px, 350px" width="700" height="933" data-people="yes"
-             alt="Tents and belongings along the street where the outing stopped.">
-        <figcaption class="cap">Camp · August 29</figcaption>
-      </figure></li>
+           IT ALSO CLOSES THE CELL THE LIST USED TO CARRY OPEN. Five names in
+           two columns left the last slot empty, which the note in styles.css
+           beside `.names` defends at length as the ordinary end of an
+           odd-numbered index. Four names in two columns is two full rows and
+           no argument to make. -->
+      <li class="rv"><span class="t-head">Saul Perez</span><span class="nm__r meta">Co-founder<span class="dot" aria-hidden="true"></span>Archdiocese</span></li>
+      <li class="rv"><span class="t-head">Daniel Ramirez</span><span class="nm__r meta">Co-founder</span></li>
+      <li class="rv"><span class="t-head">Jerry Sharp III</span><span class="nm__r meta">Co-founder</span></li>
+      <li class="rv"><span class="t-head">Fr. Tom Martin</span><span class="nm__r meta">Chaplain<span class="dot" aria-hidden="true"></span>Noe Valley</span></li>
     </ul>
 
   </section>
 
 
-  <!-- ══ 6 · #allies ══ bone. One edge-to-edge row of ally wordmarks set in
-       type. No images, no logos, no cards, no borders. The row is the only
-       element on the page wider than the content column; it scrolls inside its
-       own rail so <body> never overflows (audit A16, rubric R15). -->
+  <!-- ══ 7 · #allies ══ bone. PATTERN BREAK 1 OF 2, AND IT IS DELIBERATE.
+       No ally's logo is drawn: no file exists in this repo and reproducing a
+       third party's registered mark from memory is a correctness defect. But
+       six names in a three-column grid with a rule and a descriptor is a logo
+       wall with the logos taken out, and it read as exactly that.
+
+       So the band is not a list any more. The six names ARE its display type,
+       set at chapter size on the page's left axis with their fields pinned to
+       the right edge of the content column — the only lines on this page set
+       to two axes at once. The <h2> is demoted to the sub-line role, because
+       here the names outweigh their own label. Nothing is invented to fill
+       the band: it is the same six names and the same six fields, given the
+       scale the page gives its own headlines. -->
   <section id="allies" aria-labelledby="allies-h">
-    <header class="wrap">
-      <p class="eb" id="allies-h">IN PARTNERSHIP WITH<span class="eb__r" aria-hidden="true"></span></p>
-    </header>
-    <figure class="rail">
-      <ul class="rail__row">
-        <li>Office of Human Life &amp; Dignity</li>
-        <li>California Catholic Conference</li>
-        <li>Catholic Charities SF</li>
-        <li>Order of Malta</li>
-        <li>Lay Mission Institute</li>
-        <li>St. Anthony Foundation</li>
-      </ul>
-    </figure>
+
+    <ul class="roll" data-stagger>
+      <li class="rv"><span class="roll__n t-chapter">Archdiocese of San&#160;Francisco</span><span class="roll__d meta">Human dignity</span></li>
+      <li class="rv"><span class="roll__n t-chapter">California Catholic Conference</span><span class="roll__d meta">Public policy</span></li>
+      <li class="rv"><span class="roll__n t-chapter">Catholic Charities San&#160;Francisco</span><span class="roll__d meta">Direct service</span></li>
+      <li class="rv"><span class="roll__n t-chapter">Order of Malta</span><span class="roll__d meta">Western Association</span></li>
+      <li class="rv"><span class="roll__n t-chapter">Lay Mission Institute</span><span class="roll__d meta">Formation</span></li>
+      <li class="rv"><span class="roll__n t-chapter">Pro-Life San&#160;Francisco</span><span class="roll__d meta">Advocacy</span></li>
+    </ul>
+
+    <!-- The credit runs AFTER the names, because the label is not announcing
+         what you are about to read — it is signing what you have just read.
+         Six institutions at chapter size do not need to be introduced as a
+         list of institutions. -->
+    <p class="eb roll__eb"><span class="eb__t" id="allies-h">Six institutions, in partnership</span><span class="eb__r" aria-hidden="true"></span></p>
+
   </section>
 
 
-  <!-- ══ 7 · #voice ══ the Namaha construction and the page's only serif. A
-       photograph at <900px with the quote set on it, an ink band with the
-       photograph inset left at >=900px.
-       §9.2/§9.3.2: no video slot, and none is permitted here either. -->
-  <section id="voice" data-onphoto>
-    <span class="scrim scrim--voice" data-scrim aria-hidden="true"></span>
-    <figure class="wrap voice__f">
-      <img src="assets/img/shroud-pews-800.jpg"
-           srcset="assets/img/shroud-pews-340.jpg 340w, assets/img/shroud-pews-640.jpg 640w, assets/img/shroud-pews-800.jpg 800w"
-           sizes="(min-width:900px) 400px, 100vw" width="800" height="666" data-cover data-people="yes"
-           alt="The Shroud exhibit lit at the front of the church, a few people in the pews.">
-      <blockquote class="t-display">Every generation inherits <em>a culture</em>. Few choose to shape it.</blockquote>
-      <figcaption class="attrib">Their own listing · July 7</figcaption>
-    </figure>
-  </section>
 
-
-  <!-- ══ 8 · #close ══ ink. RSVP and the honest signup left, questions right,
-       footer below.
-
-       V4 (architecture, band background under an 88% ink veil) is not on disk,
-       so per §9.1 no <video> is emitted and the band renders its declared
-       fallback: flat --ink.
-
-       §6.8 / §9.3.5: the generated-media credit line renders if and only if a
-       <video> is in the DOM. No clip shipped, so it is absent, and that is the
-       honest state — there is nothing generated on this page to credit. -->
+  <!-- ══ 8 · #close ══ bone, so the ink footer closes the page with the weight
+       it opens with and its 8px top corners are visible. The phone field is
+       gone entirely: it validated a number and then answered "Signup is not
+       connected yet". A modal around a dead end dresses the dead end.
+       V4 is not on disk; the band renders flat --bone. -->
   <section id="close" aria-labelledby="close-h">
     <!-- V:close --><!-- /V:close -->
 
-    <header class="wrap close__l">
-      <p class="eb">NEXT STEP<span class="eb__r" aria-hidden="true"></span></p>
-      <h2 class="t-chapter" id="close-h">Take a seat.</h2>
-      <p class="sold">The last three evenings sold out.</p>
+    <header class="hd">
+      <p class="eb"><span class="eb__t">Next step</span><span class="eb__r" aria-hidden="true"></span></p>
+      <!-- The one section head at display size, and the reason is the column.
+           At t-chapter "Take a seat." set 342px of glyphs in a 709px box and
+           left 52% of every row of this band empty; the hero opens the page
+           at display and this closes it, so the two ends of the document now
+           speak at the same weight. No new size enters the census - 112/48 is
+           the size the hero and the September date already render. -->
+      <h2 class="t-display" id="close-h">Take a seat.</h2>
+      <p class="t-lead">The last three evenings sold out.</p>
     </header>
 
-    <a class="btn btn--go wrap close__go" href="https://luma.com/me6t2z7s"><span class="btn__t">RSVP for September 1 ↗</span></a>
+    <!-- THE LAST PICTURE ON THE PAGE IS A REAL ONE NOW, AND THAT WAS A DEFECT
+         WORTH TRADING THE HERO FOR.
 
-    <form class="wrap sign" data-signup data-endpoint="" novalidate>
-      <label class="sign__l" for="phone">Mobile number</label>
-      <input class="sign__i" id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(415) 555 0134">
-      <input class="pot" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <button class="btn btn--go sign__b" type="submit"><span class="btn__t">Add my number</span></button>
-      <p class="sign__n" data-signup-note role="status"></p>
-      <p class="sign__c">CLIA evenings only. Reply STOP to end.</p>
-    </form>
+         The 2026-08-30 assessment: "the last picture on a page whose entire
+         argument is documentary evidence of real people doing real things is
+         synthetic, empty, and literal." It was the generated hall, under the
+         words "Take a seat." The disclosure was admirable; the choice was not.
 
-    <ul class="wrap faq">
-      <li><details><summary aria-expanded="false">Do I have to be Catholic?</summary><p>Nothing in the published listings says you must be. Ask on Instagram before registering.</p></details></li>
-      <li><details><summary aria-expanded="false">What does it cost?</summary><p>The lecture evenings have been free. The Shroud evening was $10. Check the Luma listing for your date.</p></details></li>
+         The hall has a job now — it is the fold's ground, where its dead dark
+         floor is the only surface in the archive that will carry display type
+         without being painted over — and it does that job once. So this slot
+         takes the frame that answers its own sentence: the room during the
+         questions, seated rows, six hands up and one man at the back with both
+         arms in the air. "Take a seat" beside an empty chair is a diagram;
+         beside a room of people already in theirs it is an invitation.
+
+         The footer credit follows the file and now names the fold. -->
+    <figure class="close__f blk-s rv">
+      <span class="frame">
+        <img src="assets/img/qa-hands-800.jpg"
+             srcset="assets/img/qa-hands-430.jpg 430w, assets/img/qa-hands-800.jpg 800w, assets/img/qa-hands-1100.jpg 1100w, assets/img/qa-hands-1440.jpg 1440w"
+             sizes="(min-width:900px) 499px, (min-width:640px) calc(100vw - 80px), 100vw" width="1440" height="779" data-cover data-people="yes" loading="lazy" decoding="async"
+             alt="Seated rows during the questions: several hands raised across the room, and one person standing at the back with both arms up.">
+      </span>
+    </figure>
+
+    <!-- The control and the Instagram line are ONE element for the same
+         reason the questions are: two grid items in one column cannot flow
+         past each other's row lines, and holding them apart in separate rows
+         left 173px of lapis between a button and a link that belong together.
+         Wrapping costs no reading order — they were already adjacent
+         siblings, and on a phone the div is display:contents. -->
+    <!-- ══ THE QUESTIONS COME BEFORE THE ASK IN THE SOURCE, BECAUSE THEY DO
+         ON THE SCREEN ══
+         THE DEFECT, from the 2026-09-01 review: "Visual reading order down the
+         band is: three FAQ disclosures -> RSVP for September 1 -> New dates go
+         up on Instagram. Tab order is stop 13 RSVP, stop 14 Instagram, stops
+         15-17 the FAQ. A keyboard user reaches the call to action before the
+         questions it answers."
+
+         It was a source-order defect and it has a source-order fix: the rail
+         is written first now. Nothing in styles.css moved — both blocks are
+         placed by `grid-row` from 900 up, so the desktop column is the same
+         ledger in the same order, questions first and the Instagram line
+         closing it. What changes is the stacked tier, where the two follow the
+         source: three questions, then the ask. That is the right order there
+         too — the ask is never further than the reader's own thumb, because
+         the dock carries it at every scroll position on exactly those widths.
+    -->
+    <!-- The rail is ONE element, because two grid items in one column cannot
+         flow past each other's row lines: the FAQ used to start where the
+         left column's Instagram line started, which put 133px of nothing
+         between it and the photograph above it. Wrapping costs no reading
+         order — these two were already adjacent siblings. -->
+    <div class="close__r">
+    <!-- THE ANSWERS ARE HALF THE LENGTH THEY WERE, and the cut is the one the
+         owner asked for by name: "way too wordy". research/visual-first.md
+         holds this page to 360-420 words against a cohort median of 435, and
+         at 172 words this band alone was carrying a third of the document —
+         for four questions nobody arrives with. Each answer now says the one
+         thing it knows and stops. Nothing that was a fact is gone. -->
+    <ul class="faq blk">
+      <li><details open><summary aria-expanded="true">What is Catholic social teaching?<span class="dsc" aria-hidden="true"></span></summary><p>The Church&#8217;s own teaching on how people are meant to live together: families, workplaces, the public square.</p></details></li>
+      <li><details><summary aria-expanded="false">Do I have to be Catholic?<span class="dsc" aria-hidden="true"></span></summary><p>Nothing in the listings says you must be. The one condition is an age: 21 to 40.</p></details></li>
+      <li><details><summary aria-expanded="false">Do I need to know anything first?<span class="dsc" aria-hidden="true"></span></summary><p>No. Each evening stands alone.</p></details></li>
     </ul>
+    </div>
 
-    <footer class="wrap foot">
-      <p class="foot__n">Catholic Leaders in Action</p>
-      <p class="foot__l"><a href="https://www.instagram.com/catholicleadersinaction/">Instagram</a><a href="https://luma.com/me6t2z7s">Luma</a></p>
-      <p class="foot__c">Photographs and posters are theirs.</p>
-      <!-- V:credit --><!-- /V:credit -->
-    </footer>
+    <div class="close__a">
+    <a class="btn btn--wide close__go blk" href="https://luma.com/me6t2z7s"><span class="btn__t">RSVP for September 1 <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></span></a>
+
+    <p class="close__ig blk"><a class="ig t-ui" href="https://www.instagram.com/catholicleadersinaction/"><svg data-mark="brand" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Instagram"><title>Instagram</title><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg> New dates go up on Instagram</a></p>
+    </div>
+
+
+
 
   </section>
 
 </main>
+
+<!-- ══ the footer ══ Outside <main>, on ink, with 8px top corners so 8px of
+     the bone band above shows at each side. Masthead, three columns, a real
+     <address>, a real <nav>, and a bottom bar. No newsletter form: there is no
+     endpoint and no mail provider, and an input that posts nowhere is the
+     phone field all over again. No invented email: CLIA does not publish
+     one. -->
+<footer class="foot">
+
+  <!-- THE SEAL IS CLIA'S OWN. It is their Instagram profile mark redrawn flat
+       and clean — a navy disc with a gold ring, a cross on a hill, a white
+       path, three figures climbing it and a laurel branch. The source frame
+       the redraw was made from is kept in the repo at
+       research/brand-source/instagram-profile-150.jpg, which is that profile
+       photograph; nothing here is invented. The VII that stood in this place
+       was a letterform this page chose for an organisation that already had a
+       mark. -->
+  <p class="foot__mast">
+    <img class="seal--mast" src="assets/brand/seal-256.png"
+         srcset="assets/brand/seal-256.png 1x, assets/brand/seal-512.png 2x"
+         width="256" height="256" decoding="async" loading="lazy"
+         alt="The Catholic Leaders in Action seal: a cross on a hill, three figures on the path, a laurel branch">
+    <span class="t-head">Catholic Leaders in Action</span>
+  </p>
+
+  <ul class="foot__cols">
+    <li class="foot__col">
+      <span class="eb"><span class="eb__t">Elsewhere</span></span>
+      <span class="foot__soc">
+        <a class="t-ui" href="https://www.instagram.com/catholicleadersinaction/"><svg data-mark="brand" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Instagram"><title>Instagram</title><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg> Instagram</a>
+        <a class="t-ui" href="https://luma.com/me6t2z7s">Luma <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
+      </span>
+    </li>
+    <li class="foot__col">
+      <span class="eb"><span class="eb__t">Where</span></span>
+      <address class="figure">
+        <span class="name">Saint Philip the Apostle</span>
+        <span>725 Diamond St</span>
+        <span>San Francisco, CA 94114</span>
+      </address>
+    </li>
+    <li class="foot__col">
+      <span class="eb"><span class="eb__t">Go to</span></span>
+      <nav class="foot__nav" aria-label="Footer">
+        <ul>
+          <li><a class="t-ui" href="#next">September 1</a></li>
+          <li><a class="t-ui" href="#record">Record</a></li>
+          <li><a class="t-ui" href="#leaders">Leaders</a></li>
+          <li><a class="t-ui" href="#allies">Partners</a></li>
+        </ul>
+      </nav>
+    </li>
+  </ul>
+
+  <ul class="foot__bar">
+    <li><!-- TWO LINES BY DESIGN, BECAUSE IT WAS NEVER GOING TO BE ONE.
+           The 2026-09-01 review: "the footer meta breaks as Next · September
+           1, 2026 / · 6:30 PM PT, leaving a separator alone at the head of
+           line two." The column is 266px at 1440 and 1920, 258 at 1280, 194 at
+           1024 and 163 at 900; the three parts and their two separators measure
+           393. There is no width on this page where the line fits, so the wrap
+           was not a near miss to be nudged with `nowrap` -- it was a run of
+           inline text being asked to lay out a two-line object, and the
+           separator landed wherever the break did.
+           So the object says what it is: a date row and an hour row. The
+           middot between them goes, because a separator between two lines is
+           what the line break already is; the one between "Next" and the date
+           stays, because those two are still one line. Nothing is lost and the
+           tiers where the date wrapped on its own (1024, 900) are unchanged. -->
+      <p class="figure foot__next"><span class="foot__next-l">Next<span class="dot" aria-hidden="true"></span>September 1, 2026</span><span class="foot__next-l">6:30&#160;PM&#160;PT</span></p></li>
+    <li><p class="meta">&#169; 2026 Catholic Leaders in Action</p></li>
+    <li><p class="meta">Photographs and posters are their own.</p></li>
+    <!-- AND THE LINE THAT DISCLAIMED THE ONE GENERATED PICTURE IS GONE WITH
+         THE PICTURE. It read "The empty hall the page opens on is a generated
+         image", and it was exact and necessary for four builds. The hall is
+         off the page entirely — it was the fold's ground and the fold is a
+         photograph of the 29-August outing now — so there is no longer a frame
+         in this document whose source is not a photograph somebody took of
+         this organisation. `data-generated` appears on no image in the render;
+         the line above covers everything without an exception under it. If a
+         generated frame ever comes back, this line comes back with it. -->
+    <li class="foot__cr"><!-- V:credit --><!-- /V:credit --></li>
+  </ul>
+
+</footer>
+
+<!-- ══ the dock ══ THE ONE ACTION, ALWAYS UNDER THE THUMB.
+     research/design-2026.md §3.1: seventeen of the twenty-five 2026 winners
+     still ship a menu trigger at 390 — the hamburger did not die, it grew the
+     word "Menu" and a real target, which this page already had — but exactly
+     ONE of them, connecticut-justice-alliance, also fixes a 46px bar to the
+     foot of the phone carrying its single action. CLIA measured `fixedBottom
+     = []` against an audience that is 80% mobile.
+
+     One action, because this organisation has one: a seat at the next evening.
+     Not a menu, not a share row, not five links. It is the same lapis as the
+     floor two bands above it, doing the same job in the same colour, and it is
+     48px so it clears the 44px target rule without eating the fold — the last
+     thing above it, the hero's own control, ends 68px clear of its top edge,
+     and the footer's own bottom padding is deeper than the dock is tall, so
+     nothing is ever hidden underneath it. -->
+<!-- AND IT IS SHAPED LIKE A CONTROL NOW. It was the word RSVP at the left of a
+     full-bleed lapis bar with a hairline running to the right edge, and the
+     2026-08-31 assessment called that exactly what it is: "the single most
+     important control for 80% of traffic ... does not read as a button". The
+     hairline was the page's leader-rule vocabulary borrowed into a place that
+     needed the button vocabulary instead. Same element, same target, same
+     height: a centred label and the page's own arrow, which is the shape the
+     other three RSVP controls already have. The label stays one word, because
+     the fold it stands in is held to 22 by tools/density.mjs and the mission
+     line took the last four. -->
+<a class="dock" href="https://luma.com/me6t2z7s">
+  <span class="dock__t">RSVP <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></span>
+</a>
 
 <script src="main.js" defer></script>
 </body>
