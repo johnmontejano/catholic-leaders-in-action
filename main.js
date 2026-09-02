@@ -193,6 +193,38 @@
     }
   }
 
+  /* ── 3b. the record's rail changes photograph with the row ────────────
+     Four plates stand on top of one another in #record's sticky rail, one per
+     evening, and exactly one of them carries .is-on. The row whose band
+     crosses the middle tenth of the screen names it; CSS does the fade.
+
+     WHY THIS IS SCRIPT AND NOT A SCROLL-DRIVEN KEYFRAME. A crossfade written
+     on `animation-timeline: view()` would park three of the four plates at an
+     opacity extreme for most of their crossing, which is the exact family
+     tools/frozen.mjs exists to catch. A class and a transition have no pose
+     to be stuck in.
+
+     WITH THIS FILE ABSENT the first plate is the one the markup marks and the
+     rail shows June 2 for the whole record — the same page, one photograph
+     instead of four. Under prefers-reduced-motion the observer still runs and
+     the stylesheet's own `transition: none` makes the change instant, which
+     is what a reader who asked for no motion should get: the right picture,
+     without the fade. Below 900 there is no stack at all — the four plates
+     are an ordinary column — and .is-on paints nothing. */
+  var recRows = document.querySelectorAll('#record .idx tbody tr[data-rec]');
+  var recPlates = document.querySelectorAll('#record .rec__ph[data-rec]');
+  if (recRows.length && recPlates.length && 'IntersectionObserver' in window) {
+    var showPlate = function (k) {
+      for (var i = 0; i < recPlates.length; i++)
+        recPlates[i].classList.toggle('is-on', recPlates[i].getAttribute('data-rec') === k);
+    };
+    var recObs = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++)
+        if (entries[i].isIntersecting) showPlate(entries[i].target.getAttribute('data-rec'));
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    for (var r = 0; r < recRows.length; r++) recObs.observe(recRows[r]);
+  }
+
   /* ── 4. the entrance is GONE FROM THIS FILE ───────────────────────────
      It used to be an IntersectionObserver writing .is-in, a per-child
      transition-delay ladder, and two timers whose only job was to guarantee

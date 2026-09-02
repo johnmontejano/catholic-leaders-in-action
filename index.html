@@ -537,7 +537,7 @@
     <figure class="act__f">
       <img src="assets/img/serve-sq-900.jpg"
            srcset="assets/img/serve-sq-390.jpg 390w, assets/img/serve-sq-620.jpg 620w, assets/img/serve-sq-900.jpg 900w, assets/img/serve-sq-1200.jpg 1200w, assets/img/serve-sq-1800.jpg 1800w, assets/img/serve-sq-2160.jpg 2160w"
-           sizes="100vw" width="2160" height="2160" data-cover data-people="yes" loading="lazy" decoding="async"
+           sizes="(min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 5 + 96px), 100vw" width="2160" height="2160" data-cover data-people="yes" loading="lazy" decoding="async"
            alt="Sisters in aprons and wide-brimmed hats standing on bare ground beside a tarpaulin spread out under a hedge.">
     </figure>
     <blockquote class="act">
@@ -636,7 +636,7 @@
       <span class="frame frame--merge">
         <img src="assets/img/sept-card-940.jpg"
              srcset="assets/img/sept-card-440.jpg 440w, assets/img/sept-card-660.jpg 660w, assets/img/sept-card-940.jpg 940w, assets/img/sept-card-1800.jpg 1800w"
-             sizes="(min-width:900px) 389px, (min-width:640px) calc(100vw - 80px), calc(100vw - 46px)" width="1800" height="1422" data-graphic data-people="no"
+             sizes="(min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 5 + 96px), (min-width:640px) calc(100vw - 80px), calc(100vw - 46px)" width="1800" height="1422" data-graphic data-people="no"
              data-ink="0.22 0.12 0.80 0.95"
              alt="Title card in gold on navy: Catholic Leaders in Action presents The Work of Human Hands, the Eucharistic necessity of your royal priesthood.">
       </span>
@@ -659,31 +659,6 @@
            motion family, and the card is left as the client drew it. -->
       </span>
     </figure>
-
-    <!-- THE RUN OF SHOW IS THE FOURTH PAIR, NOT A SECOND LIST. It arrived here
-         from #what as a numbered ladder — four full-width rows, each with a
-         serial number nobody reads, 282px of phone for eight words. It is a
-         fact about this evening exactly the way the hour and the address are,
-         so it stands in the same list as a term and its definition, and the
-         serial numbers go: the times are already the order. -->
-    <!-- PLACE IS NOT IN THIS LIST ANY MORE. The venue is in the fold, on the
-         line under the headline, and the full postal address is in the
-         footer's own <address>. Three statements of one address on one page is
-         not thoroughness, it is the thing the owner called wordy. -->
-    <!-- AND THE LIST ITSELF IS NOT A SUBJECT, BECAUSE ITS ROWS ARE.
-         `rv` sat on this <dl> and on each of its three <dd>s, so the rows
-         composed two rises and travelled 16px where the page declares 8 —
-         a defect neither the frozen gate nor a screenshot can see, because
-         each of the two moves is legal on its own. The move belongs to the
-         rows: they are what arrives. The list is the container that staggers
-         them. -->
-    <dl class="dl blk" data-stagger>
-      <dt class="meta">Time</dt><dd class="figure rv">6:30&#8211;9:30 PM</dd>
-      
-      <dt class="meta">Speakers</dt><dd class="name rv"><span>Fr. Michael Sweeney&#160;OP</span><span>Sean Bryan</span></dd>
-      <dt class="meta">Run of show</dt><dd class="figure rv"><span>6:30 wine &#183; 7:00 keynote &#183; 9:00 reception &#183; 9:30 ends</span></dd>
-    </dl>
-
 
     <!-- The control is a sibling of the poster, not a child of it: inside the
          <figure> it could only ever be bottom-aligned to the rail or stacked
@@ -731,7 +706,46 @@
       </blockquote>
     </aside>
 
+    <!-- THE FACTS AND THE CONTROL ARE ONE ELEMENT, AND #close ALREADY MADE
+         THIS ARGUMENT. Two grid items in one column cannot flow past each
+         other's row lines: held apart in separate rows, the button could only
+         land at the bottom of whatever row the poster set, which is how it
+         came to sit 477px below the list it belongs to at 1440 while the
+         poster ran 395px wide and 312 tall in the far corner — "una pantalla
+         de formulario con un póster perdido a la derecha".
+
+         Wrapped, the two stand together at the TOP of the column beside the
+         poster: the list, then the control one module under it. It costs no
+         reading order — they were already adjacent siblings — and below 900
+         the wrapper is `display: contents`, so the stacked tier is the poster,
+         then the facts, then the button, in that order and nothing else. -->
+    <div class="next__r">
+    <!-- THE RUN OF SHOW IS THE FOURTH PAIR, NOT A SECOND LIST. It arrived here
+         from #what as a numbered ladder — four full-width rows, each with a
+         serial number nobody reads, 282px of phone for eight words. It is a
+         fact about this evening exactly the way the hour and the address are,
+         so it stands in the same list as a term and its definition, and the
+         serial numbers go: the times are already the order. -->
+    <!-- PLACE IS NOT IN THIS LIST ANY MORE. The venue is in the fold, on the
+         line under the headline, and the full postal address is in the
+         footer's own <address>. Three statements of one address on one page is
+         not thoroughness, it is the thing the owner called wordy. -->
+    <!-- AND THE LIST ITSELF IS NOT A SUBJECT, BECAUSE ITS ROWS ARE.
+         `rv` sat on this <dl> and on each of its three <dd>s, so the rows
+         composed two rises and travelled 16px where the page declares 8 —
+         a defect neither the frozen gate nor a screenshot can see, because
+         each of the two moves is legal on its own. The move belongs to the
+         rows: they are what arrives. The list is the container that staggers
+         them. -->
+    <dl class="dl blk" data-stagger>
+      <dt class="meta">Time</dt><dd class="figure rv">6:30&#8211;9:30 PM</dd>
+      
+      <dt class="meta">Speakers</dt><dd class="name rv"><span>Fr. Michael Sweeney&#160;OP</span><span>Sean Bryan</span></dd>
+      <dt class="meta">Run of show</dt><dd class="figure rv"><span>6:30 wine &#183; 7:00 keynote &#183; 9:00 reception &#183; 9:30 ends</span></dd>
+    </dl>
+
     <a class="btn btn--wide next__go" href="https://luma.com/me6t2z7s"><span class="btn__t">RSVP <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></span></a>
+    </div>
 
   </section>
 
@@ -889,47 +903,78 @@
       <p class="t-lead">A keynote, then questions. Recorded here means photographed.</p>
     </header>
 
-      <!-- AND THE CAPTION STANDS INSIDE THE PICTURE, ON THE PHONE.
-           The 2026-09-01 assessment's central charge about cost: of 17
-           photographs at 1440 and 16 at 390, the only thing overlapping any of
-           them was the nav pill's own chrome. Every headline, every caption,
-           every label on this page lived on a flat rectangle of ground, where
-           the SOTD set puts the proposition inside the photograph.
+      <div class="rec__pic" data-rec-stack>
+      <!-- ══ ONE PHOTOGRAPH PER EVENING, AND IT CHANGES WITH THE ROW ══════
+           WHAT STOOD HERE was one church interior, held for the whole of the
+           record while four dated evenings passed it, and under it a 2x2 (+2)
+           gallery of 203px stamps. The 2026-09-02 assessment measured both in
+           one sentence: seven photographs in a single 390x844 screen, four
+           423px stamps and a rail at 1440, "hasta 7" against a reference set
+           that shows one render per screen — "el punto entero que separa 7.5
+           de 8.5". And of the rail itself: "la foto no cambia" across twelve
+           frames of scroll, on the one device this page owns that nothing else
+           has.
 
-           So the question was asked with a measurement rather than a taste,
-           and the tools are in the repo: `_ontype.mjs` reads every negative
-           the page ships and `_onphoto2.mjs` reads every frame AS RENDERED,
-           and both look for the largest rectangle where type clears AA
-           against the WORST pixel under it — the brightest for bone type, the
-           darkest for ink. The answer, at 1440 and at 390, in both
-           polarities, is that this photography is contrasty: no frame on the
-           page has a region that will hold a display line at 4.5:1, and the
-           two places large enough to hold anything are the dark upper right of
-           `panel-table` (512x129, bone) and the bright upper right of this
-           one (160x112, ink). `panel-table` is half of #rule's leader-row
-           pair, which is the one device on this page an outside reviewer
-           called award-quality; it is not worth spending on a caption.
+           So the gallery is gone and the rail is the gallery. Four plates,
+           one per evening, in the order the table below reads them — June 2,
+           July 7, July 30, August 5 — stacked in one frame and cross-faded as
+           each row crosses the middle of the screen. Below 900 there is no
+           rail and no stack: the four run edge to edge, one under the other,
+           each captioned with its own date, and no screen carries more than
+           two.
 
-           This frame is. It is new to the phone in this same pass, it owes
-           nothing to a device, and its caption is a date and the name of an
-           evening — editorial, not chrome. Ink, upper right, inside the
-           picture, measured by tools/_onphoto.mjs at the glyph and not at the
-           box. Nothing is darkened and nothing is scrimmed to make it work:
-           the wall behind the shroud is simply bright enough, and where it
-           was not, the type would not have gone. -->
-      <figure class="rec__pic" data-onphoto>
+           July 30's plate is DcOpj1nG-9D_02, which has been on disk and off
+           the page since it was built. It is the best negative in this
+           archive and it had never had a box: a man in black at the left of
+           the sanctuary with his arm out along a full-length Shroud replica
+           hung across the altar rail. See tools/build-assets.py, where it is
+           restored to 1774 and cut 1.45 for exactly this plate.
+
+           THE CROSSFADE IS A TRANSITION, NOT A SCROLL-DRIVEN ANIMATION, and
+           that is a gate decision rather than a taste. A keyframe on
+           `animation-timeline: view()` would leave three of the four plates
+           parked at an opacity extreme for most of their crossing, which is
+           the family tools/frozen.mjs exists to catch. An IntersectionObserver
+           on the rows writes a class and CSS transitions opacity over
+           --dur-long; under prefers-reduced-motion the transition is not
+           declared at all and the plate simply changes. -->
+      <figure class="rec__ph is-on" data-rec="0">
         <span class="frame">
-          <img src="assets/img/shroud-pews-640.jpg"
-               srcset="assets/img/shroud-pews-340.jpg 340w, assets/img/shroud-pews-640.jpg 640w, assets/img/shroud-pews-800.jpg 800w"
-               sizes="(min-width: 900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 4 + 72px - 48px), 100vw" width="800" height="1346" data-cover data-people="yes" loading="lazy" decoding="async"
-               alt="The sanctuary of the church seen from the back: a full-length replica of the Shroud hung the width of the altar rail, with people standing at it and seated in the pews.">
+          <img src="assets/img/hall-june-1420.jpg"
+               srcset="assets/img/hall-june-430.jpg 430w, assets/img/hall-june-780.jpg 780w, assets/img/hall-june-1000.jpg 1000w, assets/img/hall-june-1420.jpg 1420w, assets/img/hall-june-2400.jpg 2400w"
+               sizes="(min-width:1312px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 6 + 120px), (min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 5 + 96px), 100vw" width="2400" height="1500" data-people="yes" loading="lazy" decoding="async"
+               alt="A large group posed together across the parish hall floor on the first evening, a red hanging on the wall behind them and a Christ icon on the right, and empty chairs in front of them.">
         </span>
-        <!-- A DATE IS A VALUE AND A TITLE IS A NAME, and the split above
-             `.meta` in styles.css says the second one is not mono. The whole
-             line used to be uppercase IBM Plex; the date stays there, where it
-             belongs, and the evening's name is Switzer at the same size. -->
-        <figcaption class="cap"><span class="meta">July 30</span><span class="dot" aria-hidden="true"></span><span class="name">The Shroud, at St Philip</span></figcaption>
+        <figcaption class="cap"><span class="meta">June 2</span><span class="dot" aria-hidden="true"></span><span class="name">Called to Lead</span></figcaption>
       </figure>
+      <figure class="rec__ph" data-rec="1">
+        <span class="frame">
+          <img src="assets/img/laughing-1420.jpg"
+               srcset="assets/img/laughing-430.jpg 430w, assets/img/laughing-780.jpg 780w, assets/img/laughing-1000.jpg 1000w, assets/img/laughing-1420.jpg 1420w, assets/img/laughing-1707.jpg 1707w"
+               sizes="(min-width:1312px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 6 + 120px), (min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 5 + 96px), 100vw" width="1707" height="1137" data-people="yes" loading="lazy" decoding="async"
+               alt="Two people leaning into the camera for a close photograph, one holding a Catholic Charities wine glass and the other making a peace sign.">
+        </span>
+        <figcaption class="cap"><span class="meta">July 7</span><span class="dot" aria-hidden="true"></span><span class="name">Rights and Responsibilities</span></figcaption>
+      </figure>
+      <figure class="rec__ph" data-rec="2">
+        <span class="frame">
+          <img src="assets/img/shroud-stand-1420.jpg"
+               srcset="assets/img/shroud-stand-430.jpg 430w, assets/img/shroud-stand-780.jpg 780w, assets/img/shroud-stand-1000.jpg 1000w, assets/img/shroud-stand-1420.jpg 1420w, assets/img/shroud-stand-1774.jpg 1774w"
+               sizes="(min-width:1312px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 6 + 120px), (min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 5 + 96px), 100vw" width="1774" height="1223" data-people="yes" loading="lazy" decoding="async"
+               alt="A man in black with a shaved head standing at the left of the sanctuary, his arm out along a full-length replica of the Shroud hung across the altar rail, a projection screen behind him.">
+        </span>
+        <figcaption class="cap"><span class="meta">July 30</span><span class="dot" aria-hidden="true"></span><span class="name">The man of the Shroud</span></figcaption>
+      </figure>
+      <figure class="rec__ph" data-rec="3">
+        <span class="frame">
+          <img src="assets/img/room-back-1000.jpg"
+               srcset="assets/img/room-back-340.jpg 340w, assets/img/room-back-430.jpg 430w, assets/img/room-back-780.jpg 780w, assets/img/room-back-1000.jpg 1000w, assets/img/room-back-1454.jpg 1454w"
+               sizes="(min-width:1312px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 6 + 120px), (min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 5 + 96px), 100vw" width="1454" height="938" data-people="yes" loading="lazy" decoding="async"
+               alt="The hall seen from the back during a panel: rows of seated people, four panelists at a folding table, and a screen reading Called to Serve, Option for the Poor and Vulnerable.">
+        </span>
+        <figcaption class="cap"><span class="meta">August 5</span><span class="dot" aria-hidden="true"></span><span class="name">Called to Serve</span></figcaption>
+      </figure>
+      </div>
     </div>
 
     <table class="idx" aria-labelledby="record-h">
@@ -953,15 +998,15 @@
         <tr><th scope="col" class="meta">Date</th><th scope="col" class="meta">Evening</th><th scope="col" class="meta idx__hs">Subject</th></tr>
       </thead>
       <tbody data-stagger>
-        <tr class="rv"><td class="idx__d figure"><time datetime="2026-06-02">June 2</time></td>
+        <tr class="rv" data-rec="0"><td class="idx__d figure"><time datetime="2026-06-02">June 2</time></td>
             <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/u1a8k3dj">Called to Lead <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
             </td>
             <td class="idx__s meta">Catholic social teaching</td></tr>
-        <tr class="rv"><td class="idx__d figure"><time datetime="2026-07-07">July 7</time></td>
+        <tr class="rv" data-rec="1"><td class="idx__d figure"><time datetime="2026-07-07">July 7</time></td>
             <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/5phxte1t">Rights and Responsibilities <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
             </td>
             <td class="idx__s meta">Advancing the common good</td></tr>
-        <tr class="rv"><td class="idx__d figure"><time datetime="2026-07-30">July 30</time></td>
+        <tr class="rv" data-rec="2"><td class="idx__d figure"><time datetime="2026-07-30">July 30</time></td>
             <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/64n0c0y8" lang="es">&#191;Qui&#233;n es el hombre de la S&#225;bana Santa? <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
             </td>
             <td class="idx__s meta">The man of the Shroud</td></tr>
@@ -979,14 +1024,15 @@
              documented talk and no documented action, so their rows do not
              fork. A reader sees the branch happen once in four and reads it
              correctly: this record holds one completed pair. Drawing a prong
-             on all four would be inventing three pairings — the exact defect
-             the note above `.two` refuses on the same evidence.
+             on all four would be inventing three pairings, which is the same
+             thing the rail refuses when it shows one plate per evening and
+             claims no pairing for any of them.
 
              It is TEXT, not a second link. The row's whole area is already
              one anchor by way of `.idx__a::after`; a second <a> inside it
              would be a tab stop the reader cannot reach with a pointer, and
              the stop count on this page is held at 21. -->
-        <tr class="rv"><td class="idx__d figure"><time datetime="2026-08-05">August 5</time><span class="idx__pr-b" aria-hidden="true"></span></td>
+        <tr class="rv" data-rec="3"><td class="idx__d figure"><time datetime="2026-08-05">August 5</time><span class="idx__pr-b" aria-hidden="true"></span></td>
             <td class="idx__t"><a class="t-head idx__a" href="https://luma.com/j3fidejo">Called to Serve <svg data-mark="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6.5 17.5 17.5 6.5M8.6 6.5h8.9v8.9"/></svg></a>
                 <p class="idx__pr"><span class="idx__pr-k figure">August 29</span><span class="idx__pr-t">Missionaries of Charity</span></p></td>
             <td class="idx__s meta">Option for the poor and vulnerable</td></tr>
@@ -994,124 +1040,6 @@
     </table>
     </div>
 
-    <!-- THE TWO GALLERIES BECOME ONE OBJECT, AND THIS IS THE SECOND HALF OF IT.
-         #rule shows the ONE pairing the sources establish outright. This shows
-         the two halves as bodies of work: the talk on the upper line, the
-         action on the lower, aligned in columns and butted together with no
-         gap. It does NOT claim a pairing per column — the labels are on the
-         ROWS, and they name what each row is rather than what each column is,
-         because only August is documented as a pair and inventing three more
-         would be a correctness defect dressed as a layout.
-
-         AND THE TWO ROWS TAKE #rule'S OWN TWO WORDS. They said "The room" and
-         "The street", which is a SECOND taxonomy for the same material laid
-         directly under the first — the 2026-08-30 assessment read that as the
-         page re-sorting its own pairing into two galleries, "exactly the
-         failure mode the rebuild set out to escape". They are the founder's
-         two nouns now, the same two this page labels the pair with four
-         hundred pixels above, so a reader meets one vocabulary and meets it
-         twice: the pairing, then the bodies of work it comes out of.
-
-         What it does say, at a glance and without a sentence, is that these
-         are the same people in both lines. That is the whole argument, and it
-         was invisible while the two sets sat in different sections. -->
-    <div class="two blk">
-      <!-- ══ THE ELBOW'S LINE HAS MOVED UP TO THE HEAD OF THE BAND ══════════
-           WHAT STOOD HERE was "Recorded here means photographed.", and the
-           sentence was right. Its position was not, and the 2026-09-01 review
-           priced that exactly:
-
-             "Right sentence, wrong altitude — it's a footnote apologising for
-              a headline."
-
-           Measured: y=3443 at 1440, x=547, 2,772px below the hero's promise,
-           and set in 12px IBM Plex Mono, uppercase, rgb(74,74,78) — BYTE
-           IDENTICAL to the three NO ACTION RECORDED stamps it exists to answer.
-           A definition drawn in the same ink as the thing it defines, arriving
-           after it, reads as an apology rather than as a term.
-
-           IT IS IN THE BAND'S HEAD NOW. See the note beside `.rec__hd`'s lead:
-           same sentence, 18px Switzer sentence case on the page's own left
-           edge at x=104, y=2869 — 574px higher, ahead of every stamp instead
-           of behind them, and in a tier no stamp on this page uses. The elbow
-           keeps the crossbar and the trunk, which were always the load-bearing
-           part of it; what it no longer carries is a footnote. -->
-      <p class="two__l two__l--talk meta">The talk</p>
-      <ul class="two__r two__r--room" data-stagger>
-        <li class="rv"><img src="assets/img/group-august-800.jpg"
-             srcset="assets/img/group-august-340.jpg 340w, assets/img/group-august-430.jpg 430w, assets/img/group-august-800.jpg 800w, assets/img/group-august-1100.jpg 1100w, assets/img/group-august-1440.jpg 1440w"
-             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="1440" height="776" data-people="yes" loading="lazy" decoding="async"
-             alt="A large group posed together across the hall floor under a crucifix, with a front row kneeling."></li>
-        <!-- AND THE TWO TEAL FRAMES ARE NOT ADJACENT ANY MORE.
-             group-august and qa-hands are the same parish-hall wall, shot on
-             two different evenings, and stacked together they put 439px of one
-             teal cinderblock ground down the column with a seam in the middle
-             of it — which is most of what the 2026-09-01 assessment was
-             reading when it called this column "four parish-hall snapshots:
-             on-camera flash, teal cinderblock, stacking chairs".
-
-             The archive cannot be re-shot and the four heights are load-
-             bearing — they sum to 2.6067 of the column's width against the
-             street column's 2.6646, which is the only reason the two columns
-             end level, and cropping any of them to resize it costs the page
-             three of its five native aspect ratios (tools/sharp.mjs).
-
-             The ORDER is free. room-back moves up between them: the best
-             photograph in this repo by tools/_heroab.mjs (focus falloff 5.18,
-             tonal spread 0.767) now sits second rather than third, its 407px
-             square breaks the teal run into two 220px frames, and every height
-             in the column is exactly what it was. -->
-        <!-- THE FRAME THE ARCHIVE HAD BEEN SITTING ON, AND IT IS SECOND IN THE
-             COLUMN NOW RATHER THAN THIRD — see the note directly above.
-             room-back is the room seen from the back — thirty-odd people, the
-             panel at the folding table, the screen reading "Called to Serve" —
-             and by tools/_heroab.mjs's own numbers it is the best photograph in
-             this repo: focus falloff 5.18 and tonal spread 0.767, against the
-             generated hall's 0.56 and 0.489. It has been on the page at 96px or
-             not at all for four passes. It is square, and the square is not a
-             taste: see the arithmetic beside .two in styles.css, where four
-             frames summing to 2.6067 of their shared width are what let this
-             column end level with two portraits summing to 2.6646. -->
-        <li class="rv"><img src="assets/img/room-back-800.jpg"
-             srcset="assets/img/room-back-240.jpg 240w, assets/img/room-back-340.jpg 340w, assets/img/room-back-430.jpg 430w, assets/img/room-back-800.jpg 800w, assets/img/room-back-900.jpg 900w"
-             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="900" height="900" data-people="yes" loading="lazy" decoding="async"
-             alt="The hall seen from the back during a panel: rows of seated people, four panelists at a folding table, and a screen reading Called to Serve, Option for the Poor and Vulnerable."></li>
-        <li class="rv"><img src="assets/img/qa-hands-800.jpg"
-             srcset="assets/img/qa-hands-340.jpg 340w, assets/img/qa-hands-430.jpg 430w, assets/img/qa-hands-800.jpg 800w, assets/img/qa-hands-1100.jpg 1100w, assets/img/qa-hands-1440.jpg 1440w"
-             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="1440" height="779" data-people="yes" loading="lazy" decoding="async"
-             alt="Seated rows during the questions: several hands raised, and one person standing at the back with both arms up."></li>
-        <li class="rv"><img src="assets/img/laughing-700.jpg"
-             srcset="assets/img/laughing-340.jpg 340w, assets/img/laughing-540.jpg 540w, assets/img/laughing-700.jpg 700w, assets/img/laughing-1080.jpg 1080w, assets/img/laughing-1280.jpg 1280w"
-             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.50548), 50.55vw" width="1080" height="569" data-cover data-people="yes" loading="lazy" decoding="async"
-             alt="Two people leaning into the camera for a close photograph, one holding a Catholic Charities wine glass and the other making a peace sign."></li>
-      </ul>
-      <p class="two__l two__l--action meta">The action</p>
-      <!-- NO data-stagger ON THIS COLUMN, AND IT IS THE ONE PLACE THE LADDER
-           DOES NOT APPLY. The rung is a 2-point delay on a `cover` range, and
-           on a 542px frame — 60% of a 900px window — 2 points is 29px of
-           scroll, which lands the second portrait's fade at 61.6% of the
-           screen against a reading line of 62%. tools/_motion.mjs check 5
-           caught it at exactly one step of thirty-six.
-
-           The rung is also wrong on its own terms here. The stagger exists for
-           a LIST a reader takes in as a series — four rungs, ~20ms apart, off
-           Apple's own staggered list — and the talk column beside this one is
-           that: four frames between 219 and 407px. Two full-bleed portraits
-           half a viewport tall each are not a series; they are two objects a
-           screen apart, and delaying the second one behind the first is a
-           ladder drawn on something that has no rungs. Both frames take the
-           base range and both are at full ink well above the line. -->
-      <ul class="two__r two__r--street">
-        <li class="rv"><img src="assets/img/serve-arrive-540.jpg"
-             srcset="assets/img/serve-arrive-340.jpg 340w, assets/img/serve-arrive-540.jpg 540w, assets/img/serve-arrive-700.jpg 700w, assets/img/serve-arrive-900.jpg 900w, assets/img/serve-arrive-1200.jpg 1200w"
-             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.49452), 49.45vw" width="900" height="1199" data-people="yes" loading="lazy" decoding="async"
-             alt="Four people in religious habits standing on bare ground beside a tarp shelter under a hedge."></li>
-        <li class="rv"><img src="assets/img/serve-camp-540.jpg"
-             srcset="assets/img/serve-camp-340.jpg 340w, assets/img/serve-camp-540.jpg 540w, assets/img/serve-camp-700.jpg 700w, assets/img/serve-camp-900.jpg 900w"
-             sizes="(min-width:900px) calc(((min(1232px, 100vw - 80px) - 264px) / 12 * 8 + 168px) * 0.49452), 49.45vw" width="900" height="1199" data-people="yes" loading="lazy" decoding="async"
-             alt="Three people in religious habits walking toward a blue tarp shelter, a wheelbarrow and stacked belongings beside them."></li>
-      </ul>
-    </div>
 
   </section>
 
@@ -1151,7 +1079,7 @@
              a line the rest of the page already holds. -->
         <img src="assets/img/after-talk-1080.jpg"
              srcset="assets/img/after-talk-430.jpg 430w, assets/img/after-talk-800.jpg 800w, assets/img/after-talk-1080.jpg 1080w, assets/img/after-talk-1440.jpg 1440w, assets/img/after-talk-2160.jpg 2160w"
-             sizes="(min-width:900px) calc((min(1232px, 100vw - 80px) - 264px) / 12 * 7 + 144px + max(40px, (100vw - 1232px) / 2)), min(100vw, 1080px)" width="2160" height="1128" data-people="yes" loading="lazy" decoding="async"
+             sizes="(min-width:900px) min(calc((min(1232px, 100vw - 80px) - 264px) / 12 * 9 + 192px + max(40px, (100vw - 1232px) / 2)), 1080px), min(100vw, 1080px)" width="2160" height="1128" data-people="yes" loading="lazy" decoding="async"
              alt="About thirteen people posed shoulder to shoulder for a photograph at the end of an evening, several holding wine glasses.">
       </span>
       <figcaption class="crew__c"><span class="meta">After the talk</span></figcaption>

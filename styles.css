@@ -1522,6 +1522,17 @@ main>section>*{min-width:0}
    of that band and it is where the two curves cross: 88 x 505 = 5.7% outside,
    70,000 = 8.9% inside, neither of them near the edge. Below 640 the stack is narrow enough that the inside
    void is 6.2% at its widest and the card takes the whole measure. */
+/* THE 640 CAP STAYS, AND THE REASON IS THE CARD'S OWN LEFT MARGIN.
+   The inversion this pass fixes was at the other end — 395 x 312 at 1440
+   against 640 x 506 here — and it is fixed by growing the poster to five
+   columns at 1440, not by growing it again here. Taking the whole 688px
+   column was built and measured first: the card is the client's artwork, a
+   flat navy gradient with its type centred, so its own left margin is 152px
+   of unbroken ground whose height is the card's height. At 688 that is
+   152 x 532 = 10.3% of a 768x1024 screen, the one screen in 255 over the
+   corpus ceiling; at 640 it is 152 x 506 and 9.8%. 640 in a 688 column is
+   93% of it — the band still opens on the poster at what reads as full
+   width — and the number is the one this file already spends. */
 @media (min-width:640px) and (max-width:899.98px){.next__f .mount{max-width:640px}}
 @media (max-width:639.98px){
   /* AND THE CLOSING HALL IS NOT A STAMP ON A PHONE. Capped at 220 it rendered
@@ -2422,7 +2433,28 @@ main>section>*{min-width:0}
    a void is something a reader sees. 1.5x on a grained documentary frame is
    not. The strip bleeds; the density line is the known cost, and the only
    thing that would clear it is a wider master, which means re-shooting. */
-@media (min-width:900px){ .act__f{grid-column:1 / -1;aspect-ratio:21/9} }
+/* ── AND FROM 900 THE STRIP STOPS BEING THE BAND ────────────────────────
+   THE DEFECT, measured 2026-09-02: at 1440 this band ran 955px with a
+   1440x617 photograph at the top of it and the sentence underneath — 0.69 of
+   the window on the picture alone, and the band read as the page's SECOND
+   full rest after the altar. A page with two rests has no rest: the altar
+   stops being the moment the document goes quiet because something else on
+   the way to it already did.
+
+   So above 900 the photograph becomes an object in a row rather than the row
+   itself: five tracks and four gutters, square, which is the master's own
+   shape and therefore the one crop that keeps 100% of the frame. 499.3 CSS at
+   1440 is 0.55 of a 900px window — under the 0.56 ceiling this pass sets for
+   it — and 499 at DPR 2 is 998 device pixels against a 1200px derivative, so
+   the strip also stops being the one photograph on the page served at 0.75x.
+
+   The sentence and the directory take the seven columns beside it, which is
+   the same two-column reading the band already had; they are simply beside
+   the picture now instead of under it. */
+@media (min-width:900px){
+  #act{padding-block:var(--su-56) var(--su-56)}
+  .act__f{grid-column:1 / 6;grid-row:1;aspect-ratio:1/1;margin:0;align-self:start}
+}
 .act{margin:0;padding:0}
 .act .t-chapter{max-width:none;text-wrap:balance}
 /* AND `balance` COMES OFF ON THE NARROWEST PHONES, WHERE IT IS THE DEFECT.
@@ -2453,9 +2485,10 @@ main>section>*{min-width:0}
    was empty, so the void is cut in two. */
 @media (min-width:900px){
   .act{
-    grid-column:1 / 13;
-    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
-    column-gap:var(--sp-2);align-items:end;
+    grid-column:6 / 13;grid-row:1;align-self:stretch;
+    display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
+    grid-template-rows:auto 1fr;
+    column-gap:var(--sp-2);align-items:start;
   }
   /* ── AND THE CREDIT COMES HOME, BECAUSE THE VOID IS NOW FILLED WITH INK
         RATHER THAN WITH THE CREDIT ────────────────────────────────────────
@@ -2480,9 +2513,21 @@ main>section>*{min-width:0}
      third channel fits on one line rather than two. The two columns come out
      within 13px of each other, the band is symmetrical about its own centre
      line, and neither seam gets a residue. */
-  .act .t-chapter{grid-column:1 / 7;grid-row:1}
-  .act__a{grid-column:1 / 7;grid-row:2;margin-top:var(--sp-1);text-align:left;align-self:start}
-  .act__w{grid-column:7 / 13;grid-row:1 / 3;align-self:stretch;margin-top:0;
+  /* FOUR AND THREE INSIDE SEVEN, AND THE SEVEN ARE THE PAGE'S OWN TRACKS.
+     `repeat(7, 1fr)` inside a 708.7px box with the page's own 24px gutter
+     gives tracks of exactly 80.67 — the same --col-w every other object in
+     this document stands on — so the quote's left edge, the directory's left
+     edge and the band's right edge all land on gridlines the page already
+     draws. */
+  /* FOUR AND THREE, AND THE FIFTH TRACK WAS TRIED AND GIVEN BACK. At five the
+     sentence sets in five lines instead of six and the directory drops to 185,
+     where "Missionaries of Charity, St. Vincent de Paul" takes four lines; and
+     the 47px the quote saves become void under it — 499 x 277 is 10.7% of a
+     1440x900 screen against tools/slab.mjs's 10% ceiling, where the four-track
+     setting reads 7.0%. The sentence keeps the narrower column. */
+  .act .t-chapter{grid-column:1 / 5;grid-row:1}
+  .act__a{grid-column:1 / 5;grid-row:2;margin-top:var(--sp-1);text-align:left;align-self:start}
+  .act__w{grid-column:5 / 8;grid-row:1 / 3;align-self:stretch;margin-top:0;
     display:flex;flex-direction:column}
   /* AND THE THREE ROWS TAKE THE HEIGHT THE QUOTE SETS. Three 40px rows hung
      from the top of a 198px column is the same void moved down; spread over
@@ -2820,6 +2865,13 @@ img[src*="laughing-"]{object-position:30% 50%}
    second time. */
 #next>.dl dd:last-of-type{padding-bottom:0}
 .next__go{margin-top:var(--su-20)}
+/* THE WRAPPER IS A WRAPPER AND NOTHING ELSE BELOW 900. The facts and the
+   control are one grid item from 900 up so the control can sit under the list
+   rather than under whatever row the poster sets; stacked, they are two
+   ordinary blocks in the band's own column and the div may not add a box
+   between them. See the note in index.html beside it. */
+.next__r{display:contents}
+@media (min-width:900px){ .next__r{display:block} }
 
 /* ── WHY THIS ONE ───────────────────────────────────────────────────────
    CLIA's own diagnosis, in CLIA's own words, at the one size that is not
@@ -2892,26 +2944,48 @@ img[src*="laughing-"]{object-position:30% 50%}
      the right third of that row bare, while every other hairline on the page
      runs the full measure." At `repeat(3)` the tracks are 400px on lines 104
      / 520 / 936 and the last rule closes on 1336 with the rest of the page. */
-  #next>.dl{
-    grid-column:1 / 13;
-    grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--sp-2);
+  /* ── AND THE THREE COLUMNS BECOME THREE ROWS, BECAUSE THE LIST MOVED ────
+     Three pairs across the band's whole 1232px was the answer to a band whose
+     only other object was a 395px stamp in the far corner. With the poster
+     grown to five columns the list stands BESIDE it, in the six that are
+     left, and six columns is not three columns of a fact list — it is one
+     column of three facts: the label on the left at its own track, the value
+     on the right, one hairline per row, which is the same object #record's
+     index is and the same one #allies is.
+
+     It also gives the right-hand column the height the poster has. Three
+     rows of 56 plus the control under them is 340 against the poster's 394.7,
+     so the two columns end within one module of each other instead of 312
+     apart. */
+  #next>.next__r{grid-column:6 / 13;grid-row:2;align-self:start}
+  #next>.next__r>.dl{
+    /* `.blk` gives every block in this band its 64px head room, and the head
+       room here belongs to the WRAPPER: the list's first hairline is the top
+       edge of the column beside the poster and has to land on the poster's
+       own top edge, not 64px under it. */
+    margin-top:0;
+    grid-template-columns:minmax(0,3fr) minmax(0,8fr);column-gap:var(--sp-2);
   }
+  #next>.next__r>.dl dt,#next>.next__r>.dl dd{grid-column:auto;grid-row:auto}
+  #next>.next__r>.dl dt{padding-block:var(--su-12) var(--su-12)}
+  #next>.next__r>.dl dd{border-top:var(--rim) solid var(--rule);padding-block:var(--su-12) var(--su-12)}
+  #next>.next__r>.dl dt:nth-of-type(1),#next>.next__r>.dl dd:nth-of-type(1){grid-row:1}
+  #next>.next__r>.dl dt:nth-of-type(2),#next>.next__r>.dl dd:nth-of-type(2){grid-row:2}
+  #next>.next__r>.dl dt:nth-of-type(3),#next>.next__r>.dl dd:nth-of-type(3){grid-row:3}
   /* the label's head room comes onto the section scale with everything else:
      36 was --sp-3 and is not one of the seven numbers this page spends. It is
      also 20px of the 496-tall channel tools/slab.mjs read between this band's
      two columns at 1024x768 — 10.1%, the last screen on the page over the
      ceiling — and the run of show has no use for it. */
-  #next>.dl dt{grid-row:1;padding-block:var(--su-12) 0}
+
   /* THE FOOT OF THE LAST ROW IS THE BAND'S FOOT, NOT ITS OWN. --sp-3 under
      the definitions is the stacked list's rule spacing, and in three columns
      there is no fourth row to space from: it stood on top of #next's own
      --sp-7 foot and the band paid twice for the same air. With the poster
      wall gone there is nothing crossing this seam any more, so the doubling
      became the thing tools/slab.mjs reads as a full-width letterbox. */
-  #next>.dl dd{grid-row:2;border-top:0;padding-block:var(--sp-1) 0}
-  #next>.dl dt:nth-of-type(1),#next>.dl dd:nth-of-type(1){grid-column:1}
-  #next>.dl dt:nth-of-type(2),#next>.dl dd:nth-of-type(2){grid-column:2}
-  #next>.dl dt:nth-of-type(3),#next>.dl dd:nth-of-type(3){grid-column:3}
+
+
   /* THE POSTER IS ROW ONE'S OBJECT, NOT THE WHOLE COLUMN'S. It used to span
      rows 1 to 4 with align-self:start, which is a way of saying "hang from
      the top and take whatever height you like" — and the height it takes at
@@ -2925,7 +2999,21 @@ img[src*="laughing-"]{object-position:30% 50%}
      list starts underneath it, and the pair of head and poster becomes a real
      row instead of two objects that happen to start together. The band grows
      by the 26px the overlap was hiding. */
-  #next>.next__f{grid-column:9 / 13;grid-row:1 / 3;align-self:start}
+  /* ── THE POSTER IS THE BAND'S IMAGE NOW, AND IT USED TO BE A STAMP ──────
+     Measured 2026-09-02 at 1440: 395 x 312 in the far right corner — 8% of a
+     1232 x 686 band — with 312px of navy under it and the control that
+     registers you for the evening 477px away on the other side of the band.
+     "#next a 1440 es una pantalla de formulario con un póster perdido a la
+     derecha", and at 768 the same card ran 640 x 506 and nearly filled a
+     screen: the one object on this page whose hierarchy inverted between two
+     widths.
+
+     Five tracks and four gutters is 499.3 CSS at 1440 — 40.5% of the content
+     column, against the 8% it had — and it is row 2's left half, with the
+     facts and the control in the six columns beside it, both hung from its
+     top edge. 1800 is the width the ladder already carries for it, so a 499
+     box is served at 1.80x at DPR 2. */
+  #next>.next__f{grid-column:1 / 6;grid-row:2;align-self:start}
   /* ── AND THE CONTROL STANDS UNDER THE THING IT ACTS ON ─────────────────
      It used to be the band's last row, under the whole fact list. Measured
      2026-08-30: 345px from the bottom of the September title card to the top
@@ -3010,8 +3098,12 @@ img[src*="laughing-"]{object-position:30% 50%}
        1440   1040x132  10.6%  ->   976x100   7.5%
        1024    760x128  12.4%  ->   624x100   7.9%   */
   #next{padding-bottom:var(--su-20)}
-  #next>.next__go{grid-column:1 / 5;grid-row:4;align-self:start;justify-self:start;
-    max-width:360px;margin-top:var(--su-20)}
+  /* AND THE CONTROL IS THE LAST LINE OF THE LIST IT BELONGS TO. It was row 4
+     on the band's own left margin, 477px from the poster and 124 below the
+     facts; inside `.next__r` it is simply the next thing after the last
+     hairline, one module under it, at the width the tablet band already gives
+     it. Gap to the list: 124 -> 36. */
+  #next>.next__r>.next__go{justify-self:start;max-width:360px;margin-top:var(--sp-3)}
   /* ── ROW 2 IS THE REASON, AND IT IS EIGHT COLUMNS BECAUSE THE CONTROL IS
         NOT THERE ANY MORE ─────────────────────────────────────────────────
      Row 2 was a 52px button at 1/5 and nothing else, under a head that stops
@@ -3035,8 +3127,14 @@ img[src*="laughing-"]{object-position:30% 50%}
 
        worst slab, 1024x768:   564x180  12.9%  ->  276x284  10.0%(a channel
                                                    in another band entirely) */
-  #next>.next__why{grid-column:1 / 9;grid-row:2;align-self:start;margin-top:var(--sp-3)}
-  #next>.dl{grid-row:3}
+  /* ── AND THE REASON STANDS BESIDE THE HEAD, NOT UNDER IT ────────────────
+     Row 1 was a 813px head with five empty columns beside it and the quote
+     underneath in its own row; row 2 is the poster and the facts now, so the
+     quote takes the five columns row 1 was leaving open. It is the sentence
+     that answers the head — the head says what the evening is, this says what
+     it is against — and set at the head's own foot it reads as the second
+     half of one statement rather than as a third object. */
+  #next>.next__why{grid-column:8 / 13;grid-row:1;align-self:end;margin-top:0}
 }
 
 /* ═══ 4 · #record ═══════════════════════════════════════════════════════
@@ -3221,155 +3319,66 @@ img[src*="laughing-"]{object-position:30% 50%}
    four-column rail is already narrower than it, so this line does nothing
    there. */
 .rec__hd>*{max-width:var(--measure-head)}
-/* the rail's photograph belongs to the rail, and below 1312 there is no rail:
-   the head runs edge to edge there with the record passing under it, and a
-   494px portrait dropped into that column is an object with no composition to
-   stand in. See the note in index.html beside the figure. */
-/* THE CHURCH INTERIOR, ON THE PHONE. It was `display:none` at every width
-   under 1312 — the one photograph of the room this group actually meets in,
-   absent from the tier that is 80% of the traffic, while the desktop rail
-   carried it. It could not simply be turned on: inside the sticky plate it
-   would have been 195px of held photograph over the record for the whole
-   scroll (see the wrapper note in index.html).
+/* ══ THE RECORD'S PLATE — FOUR PHOTOGRAPHS IN ONE FRAME ═════════════════
+   Below 900 there is no rail and no stack. The four plates run one under the
+   other, edge to edge, each with its own date and evening under it, in the
+   order the table reads them. That is the phone's answer to "una foto por
+   fila": one photograph per evening at 100vw, and never more than two of them
+   on a screen, against the six 203px stamps and a seventh that stood here.
 
-   Outside the plate it is what the phone already does with a photograph that
-   belongs to a date — full bleed, its caption back on the page's line. 2:1 is
-   the strip's own crop and the right one for this frame: the subject is a
-   replica hung the WIDTH of the altar rail, so the picture's information is
-   horizontal and a 5:6 portrait was the crop paying for a rail, not for the
-   photograph. The file is already `data-cover`, which is the declaration that
-   says this frame is a crop by design, so tools/sharp.mjs reads it unchanged.
-   0.28 of a screen at 390: 8.29 screens of scroll becomes 8.57, against 8.8. */
+   No aspect-ratio and no object-fit anywhere in this object. Every plate is
+   cut to its own shape in tools/build-assets.py — 1.600, 1.501, 1.451, 1.550
+   — and rendered at that shape, so the box a reader sees is the frame the
+   photographer took and tools/sharp.mjs's aspect census reads four distinct
+   native ratios off this one component. */
 .rec__pic{
   display:block;
   margin:var(--su-20) calc(-1 * var(--pad)) 0;
 }
-/* 88%, AND IT IS THE ONLY VERTICAL THAT KEEPS THE PICTURE'S SUBJECT.
-   The shroud is hung across the altar rail in the bottom quarter of a 800x1346
-   negative, with the people standing at it and the pews under them. A 2:1 band
-   centred anywhere above 0.8 shows the reredos and the clerestory — a
-   handsome church interior with none of the evening in it, and the frame is
-   declared data-people. 88% puts the hanging, the two men at it and the heads
-   in the pews inside the band. */
-/* ── AND THE BAND IS 4:3, NOT 2:1, BECAUSE 2:1 THREW THE PICTURE AWAY ────
-   THE DEFECT, and no gate in this repo could see it. tools/sharp.mjs read the
-   stacked crop of this frame as a VIRTUE — "distinct photographic aspect
-   ratios: 5, need >= 4" — while the 2026-09-01 review measured what the ratio
-   actually cost:
+.rec__ph{margin:0}
+.rec__ph img{display:block;width:100%;height:auto}
+/* ── AND TWO EVENINGS DO NOT SHARE A SCREEN ─────────────────────────────
+   Four plates whose native ratios are 1.38 to 1.60 are 244 to 283px tall at
+   390, and at the caption's own 64px foot three of them landed inside one
+   844px screen — which is the count this pass exists to bring down. The
+   distance between one evening and the next has to be 402px for two to be
+   the most a screen can hold, and it cannot be bought with air: 128px of
+   unbroken bone across a 390px screen is 15% of it, against tools/slab.mjs's
+   10% ceiling.
 
-     width   file natural     rendered box   box AR   of the frame kept
-     1440    346x583 (0.59)   341 x 409      0.83     71%
-      768    768x1292         768 x 384      2.00     30%
-      390    390x656          390 x 195      2.00     30%
-      320    320x538          320 x 160      2.00     30%
-
-   "At 1440 the picture is a church interior — altar, arch, stained glass, two
-    men before the shroud, and it is the best-composed frame on the site. At
-    390 all of that is gone; what survives is a strip of banner and three
-    backs." A 3.4x aspect swing under `object-fit: cover` on the tier that is
-    80% of the traffic.
-
-   4:3 keeps 44.6% of a 0.594 negative against 2:1's 29.7% — half again as
-   much frame — and costs 97px of phone height against a scroll budget that
-   had 194. It is not the rail's 5:6, and it cannot be: 5:6 at 390 is a 468px
-   band, which is 55% of the screen for one photograph in a document already
-   at 8.57 of its 8.8 screens. This is the honest maximum, and tools/sharp.mjs
-   now has a check that says so — no rendered box may keep less than 40% of
-   its negative, and the reading it used to call variety is the reading it
-   fails on.
-
-   88% STANDS. The shroud is hung across the altar rail in the bottom quarter
-   of a 800x1346 negative; a band centred anywhere above 0.8 shows the reredos
-   and the clerestory and none of the evening. A taller band at the same
-   anchor is simply more of the right thing: the hanging, the two men at it,
-   and now the pews and the arch above them. */
-.rec__pic img{aspect-ratio:4/3;object-fit:cover;object-position:50% 88%}
-/* ═══ THE REST, AND IT IS THE ONE THING THIS PAGE HAD NONE OF ═══════════
-   research/spacing-2026.md, ten sites measured at 390 on 2026-09-01: every
-   reference in the set gives the reader one or two FULL SCREENS with nothing
-   to read on them. apple.com hands over 728px of photograph, apple.com/iphone
-   768, oimachi 608, era-residence 912, sharplink 1016, hobro 1984. This page's
-   largest handover was 136px. That is the whole of "no beautiful spacing like
-   Apple has" — not the padding, which measured 54/48 against Apple's 49/47,
-   but the absence of any moment where the document stops talking.
-
-   This is that moment, and it costs no new asset and no new word: the shroud
-   hung across the altar rail, already here, already full-bleed, standing for
-   one screen on its own. It is also the only change in this file that makes a
-   photograph BETTER rather than merely bigger — tools/sharp.mjs reads how much
-   of a negative a rendered box keeps, and a 0.594 negative in a 4:3 band kept
-   44.6% of its frame against a floor of 40. At 390x844 the same negative in
-   the same crop keeps 78%: the arch, the hanging, the two men at it and the
-   pews, which is the frame the 2026-09-01 review said was the best composed on
-   the site and the one the phone had been throwing away.
-
-   svh rather than vh: the phone's toolbars must not be able to push the band
-   past the screen it is measured against. */
+   So it is bought with a LINE. The same hairline the index above draws
+   between its rows, drawn between the evenings below it, with the page's own
+   64 on each side of it: two 64px strips instead of one 128px slab, 7.6% each,
+   and the four plates read as four entries rather than as a column of
+   photographs. Every evening now has a screen to itself. */
 @media (max-width:899.98px){
-  .rec__pic img{aspect-ratio:auto;height:100svh}
+  .rec__ph + .rec__ph{
+    border-top:var(--rim) solid var(--rule);
+    margin-top:var(--su-64);padding-top:var(--su-64);
+  }
 }
-/* AND THE CAPTION STAYS UNDER THE PICTURE, WHICH IS WHAT THE MEASUREMENT
-   SAID. It was moved inside the frame's upper right in this same pass and
-   moved back out, and the exchange is worth recording because it is the answer
-   to the review's largest question. tools/_onphoto2.mjs, once its own
-   occlusion bug was fixed — it was photographing #record's frames THROUGH the
-   sticky bone plate and calling the plate a safe zone — reads this band at 390
-   as 49x81 of bone-safe and 65x16 of ink-safe: a strip at the right edge and a
-   sliver. The upper right of this crop is a doorway in shadow, and
-   tools/contrast.mjs agreed to the pixel: 86.6% of the date's glyph mask and
-   78.8% of the title's below 4.5:1, worst 1.05. The type came out. The
-   instruction was to measure before giving up, not to ship type a measurement
-   says a reader cannot read. */
 /* the band bleeds, so its frame does not draw a mount: a 3px ring and an 8px
    radius on a photograph that runs to both screen edges reads as a rendering
    fault rather than as a mounted plate. In the rail, where the frame stands in
-   a column with ground around it, the mount is the right object and is
-   untouched. */
+   a column with ground around it, the mount is the right object. */
 .rec__pic .frame,.rec__pic .frame>img{padding:0;border:0;border-radius:0;background:none}
 /* ── A NAME, NOT A FIELD ──────────────────────────────────────────────────
    The third clause of the mono rule, further up this file, says what mono is
    NOT for: a SENTENCE, or the NAME of a person, an institution or a place.
-   Those are Switzer. The clause was written and then not enforced at four
-   places, all of them 18px runs, which is why the 2026-09-01 review still read
-   27.9% of every visible character as mono against a corpus in which NONE of
-   44 sites uses a mono for display:
-
-     "A talk, then the action."        a sentence, under the h1
-     "Fr. Michael Sweeney OP"          a person
-     "Sean Bryan"                      a person
-     "Saint Philip the Apostle"        an institution and a place
-
-   `.name` is that clause with a selector. It is not a new size or a new
-   colour — same 18px, same line height, same rank — it is the same run set in
-   the face the rule already assigned it, so nothing moves except which of the
-   two faces is carrying it. It replaces `.figure` rather than joining it: a
-   line is a value or it is a name, and the classes may not both be true. */
+   Those are Switzer. `.name` is that clause with a selector: same 18px, same
+   line height, same rank, in the face the rule already assigned it. */
 .name{
   font-family:var(--sans);
   font-size:var(--t-body);line-height:1.5;
   letter-spacing:normal;text-transform:none;font-feature-settings:normal;
 }
-/* ── AND THE CAPTION GETS A FLOOR, WHICH IT DID NOT HAVE ON ANY STACKED TIER
-   THE DEFECT, measured at three widths by the 2026-09-01 review: the caption
-   box's bottom edge and the record table's column-head box's top edge are the
-   SAME COORDINATE — 3494 at 768, 3577 at 390, 3504 at 320. Zero. Rendered,
-   the two sit 21px apart baseline to baseline, which is the caption's own
-   line spacing, "so on the 80%-of-traffic tier the table head reads as a
-   third line of the caption". At 1440 the two-column rail separates them and
-   the defect does not exist, which is why it survived every gate.
-
-   A figure caption and a table's column head are two objects at two levels of
-   the hierarchy and the page has a token for that distance. --sp-3 is the
-   band-internal step this document uses between an object and the next one
-   down; the caption keeps --sp-1 above it, where it belongs to the picture.
-   The rail rule at 900 rewrites this margin whole, so the floor exists only
-   on the tiers that had the collision. */
+/* AND THE CAPTION GETS A FLOOR. A figure caption and the next object down are
+   two levels of one hierarchy and the page has a token for that distance;
+   --su-64 is what stands between one evening's plate and the next one's, and
+   the caption keeps --sp-1 above it, where it belongs to the picture. The rail
+   rule at 900 rewrites this margin whole. */
 .rec__pic .cap{margin:var(--sp-1) var(--pad) var(--su-64)}
-/* From 900 the rail rule below takes it back to the 5:6 portrait it has always
-   been there; this band is the tier under it, which is the tier that had
-   nothing. `sizes` carries the same two tiers — 100vw here, the rail's
-   four-column arithmetic there — because one `sizes` written for a 395px rail
-   was asking a 390px phone to paint a full-bleed band out of a 39px slot. */
+.rec__ph:last-child .cap{margin-bottom:var(--su-20)}
 .idx thead th{
   color:var(--on-2);font-weight:400;
   padding-block:0 var(--sp-1);
@@ -3652,347 +3661,22 @@ img[src*="laughing-"]{object-position:30% 50%}
    The 16:9 crop is untouched - these are the only three native landscape
    ratios in tools/sharp.mjs's distinct-ratio census, and cropping them square
    to save more would take that census under its floor of four. */
-/* ── THE TWO GALLERIES BECOME ONE OBJECT ──────────────────────────────────
-   What stood here was `.gal`: three framed landscape photographs of a room,
-   filed in #record. Four portraits of the same organisation on a street were
-   filed in #leaders, four hundred pixels of scroll away, under a heading about
-   who runs it. They are the same story told twice and nothing on the page said
-   so.
+/* ── THE TWO-ROW STRIP IS GONE, AND THE RAIL IS WHAT REPLACES IT ─────────
+   `.two` was 4 + 2 photographs in two columns under two labels — the talk and
+   the action — and every arithmetic argument in the block that stood here was
+   about how to make two columns of unlike shapes end level. The 2026-09-02
+   assessment did not dispute the arithmetic; it disputed the object: four
+   423px stamps and a rail in one 1440 screen, six 203px stamps and a seventh
+   in one 390 screen, against a reference set that shows one photograph per
+   screen.
 
-   Now they are one object with two rows and two labels, and the labels are on
-   the ROWS. That is the whole care of it: only the August pairing is
-   documented (#rule carries it), so a column-wise grid would be claiming three
-   pairings the record does not support. Row-wise it claims exactly what is
-   true — that this organisation is photographed in two places, and that they
-   are the same people.
-
-   No gaps, no frames, no radius, and it bleeds to both edges: the two rows are
-   two continuous strips, and the seam between them is the same seam #top and
-   #rule are both built on. */
-/* ══ TWO COLUMNS, NOT TWO ROWS — AND THE SEAM IS VERTICAL NOW ═══════════
-   THE DEFECT. As two stacked rows of three, the two halves rendered
-   271.1 x 146.5 and 271.1 x 361.5 at 1440: the deed line was 2.47x the height
-   and 2.47x the area of the talk line. The 2026-08-31 assessment: "there is no
-   shared baseline crossing a seam; there are two stacked bands of unequal
-   weight with a label above each", against #rule's pair, where both captions
-   sit at exactly t = 1706 / b = 1733 and the two insets mirror to within 1px.
-
-   WHY THE OBVIOUS FIX IS WRONG. #rule makes its pair by putting both frames in
-   one shape — aspect-ratio: 4/5, object-fit: cover — and that cannot be copied
-   here, for two reasons that were both measured rather than assumed:
-
-     1. THE PHOTOGRAPHS DO NOT SURVIVE IT. The room frames are 1.85 group shots
-        and the street frames are 0.75 full-length figures. Cropping the
-        portraits to 1.85 keeps their full width and 40% of their height, which
-        cuts the heads off all three: rendered at three vertical positions and
-        looked at, there is no band of a 0.75 frame of standing figures that is
-        a photograph of standing figures. Cropping the landscapes to 0.75 keeps
-        40% of the width of a group photographed across a hall.
-     2. tools/sharp.mjs A2 counts the page's distinct NATIVE aspect ratios among
-        images that are not object-fit: cover, and fails under four. This strip
-        carries three of the page's four — 1.856, 1.848 and 0.750. Cover both
-        rows and the count falls to one. The gate is measuring the right thing:
-        a page that squares every picture into one tile is the signature of a
-        template, and the fix that produced the pair would have produced the
-        template.
-
-   AND THE ARITHMETIC SAYS THE SAME. With both halves the same WIDTH, their
-   heights are in the ratio of their shapes and nothing can change that: 1.85
-   against 0.75 is 2.47, at every width, forever. Equal width, equal height and
-   native shapes cannot all be true.
-
-   SO THE OBJECT TURNS NINETY DEGREES. The talk is a column and the action is a
-   column, they touch on one vertical seam, and the tracks are the two SHAPES:
-   1.85fr against 0.75fr. Every frame in the object is then exactly S/2.6 tall,
-   whichever column it stands in — 312.7px at 1440, 150px at 390 — so the six
-   frames share a height, the two columns share a foot, and nothing is cropped
-   and nothing is repeated. What is unequal is the width, which is what the
-   difference between a room and a street looks like when neither photograph is
-   made to lie about its shape.
-
-     at 1440   the talk   578.7 x 312.7   the action   234.6 x 312.7
-     height disparity     2.47x  ->  1.00x
-
-   AND THAT TURN SOLVED ONE HALF AND HANDED BACK THE OTHER. The 2026-08-31
-   assessment measured the result: "the 2.47 did not go away, it rotated 90
-   degrees" — heights equal, widths 578.7 against 234.6 at 1440, 768 and 390
-   alike, so "the action gets 28.8% of the strip's area at every width", and
-   "on a 390 phone the action photographs are 112.5px wide, narrow enough that
-   the activity in them is not legible as an activity". For an organisation
-   whose stated premise is that every talk is paired with a real ministry
-   action, that is the argument and the composition disagreeing.
-
-   ── SO HERE IS THE ARITHMETIC, WRITTEN ONCE, BECAUSE IT IS THE WHOLE ANSWER.
-
-   Two columns of equal width w, one holding landscapes of ratio r and the
-   other portraits of ratio p, are the same height when
-
-       n_land / r  =  n_port / p          (each frame is w/ratio tall)
-
-   With three 1.85 landscapes against three 0.75 portraits the two sides are
-   1.62w and 4.00w: they can be made equal in HEIGHT only by making the widths
-   2.467 apart, or equal in WIDTH only by making the heights 2.467 apart. That
-   is not a layout problem and no arrangement of three and three escapes it —
-   it is a property of the two SHAPES, and this file spent two passes moving
-   the disparity from one axis to the other and calling it a fix.
-
-   THE COUNTS ARE THE ONLY FREE VARIABLE THAT DOES NOT CROP ANYTHING. Four
-   frames against two, with the fourth a SQUARE:
-
-     the talk    group-august 1.8557   ->  0.5389 w
-                 qa-hands     1.8485   ->  0.5410 w
-                 room-back    1.0000   ->  1.0000 w
-                 laughing     1.8981   ->  0.5268 w
-                                           ───────
-                                           2.6067 w
-
-     the action  serve-arrive 0.7506   ->  1.3323 w
-                 serve-camp   0.7506   ->  1.3323 w
-                                           ───────
-                                           2.6646 w
-
-   2.6646 / 2.6067 = 1.0222, so the two tracks are written as those two sums
-   and the columns come out 411.2 and 401.8 at 1440 — parity 1.022 on width,
-   1.000 on height, 1.024 on area, at every width, with NOT ONE FRAME CROPPED
-   and every native ratio intact. tools/sharp.mjs's A2 count goes 4 -> 5.
-
-     at 1440   the talk   411.2 x 1071.7   the action   401.8 x 1071.5
-     the action's share of the strip's area    28.8%  ->  49.4%
-     the action frames                  234.6 x 312.7  ->  401.8 x 535.7
-     the same at 390                    112.5 x 150.0  ->  192.7 x 256.7
-
-   WHAT CHANGED IN THE STRIP ITSELF, and neither change is a compromise.
-   room-back joins the talk column: the room seen from the back, thirty-odd
-   people, the panel and the screen — the frame tools/_heroab.mjs scored at
-   focus falloff 5.18 and tonal spread 0.767, which has been on this page at
-   96px or not at all. serve-van leaves the action column because it is the
-   fold's photograph now, and a frame cannot be the first screen and a thumb
-   in a gallery four screens later.
-
-   The labels ride at the top of their own columns, on one baseline that crosses
-   the seam — the same row #rule's captions make, and the reason the 103px
-   indent that "aligns with nothing else in the document" is gone: each label
-   now starts on its own column's left edge. */
-.two{
-  margin-inline:calc(-1 * var(--pad-abs));
-  display:grid;
-  /* ── AND THE TWO SUMS PAY FOR HEIGHT PARITY OUT OF THE COLUMNS NOW ────
-     The tracks used to BE the arithmetic — `2.6646fr 2.6067fr`, the two
-     column sums written verbatim — which bought height parity 1.000 with no
-     frame cropped, and paid for it on the axis nobody was measuring. At 1440
-     that is 411.13px against 402.20: a 2.2% inequality between two adjacent
-     columns of photographs, and the seam between them, which is the
-     strongest vertical line in a 1,137px band, landing at x=933.8 against
-     the band's own centre of 929.5. Four and a third pixels, on the one
-     line in this band a reader's eye uses to find the centre.
-
-     The disparity is a property of the two SHAPES and it has to be spent
-     somewhere: four frames summing to 2.6067 of their width against two
-     summing to 2.6646. What changed is WHERE. Equal columns put the seam on
-     the band's centre exactly, and the 0.0579w of difference is absorbed by
-     one frame — `laughing`, the only frame in the strip already declared
-     data-cover, which is the declaration that says this picture is a crop by
-     design. It renders 1.710 against its native 1.898: 9.9% off the bottom
-     and top of a close-up of two people leaning into the lens, where the
-     subject occupies the middle third. Nothing else in either column moves,
-     every other native ratio is intact, and tools/sharp.mjs exempts exactly
-     the one frame that is doing the absorbing.
-
-     Spending it evenly across all four was measured and is worse: 2.2% on
-     each puts three frames that are NOT data-cover over sharp.mjs's 1%
-     AR tolerance, which is the gate saying the same thing in a different
-     voice — a frame is either its own ratio or it is declared a crop. */
-  grid-template-columns:1fr 1fr;
-  grid-template-rows:auto auto;
-  column-gap:0;
-}
-.two__l{
-  position:relative;
-  margin:0;grid-row:1;
-  padding:var(--sp-3) var(--sp-2) var(--sp-1) 0;
-  color:var(--ink-2);
-}
-/* NAMED RATHER THAN COUNTED. These were `:first-of-type` and `:last-of-type`,
-   which is a claim about which <p> elements are inside `.two` — and the moment
-   the elbow's own line joined them as a third <p>, the first label lost its
-   column and its fork inset without a single rule changing. The two labels are
-   the talk and the action; the selectors say so now. */
-.two__l--talk{grid-column:1;padding-left:var(--fork-x)}
-.two__l--action{grid-column:2}
-.two__r{
-  list-style:none;margin:0;padding:0;grid-row:2;
-  display:grid;grid-template-columns:minmax(0,1fr);gap:0;
-}
-/* the first three rows keep their frames' own heights; the fourth takes
-   whatever the street column's two portraits make the row */
-.two__r--room{grid-column:1;grid-template-rows:auto auto auto minmax(0,1fr)}
-.two__r--room>li:last-child img{height:100%;object-fit:cover}
-.two__r--street{grid-column:2}
-/* `clip` rather than `hidden`: see the note beside `.duo__m`. These six tiles
-   are the rest of `settle`'s subjects and they had the same defect. */
-.two__r>li{min-width:0;overflow:hidden;overflow:clip}
-/* EVERY FRAME KEEPS ITS OWN NATIVE RATIO AND NOTHING DECLARES ONE.
-   `aspect-ratio: 1.85` and `3/4` used to be written here over files that are
-   1.8557, 1.8485, 1.8981 and 0.7506 — a squash of up to 0.7%, invisible and
-   pointless, and it stopped being harmless the moment the talk column held a
-   square as well as three landscapes. The width and height attributes on every
-   <img> already state the intrinsic ratio, so `height: auto` resolves it
-   exactly and tools/sharp.mjs's AR-off column reads 0.0% instead of 0.3%. */
-.two__r img{display:block;width:100%;height:auto;filter:contrast(1.03) saturate(.97)}
-/* ═══════════════════════════════════════════════════════════════════════
-   THE SPINE, AND IT IS THIS BAND'S ONE IDEA RATHER THAN ITS FOURTH
-   CONVENTION.
-   ═══════════════════════════════════════════════════════════════════════
-
-   THE CHARGE, and it is the only one on this page that a fix list cannot
-   answer. The 2026-09-01 review: "#record at 1440 is 1875px tall and is the
-   page's longest band; it is also its least invented … the one structural
-   idea the content hands the designer for free is spent on a default layout",
-   and, separately, on alignment: "Obama Oral History runs a single hairline
-   rule down its page at column 7 precisely so that every edge is falsifiable
-   against it; this page has no such spine".
-
-   Those are the same missing object. The organisation's whole premise is that
-   an evening DIVIDES — the founder's own two nouns, quoted whole in #act:
-   "each lecture and social event is designed to be allied with a direct
-   ministry action of some kind". A talk goes in and a talk and an action come
-   out. The band was drawing that as two columns of photographs side by side,
-   which is what any agency produces for any client, and it was labelling them
-   with the two nouns as though the labels were the idea.
-
-   SO THE BAND BECOMES THE SENTENCE. One hairline enters at the top of the
-   record, runs the whole length of the four evenings as their spine — every
-   row's rule starts on it, so four independent rules become one ladder — and
-   at the foot of the record IT DIVIDES. One branch carries straight on and
-   becomes the talk; one departs to the seam and becomes the action; the two
-   labels stand under their own prongs, and under each label is that half's
-   body of work. Continuous at the top, separated at the bottom, on one line,
-   at every width.
-
-   WHY IT IS NOT A FIFTH CONVENTION. The only invented form this page had was
-   the partner roll — a leader-rule of ragged length running out to a mono
-   category — and every reviewer named it as the best thing here. This is that
-   same grammar, at the scale of a band instead of a line: a rule that carries
-   a label, and that now also carries a STRUCTURE. It answers the alignment
-   deduction in the same stroke, because the spine is a stated vertical that
-   the table's left edge, the strip's left edge and the whole label row are all
-   falsifiable against — 522.7px at 1440, 20px at 390, one number, drawn.
-
-   HOW IT HANDLES THE THREE EVENINGS THAT HAVE NO DOCUMENTED PAIR — and this
-   is the part that had to be got right, because the same restraint is written
-   at length above `.two`. The division is stated ONCE, at the scale of the
-   organisation: these are two bodies of work by the same people, which every
-   source supports. It is NOT stated per evening, because only August 5 is
-   documented on both sides. The one row that forks is that row, and it forks
-   with the same elbow the band forks with (`.idx__pr`), so a reader meets the
-   figure twice and reads the second one correctly: one completed pair in four.
-   Three rows that do not fork is a true sentence drawn instead of written.
-
-   NO SCRIPT, NO MOTION, NO SVG. Four borders on three pseudo-elements. It is
-   identical with JavaScript off, identical under prefers-reduced-motion, and
-   invisible to tools/lap.mjs's collision walk because a pseudo-element is not
-   an element and cannot stand on one. */
-/* --fork-x is the spine's x INSIDE .two, and it is one variable because the
-   strip bleeds below 900 and does not above it. It also retires a real defect
-   while it is here: `.two__l:first-of-type` carried `padding-left:--pad-abs`
-   at every width, which is the page margin — correct at 390, where the strip
-   runs to the screen edges and the label has to come back to the page's line,
-   and 104px of nothing at 1440, where the strip already starts on column 5.
-   The note above `.two` claims "each label now starts on its own column's left
-   edge"; measured, "The talk" stood at x=626.7 over a column beginning at
-   522.7. One value, resolved per tier, makes the claim true. */
-.two{position:relative;--fork-x:var(--pad-abs);--fork-gap:var(--sp-3)}
-/* THE CROSSBAR — one rule with two stations on it, which is the device #rule's
-   pair is already built on, running the full width of the strip and crossing
-   the seam. The thing that separates the two halves is visibly the thing that
-   joins them. */
-.two::before{
-  content:"";position:absolute;z-index:1;
-  left:var(--fork-x);right:var(--fork-x);top:0;
-  border-top:var(--rim) solid var(--spine);
-}
-/* THE ELBOW'S OWN LINE IS GONE FROM THE ELBOW. `.two__k` placed
-   "Recorded here means photographed." absolutely in the gap the trunk crosses,
-   one module off the axis, at the label tier. The sentence is in #record's
-   lead now — see the note beside it in index.html — and the rule went with it
-   rather than staying on disk as a selector nothing selects. The elbow's
-   geometry is untouched: the label was `position: absolute` and took no
-   height, so the crossbar, the trunk and the two prongs are where they were. */
-/* THE TRUNK IS GONE WITH THE SPINE IT ROSE FROM. It read "the same x as the
-   table's left edge above it and the same x as the left prong below it, so
-   the three read as one line and not as three" — and that was exactly true
-   while the table drew a vertical. The table does not (see the note beside
-   `.idx`), so what was left was a 32px riser standing on nothing, which is
-   the one shape a line of this kind must not be. The crossbar and its two
-   prongs are the fork, and they are enough: a rule divides, two prongs name
-   the halves, and nothing rises out of a table that has no edge. */
-/* THE TWO PRONGS. They hang from the crossbar for --sp-2 and stop --sp-1
-   above their label's cap line, so the labels stand in the clear rather than
-   on the ink — the fork is drawn, then it is named, which is the order the
-   partner roll uses. */
-.two__l::before{
-  content:"";position:absolute;z-index:1;
-  left:var(--fork-x);top:0;height:var(--sp-2);
-  border-left:var(--rim) solid var(--spine);
-}
-.two__l--action::before{left:0}
-/* AND THE RIGHT PRONG DOES NOT STOP AT ITS LABEL — IT RUNS THE EVIDENCE.
-   A fork that divides and then goes nowhere is a diagram. The prong that
-   leaves the trunk carries on down the seam between the two columns for the
-   strip's whole height — 1084px at 1440, 520px at 390 — so the line that
-   separates the talk from the action is visibly the same line that came down
-   through the four evenings and split. The band is then one continuous object
-   from the head rule to its own last pixel: about 1,730px at 1440, against the
-   partner roll's 493, which is the only other invented form on this page.
-
-   IT IS THE GROUND, NOT A RULE, AND IT IS NOW 55% OF IT. --rule is a mix
-   against the band's bone and would sink into the pale hall photograph on the
-   left of the seam and vanish against the sunlit foliage on the right; the
-   bone itself is the one value that reads across this strip's range, because
-   it is the value the strip is cut out of.
-
-   What was wrong was the AMOUNT. Sampled at ten heights down its 1084px on
-   2026-09-01, full bone read 14.4:1, 16.6:1 and 17.8:1 against the dark
-   frames — while the trunk carrying the argument through the record read
-   1.34:1. The strongest stroke in the form was the segment that only
-   separates two pictures, and the weakest was the one the concept leans on.
-   The trunk is now 2.90:1 (see --spine); this end pays the other half.
-
-   At 55% the cut still reads on every frame it has to — 9.5:1 against the
-   black portraits at the foot of the strip, 2.3:1 to 3.7:1 through the
-   mid-tones — and its peak against the spine's own 2.90:1 falls from about
-   thirteen times to about three. The two pale frames near the top were
-   1.18:1 and 1.38:1 with full bone, which is to say the line was already not
-   visible there; 55% costs them nothing they had.
-
-   AN OPAQUE LINE WAS MEASURED AND IS WORSE, which is worth recording because
-   it is the obvious alternative. Solving for the flat value with the best
-   worst-case against the two ends of this photography lands on rgb(103,103,103)
-   — 3.7:1 on black, 4.1:1 on the pale frames — but this strip is not two ends:
-   half its seam neighbours are mid-tones, and a mid grey run down a mid-tone
-   photograph measured 1.02:1, 1.05:1, 1.19:1. It disappeared over five of the
-   ten samples. A knockout is the only line that survives a black frame, and
-   any line that survives a black frame is by definition strong against it;
-   the amount is the only lever, so the amount is what moved.
-
-   It is an overlay and not a `column-gap`, so no frame changes width, every
-   `sizes` declaration stays exact and tools/sharp.mjs reads the same numbers
-   it read before. */
-.two__r--street{position:relative}
-.two__r--street::before{
-  content:"";position:absolute;z-index:1;pointer-events:none;
-  left:0;top:0;bottom:0;width:var(--rim);
-  background:color-mix(in srgb, var(--bone) 55%, transparent);
-}
-/* THE EDGE MASKS ARE GONE WITH THE ROWS THEY BELONGED TO. They faded --sp-5
-   into the first and last frame of each horizontal strip, which at 390 was
-   30.8% of a ~130px cell — "the light photographs read as dissolving rather
-   than as bleeding". In columns there is no first and last frame across the
-   width: there is one vertical seam in the middle and two hard outer edges,
-   and a hard edge is what a column is. */
-
+   So the strip is deleted whole — markup, tracks, labels, fork, edge masks —
+   and the four evenings are photographed once each, in the rail, at 708.7 CSS
+   at 1440 and edge to edge below 900. See `.rec__pic` above and the note in
+   index.html beside it. The record's own fork, `.idx__pr-b`, is untouched: it
+   lives in the table and always did. */
 @media (min-width:900px){
-  #record>.rec__seq,#record>.two{grid-column:1 / 13}
+  #record>.rec__seq{grid-column:1 / 13}
 }
 @media (min-width:900px){
   /* the leash comes off: the head and the table become grid items of the band
@@ -4000,9 +3684,16 @@ img[src*="laughing-"]{object-position:30% 50%}
      length of the table */
   #record>.rec__seq{display:contents}
   #record .rec__rail{
-    grid-column:1 / 5;grid-row:2 / 4;
+    /* ── SEVEN COLUMNS, NOT FOUR ─────────────────────────────────────────
+       The rail used to be a four-track column holding a 359px portrait, and
+       the 2026-09-02 assessment read the result as the cheapest screen on the
+       page: four 423px stamps beside it and "ninguna de las seis pasa de 0.3
+       vw". Five tracks here and six from 1312 — 604.7 CSS at 1440, 0.42 of
+       the window — is the plate the archive and the index between them allow:
+       see the width note at the 1312 block below, and the ceiling note beside
+       room-back in tools/build-assets.py. */
+    grid-column:1 / 6;grid-row:2 / 4;
     align-self:start;
-    max-width:var(--measure-head);
     /* IT RESTS AT 22vh, NOT UNDER THE PILL, and that is the difference
        between a held title and a sticky header bar. research/design-2026.md
        §2.1 prescribes `top: 20vh` off korowa's own construction: a panel that
@@ -4031,24 +3722,58 @@ img[src*="laughing-"]{object-position:30% 50%}
     position:static;top:auto;
     background:none;border-block:0;margin:0;padding:0;max-width:none;
   }
-  /* the rail's picture, and the numbers it has to live inside: the four-column
-     rail is 394.7px at 1440 and never wider, because the content column caps
-     at 1232. 5:6 puts the frame at 474, and head + gap + frame + gap + caption
-     comes to 800 — which clears a 900px window with the pill's floor under it
-     and 100px to spare. The 800px source pays for 395 at DPR 2 (sharp.mjs). */
-  /* the right margin was reserving the far plane's overhang; with the planes
-     gone it is the rail's own gutter, written as one value */
-  /* margin-left is written back to 0 because the tier below bleeds this frame
-     to both screen edges with a negative one; in the rail it starts on the
-     rail's line like everything else */
-  .rec__pic{display:block;margin:var(--sp-2) var(--sp-3) 0 0}
-  .rec__pic img{aspect-ratio:5/6;object-fit:cover;object-position:50% 58%}
-  /* --sp-4 was clearing the near plane hanging below the photograph; there is
-     no plane and the frame's own foot is the thing to measure from now */
+  /* ── THE PLATE, AND ITS HEIGHT IS THE ARCHIVE'S CEILING ────────────────
+     Four photographs in one frame, cross-faded by the row that is crossing
+     the middle of the screen. The frame is `relative` and the four plates are
+     laid on top of one another with `grid-area: 1/1`, so the frame's height is
+     the TALLEST of the four and no plate is stretched, cropped or letterboxed
+     to a common box: each keeps the ratio it was cut to.
+
+     The plates are 442.9, 472.1, 488.6 and 457.2 tall at 1440 — a 45px spread
+     across the four — and they are bottom-aligned, so the caption under them
+     sits on one line at every row and only the top edge moves. 488.6 is 54% of
+     a 900px window. It is not higher because it cannot be: the August 5
+     negative is 938 restored pixels tall and 938/1.96 is 478.6 CSS at DPR 2,
+     whatever width the box is given. */
+  .rec__pic{display:grid;margin:var(--sp-2) 0 0}
+  .rec__ph{grid-area:1 / 1;align-self:end;margin:0}
+  /* the four are stacked, so three of them are not the one being read. They
+     are taken out of the paint with `opacity` and out of the pointer's way
+     with `visibility`, which is delayed by the fade's own duration so the
+     outgoing plate is still there while it goes. */
+  .rec__ph:not(.is-on){visibility:hidden}
+  /* AND THE FADE IS THE ONLY THING THAT IS CONDITIONAL. `visibility` is what
+     makes three of the four plates not be there, at every setting; `opacity`
+     exists solely to give the change a duration, so it is declared only where
+     a duration is wanted. Under `reduce` the plate is hidden and nothing is
+     held at zero ink waiting for a scroll — which is what tools/_motion.mjs
+     checks when it walks the page with the preference set. */
+  @media (prefers-reduced-motion:no-preference){
+    .rec__ph{transition:opacity var(--dur-long) var(--ease),visibility 0s linear 0s}
+    .rec__ph:not(.is-on){
+      opacity:0;
+      transition:opacity var(--dur-long) var(--ease),visibility 0s linear var(--dur-long);
+    }
+  }
   .rec__pic .cap{margin:var(--sp-2) 0 0}
-  .rec__pic .frame{border:var(--ring) solid var(--rule);border-radius:var(--r-object);background:none}
+  .rec__ph:last-child .cap{margin-bottom:0}
+  .rec__pic .frame{border:var(--ring) solid var(--rule);border-radius:var(--r-object);background:none;display:block}
   .rec__pic .frame>img{border-radius:var(--r-inset)}
-  #record .idx{grid-column:5 / 13;grid-row:2}
+  #record .idx{grid-column:6 / 13;grid-row:2}
+  /* ── AND FROM 1312 THE RAIL TAKES TWO MORE TRACKS ──────────────────────
+     Below 1312 the window itself is the constraint: seven tracks of rail
+     would leave the index 327px for a date, an evening and a subject. At and
+     above it the content column is capped at 1232 and stops growing, so the
+     split can go 6/6 and stay there: 604.7 for the plate, 604.7 for the
+     index, at 1312 and at 1920 alike. Seven tracks of rail was measured and
+     given back — it puts the evening column at 209px of ink, which is 11px
+     under "Responsibilities" plus the arrow that belongs to it, and a title
+     whose affordance wraps onto a line of its own is a worse trade than 104px
+     of plate. */
+  @media (min-width:1312px){
+    #record .rec__rail{grid-column:1 / 7}
+    #record .idx{grid-column:7 / 13}
+  }
   /* ── AND THE TABLE'S OWN COLUMNS ARE THE PAGE'S COLUMNS ─────────────────
      THE DEFECT: `table-layout: auto` with `width: 1%` on the date and `44%`
      on the title is CONTENT-DRIVEN, so the two interior column edges landed
@@ -4080,9 +3805,9 @@ img[src*="laughing-"]{object-position:30% 50%}
      — the <td> `width: 44%` further up is what auto layout used and it is
      simply not consulted here. */
   #record .idx{table-layout:fixed}
-  #record .idx thead th:nth-child(1){width:calc(var(--col-w) + 24px)}
+  #record .idx thead th:nth-child(1){width:calc(var(--col-w) * 2 + 24px)}
   #record .idx thead th:nth-child(2){width:calc(var(--col-w) * 3 + 72px)}
-  #record .idx thead th:nth-child(3){width:calc(var(--col-w) * 4 + 72px)}
+  #record .idx thead th:nth-child(3){width:calc(var(--col-w) * 2 + 48px)}
   /* ── AND BELOW 1312 THE DATE TAKES TWO TRACKS, BECAUSE ONE IS NOT WIDE
      ENOUGH TO HOLD A DATE ─────────────────────────────────────────────────
      THE DEFECT, and it is ink standing on ink in a document that reports zero
@@ -4104,9 +3829,10 @@ img[src*="laughing-"]{object-position:30% 50%}
      is prose and wraps. The sum is unchanged and so are the column lines:
      date c5s…c6e, evening c7s…c9e, subject c10s…c12e, eight tracks and seven
      gutters exactly as the block above them describes. */
-  @media (max-width:1311.98px){
-    #record .idx thead th:nth-child(1){width:calc(var(--col-w) * 2 + 24px)}
-    #record .idx thead th:nth-child(3){width:calc(var(--col-w) * 3 + 72px)}
+  @media (min-width:1312px){
+    #record .idx thead th:nth-child(1){width:calc(var(--col-w) + 24px)}
+    #record .idx thead th:nth-child(2){width:calc(var(--col-w) * 3 + 48px)}
+    #record .idx thead th:nth-child(3){width:calc(var(--col-w) * 2 + 48px)}
   }
   /* Four rows in a seven-column measure, each one an evening, each one a beat
      the held head is measured against. The row rhythm is the page's own block
@@ -4357,60 +4083,62 @@ img[src*="laughing-"]{object-position:30% 50%}
    height of the band, padding included: it cuts the top padding into 6.3% and
    4.6%, it cuts the bottom padding, and it is the one vertical line on the
    page that belongs to the grid rather than to a box. */
+/* ── AND THE BAND TURNS NINETY DEGREES, BECAUSE IT WAS HALF A SCREEN ─────
+   Measured 2026-09-02 at 1440: 488px, 0.54 of the window, on a page whose
+   reference set gives a band 1.8 screens. The photograph was seven tracks and
+   424px tall beside a four-row index, and the band could not grow without
+   padding, because both of its columns were already as tall as their own
+   content: "no relleno — sube el tamaño de los nombres y la altura de la foto
+   de leaders".
+
+   Both are raised, and the only way to raise both at once is to stop making
+   them share a row. The photograph takes the band's first row, nine tracks
+   wide and bleeding to the screen's left edge — 1022 x 533 at 1440, capped at
+   1080 because 2160 is the master's own width and 1080 is what it pays for at
+   DPR 2 — and the roster takes the second, with the head beside it. Nothing
+   is padded: the band is 810px because it now holds a 533px photograph AND a
+   220px roster instead of the taller of the two. */
 @media (min-width:900px){
-  /* the photograph holds both rows and sets the band's height; the head and
-     the index divide the column beside it, so neither column is waiting for
-     the other and the band is no taller than its picture */
-  #leaders{grid-template-rows:auto minmax(0,1fr)}
-  /* THE PICTURE COLUMN HOLDS THE WHOLE ROW AREA NOW, AND IT USED TO HOLD ONLY
-     ITS OWN CONTENT. `align-self: start` collapsed this figure to photograph
-     plus caption — 343px at 1024 — inside a row area 420px tall, and the
-     101px left over sat under the caption with the index running past it on
-     the other side of the column line. tools/slab.mjs read it as the last two
-     failing screens on the page: 588 x 144 = 10.8% of a 1024x768 screen, at
-     scrollY 4096 and again at 4352, against a 10.0% corpus ceiling. The
-     stretch costs the photograph nothing — a block box grows downward and its
-     contents stay where they were — and it gives the rule below something to
-     be the bottom of. */
-  #leaders>.crew{grid-column:1 / 8;grid-row:1 / 3;align-self:stretch;margin-top:0;position:relative}
-  /* AND THE BAND CLOSES ON ONE LINE, THE WAY THE INDEX ALREADY DID.
-     `.names` has carried a closing border since the pass that gave it an
-     opening one, so the right-hand column ended on a drawn line and the
-     left-hand column ended on nothing: the photograph's own floor was 101px
-     higher than its neighbour's and the difference was ground. This is the
-     same hairline, on the same y — the row area's own bottom edge — running
-     from the screen edge the photograph bleeds to, out to the column line the
-     photograph's right edge already holds. Two columns, one floor, one rule
-     across the band with the vertical grid line as its only break. */
-  #leaders>.crew::after{
-    content:"";position:absolute;
-    left:calc(-1 * var(--pad-abs));right:0;bottom:0;
-    height:var(--rim);background:var(--rule);
+  #leaders{grid-template-rows:auto auto}
+  #leaders>.crew{
+    grid-column:1 / 10;grid-row:1;align-self:start;margin-top:0;position:relative;
+    /* `.crew__m` already carries the left bleed (--pad-abs), so the cap is
+       written on what is left: nine tracks, or whatever keeps the PAINTED
+       width at 1080, which is what a 2160px master pays for at DPR 2. */
+    width:min(100%, calc(1080px - var(--pad-abs)));
   }
-  #leaders>.hd{grid-column:8 / 13;grid-row:1;align-self:start;margin-top:0}
+  /* the closing hairline is the roster's own (`.names` carries a bottom
+     border at every width), so the photograph no longer draws one: it is the
+     first row of the band, not the left half of it, and a rule under a
+     picture that is followed by more content reads as an underline. */
+  /* ── AND THE HEAD STANDS IN THE THREE COLUMNS THE PHOTOGRAPH CANNOT REACH
+     The picture is capped at 1080 painted pixels because 2160 is the master's
+     own width, so at 1440 it stops 418px short of the right edge and at 1920
+     it stops 840 short. Ground that a photograph cannot reach is ground
+     something else has to hold: the head takes the last three tracks, on the
+     gutter line the picture's right edge lands on, and the band's first row
+     is a picture and its title rather than a picture and a hole. */
+  /* CENTRED IN THE CELL, WHICH IS HOW THE GROUND BESIDE THE PICTURE STOPS
+     BEING ONE RECTANGLE. Hung at either end of a 533px cell the head leaves
+     412 x 348 of unbroken ink beside the photograph — 11.1% of a 1440x900
+     screen, over the corpus ceiling. Centred, the same air is two rectangles
+     of about 175, and neither reaches 6%. It is the sfjazz reading this file
+     already cites: emptiness that is subdivided reads as composition. */
+  #leaders>.hd{grid-column:10 / 13;grid-row:1;align-self:center;margin-top:0}
+  /* ── AND THE NAMES TAKE THE CHAPTER SIZE ────────────────────────────────
+     They were 24px — the body-head tier — under a 44px chapter head, which is
+     the one place on this page where a list of PEOPLE was set smaller than
+     the label above it. At chapter size the four names are the band's second
+     display object, two to a row with the role under each, and the roster
+     reads as the thing the band is about rather than as a caption to the
+     photograph. No new size enters: --t-chapter is the tier the head above
+     them already runs. */
   #leaders>.names{
-    grid-column:8 / 13;grid-row:2;align-self:stretch;margin-top:0;
-    position:relative;
-    grid-template-columns:minmax(0,1fr);
-    grid-template-rows:repeat(4,minmax(0,1fr));
-    column-gap:0;
-  }
-  /* one row, two axes: the name on the column's left edge, the field on its
-     right, baselined together */
-  #leaders>.names li{
-    flex-direction:row;align-items:baseline;justify-content:space-between;
+    grid-column:1 / 13;grid-row:2;margin-top:var(--su-56);
+    grid-template-columns:repeat(2,minmax(0,1fr));
     column-gap:var(--sp-2);
   }
-  #leaders>.names .nm__r{text-align:right}
-  /* THE COLUMN LINE, drawn from the band's top edge to its bottom edge. The
-     offsets are the band's own padding tokens and the gutter's own half-width,
-     so the line is on the grid at every width rather than at a number. */
-  #leaders>.names::before{
-    content:"";position:absolute;
-    left:calc(-1 * var(--sp-2) / 2);width:var(--rim);
-    top:calc(-1 * var(--su-56));bottom:calc(-1 * var(--sp-2));
-    background:var(--rule);
-  }
+  #leaders>.names .t-head{font-size:var(--t-chapter);line-height:1.08}
 }
 
 /* ═══ 6 · #allies ═══════════════════════════════════════════════════════
@@ -4458,7 +4186,13 @@ img[src*="laughing-"]{object-position:30% 50%}
    leader dash added below carries the rest of the work by tying each field to
    the line its own name finishes on. From 900 every name sets on one line and
    the ratio question does not arise. */
-.roll{display:grid;gap:var(--su-20)}
+ /* THE ROLL'S OWN INTERVAL IS THE PAGE'S BLOCK STEP, NOT ITS CAPTION STEP.
+   Six display names 20px apart is a list; 64 apart they are six objects, which
+   is what this band is for. 64 is the value research/spacing-2026.md
+   prescribes between two ideas inside one band and it is already in this
+   document's 390 alphabet. The band goes from 0.78 of a phone screen to 1.04
+   and every pixel of the difference is between names rather than under them. */
+.roll{display:grid;gap:var(--su-64)}
 .roll li{
   display:grid;
   /* THE NAME TRACK IS THE FLEXIBLE ONE BELOW 900 AND THE FIELD TRACK IS NOT,
@@ -4520,6 +4254,24 @@ img[src*="laughing-"]{object-position:30% 50%}
 
 @media (min-width:900px){
   #allies>.roll,#allies>.roll__eb{grid-column:1 / 13}
+  /* ── AND THE SIX ROWS TAKE THE PAGE'S OWN INTER-BLOCK STEP ──────────────
+     Measured 2026-09-02 at 1440: 473px, 0.53 of the window, for six display
+     lines — the most expensive component on the page, drawn at half the
+     height a band gets in the reference set. The names cannot grow (56 is the
+     leader's ceiling; the note at 1312 below does that arithmetic and it has
+     not changed), so what grows is the distance between them, and 64 is not a
+     number invented for it: it is the value research/spacing-2026.md
+     prescribes for two ideas inside one band, the value kononenko and hobro
+     spend at 50–64, and the one this document already spends eleven times.
+
+     Six 56px names with 64px of air between them is 656px of roll, and the
+     band comes to 0.84 of the window. Nothing is padded and nothing is
+     invented: the six rows are the same six rows, standing at the page's own
+     block interval instead of at its caption interval. */
+  #allies>.roll{gap:var(--su-64)}
+  /* the credit signs the six names; at the roll's own interval it stops
+     reading as a seventh row of the list and the band closes at 0.84 */
+  #allies>.roll__eb{margin-top:var(--su-64)}
 }
 /* ── AND AT 1312 THE NAMES TAKE THE DISPLAY SIZE THEY ALREADY ARE ────────
    This band is the page's one typographic wall and it was being set at
@@ -6374,7 +6126,8 @@ html.no-js .mnu{display:none}
 }
 
 /* ═══ MOVE 9 · THE PHOTOGRAPHS ANSWER THE POINTER ═══════════════════════
-   Fourteen photographs, and until now not one of them moved under a cursor.
+   Every photograph on the page, and until now not one of them moved under a
+   cursor.
    The 2026-09-02 assessment measured that directly — "hover en imagen: 0 de
    14; las 14 `img` y sus `figure` tienen `transition: all 0s`" — against
    hobro (transform on every thumbnail at 0.3s), kononenko (0.6s/1.1s on the
@@ -6382,22 +6135,30 @@ html.no-js .mnu{display:none}
    answers the pointer on its pictures. This page answered it on its controls
    and nowhere else.
 
-   TWO PER CENT, AND NOTHING ELSE MOVES. No fade, no filter, no shadow, no
+   FOUR PER CENT, AND NOTHING ELSE MOVES. No fade, no filter, no shadow, no
    lift: the photograph grows inside a frame that does not, so the frame's
    edges stay exactly where the grid put them and the only thing that happens
    is that there is fractionally more picture. --dur-long, because it is the
    picture answering rather than a control answering, and --ease, the house
    curve, because it is not an arrival — it goes back the way it came.
 
+   IT WAS TWO PER CENT AND IT COULD NOT BE SEEN. The 2026-09-02 assessment put
+   twelve frames at 80ms across a hover burst on a 359x481 plate and reported
+   "no hay diferencia visible entre el frame 0 y el 11": 2% of 359px is seven
+   pixels, and the references it measured against move 4 to 6. Four per cent
+   of the record's 708.7px plate is 28px, which is a move; on the smallest
+   frame the page still carries it is 15. The duration and the curve are
+   unchanged — only the distance was wrong.
+
    IT IS `transform` AND EVERY OTHER RULE HERE USES `translate`/`scale`, AND
-   THAT IS THE ONE PLACE THIS FILE'S CONVENTION HAS TO BEND. Eight of these
-   fourteen carry `settle`, a scroll-driven keyframe on the INDIVIDUAL `scale`
+   THAT IS THE ONE PLACE THIS FILE'S CONVENTION HAS TO BEND. Two of these
+   carry `settle`, a scroll-driven keyframe on the INDIVIDUAL `scale`
    property with `fill-mode: both` — so `scale` on those elements is an
    animated value at every scroll offset the page has, and a transition
    written on it would be overridden for the whole life of the document.
    `transform` composes with `scale` instead of competing with it, so the
    hover multiplies the settle rather than fighting it, and one property
-   serves all fourteen. The ban that matters — no KEYFRAME may write
+   serves every frame on the page. The ban that matters — no KEYFRAME may write
    `transform`, because a keyframe clobbers a base transform (frozen.mjs
    check 3) — is untouched: this is a transition.
 
@@ -6410,18 +6171,17 @@ html.no-js .mnu{display:none}
    AND IT IS GUARDED, which is the whole of tools/hovers.mjs. */
 @media (hover:hover) and (pointer:fine){
   .act__f,.next__f,.close__f{overflow:hidden;overflow:clip}
-  .hero__gr img,.duo__m img,.act__f>img,.next__f img,.rec__pic img,
-  .two__r>li>img,.crew__m img,.close__f img{
+  .hero__gr img,.duo__m img,.act__f>img,.next__f img,.rec__ph img,
+  .crew__m img,.close__f img{
     transition:transform var(--dur-long) var(--ease);
   }
   .hero__gr:hover img,
   .duo__m:hover img,
   .act__f:hover>img,
   .next__f:hover img,
-  .rec__pic:hover img,
-  .two__r>li:hover>img,
+  .rec__ph:hover img,
   .crew__m:hover img,
-  .close__f:hover img{transform:scale(1.02)}
+  .close__f:hover img{transform:scale(1.04)}
 }
 
 /* ═══ MOVE 7 · ONE WIPE, AND IT IS THE ONLY ONE ═════════════════════════
