@@ -230,6 +230,110 @@
     })(discs[d]);
   }
 
+  /* ── 6. THE TWO CHAPTER LINES ASSEMBLE ────────────────────────────────
+     The one thing on this page that has to be done in script, and the reason
+     is that a line is not a thing the stylesheet can address. `::first-line`
+     styles one; there is no selector for the second, and no way to give the
+     third a delay. So the lines are MEASURED and then made into elements.
+
+     WHAT IT DOES, EXACTLY: for each [data-kinetic] paragraph, walk its single
+     text node word by word with a Range, read each word's client rect, and
+     start a new row whenever the top edge moves. That is the browser's own
+     line breaking, read back — not a guess at where it broke, and not a
+     re-implementation of it — so `text-wrap: balance`, the nbsp in
+     "in&nbsp;another", the Spanish quotation marks and every width on the
+     ladder are all handled by not having an opinion about any of them.
+
+     IT RUNS AFTER document.fonts.ready, and that is not a nicety: a line
+     measured in the fallback face breaks in a different place, and the page
+     would assemble the wrong lines correctly. It re-runs on resize for the
+     same reason.
+
+     THE SPACES ARE KEPT. Line wrappers are blocks, so a text node holding one
+     space between two of them contributes nothing to layout and everything to
+     the clipboard: without it, copying the quotation yields "social life,even
+     family" — the failure verify.md lists by name.
+
+     AND NOTHING HERE FADES. The reveal is a mask and a translate, so a reader
+     who never reaches the paragraph, or whose observer never fires, has type
+     at full ink rather than a hole; tools/cold.mjs and audit.mjs A14 both
+     count faded elements and neither one changes because of this. */
+  var kinetic = document.querySelectorAll('[data-kinetic]');
+  if (kinetic.length) {
+    var lineify = function (el) {
+      if (el._knSrc == null) el._knSrc = el.textContent;
+      el.textContent = el._knSrc;
+      var node = el.firstChild;
+      if (!node || node.nodeType !== 3) return;
+      var text = node.data, words = [], i = 0;
+      while (i < text.length) {
+        while (i < text.length && text.charAt(i) === ' ') i++;
+        var s = i;
+        while (i < text.length && text.charAt(i) !== ' ') i++;
+        if (i > s) words.push([s, i]);
+      }
+      if (!words.length) return;
+      var range = document.createRange(), rows = [];
+      for (var w = 0; w < words.length; w++) {
+        range.setStart(node, words[w][0]);
+        range.setEnd(node, words[w][1]);
+        var top = Math.round(range.getBoundingClientRect().top);
+        var last = rows.length ? rows[rows.length - 1] : null;
+        /* 2px, because a line that carries a taller glyph reports a rect one
+           subpixel off its neighbours and a strict equality would split one
+           line into three. */
+        if (!last || Math.abs(top - last.top) > 2) rows.push({ top: top, a: words[w][0], b: words[w][1] });
+        else last.b = words[w][1];
+      }
+      var frag = document.createDocumentFragment();
+      for (var k = 0; k < rows.length; k++) {
+        var mask = document.createElement('span');
+        mask.className = 'kn__l';
+        mask.style.setProperty('--kn-i', k);
+        var ink = document.createElement('span');
+        ink.className = 'kn__i';
+        ink.textContent = text.slice(rows[k].a, rows[k].b);
+        mask.appendChild(ink);
+        frag.appendChild(mask);
+        if (k < rows.length - 1) frag.appendChild(document.createTextNode(' '));
+      }
+      el.textContent = '';
+      el.appendChild(frag);
+      el.classList.add('is-split');
+    };
+
+    var lightKn = function (el) { el.classList.add('is-lit'); };
+    var knObs = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
+      for (var e = 0; e < entries.length; e++) {
+        if (!entries[e].isIntersecting) continue;
+        lightKn(entries[e].target);
+        knObs.unobserve(entries[e].target);
+      }
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 }) : null;
+
+    var splitAll = function () {
+      for (var k = 0; k < kinetic.length; k++) {
+        var el = kinetic[k];
+        var lit = el.classList.contains('is-lit');
+        lineify(el);
+        if (lit || !knObs) lightKn(el);
+        else knObs.observe(el);
+      }
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(splitAll);
+    else splitAll();
+    var knT = 0, knW = window.innerWidth;
+    window.addEventListener('resize', function () {
+      /* width only: a phone's URL bar collapsing is a height change and is not
+         a re-wrap, and re-splitting on it would restart the entrance under a
+         reader who is standing still. */
+      if (window.innerWidth === knW) return;
+      knW = window.innerWidth;
+      clearTimeout(knT);
+      knT = setTimeout(splitAll, 160);
+    });
+  }
+
   /* ── 5. the scrub envelope ────────────────────────────────────────────
      What it is allowed to touch: video.currentTime. That is the whole list. It
      never writes a style, a class, a transform, a size or a position, so no

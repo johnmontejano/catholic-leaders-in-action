@@ -1639,7 +1639,21 @@ main>section>*{min-width:0}
   display:grid;
   grid-template-columns:minmax(0,1fr);
   grid-template-rows:minmax(0,1fr);
+  /* ── `clip`, NOT `hidden`, AND IT IS THE FOLD'S PARALLAX THAT NEEDS IT ──
+     `overflow: hidden` is a SCROLL CONTAINER — scrollable in principle, even
+     with nothing to scroll — so `animation-timeline: view()` on anything
+     inside this band resolved against THIS box rather than against the
+     document, and a box that never scrolls publishes a progress that never
+     moves. The three planes below were declared, attached and rendering 0px
+     at every scroll position because of this one keyword.
+
+     `overflow: clip` clips the same pixels at the same edge and is not a
+     scroll container, so the lookup walks past it to the root. It also does
+     not establish a block formatting context, which changes nothing here: a
+     grid container and a grid item each establish their own already.
+     `hidden` stays on the line above it for anything that predates `clip`. */
   overflow:hidden;
+  overflow:clip;
   isolation:isolate;
 }
 /* ── THE PICTURE CELL, WHICH IS THE WHOLE BAND ────────────────────────────
@@ -1647,7 +1661,7 @@ main>section>*{min-width:0}
    an occluder. There is still no opaque box over any image on this page's
    first screen: the veil below is a gradient and the type block has no ground
    of its own. */
-.hero__gr{margin:0;grid-area:1 / 1;position:relative;overflow:hidden;min-height:0;background:var(--ink)}
+.hero__gr{margin:0;grid-area:1 / 1;position:relative;overflow:hidden;overflow:clip;min-height:0;background:var(--ink)}
 .hero__gr picture{display:contents}
 /* THE IMAGE IS ABSOLUTE INSIDE ITS OWN CELL, AND THAT IS ARITHMETIC.
    `min-height: 100svh` is a floor, not a definite height, so a `1fr` row in
@@ -1740,15 +1754,35 @@ main>section>*{min-width:0}
    Outdoor Alliance does not do that either — its hero is dark at the corner
    the type is in and nearly clear at the top — and tools/slab.mjs is the gate
    that holds this page to the same. */
+/* ── AND THE BOX CARRIES ITS OWN LEAD, SO THE RAMP NEVER MOVES ────────────
+   `--veil-lead` is 0 here and it is 0 for every browser and every reader that
+   does not get the fold's parallax. The plane block near the foot of this file
+   sets it to 30px, which is the distance the veil travels UP as the fold
+   leaves, and the two declarations below are written so that setting it costs
+   the type nothing:
+
+     · the box grows DOWNWARD by exactly the lead, so at rest the veil's
+       bottom edge stands --veil-lead below the figure's own, off the band and
+       inside its `overflow: hidden`;
+     · every stop is pushed up the ramp by the same --veil-lead, and a second
+       .92 stop is planted at it, so the gradient measured from the FIGURE's
+       bottom edge — which is where the type stands and where contrast.mjs
+       samples — is identical to the pixel at rest.
+
+   The plane then only ever moves the veil up, which brings MORE density under
+   the type as the fold leaves, never less. There is no shape of this move that
+   can lighten the ground under a glyph. */
 .hero__gv{
   --veil-h:310px;
   --veil-f:150px;
-  position:absolute;inset:0;display:block;pointer-events:none;z-index:1;
+  --veil-lead:0px;
+  position:absolute;inset:0 0 calc(-1 * var(--veil-lead)) 0;display:block;pointer-events:none;z-index:1;
   background:linear-gradient(to top,
     rgba(13,13,14,.92) 0,
-    rgba(13,13,14,.80) 96px,
-    rgba(13,13,14,.62) var(--veil-h),
-    rgba(13,13,14,0)   calc(var(--veil-h) + var(--veil-f)));
+    rgba(13,13,14,.92) var(--veil-lead),
+    rgba(13,13,14,.80) calc(96px + var(--veil-lead)),
+    rgba(13,13,14,.62) calc(var(--veil-h) + var(--veil-lead)),
+    rgba(13,13,14,0)   calc(var(--veil-h) + var(--veil-f) + var(--veil-lead)));
 }
 /* the two widths where the headline steps up, and the block with it */
 @media (min-width:640px){.hero__gv{--veil-h:340px}}
@@ -5970,6 +6004,343 @@ html.no-js .mnu{display:none}
   to  {scale:1}
 }
 
+/* ═══ MOVE 5 · THE FOLD LEAVES IN THREE PLANES ══════════════════════════
+   THE ONE ACT ON THIS PAGE THAT HAS DEPTH TO SPEND. Everything below the
+   fold is a document — one plane, one ground, and the budget note above is
+   right that a diorama would be a costume on it. The fold is not a document:
+   it is a photograph with a type block standing INSIDE it, which is already
+   two planes drawn on top of each other, and the veil between them is a
+   third. The depth is in the composition; this move is the only thing on the
+   page that lets the reader's hand feel it.
+
+     back    .hero__gr img   +60px, DOWNWARD — the photograph lags the scroll
+                             and stays a moment longer than the page it is on
+     mid     .hero__b        0     — the type does not move. See below.
+     front   .hero__gv       -30px, UPWARD — the veil leads, so the ground
+                             under the type gets denser as the fold leaves
+
+   NINETY PIXELS OF TOTAL TRAVEL against the 200 devices.md calls the point
+   past which depth reads as a bug, and against the 120 this pass was given.
+   Distributed 60 / 0 / 30 rather than evenly, because a plane the reader can
+   name as a plane is one that moves at a rate nothing else on screen shares.
+
+   THE TYPE IS THE PLANE THAT DOES NOT MOVE, AND THAT IS THE RULE, NOT A
+   SAVING. devices.md §6: text the reader is trying to read must not move
+   relative to the thing they are reading it against. Its ground is the veil,
+   and the veil DOES move — 30px over a whole screen of scroll, on a gradient
+   with no edge in it, which is a density that breathes rather than a surface
+   that slides. The compensation at `.hero__gv` above is what makes that
+   honest: the ramp under the glyphs at rest is unchanged to the pixel, and
+   every position after rest is darker than rest, never lighter.
+
+   NO GAP CAN OPEN AT EITHER END, and it is arithmetic rather than a margin.
+   The photograph translates DOWN by 60 * p while the figure itself has
+   already travelled H * p up the screen; the strip it uncovers at the top of
+   the figure is 60p tall and sits 900p above the viewport, so it is off
+   screen at every p in the range. The veil translates UP by 30 * p and would
+   uncover a strip at the BOTTOM — which is on screen, and which is why the
+   box carries `--veil-lead` and grows 30px past the figure's foot to cover
+   exactly that.
+
+   `exit`, NOT `cover`. This is the only element on the page whose range is
+   not a `cover` crossing, and it is the only one that cannot be: the fold
+   stands at scroll 0, so half of a `cover` range is scroll that does not
+   exist and the move would begin already a third of the way through itself.
+   `exit 0% -> 100%` is, for a band that is exactly one screen tall, exactly
+   the scroll from the fold at rest to the fold gone: 900px at 1440x900, 844
+   on the phone. p = scrollY / H, and the reader's hand is the clock.
+
+   `linear`, and it is the only linear timing function in the document. Every
+   other move here is an entrance and takes the deceleration curve, because an
+   entrance has a destination. A plane has none: it is the page under the
+   reader's finger, and easing it would make the photograph accelerate away
+   from a scroll that is not accelerating. */
+@keyframes plane-back{
+  from{translate:0 0}
+  to  {translate:0 var(--plane-back)}
+}
+@keyframes plane-fore{
+  from{translate:0 0}
+  to  {translate:0 calc(-1 * var(--plane-fore))}
+}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    #top{--plane-back:60px;--plane-fore:30px}
+    .hero__gv{--veil-lead:30px}
+    .hero__gr img,.hero__gv{
+      animation-duration:auto;
+      animation-timing-function:linear;
+      animation-fill-mode:both;
+      animation-timeline:view();
+      animation-range:exit 0% exit 100%;
+    }
+    .hero__gr img{animation-name:plane-back}
+    .hero__gv{animation-name:plane-fore}
+  }
+}
+
+/* ═══ MOVE 10 · THE FOUR NIGHTS ARRIVE AND RECEDE UNDER THE HELD FRAME ══
+   Desktop only, and the frame is one this band already had: above 900
+   `.rec__rail` — the record's heading and the Shroud photograph — is
+   `position: sticky` and is held for the whole length of the index beside it.
+   What was missing under it was any sense that the four evenings PASS. They
+   were four rows of a table that scrolled like four rows of a table.
+
+   So each night arrives out of `scale(.97)` and 0.55 of ink, resolves to full
+   by a fifth of its crossing, holds through the reading band, and then recedes
+   as it goes up under the frame: 8px back and two per cent down. The whole
+   device runs from the first row entering the screen to the last leaving it —
+   1,435px at 1440x900, which is 1.59 screens of travel, and the second-longest
+   span of any move on this page.
+
+   THE ORIGIN IS THE PAGE'S LEFT AXIS AND NOT THE ROW'S MIDDLE. A row here is
+   813px wide; scaled about its centre, .97 walks its left edge 12px inboard
+   and the date column stops agreeing with the eleven other things on this page
+   that start at x=104. `transform-origin: left center` holds that edge and
+   spends the whole 24px on the right, where the subject column ends in air.
+
+   WHY THE ROWS DO NOT ALSO STACK PHYSICALLY, WHICH IS WHAT WAS ASKED FOR AND
+   IS WRITTEN DOWN HERE BECAUSE IT WAS MEASURED RATHER THAN PREFERRED. A
+   sticky deck — each row coming to rest a step below the last, later rows
+   painting over earlier ones — needs the cards to be SEPARATED in flow before
+   it can collect them, and the four rows here are 103, 133, 133 and 166px of
+   content that sit adjacent. Two ways to buy the separation and both fail a
+   meter this page already holds:
+
+     · space them. The gap under each row is bounded on the left by the rail
+       and is 813px wide, so tools/slab.mjs's 10% ceiling — 129,600px on a
+       1440x900 screen — caps it at 159px, and four rows at 103-166 plus four
+       gaps at 159 is 1,171px against the 1,080 the brief asks for. It fits by
+       91px, and every one of those gaps is a 813x159 hole in the page at rest
+       for any reader who lands on #record from the nav rather than scrolling
+       into it.
+     · overlap them. A 14px step means three of the four evenings are covered
+       by the fourth for the ~466px the deck stays stacked, and the object the
+       2026-09-01 assessment asked for — and the last pass delivered — is an
+       index a reader compares DOWN. A stack that hides three of four titles is
+       a dashboard again, with a nicer transition.
+
+   The arrival and the recession are the half of the device that carries it;
+   the occlusion is the half that costs the band its content. */
+/* ── AND THE TWO STOPS ARE tools/frozen.mjs's, NOT A TASTE ──────────────
+   frozen.mjs check 2 asks a question this move is the first on the page to
+   have to answer: when every member of an animated group is fully on screen,
+   any member standing in the UPPER HALF of it must be within a pixel of where
+   the page would put it at rest. A staggered list whose lower rows are still
+   arriving is the design working; a row holding a pose in the reading zone
+   while its neighbours hold a different one is a tear.
+
+   Four rows of 103 to 166px are all whole together for a 365px window of
+   scroll at 1440x900, and inside that window rows one to three are in the
+   upper half throughout. Worked through at 1440x900, 1366x768 and 1920x1080,
+   the progress those rows hold while they are up there is 0.25 to 0.91 — so
+   the plateau has to cover it, and the two stops below are that interval with
+   a margin at each end rather than numbers picked for how they felt.
+
+   WHAT FALLS OUT OF IT IS THE RIGHT DESIGN ANYWAY, which is the argument for
+   trusting the meter. The arrival gets the first 18% of the crossing, which is
+   the row coming up off the bottom edge of the screen; the recession gets the
+   last 8%, which is the row going up under the held rail and off the top. Both
+   happen at the screen's edges and the whole of the reading band is quiet. It
+   is the same lesson §1.1 of research/motion-spec.md records from the other
+   side: a move that runs where the reader is reading is a move in the way. */
+@keyframes deck{
+  from{scale:.97;opacity:.55}
+  18% {scale:1;opacity:1}
+  92% {scale:1;translate:0 0}
+  to  {scale:.98;translate:0 -8px;opacity:1}
+}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference) and (min-width:900px){
+    /* the ID carries this past `[data-stagger] > .rv:nth-child(n+2)`, which is
+       the four-rung ladder the tbody would otherwise hand these rows. A deck
+       is not a staggered list: every night gets the same crossing, and they
+       are already staggered by standing one under another. */
+    #record .idx tbody tr{
+      transform-origin:left center;
+      animation-name:deck;
+      animation-range:cover 0% cover 100%;
+    }
+  }
+}
+
+/* ═══ MOVE 8 · THE SPINE IS DRAWN, AND IT IS THE ONE THING HERE THAT IS
+       NOT ON ANY OTHER SITE ══════════════════════════════════════════════
+   The band-scale fork at the foot of #record is this page's one invented form
+   — the note above `.two` makes the case for it — and `.idx__pr-b` is that
+   figure at the scale of a single row: the elbow that leaves August 5's title,
+   turns, and lands on the one evening this archive documents on both sides.
+   One completed pair in four, drawn instead of written.
+
+   SO IT IS DRAWN. As the row arrives, the vertical leg comes down out of the
+   title's line and then the horizontal leg runs right and stops on
+   "August 29 · Missionaries of Charity". Two segments, in the order a hand
+   would draw them, over 44% of the elbow's own crossing — the same fraction
+   `settle` spends, which is --dur-long measured in scroll, and the slowest
+   thing on the page. It has to be slow: it is fifty-two pixels of hairline,
+   and a fifty-two pixel stroke that arrives in --dur-ui has not been seen.
+
+   WHY IT IS `clip-path` AND NOT `scaleY`. A scale would have to be two
+   animations on two pseudo-elements, or one on a box whose two borders are at
+   right angles to each other — and scaling a 1px border makes it a 0.4px
+   border on the way, which this project has already paid for once (see the
+   note at `.idx__pr-b` itself, where a quarter of a device pixel cost the leg
+   0.79 of contrast). A clip reveals the stroke at full weight from its first
+   frame to its last. The stroke that arrives is the stroke that stays.
+
+   THE 55% STOP IS THE CORNER. Up to it the clip is one --rim wide and grows
+   downward, so only the vertical leg exists; after it the clip's right edge
+   travels out and the horizontal leg follows it. A single-stop interpolation
+   would open both legs at once diagonally, which is not a line being drawn,
+   it is a rectangle being resized. */
+@keyframes draw{
+  from{clip-path:inset(0 calc(100% - var(--rim)) 100% 0)}
+  55% {clip-path:inset(0 calc(100% - var(--rim)) 0 0)}
+  to  {clip-path:inset(0 0 0 0)}
+}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .idx__pr-b{
+      animation-name:draw;
+      animation-duration:auto;
+      animation-timing-function:var(--ease-enter);
+      animation-fill-mode:both;
+      animation-timeline:view();
+      animation-range:cover 12% cover 56%;
+    }
+  }
+}
+
+/* ═══ MOVE 7 · ONE WIPE, AND IT IS THE ONLY ONE ═════════════════════════
+   #act's photograph uncovers from the bottom edge as it arrives: 64px of
+   `clip-path` inset coming off the top of the frame, edge to edge across the
+   screen, over --dur-long in scroll. It is the only clip-path animation in the
+   document and it is on the only frame that earns one — the founder's sentence
+   is about a talk turning into an act, and the picture under it is the act.
+
+   SIXTY-FOUR PIXELS, AND THE NUMBER IS THE SLAB METER'S, NOT A TASTE. This is
+   the same move the 2026-08 budget note deleted, and that note is right about
+   why: a mask growing inside a box of fixed height is indistinguishable from
+   an image that is still painting. What it does not say, because it was
+   arguing about feel, is that the constraint is also arithmetic and it is
+   hard. tools/slab.mjs holds every screen of this document to a largest flat
+   rectangle of 10% of the viewport. The strip a wipe uncovers on a bleed frame
+   is FULL WIDTH by construction, so its area is 1440 x its own height, and
+   10% of a 1440x900 screen is 129,600px: the strip cannot be taller than 90px
+   at any scroll position, ever, or the page fails its own meter mid-wipe.
+
+     1440x900   64 x 1440 = 92,160    7.1%
+     390x844    64 x 390  = 24,960    7.6%
+
+   A percentage of the frame cannot be used for the same reason: 20% of a 617px
+   desktop frame is 123px and fails, and 20% of a 219px phone frame is 44px and
+   is invisible. One constant, in pixels, at every width — which also makes it
+   the same GESTURE on a phone and on a desktop rather than the same fraction,
+   and on the phone 64 of 219px is a third of the frame.
+
+   The old wipe took 58px off the BOTTOM of a photograph standing inside a box
+   that already had its final size, which is why it read as an image still
+   loading. This takes 64 off the TOP of a frame that is arriving from the
+   bottom of the screen: the strip is uncovered by scroll that is already
+   moving the whole frame in the same direction, so the edge reads as the
+   photograph's own top edge landing a moment after the rest of it. */
+@keyframes uncover{
+  from{clip-path:inset(var(--wipe) 0 0 0)}
+  to  {clip-path:inset(0 0 0 0)}
+}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .act__f{
+      --wipe:64px;
+      animation-name:uncover;
+      animation-duration:auto;
+      animation-timing-function:var(--ease-enter);
+      animation-fill-mode:both;
+      animation-timeline:view();
+      animation-range:cover 10% cover 44%;
+    }
+  }
+}
+
+/* ═══ MOVE 6 · THE TWO CHAPTER LINES ASSEMBLE ═══════════════════════════
+   ONE KINETIC HEADING PER ACT, AND THERE ARE EXACTLY TWO ON THE PAGE: the
+   quotation that opens #rule and the founder's sentence that opens #act. Both
+   are the largest type in their band and both are the reason their band
+   exists, which is the whole test devices.md §5 sets — a heading that
+   assembles is a heading being pointed at, and a page where every heading
+   assembles is pointing at nothing.
+
+   THE MASK IS THE MOVE. Each line slides up from behind its own clipped box,
+   so it arrives from a clean edge instead of appearing out of the air, and
+   the three lines are 60ms apart. Nothing fades: a reader whose observer
+   never fires, or who never reaches the paragraph, gets type at full ink
+   rather than a hole, which is the same guarantee the note above `rise`
+   spends four paragraphs buying and which a mask gets for free.
+
+   THE MASK HAS ROOM FOR THE DESCENDERS, AND ON THIS PAGE IT HAS TO BE ASKED
+   FOR TWICE OVER. `.t-chapter` is set at `line-height: 1.05` with
+   `text-box: cap alphabetic` — a box trimmed to the cap line and to the
+   baseline — so the ink of "Piety", "compartment", "social" and "family"
+   stands outside its own box at BOTH ends. A mask clipped to that box shears
+   the tails off p, y and g and reads as broken type, which verify.md lists as
+   the single commonest way this effect fails. So the clip box is padded .2em
+   above the cap line and .22em below the baseline, and the same amounts are
+   taken straight back off as negative margin: the clip grows, the layout does
+   not move a pixel. tools/_strip.mjs measures the ink against the mask at
+   every line and every width, because nothing static can see this.
+
+   AND THE TRAVEL IS SIZED OFF THAT PADDING RATHER THAN GUESSED. The ink has
+   to start fully outside the clip, which is its own height plus the .22em the
+   clip was grown by underneath it — `calc(100% + .25em)`, with the last three
+   hundredths as the margin for a rounded subpixel. Any less and the line
+   starts half-visible; any more and it starts further away than the mask is
+   deep, which is scroll spent on nothing. */
+/* ── AND THE SPLIT GIVES BACK EVERY PIXEL IT TOOK ────────────────────────
+   Measured the first time it ran: `#rule-h` went from 123px to 164 at 1440 and
+   `#act-h` from 169 to 200. Two causes, both structural, and both invisible
+   until the box was measured against itself.
+
+   1 · MARGIN COLLAPSE ATE A THIRD OF THE PADDING. Adjacent siblings collapse
+   to the MOST NEGATIVE of their two margins, so -.22em under one line and
+   -.12em over the next collapsed to -.22em and every boundary came out .12em
+   tall that should have been flat. `display: flex` on the paragraph is the
+   answer rather than a re-tuned number: flex items do not collapse at all, so
+   the padding and the margin cancel exactly, at every line, by construction.
+   Whitespace-only text between two flex items is not rendered, and the line
+   wrappers are blocks either way, so the clipboard still gets its breaks.
+
+   2 · `text-box: cap alphabetic` STOPPED APPLYING. It trims the paragraph's
+   first line to the cap line and its last to the baseline — 15.6px at 1440 —
+   and it trims an INLINE formatting context. Give the paragraph block children
+   and it has none, so the trim silently became a no-op and the band grew by
+   exactly what the trim had been removing. It is restated on the first and
+   last line's own ink, where the inline context now lives, as the two halves
+   it was doing: `trim-start` at the top of the quotation and `trim-end` at the
+   bottom. `:only-child` carries both, for a width where the sentence fits on
+   one line. */
+.is-split{display:flex;flex-direction:column}
+.kn__l{
+  display:block;
+  overflow:hidden;
+  padding-block:.2em .22em;
+  margin-block:-.2em -.22em;
+}
+.kn__i{display:block}
+.is-split .kn__l:first-child .kn__i{text-box:trim-start cap alphabetic}
+.is-split .kn__l:last-child .kn__i{text-box:trim-end cap alphabetic}
+.is-split .kn__l:only-child .kn__i{text-box:trim-both cap alphabetic}
+@media (prefers-reduced-motion:no-preference){
+  /* the pre-state cannot exist without the split, and the split cannot happen
+     without script — so there is no branch here in which a line is hidden and
+     nothing is coming to reveal it. */
+  .is-split .kn__i{
+    translate:0 calc(100% + .25em);
+    transition:translate var(--dur-long) var(--ease-enter);
+    transition-delay:calc(var(--kn-i) * 60ms);
+  }
+  .is-split.is-lit .kn__i{translate:0 0}
+}
+
 /* ═══ THE FOLD ARRIVES, AND IT USED TO BE THE ONE THING THAT DID NOT ═════
    Every band below the fold has had an entrance since the scroll block above
    was written. The fold itself had none: `getAnimations()` at load returned
@@ -6096,6 +6467,93 @@ img[data-graphic]{filter:contrast(1.03) saturate(.42)}
 /* the hero slot stands in for the GROUND now, not for a second plane */
 #top:has(.hero__v) .hero__gr>picture{display:none}
 #rule:has(.what__v) .duo{display:none}
+
+/* ═══ MOVE 9 · THE PRESS, AND THE SURFACES THIS PAGE DID NOT DRAW ═══════
+   taste.md's "browser surfaces" list is the cheapest signal there is that a
+   page was built rather than assembled, and it is the one that gets skipped
+   most reliably. Four of the five were already here — the focus ring is 2px of
+   --signal at 3px of offset on everything focusable, matched on the ROLE
+   rather than on the tag, and every control carries hover, focus-visible and
+   active colour. What was missing is the part of the page the STYLESHEET does
+   not paint: the selection, the caret and the scrollbar all still arrived in
+   the operating system's blue.
+
+   ── THE PRESS ─────────────────────────────────────────────────────────
+   Every control on this page answered a finger with a COLOUR and nothing else,
+   which on a touch screen — where there is no hover to precede it — is the
+   whole of the feedback. A press is a physical claim and it wants a physical
+   answer.
+
+   TWO GEOMETRIES, AND WHICH ONE A CONTROL GETS IS DECIDED BY ITS WIDTH.
+   `scale(.97)` on a 93px pill is 3px off each end and reads as the object
+   giving under the finger. The same 3% on a 688px full-width control is 20px
+   of travel — the control does not compress, it JUMPS — so the wide ones take
+   `translate: 0 1px` instead, which is the same claim made by an object too
+   big to squeeze. taste.md names both and does not say which is for what; the
+   width is what says it.
+
+   `scale` and `translate`, never `transform`, for the reason stated three
+   times above this line: the individual properties compose and `transform`
+   clobbers. Two of these controls carry a pseudo-element that already animates
+   `transform` (the bar's underline, the disclosure's cross) and neither is
+   touched by either declaration.
+
+   THE PRESS IS INSTANT AND THE RELEASE IS NOT. `transition-duration: 0s` on
+   `:active` means the control is already down by the time the eye arrives, and
+   comes back over --dur-ui. A press that eases IN has missed the event it is
+   answering; taste.md's "never ease-in on UI" is the same rule seen from the
+   near side. */
+.btn,.dock,.mnu,.lockup,.ig,.faq summary,.idx__a,.menu__p a,.foot__soc a,.foot__nav a,
+.bar__nav a{
+  /* restated rather than added to, because `transition` is a shorthand and a
+     second one would drop what the first declared. Every control in this list
+     already ran colour and/or background at exactly these numbers, so the only
+     thing this line changes is that the two press properties are now in it. */
+  transition-property:color,background-color,scale,translate;
+  transition-duration:var(--dur-ui);
+  transition-timing-function:var(--ease);
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn:active,.mnu:active,.lockup:active,.ig:active,
+  .menu__p a:active,.foot__soc a:active,.foot__nav a:active,
+  .bar__nav a:active{scale:.97;transition-duration:0s}
+  /* and the three that are too wide to squeeze */
+  .btn--wide:active,.dock:active,.faq summary:active{scale:1;translate:0 1px;transition-duration:0s}
+  /* ── AND THE INDEX LINK IS THE ONE CONTROL THAT TAKES COLOUR ALONE ──────
+     `.idx__a::after { inset: 0 }` is what makes the whole table row a tap
+     target, and it works because nothing between the link and the <tr> is a
+     containing block — the note at `.idx__pr` records that `.idx__t` is
+     deliberately NOT `position: relative` for exactly this reason. `scale` is
+     a transform, and a transform DOES establish a containing block, so a press
+     scale here would collapse a full-row target to the width of its title for
+     the duration of the press. The row keeps the colour press it already has.
+     A control that cannot take the geometry does not get it. */
+}
+
+/* ── THE SELECTION, THE CARET AND THE SCROLLBAR ────────────────────────
+   The accent owns a role on this page and the role is "the thing you are
+   about to act on": the RSVP fill, the dock, the focus ring. A reader dragging
+   across a sentence is acting on it, so the selection is the same colour, and
+   bone on --signal is 6.5:1.
+
+   `#close` IS THE ONE PLACE THAT CANNOT HAVE IT, and it is the same exception
+   the focus ring already carries four rules for: an accent selection on an
+   accent floor is an invisible selection. It inverts there, exactly as the
+   ring does, so the vocabulary is one rule with one exception rather than two
+   vocabularies.
+
+   The scrollbar takes the page's own pair — the spine's grey on bone — rather
+   than the operating system's. `scrollbar-width` is deliberately NOT set: the
+   gutter's width is load-bearing here (tools/audit.mjs A16 measures horizontal
+   overflow at fourteen widths, and the note at `--pad` records the pass where
+   the scrollbar put this page into overflow), so the colour changes and the
+   geometry does not. */
+:root{
+  caret-color:var(--signal);
+  scrollbar-color:color-mix(in srgb, var(--ink) 44%, var(--bone)) var(--bone);
+}
+::selection{background:var(--signal);color:var(--bone)}
+#close ::selection{background:var(--bone);color:var(--ink)}
 
 /* ═══ reduced motion ════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion:reduce){
