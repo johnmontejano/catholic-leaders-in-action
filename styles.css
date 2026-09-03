@@ -607,6 +607,12 @@
   --ease-enter:cubic-bezier(0, 0, .2, 1);
   --dur-ui:320ms;
   --dur-long:600ms;
+  /* --dur-cut  120ms   a CUT, and it is not a third UI duration. 320 and 600
+     are how long a thing takes to answer or to arrive; 120 is how long a
+     thing takes to have already happened. It exists for one object — the
+     record's rail changing plate — where anything a reader can watch reads
+     as a slide transition. See the note beside .rec__ph.is-on. */
+  --dur-cut:120ms;
   /* 8px, and the number is a measurement. Apple's 30px reveal only works
      because an opacity is doing half the work; every Apple displacement
      WITHOUT a fade lives between 4 and 8px — globalnav-flyout-item -4px,
@@ -2477,6 +2483,23 @@ main>section>*{min-width:0}
    lines of one label. They are a sentence's end and a new heading. */
 .act__w{margin-top:var(--su-64)}
 @media (min-width:900px){ .act__w{margin-top:0} }
+/* ── AND EACH ENTRY SETS ON THE TWO AXES THE PAGE ALREADY HAS ────────────
+   The entries were "action &#183; institution" on one run, with a middot doing
+   the work a line break does better: at 499px of measure the first and third
+   wrapped anyway, and where they wrapped had nothing to do with where the
+   institution began. Split, they are the same object .duo__k and #record's
+   table already are — the thing, then who it is done with, one under the
+   other, the second in the quieter of the two ink tones. It reads as an
+   index rather than as a sentence with a dot in it, and the entries carry
+   their own height instead of borrowing it from the picture beside. */
+.act__i{display:block;color:var(--on-ink-2)}
+/* AND THE ENTRIES STAND APART AT EVERY WIDTH, NOT ONLY WHERE THE RULES ARE.
+   With the institution on its own line the three entries ran as six flush
+   lines on the phone and the index read as a paragraph. --su-20 between one
+   entry and the next against the leading inside it — 20 and 12 on the phone,
+   24 and 16 from 900 — is the same two-step the rest of the page uses to
+   separate an item from its own second axis. */
+.act__l li + li{margin-top:var(--su-20)}
 /* ── AND THE ATTRIBUTION CROSSES TO THE OTHER AXIS ─────────────────────
    One sentence in ten columns with its credit stacked underneath leaves the
    last two columns of the band carrying nothing at all: at 1024x768,
@@ -2540,7 +2563,7 @@ main>section>*{min-width:0}
      it, the three hairlines sit at even intervals and the right half reads as
      an index rather than as a stub. The rules are the composition, which is
      what #record's table and #allies' roster already do with the same line. */
-  .act__l{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-between}
+  .act__l{flex:0 0 auto;display:flex;flex-direction:column}
   /* AND THE RULES THE NOTE ABOVE PROMISED ARE ACTUALLY DRAWN NOW. "The rules
      are the composition, which is what #record's table and #allies' roster
      already do with the same line" — and there was no line: three mono
@@ -2549,8 +2572,22 @@ main>section>*{min-width:0}
      --rule this ground already gives the FAQ and the roster, and the spread
      is a ledger's rather than a list's. It also cuts the field: the tallest
      unbroken run in the column falls from 392px to 176. */
-  .act__l li{display:flex;align-items:center;flex:1 1 0;min-height:0;
-    border-top:var(--rim) solid var(--rule);padding-top:var(--sp-1)}
+  /* ── AND THE LEDGER STOPS PAYING FOR THE SQUARE'S HEIGHT WITH ITS OWN
+        LEADING ─────────────────────────────────────────────────────────────
+     THE DEFECT, measured 2026-09-02: `flex:1 1 0` on three list items inside a
+     column stretched to a 813px photograph gave each entry 217px of height for
+     one 18px line of mono — three sentences floating in 650px of black, which
+     the fifth assessment called the worst block of text on the page. The rules
+     were drawn to make the spread read as a ledger; a ledger's rows are the
+     height of what is written in them, not the height of the picture beside.
+
+     The entries take the type scale instead: --su-12 (16 at this width) from
+     the rule to its line, --su-20 (24) from one entry to the next. Three
+     entries close in about 150px rather than 650, and the height the square
+     no longer buys with leading is bought by the sentence above going up one
+     rung — see the note on the 40/1.06 setting below. */
+  .act__l li{display:block;
+    border-top:var(--rim) solid var(--rule);padding-top:var(--su-12)}
   /* ── AND FROM 1312 THE PHOTOGRAPH IS HALF THE SCREEN, WHICH IS WHAT IT WAS
      SHORT OF ──────────────────────────────────────────────────────────────
      THE DEFECT, measured 2026-09-02: 499.3 square is 0.35 of a 1440 window on
@@ -2581,9 +2618,47 @@ main>section>*{min-width:0}
       grid-template-columns:minmax(0,1fr);
       grid-template-rows:auto auto 1fr;
     }
-    .act .t-chapter{grid-column:1;grid-row:1;font-size:34px}
+    /* ── AND THE SENTENCE TAKES THE RUNG THE LEDGER GAVE BACK ─────────────
+       34 was chosen when the directory under it was stretched to 217px a line
+       and every point the quotation gained came out of the picture's height.
+       With the entries closed to their own leading there are ~400px of column
+       beside an 813px square, and the page's answer to spare height is the
+       type scale, not the leading: 40/1.06 is the rung above 34/1.08 on the
+       same ramp #next's chapter head already stands on. The sentence sets in
+       five lines of about twenty-six on the 499px measure, the block reads as
+       one object rather than as a caption with a stub under it, and nothing
+       else in the band moves. */
+    .act .t-chapter{grid-column:1;grid-row:1;font-size:40px;line-height:1.06}
     .act__a{grid-column:1;grid-row:2}
-    .act__w{grid-column:1;grid-row:3;align-self:stretch}
+    /* AND THE DIRECTORY STANDS OFF THE CREDIT HERE TOO. The phone gives it
+       --su-64 for the reason recorded above — a credit and an index in the
+       same quiet face read as two lines of one label when they touch. In one
+       column at this width the same collision is back and the same answer
+       applies at the desktop step of the scale. */
+    .act__w{grid-column:1;grid-row:3;align-self:start;margin-top:var(--su-20)}
+    /* ── AND THE COLUMN STANDS ON THE PICTURE'S CENTRE LINE, BECAUSE A BLOCK
+          THAT NO LONGER STRETCHES HAS TO STAND SOMEWHERE ────────────────────
+       Three rows of `auto` inside a stretched cell put the whole residue in
+       one place: 620x440 of flat ground under the ledger, which tools/slab.mjs
+       reads at 21% of a 1440x900 screen against its 10% ceiling — the same
+       hole the stretch was invented to hide, only now it is honest about
+       being a hole. The block hangs from the picture's HEAD and the picture is
+       cropped to the height the block actually needs: 620x184 reads 8.8%.
+       And the square gives back some of its height for the same arithmetic
+       (see .act__f below): an 813px picture cannot be paid for by any setting
+       of a hundred words, so the frame comes down to meet the column rather
+       than the column stretching up to meet the frame. */
+    .act{align-self:start;grid-template-rows:auto auto auto}
+    /* ── AND THE FRAME GOES TO 4/3, WHICH IS A CROP THIS PICTURE WANTED ────
+       "Everything that carries is in the top third of the frame — the
+       standing sister at the left edge, the two near hats, and the tarpaulin
+       between them", which is the note that set object-position to 8% on the
+       square. 4/3 takes 203px off the bottom of that square: wood chips and
+       bare ground, nothing turned, nothing being done. The width is
+       untouched — 812.7 CSS, 0.56 of the window, the measure the fifth
+       assessment asked this band to keep — and the band still runs 0.82 of a
+       screen, so it is a rest and not a strip. */
+    .act__f{aspect-ratio:4/3}
   }
 }
 /* ── AND THE TABLET GETS THE SAME DEVICE, FOR THE SAME MEASURED REASON ──
@@ -3936,34 +4011,40 @@ img[src*="laughing-"]{object-position:30% 50%}
   .rec__pic{display:grid;margin:var(--sp-2) 0 0}
   .rec__ph{grid-area:1 / 1;align-self:end;margin:0}
   /* the four are stacked, so three of them are not the one being read. They
-     are taken out of the paint with `opacity` and out of the pointer's way
-     with `visibility`, which is delayed by the fade's own duration so the
-     outgoing plate is still there while it goes. */
+     are taken out of the paint and out of the pointer's way by the same
+     property, in the same frame the row turns over: a cut. */
   .rec__ph:not(.is-on){visibility:hidden}
-  /* AND THE FADE IS THE ONLY THING THAT IS CONDITIONAL. `visibility` is what
-     makes three of the four plates not be there, at every setting; `opacity`
-     exists solely to give the change a duration, so it is declared only where
-     a duration is wanted. Under `reduce` the plate is hidden and nothing is
-     held at zero ink waiting for a scroll — which is what tools/_motion.mjs
-     checks when it walks the page with the preference set. */
-  /* AND THE OUTGOING PLATE HOLDS ITS INK WHILE THE INCOMING ONE ARRIVES.
-     Two plates fading past each other in opposite directions are both half
-     transparent in the middle of the change, and what shows through both of
-     them is the band's own bone: for 300ms the rail is a washed photograph
-     with no blacks in it, which is the state tools/black.mjs caught at 0% of
-     pixels under luminance 16 on two of the four negatives. A dissolve does
-     not need the outgoing frame to leave. The arriving plate takes the layer
-     above and fades UP over a plate still at full ink; the one underneath
-     drops out in one step once the fade is over and nothing can be seen of
-     it. Every frame of the change therefore has one opaque photograph in it,
-     and the plate that is leaving is never the thing being looked through. */
+  /* ── AND THE RAIL CUTS, 2026-09-02. IT USED TO DISSOLVE ────────────────
+     THE DEFECT, measured at 1354b03: the change was `opacity` over --dur-long
+     with the outgoing plate held at full ink underneath. Every frame did have
+     one opaque photograph in it — that part of the note below was true — but
+     the arriving one was translucent ON TOP of it for 600ms, so twelve of a
+     107-sample sweep and four of twelve motion frames showed two evenings
+     superimposed. A dissolve between two documentary frames is the grammar of
+     a slide carousel, and it was the one move on this page an assessment
+     named as cheap.
+
+     A CUT IS NOT A FADE MADE SHORT. `opacity` at any duration puts both
+     plates on screen at once for the length of it; the only difference is how
+     long. So the property changes: the leaving plate is GONE in the frame the
+     class moves — no delay, no held ink, nothing underneath — and the
+     arriving one opens its own top edge from --dur-cut of `clip-path`, the
+     same device and the same direction as #act's uncover. 12% of a 470px
+     plate is 56px of the band's own ground for at most two frames at 60Hz,
+     which is a cut with a snap on it rather than a transition a reader can
+     watch. At no instant are two plates painting a pixel.
+
+     `visibility` is still what makes three of the four not be there, at every
+     setting, and it is no longer delayed by anything: under `reduce` the
+     plate is simply hidden and the clip is not declared at all, which is what
+     tools/_motion.mjs checks when it walks the page with the preference set. */
   .rec__ph.is-on{z-index:1}
   @media (prefers-reduced-motion:no-preference){
-    .rec__ph{transition:opacity var(--dur-long) var(--ease),visibility 0s linear 0s}
-    .rec__ph:not(.is-on){
-      opacity:0;
-      transition:opacity 0s linear var(--dur-long),visibility 0s linear var(--dur-long);
+    .rec__ph.is-on{
+      clip-path:inset(0 0 0 0);
+      transition:clip-path var(--dur-cut) var(--ease-enter);
     }
+    .rec__ph:not(.is-on){clip-path:inset(12% 0 0 0)}
   }
   .rec__pic .cap{margin:var(--sp-2) 0 0}
   .rec__ph:last-child .cap{margin-bottom:0}
@@ -5191,14 +5272,68 @@ img[src*="laughing-"]{object-position:30% 50%}
      It sits on the band's right edge rather than filling its cell, so the
      64px its own master cannot pay for stands between the two columns as
      gutter instead of at the page's margin as a strip. */
-  #close>.hd{grid-column:1 / 7;grid-row:1}
-  #close>.close__r{grid-column:1 / 7;grid-row:2;align-self:start}
-  #close>.close__a{grid-column:1 / 7;grid-row:3;align-self:end}
+  /* ── AND FROM 2026-09-02 THE PHOTOGRAPH IS HALF THE SCREEN AND NOT A CARD
+        ──────────────────────────────────────────────────────────────────────
+     THE DEFECT, measured at 1354b03: 534 x 712 — 0.37 of a 1440 window — sat
+     inside a bordered, radiused .frame at the right edge of the band, and it
+     was the LAST thing a juror sees. Two faults in one object. The size was a
+     file fact: DbmTXzlGLPl_04 was rendering out of its raw 1080px negative, so
+     540 CSS was the honest ceiling at DPR 2 and `max-width:540px` was written
+     to hold it there. tools/upscale.py restores that negative once (1080 ->
+     2160, fourteen back-projection passes, the same chain the other twelve
+     masters took), and with 2160 device pixels on disk the box can be what the
+     composition wants.
+
+     Seven tracks and the page's own right inset is 812.7 CSS — 0.56 of the
+     window, the identical figure #act's square takes on the other side of the
+     document — and it BLEEDS off the right edge for the identical reason: a
+     photograph more than half a screen wide that stops 104px short of the
+     margin reads as a large picture in a border rather than as half the page.
+     The words keep the five tracks opposite, on the page's own left axis,
+     exactly as they already did.
+
+     AND IT STANDS THE FULL HEIGHT OF THE COLUMN BESIDE IT rather than its own
+     aspect ratio. 812.7 of a 0.751 negative is 1083px, 1.2 of the window, and
+     a band that tall would make the close longer than the fold. Stretched to
+     the words and cropped with `cover`, the picture is exactly as tall as the
+     head, the questions and the pair together — so the difference between the
+     two column heights, which is the rectangle this band has been rebuilt
+     three times to remove, is zero by construction rather than by arithmetic.
+     The crop it costs is off the bottom of a portrait frame whose three
+     figures stand in its upper two thirds.
+
+     No border, no radius, no plate. The page treats nine of its eleven
+     photographs as full-bleed ink; this is the tenth. */
+  #close>.hd{grid-column:1 / 6;grid-row:1}
+  #close>.close__r{grid-column:1 / 6;grid-row:2;align-self:start}
+  #close>.close__a{grid-column:1 / 6;grid-row:3;align-self:end}
   #close>.close__f{
-    grid-column:7 / 13;grid-row:1 / 4;
-    justify-self:end;align-self:start;
-    max-width:540px;margin-top:0;
+    grid-column:6 / 13;grid-row:1 / 4;
+    justify-self:stretch;align-self:stretch;
+    max-width:none;margin-top:0;
+    margin-right:calc(-1 * var(--pad-abs));
   }
+  /* The frame comes out of the flow so the picture cannot set the row heights
+     it is supposed to be measured BY. Left in flow, an 812.7px box of a 0.751
+     negative declares 1083px of intrinsic height and the band grows to 1.35 of
+     the window to hold it — the tail wagging the composition. Taken out, the
+     three rows are the head, the questions and the pair, and the photograph
+     fills whatever that comes to. */
+  /* AND THE LEDGER HAS ONE RULE PER ROW, NOT TWO SIXTY-FOUR APART. `.faq`
+     closed itself with a bottom hairline and `.close__a` opened with a top
+     one, so the column carried two identical lines with 64px of flat lapis
+     between them and nothing on either side of the first — the "hairline
+     suelto" the fifth assessment measured at y 485. The rule that opens the
+     control's row is the one that closes the questions; the questions stop
+     drawing a second. */
+  #close>.close__r>.faq{border-bottom:0}
+  #close>.close__f{position:relative;min-height:0}
+  #close>.close__f .frame{position:absolute;inset:0;
+    border:0;border-radius:0;padding:0;background:none}
+  #close>.close__f .frame::before,#close>.close__f .frame::after{
+    inset:0;border-radius:0}
+  #close>.close__f .frame>img{height:100%;width:100%;object-fit:cover;
+    object-position:50% 22%;border-radius:0}
 }
 
 /* ── THE 900-1200 EXCEPTION IS DELETED ─────────────────────────────────
@@ -7005,6 +7140,36 @@ img[data-graphic]{filter:contrast(1.03) saturate(.42)}
        ~55 characters — the top of the 45-75 band and the bottom of the
        corpus's own 345-358 at 390 scaled to this column. */
     --measure:480px;
+    /* the shelf is a control at this width (see .dock below), so what the
+       page has to clear at the foot is the control plus its own margin */
+    --dock-h:calc(52px + var(--pad-i));
+  }
+
+  /* ── THE SHELF IS A CONTROL ON THE TABLET, NOT A BAND ───────────────────
+     THE DEFECT, measured 2026-09-02: 768 x 48 of flat cobalt across the foot
+     of all twenty-two tablet screens, carrying one 17px word. At 390 that
+     shelf is the phone's one persistent action and it is right — a thumb
+     reaches the bottom of the screen and nothing else — but a 768px band is
+     not under anyone's thumb, and at that width it stops reading as a control
+     and starts reading as a second footer the page cannot get rid of.
+
+     It becomes the object it always was: 360 x 52, the page's own block
+     control, at the page's own right margin and one margin clear of the
+     floor. Same word, same fill, same 8px radius every .btn on this page
+     takes — no new shape enters the census, and the fold still shows exactly
+     ONE RSVP, because `#top .hero__go` stays hidden wherever this stands.
+
+       768   dock 768x48 full-bleed  ->  360x52 at (368, 932), 6.1% of the
+             screen's width-height product against 4.7% before, in a corner
+             instead of across the whole foot */
+  .dock{
+    left:auto;right:var(--pad-i);bottom:var(--pad-i);
+    width:360px;min-height:52px;
+    padding-inline:var(--sp-3);
+    border-radius:var(--r-object);
+    /* the two-tone edge was written for a shelf whose only seam is its top.
+       A control has four, so the same pair becomes a ring. */
+    box-shadow:inset 0 0 0 var(--rim) var(--chrome-hi);
   }
 
   /* ── 1 · THE CONTROL IS A CONTROL ──────────────────────────────────────
@@ -7171,6 +7336,59 @@ img[data-graphic]{filter:contrast(1.03) saturate(.42)}
   .roll__d{grid-column:1;grid-row:2;justify-self:stretch;align-self:auto;
     display:flex;align-items:baseline;justify-content:flex-end}
   /* the fill, brought down from 768 so the whole tier draws one leader */
+  .roll__d::before{
+    flex:1 1 0;min-width:0;align-self:stretch;height:auto;width:auto;
+    margin-right:0;margin-bottom:0;
+    background:none;
+    background-image:linear-gradient(to right,
+      var(--rule) 0 calc(100% - var(--sp-3)),
+      transparent calc(100% - var(--sp-3)));
+    background-size:100% var(--rim);
+    background-repeat:no-repeat;
+    background-position:0 100%;
+  }
+}
+
+/* ── #allies ON THE PHONE TAKES THE ARRANGEMENT THE TABLET ALREADY HAS ────
+   THE DEFECT, measured 2026-09-02 at 390x844: every one of the first three
+   names set in THREE lines of Zodiak 34 — "Archdiocese / of / San Francisco",
+   with a preposition alone on a line — because the field track beside them
+   took its `auto` width and left the name 203-211px of a 350px column. Six
+   institutions came to 875px and the band read as thirteen unseparated lines
+   of display serif, which is the opposite of what a roll of names is for.
+
+   The cause is the two-column row, and it was already solved one tier up: at
+   640 the field drops UNDER the name, the leader runs from the page's own
+   left axis to the label, and every name gets the whole measure. The same
+   arrangement comes down to the phone unchanged. On 350px of measure at 34
+   the longest name — "Catholic Charities San Francisco" — sets in two lines
+   and nothing sets in three; "Order of Malta" and "Lay Mission Institute"
+   still set in one, so the roll keeps the ragged shape it is composed of.
+
+   The name keeps its 34 and its 1.00 leading: what was wrong was the measure,
+   not the size, and dropping the size to fix a measure would have cost the
+   band the one thing the assessment praised about it at every other width.
+   --su-56 between items rather than --su-64, because a stacked pair is
+   already two objects tall and 64 between them re-opened the grouping the
+   1.00 leading exists to close.
+
+     #allies at 390   875px / 1.04 vh, 3 / 3 / 3 / 2 / 2 / 2 lines
+                  ->  see the commit, no name over two lines, no lone "of" */
+@media (max-width:639.98px){
+  .roll{gap:var(--su-56)}
+  .roll li{grid-template-columns:minmax(0,1fr);row-gap:var(--su-12);align-items:start}
+  .roll__n{grid-column:1;grid-row:1}
+  /* AND THE 7.5rem CAP UNDER 390 GOES WITH THE TWO-COLUMN ROW IT BELONGED
+     TO. It existed to stop "WESTERN ASSOCIATION" taking 170 of a 280px row
+     from the name beside it. Stacked, the field has no name to take anything
+     from: it takes the whole row, sets on one line, and the leader fills
+     whatever it does not use — so the field's own rule is restored and the
+     smallest phones get the same object the 390 does. */
+  .roll__d{grid-column:1;grid-row:2;justify-self:stretch;align-self:auto;
+    max-width:none;white-space:nowrap;
+    display:flex;align-items:baseline;justify-content:flex-end}
+  /* the same leader the tablet draws: one rule from the left axis to the
+     label, one module of clearance before the words */
   .roll__d::before{
     flex:1 1 0;min-width:0;align-self:stretch;height:auto;width:auto;
     margin-right:0;margin-bottom:0;
