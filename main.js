@@ -1,445 +1,260 @@
-/* CLIA — progressive enhancement only, and nothing else.
-
-   The page is complete at paint. Every section, every image and every word is
-   laid out and legible with this file absent, with JavaScript off, and with
-   prefers-reduced-motion on. Nothing here creates content, pins a section, or
-   drives composition from a scroll offset.
-
-   Five behaviours, and this is the complete list:
-     1. the nav pill retracting on the way down and returning on the way up
-     2. the mobile menu panel — open, close, Esc, focus return, scroll lock
-     3. the section the reader is standing in, mirrored into aria-current
-     4. every disclosure mirrors its open state into aria-expanded
-     5. the scrub envelope, which is the ONLY frame loop in this file and is
-        dormant in this build because no clip is on disk                      */
+/* Catholic Leaders in Action — main.js
+   Contract: research/redesign-2026-09/PLAN-2.md §2. CSS owns every entrance (.is-in); GSAP + ScrollTrigger own the scrubs. */
 (function () {
   'use strict';
+  const html = document.documentElement;
+  const JS = html.classList.contains('js');
+  const MOTION = html.classList.contains('motion');
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const hasGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* §1 — menu (keyboard: Esc closes, focus trapped, scroll locked) */
+  const menu = $('[data-menu]'), openBtn = $('[data-menu-open]'), closeBtn = $('[data-menu-close]');
+  let lastFocus = null;
+  function setMenu(open) {
+    if (!menu) return;
+    menu.classList.toggle('is-open', open);
+    menu.setAttribute('aria-hidden', String(!open));
+    openBtn && openBtn.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('menu-open', open);
+    if (open) { lastFocus = document.activeElement; (closeBtn || menu).focus(); }
+    else if (lastFocus) { lastFocus.focus(); }
+  }
+  openBtn && openBtn.addEventListener('click', () => setMenu(true));
+  closeBtn && closeBtn.addEventListener('click', () => setMenu(false));
+  menu && $$('a', menu).forEach(a => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', e => {
+    if (!menu || !menu.classList.contains('is-open')) return;
+    if (e.key === 'Escape') setMenu(false);
+    if (e.key === 'Tab') {
+      const f = $$('a,button', menu).filter(el => el.offsetParent !== null);
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
 
-  /* ── 0. the entrance, where the stylesheet cannot run it ─────────────
-     See styles.css, "THE ENTRANCE, ON THE BROWSERS THAT CANNOT SCRUB IT".
-     Safari before 26 has no `animation-timeline`, so on most iPhones the CSS
-     reveal never existed. The html.js class is what lets the fallback
-     pre-state be written at all; without script it is never applied. */
-  document.documentElement.classList.add('js');
-  var canScrub = window.CSS && CSS.supports && CSS.supports('animation-timeline: view()');
-  if (!reduced && !canScrub) {
-    var rvs = document.querySelectorAll('.rv');
-    var showAll = function () {
-      for (var i = 0; i < rvs.length; i++) rvs[i].classList.add('is-in');
-    };
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        for (var i = 0; i < entries.length; i++) {
-          if (entries[i].isIntersecting) {
-            entries[i].target.classList.add('is-in');
-            io.unobserve(entries[i].target);
-          }
+  /* §2 — nav: theme per section (data-theme), current link, hide on scroll down */
+  const nav = $('[data-nav]');
+  const navLinks = $$('[data-nav-links] a');
+  const themed = $$('[data-theme]');
+  function navTheme() {
+    if (!nav) return;
+    const y = nav.getBoundingClientRect().height / 2;
+    let cur = null;
+    for (const s of themed) { const r = s.getBoundingClientRect(); if (r.top <= y && r.bottom > y) cur = s; }   // last match = deepest
+    nav.classList.toggle('nav--onyx', !!cur && cur.dataset.theme === 'light');
+    // past the hero the nav takes the surface under it as its ground (96%), with a rule beneath
+    const overHero = !cur || cur.classList.contains('hero');
+    const surf = overHero ? '' : cur.classList.contains('surface-linen') ? 'linen' : cur.tagName === 'FOOTER' ? 'onyx' : cur.dataset.theme === 'dark' ? 'roast' : 'parchment';
+    nav.classList.toggle('nav--ground', !overHero);
+    ['parchment', 'linen', 'roast', 'onyx'].forEach(k => nav.classList.toggle('nav--s-' + k, surf === k));
+    const id = cur && cur.id;
+    navLinks.forEach(a => { const on = id && a.getAttribute('href') === '#' + id; if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+  }
+  let lastY = 0;
+  function navHide() {
+    if (!nav) return;
+    const y = window.scrollY;
+    nav.classList.toggle('nav--hide', y > lastY + 4 && y > 200 && !document.body.classList.contains('menu-open'));
+    if (Math.abs(y - lastY) > 4) lastY = y;
+  }
+  window.addEventListener('scroll', () => { navTheme(); navHide(); }, { passive: true });
+  navTheme();
+
+  /* §3 — entrances: IntersectionObserver adds .is-in (also the safety net for anything still in its pre-state) */
+  $$('[data-delay]').forEach(el => { const v = parseFloat(el.dataset.delay); if (!isNaN(v)) el.style.setProperty('--d', v + 's'); });
+  const revealables = $$('[data-reveal],[data-img],[data-rule],.hero');
+  if (MOTION && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      for (const en of entries) {
+        if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+      }
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+    revealables.forEach(el => io.observe(el));
+    // stalled-frame guard: anything ≥50% visible for 1.2s that is still in its pre-state
+    const guard = new IntersectionObserver(entries => {
+      for (const en of entries) {
+        if (en.intersectionRatio >= 0.5 && !en.target.classList.contains('is-in')) {
+          setTimeout(() => { if (!en.target.classList.contains('is-in')) en.target.classList.add('is-in'); }, 1200);
         }
-      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
-      for (var r = 0; r < rvs.length; r++) io.observe(rvs[r]);
-      /* NO GLOBAL TIMER. A "light everything after n seconds" lock would
-         light every band a slow reader had not reached yet, and then nothing
-         below would ever enter — the fallback would defeat itself for exactly
-         the reader it exists for. IntersectionObserver is universal where this
-         branch runs; the only fence needed is the no-IO branch below. */
+      }
+    }, { threshold: [0.5] });
+    revealables.forEach(el => guard.observe(el));
+  } else {
+    revealables.forEach(el => el.classList.add('is-in'));
+  }
+  // hero: settle on load (fonts ready), never later than 900ms
+  const hero = $('.hero');
+  if (hero) {
+    const go = () => hero.classList.add('is-in');
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(go, 80));
+    setTimeout(go, 900);
+  }
+
+  /* §4 — smooth scroll (Lenis) + ScrollTrigger proxy */
+  let lenis = null;
+  if (MOTION && typeof window.Lenis !== 'undefined') {
+    lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
+    if (hasGsap) {
+      lenis.on('scroll', window.ScrollTrigger.update);
+      window.gsap.ticker.add(t => lenis.raf(t * 1000));
+      window.gsap.ticker.lagSmoothing(0);
     } else {
-      showAll();
+      const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+      requestAnimationFrame(raf);
     }
-  }
-  var root = document.documentElement;
-
-  /* ── 1. the pill retracts ─────────────────────────────────────────────
-     The whole bar leaves on the way down and comes back on the way up. Its
-     geometry never changes: it does not shrink, it does not gain a shadow, it
-     does not swap ground. That is the difference between a 2021 nav and this
-     one, and the listener does no layout work at all. */
-  var lastY = window.scrollY;
-  if (!reduced) {
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY;
-      var down = y > lastY && y > 160;
-      root.classList.toggle('is-down', down);
-      lastY = y;
-    }, { passive: true });
+    html.classList.add('lenis');
+    $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const t = $(a.getAttribute('href'));
+      if (!t) return;
+      e.preventDefault(); setMenu(false); lenis.scrollTo(t, { offset: 0, duration: 1.2 });
+    }));
   }
 
-  /* ── 2. the menu panel ────────────────────────────────────────────────
-     A card that drops under the nav, not a full-screen takeover. The trigger
-     is the word MENU with the page's own 5px marker under it; opening swaps
-     the word to CLOSE and the marker animates its width. */
-  var menu = document.querySelector('[data-menu]');
-  var mb = document.querySelector('[data-menu-btn]');
-  if (menu && mb) {
-    var label = mb.querySelector('.mnu__t');
-    var mark = mb.querySelector('.mnu__r');
-    var open = false;
+  /* §5–§7 — the scrubs (html.motion only). CSS owns scale/clip-path/opacity on every revealed element. GSAP 3.12.3+ folds an
+     element's individual `scale` into its own transform (and sets it to none), so on a CSS-scaled img GSAP tweens the CSS
+     `translate` property instead of x/y — it composes with `scale` and never touches `transform`. GSAP owns scale only
+     where CSS has no pre-state (the band photographs, the gallery plates). */
+  if (MOTION && hasGsap) {
+    const gsap = window.gsap, ST = window.ScrollTrigger;
+    gsap.registerPlugin(ST);
+    ST.config({ ignoreMobileResize: true });
+    const refresh = () => ST.refresh();
+    const scrub = (trigger, more) => Object.assign({ trigger, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true }, more);
+    const visImg = band => $$('.band__pic img', band).find(i => getComputedStyle(i).display !== 'none') || null;
 
-    /* CONTAINMENT. The page behind the panel is scroll-locked, so a keyboard
-       user who tabbed out of the panel used to land on controls in a page they
-       could not scroll to see. Everything outside the panel and its own
-       trigger goes `inert` while the panel is open, and focus is moved into
-       the panel on open. Escape and focus-return were already correct.
-       toggleAttribute is a no-op where inert is unsupported, which leaves the
-       old behaviour rather than a broken one.
-
-       THE LIST IS DERIVED, NOT WRITTEN DOWN. It used to be seven hand-named
-       selectors, and one of them was `footer` — which stopped meaning the page
-       footer the day a section caption was marked up as a <footer> inside
-       <main>. `querySelector` took the caption, the real footer kept its six
-       tabbable links, and the trap this comment describes had been gone for
-       several passes before a review walked the tabs and found them. A list of
-       names cannot survive the document changing under it, so the list is now
-       computed from the tree: every child of <body> that holds neither the
-       panel nor its trigger, plus, inside the branch that does hold the
-       trigger, every sibling branch that is not on the path to the button.
-       Anything added to the page in future is muted by construction. */
-    var muted = (function () {
-      var out = [];
-      var walk = function (parent) {
-        for (var i = 0; i < parent.children.length; i++) {
-          var el = parent.children[i];
-          if (el === menu || el.contains(menu)) continue;   // the panel itself
-          if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
-          if (el === mb) continue;                          // the trigger stays live
-          if (el.contains(mb)) { walk(el); continue; }      // on the path: descend
-          out.push(el);
-        }
-      };
-      walk(document.body);
-      return out;
-    })();
-
-    var sizeMark = function () {
-      if (mark && label) mark.style.width = label.getBoundingClientRect().width + 'px';
-    };
-    var setMenu = function (want) {
-      open = want;
-      root.classList.toggle('is-menu', want);
-      document.body.style.overflow = want ? 'hidden' : '';
-      mb.setAttribute('aria-expanded', want ? 'true' : 'false');
-      if (label) label.textContent = want ? 'Close' : 'Menu';
-      sizeMark();
-      for (var v = 0; v < muted.length; v++) muted[v].toggleAttribute('inert', want);
-      if (want) {
-        /* The panel is visibility:hidden until the class lands, and a hidden
-           subtree cannot take focus. Reading a layout property flushes the
-           new style synchronously, so the focus below always sticks. */
-        void menu.offsetWidth;
-        var first = menu.querySelector('a[href]');
-        if (first) first.focus();
+    gsap.matchMedia().add({ desk: '(min-width:1024px)', mob: '(max-width:1023px)' }, ctx => {
+      /* §5 — hero: on scroll out the photo rises 60px and the deep layer comes to .45, scrubbed over the hero's own height */
+      if (hero) {
+        gsap.timeline({ scrollTrigger: scrub(hero, { start: 'top top' }) })
+          .fromTo(visImg(hero), { translate: '0px 0px' }, { translate: '0px -60px', ease: 'none' }, 0)
+          .to($('.band__deep', hero), { opacity: .45, ease: 'none' }, 0);
       }
-    };
-
-    sizeMark();
-    window.addEventListener('resize', sizeMark);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeMark);
-
-    mb.addEventListener('click', function () { setMenu(!open); });
-    menu.addEventListener('click', function (ev) {
-      var t = ev.target;
-      if (t.closest && t.closest('a[href]')) { setMenu(false); return; }
-      if (t.hasAttribute && t.hasAttribute('data-menu-close')) { setMenu(false); mb.focus(); }
-    });
-    /* THE RING IS CLOSED BY HAND. `inert` removes the page behind the panel
-       from the tab order, which is most of the job but not the end of it: with
-       everything else muted, the last link in the panel still tabs to the end
-       of the DOCUMENT, and the browser hands focus to its own chrome. A
-       keyboard walk reads that as leaving the page — which is what a trap is
-       supposed to make impossible. So Tab wraps explicitly across the panel
-       and its trigger, which is also the Close control. Four links, then
-       Close, then round again; Shift+Tab runs the same ring backwards. */
-    var ring = function () {
-      var live = [mb].concat([].slice.call(menu.querySelectorAll('a[href],button,[tabindex]:not([tabindex="-1"])')));
-      return live.filter(function (el) {
-        var r = el.getBoundingClientRect();
-        return r.width > 0 && r.height > 0;
+      // the other bands: the photo 1→1.08 across the band's scroll, the deep layer 0→.3 over its last 40%
+      $$('[data-band]').filter(b => b !== hero).forEach(band => {
+        const img = visImg(band), deep = $('.band__deep', band);
+        if (!img) return;
+        const tl = gsap.timeline({ scrollTrigger: scrub(band) });
+        tl.fromTo(img, { scale: 1 }, { scale: 1.08, ease: 'none', duration: 1 }, 0);
+        deep && tl.fromTo(deep, { opacity: 0 }, { opacity: .3, ease: 'none', duration: .4 }, .6);
       });
-    };
-    document.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Tab' && open) {
-        var list = ring();
-        if (!list.length) return;
-        var at = list.indexOf(document.activeElement);
-        var to = at < 0 ? 0 : at + (ev.shiftKey ? -1 : 1);
-        if (to < 0) to = list.length - 1;
-        if (to >= list.length) to = 0;
-        ev.preventDefault();
-        list[to].focus();
-        return;
-      }
-      if (ev.key === 'Escape' && open) { setMenu(false); mb.focus(); }
+
+      /* §6 — photographs: the img drifts +N→−N across the figure's visibility; the .ph__box clips (motion.css oversizes the img by 2N).
+         A sticky figure (#next at ≥1024) rides its section, so the drift only runs while a visible edge moves. */
+      $$('[data-parallax]').forEach(fig => {
+        const img = $('.ph__box img', fig);
+        if (!img || fig.closest('[data-pin]')) return;
+        const n = parseFloat(fig.dataset.parallax) || 30;
+        fig.style.setProperty('--px', n + 'px');
+        const trig = getComputedStyle(fig).position === 'sticky' ? (fig.closest('section') || fig) : fig;
+        gsap.fromTo(img, { translate: '0px ' + n + 'px' }, { translate: '0px ' + -n + 'px', ease: 'none', scrollTrigger: scrub(trig) });
+      });
+
+      /* §7 — the record gallery, ≥1024 only (below, the plates are a column and the CSS entrances run) */
+      const gal = $('#record .gallery[data-pin]');
+      if (ctx.conditions.desk && gal) gallery(gal);
+
+      // footer: rises 12% of its height as it enters (scrub, once)
+      const foot = $('.footer');
+      foot && gsap.fromTo(foot, { yPercent: 12 }, { yPercent: 0, ease: 'none', scrollTrigger: scrub(foot, { end: 'top 60%', once: true }) });
     });
-  }
 
-  /* ── 3. the section you are standing in ───────────────────────────────
-     Reported, never styled with the accent: the marker is a hairline. */
-  var navLinks = document.querySelectorAll('.bar__nav a[href^="#"]');
-  if (navLinks.length && 'IntersectionObserver' in window) {
-    var byId = {};
-    for (var n = 0; n < navLinks.length; n++) byId[navLinks[n].getAttribute('href').slice(1)] = navLinks[n];
-    var here = new IntersectionObserver(function (entries) {
-      for (var e = 0; e < entries.length; e++) {
-        var a = byId[entries[e].target.id];
-        if (!a) continue;
-        if (entries[e].isIntersecting) a.setAttribute('aria-current', 'true');
-        else a.removeAttribute('aria-current');
-      }
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    for (var id in byId) {
-      var sec = document.getElementById(id);
-      if (sec) here.observe(sec);
-    }
-  }
-
-  /* ── 3b. the record's rail changes photograph with the row ────────────
-     Four plates stand on top of one another in #record's sticky rail, one per
-     evening, and exactly one of them carries .is-on. The row whose band
-     crosses the middle tenth of the screen names it; CSS does the fade.
-
-     WHY THIS IS SCRIPT AND NOT A SCROLL-DRIVEN KEYFRAME. A crossfade written
-     on `animation-timeline: view()` would park three of the four plates at an
-     opacity extreme for most of their crossing, which is the exact family
-     tools/frozen.mjs exists to catch. A class and a transition have no pose
-     to be stuck in.
-
-     WITH THIS FILE ABSENT the first plate is the one the markup marks and the
-     rail shows June 2 for the whole record — the same page, one photograph
-     instead of four. Under prefers-reduced-motion the observer still runs and
-     the stylesheet's own `transition: none` makes the change instant, which
-     is what a reader who asked for no motion should get: the right picture,
-     without the fade. Below 900 there is no stack at all — the four plates
-     are an ordinary column — and .is-on paints nothing. */
-  var recRows = document.querySelectorAll('#record .idx tbody tr[data-rec]');
-  var recPlates = document.querySelectorAll('#record .rec__ph[data-rec]');
-  if (recRows.length && recPlates.length && 'IntersectionObserver' in window) {
-    var showPlate = function (k) {
-      for (var i = 0; i < recPlates.length; i++)
-        recPlates[i].classList.toggle('is-on', recPlates[i].getAttribute('data-rec') === k);
-    };
-    var recObs = new IntersectionObserver(function (entries) {
-      for (var i = 0; i < entries.length; i++)
-        if (entries[i].isIntersecting) showPlate(entries[i].target.getAttribute('data-rec'));
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    for (var r = 0; r < recRows.length; r++) recObs.observe(recRows[r]);
-  }
-
-  /* ── 4. the entrance is GONE FROM THIS FILE ───────────────────────────
-     It used to be an IntersectionObserver writing .is-in, a per-child
-     transition-delay ladder, and two timers whose only job was to guarantee
-     that nothing was left invisible if any of it failed. All of it is now
-     eleven lines of CSS: `animation-timeline: view()` behind an @supports
-     guard and a prefers-reduced-motion guard (styles.css, "entrance motion").
-
-     Three things came out of that trade and they are the whole argument for
-     it: the reveal now exists with JavaScript off, the pre-state that needed
-     an inline <head> script no longer exists at all, and there is no timer
-     left that could fail to fire. See research/design-2026.md §1.4. */
-
-  /* ── 4b. every disclosure reports its state ───────────────────────────
-     <details> opens and closes on its own with this file absent. What it does
-     not do on its own is publish aria-expanded. Two paths, because `toggle`
-     fires ASYNCHRONOUSLY: the property is mirrored for scripted toggles and
-     the event for real clicks. Native behaviour is untouched. */
-  var openDesc = Object.getOwnPropertyDescriptor(HTMLDetailsElement.prototype, 'open');
-  var discs = document.querySelectorAll('details > summary[aria-expanded]');
-  for (var d = 0; d < discs.length; d++) {
-    (function (sum) {
-      var det = sum.parentElement;
-      var mirror = function () {
-        sum.setAttribute('aria-expanded', det.hasAttribute('open') ? 'true' : 'false');
-      };
-      if (openDesc && openDesc.set && openDesc.get) {
-        Object.defineProperty(det, 'open', {
-          configurable: true,
-          get: function () { return openDesc.get.call(det); },
-          set: function (v) { openDesc.set.call(det, v); mirror(); }
-        });
-      }
-      det.addEventListener('toggle', mirror);
-      mirror();
-    })(discs[d]);
-  }
-
-  /* ── 6. THE TWO CHAPTER LINES ASSEMBLE ────────────────────────────────
-     The one thing on this page that has to be done in script, and the reason
-     is that a line is not a thing the stylesheet can address. `::first-line`
-     styles one; there is no selector for the second, and no way to give the
-     third a delay. So the lines are MEASURED and then made into elements.
-
-     WHAT IT DOES, EXACTLY: for each [data-kinetic] paragraph, walk its single
-     text node word by word with a Range, read each word's client rect, and
-     start a new row whenever the top edge moves. That is the browser's own
-     line breaking, read back — not a guess at where it broke, and not a
-     re-implementation of it — so `text-wrap: balance`, the nbsp in
-     "in&nbsp;another", the Spanish quotation marks and every width on the
-     ladder are all handled by not having an opinion about any of them.
-
-     IT RUNS AFTER document.fonts.ready, and that is not a nicety: a line
-     measured in the fallback face breaks in a different place, and the page
-     would assemble the wrong lines correctly. It re-runs on resize for the
-     same reason.
-
-     THE SPACES ARE KEPT. Line wrappers are blocks, so a text node holding one
-     space between two of them contributes nothing to layout and everything to
-     the clipboard: without it, copying the quotation yields "social life,even
-     family" — the failure verify.md lists by name.
-
-     AND NOTHING HERE FADES. The reveal is a mask and a translate, so a reader
-     who never reaches the paragraph, or whose observer never fires, has type
-     at full ink rather than a hole; tools/cold.mjs and audit.mjs A14 both
-     count faded elements and neither one changes because of this. */
-  var kinetic = document.querySelectorAll('[data-kinetic]');
-  if (kinetic.length) {
-    var lineify = function (el) {
-      if (el._knSrc == null) el._knSrc = el.textContent;
-      el.textContent = el._knSrc;
-      var node = el.firstChild;
-      if (!node || node.nodeType !== 3) return;
-      var text = node.data, words = [], i = 0;
-      while (i < text.length) {
-        while (i < text.length && text.charAt(i) === ' ') i++;
-        var s = i;
-        while (i < text.length && text.charAt(i) !== ' ') i++;
-        if (i > s) words.push([s, i]);
-      }
-      if (!words.length) return;
-      var range = document.createRange(), rows = [];
-      for (var w = 0; w < words.length; w++) {
-        range.setStart(node, words[w][0]);
-        range.setEnd(node, words[w][1]);
-        var top = Math.round(range.getBoundingClientRect().top);
-        var last = rows.length ? rows[rows.length - 1] : null;
-        /* 2px, because a line that carries a taller glyph reports a rect one
-           subpixel off its neighbours and a strict equality would split one
-           line into three. */
-        if (!last || Math.abs(top - last.top) > 2) rows.push({ top: top, a: words[w][0], b: words[w][1] });
-        else last.b = words[w][1];
-      }
-      var frag = document.createDocumentFragment();
-      for (var k = 0; k < rows.length; k++) {
-        var mask = document.createElement('span');
-        mask.className = 'kn__l';
-        mask.style.setProperty('--kn-i', k);
-        var ink = document.createElement('span');
-        ink.className = 'kn__i';
-        ink.textContent = text.slice(rows[k].a, rows[k].b);
-        mask.appendChild(ink);
-        frag.appendChild(mask);
-        if (k < rows.length - 1) frag.appendChild(document.createTextNode(' '));
-      }
-      el.textContent = '';
-      el.appendChild(frag);
-      el.classList.add('is-split');
-    };
-
-    var lightKn = function (el) { el.classList.add('is-lit'); };
-    var knObs = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
-      for (var e = 0; e < entries.length; e++) {
-        if (!entries[e].isIntersecting) continue;
-        lightKn(entries[e].target);
-        knObs.unobserve(entries[e].target);
-      }
-    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 }) : null;
-
-    var splitAll = function () {
-      for (var k = 0; k < kinetic.length; k++) {
-        var el = kinetic[k];
-        var lit = el.classList.contains('is-lit');
-        lineify(el);
-        if (lit || !knObs) lightKn(el);
-        else knObs.observe(el);
-      }
-    };
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(splitAll);
-    else splitAll();
-    var knT = 0, knW = window.innerWidth;
-    window.addEventListener('resize', function () {
-      /* width only: a phone's URL bar collapsing is a height change and is not
-         a re-wrap, and re-splitting on it would restart the entrance under a
-         reader who is standing still. */
-      if (window.innerWidth === knW) return;
-      knW = window.innerWidth;
-      clearTimeout(knT);
-      knT = setTimeout(splitAll, 160);
-    });
-  }
-
-  /* ── 5. the scrub envelope ────────────────────────────────────────────
-     What it is allowed to touch: video.currentTime. That is the whole list. It
-     never writes a style, a class, a transform, a size or a position, so no
-     composition on this page can ever depend on it.
-
-     No clip is on disk, so tools/video-slots.mjs emits no <video> at all, this
-     observer finds nothing, and __scrubRunning stays false forever. That is
-     the state this build ships in: four declared slots, zero clips, every slot
-     on its declared fallback.                                                */
-  window.__scrubRunning = false;
-
-  var scrubs = document.querySelectorAll('video[data-scrub]');
-  if (!reduced && scrubs.length && 'IntersectionObserver' in window) {
-    var active = [];
-
-    var attach = function (v) {
-      if (v.dataset.srcAttached) return;
-      var src = v.getAttribute('data-src');
-      if (!src) return;
-      v.src = src;
-      v.dataset.srcAttached = '1';
-      v.load();
-    };
-
-    /* SCRUB */
-    var frame = 0;
-    var tick = function () {
-      for (var a = 0; a < active.length; a++) {
-        var v = active[a];
-        var dur = v.duration;
-        if (!dur || !isFinite(dur)) continue;
-        var r = v.getBoundingClientRect();
-        var span = r.height + window.innerHeight;
-        var p = span > 0 ? (window.innerHeight - r.top) / span : 0;
-        p = p < 0 ? 0 : (p > 1 ? 1 : p);
-        var t = p <= 0.5 ? p * 2 : (1 - p) * 2;
-        v.currentTime = t * dur;
-      }
-      frame = active.length ? requestAnimationFrame(tick) : 0;
-      window.__scrubRunning = !!frame;
-    };
-    var start = function () {
-      if (frame) return;
-      frame = requestAnimationFrame(tick);
-      window.__scrubRunning = true;
-    };
-    var stop = function () {
-      if (frame) cancelAnimationFrame(frame);
-      frame = 0;
-      window.__scrubRunning = false;
-    };
-    /* END SCRUB */
-
-    var so = new IntersectionObserver(function (entries) {
-      for (var s = 0; s < entries.length; s++) {
-        var v = entries[s].target;
-        var at = active.indexOf(v);
-        if (entries[s].isIntersecting) {
-          attach(v);
-          if (at < 0) active.push(v);
-        } else if (at >= 0) {
-          active.splice(at, 1);
+    function gallery(gal) {
+      const track = $('.gallery__track', gal), plates = $$('.gallery__plate', gal);
+      const num = $('.gallery__num', gal), cap = $('.gallery__cap', gal);
+      if (!track || !plates.length) return;
+      const gutter = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gutter')) || 96;
+      const last = plates[plates.length - 1];
+      // the pin runs until the last plate sits centred in the viewport (the strip ends on the sisters, not on two halves)
+      const dist = () => Math.max(0, track.offsetWidth - window.innerWidth + (window.innerWidth / 2 - last.offsetWidth / 2 - gutter()));
+      // the scroll distance lives in a spacer's height (not in pin-spacer padding), so the page's spacing alphabet stays clean
+      let space = gal.nextElementSibling;
+      if (!space || !space.classList.contains('gallery__space')) { space = document.createElement('div'); space.className = 'gallery__space'; space.setAttribute('aria-hidden', 'true'); gal.after(space); }
+      const setSpace = () => { space.style.height = dist() + 'px'; };
+      setSpace(); ST.addEventListener('refreshInit', setSpace);
+      // pin the strip and move the track 1:1 with the scroll
+      const move = gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: {
+        trigger: gal, pin: true, pinSpacing: false, start: 'top top', end: () => '+=' + dist(), scrub: 1, anticipatePin: 1, invalidateOnRefresh: true } });
+      // the counter: two stacked spans inside a clip (motion.css); the old numeral leaves the way the new one arrives
+      let a = null, b = null, cur = 1;
+      if (num) { const t = num.textContent.trim(); num.textContent = ''; a = document.createElement('span'); b = a.cloneNode(); a.textContent = t; num.append(a, b); }
+      function flip(i, dir) {
+        i = Math.min(Math.max(i, 1), plates.length);
+        if (i === cur) return;
+        cur = i;
+        const p = plates[i - 1];
+        if (a) {
+          b.textContent = String(i).padStart(2, '0');
+          gsap.killTweensOf([a, b]);
+          gsap.fromTo(b, { yPercent: 100 * dir }, { yPercent: 0, duration: .4, ease: 'power3.inOut' });
+          gsap.to(a, { yPercent: -100 * dir, duration: .4, ease: 'power3.inOut' });
+          [a, b] = [b, a];
+        }
+        if (cap) {   // the plate's caption line (text only), plus plate 4's sold-out line as its second span
+          const fc = $('figcaption', p);
+          cap.textContent = p.dataset.cap || (fc && fc.firstChild ? fc.firstChild.textContent.trim() : '');
+          gsap.fromTo(cap, { y: 8 * dir, opacity: 0 }, { y: 0, opacity: 1, duration: .4, ease: 'power2.out', overwrite: true });
         }
       }
-      if (active.length) start(); else stop();
-    }, { rootMargin: '0px' });
+      plates.forEach((p, i) => {
+        const img = $('img', p), n = i + 1;
+        // (a) the photograph drifts +40→−40 against the track (a second speed inside the shelf); .is-in from here if the IO misses
+        gsap.fromTo(img, { translate: '40px 0px' }, { translate: '-40px 0px', ease: 'none', scrollTrigger: {
+          trigger: p, containerAnimation: move, start: 'left right', end: 'right left', scrub: true, invalidateOnRefresh: true,
+          onEnter: () => p.classList.add('is-in') } });
+        // (b) the plate settles 1.06→1 on its own baseline as it enters (the img's scale belongs to CSS; the plate has none)
+        gsap.fromTo(p, { scale: 1.06, transformOrigin: '50% 100%' }, { scale: 1, ease: 'none', scrollTrigger: {
+          trigger: p, containerAnimation: move, start: 'left right', end: 'left 60%', scrub: true, invalidateOnRefresh: true } });
+        // (c) plate n takes the counter when the gap before it crosses the viewport's centre line (the last plate's own
+        //     centre never reaches it: the strip ends flush at the gutter), and hands it back when the gap recrosses
+        // (c) plate n takes the counter once ≥60% of it is on screen (65% here, so plate 2 — already 60% in at the pin's
+        //     first frame — still hands 01 a moment) and gives it back on the way up
+        ST.create({ trigger: p, containerAnimation: move, start: () => 'left ' + Math.round(window.innerWidth - .65 * p.offsetWidth), end: 'right left',
+          invalidateOnRefresh: true, onEnter: () => flip(n, 1), onLeaveBack: () => flip(n - 1, -1) });
+      });
+      // the strip's photographs load a screen early so no plate is ever empty inside the pin
+      ST.create({ trigger: gal, start: 'top 200%', once: true, onEnter: () => $$('img', track).forEach(im => { im.loading = 'eager'; }) });
+    }
 
-    for (var q = 0; q < scrubs.length; q++) so.observe(scrubs[q]);
+    // measure again once fonts and the strip's photographs have settled
+    window.addEventListener('load', refresh);
+    document.fonts && document.fonts.ready.then(refresh);
+    $$('[data-pin] img').forEach(im => { if (!im.complete) im.addEventListener('load', refresh, { once: true }); });
   }
-})();
 
-/* THE POSTER WALL'S SCRUB CONTROL WENT WITH THE WALL. It was 45 lines that
-   moved `object-position` on three plates under pointer, arrow keys and tap.
-   It worked — and what it revealed, two steps down the June plate, was a
-   third-party logo lockup and two named individuals that no fold audit had
-   ever read, because none of it was in the fold at rest. The page does not
-   keep a surface that can paint un-audited pixels. */
+  /* §8 — marquee: clone once for the loop */
+  $$('[data-marquee] .marquee__track').forEach(track => {
+    if (track.dataset.cloned) return;
+    const copy = track.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    [...copy.children].forEach(c => { c.setAttribute('aria-hidden', 'true'); track.appendChild(c); });
+    track.dataset.cloned = '1';
+    // pace: the half-track travels at ≤85px/s at every width (a colophon, not a ticker)
+    const pace = () => { track.style.animationDuration = Math.max(27, track.scrollWidth / 2 / 85).toFixed(1) + 's'; };
+    pace(); window.addEventListener('resize', pace, { passive: true });
+  });
+
+  /* §9 — FAQ: animate grid-template-rows 0fr→1fr, no jump; native <details> stays keyboard-native */
+  $$('details.faq__item').forEach(d => {
+    const q = $('summary', d), body = $('.faq__body', d);
+    if (!q || !body) return;
+    q.addEventListener('click', e => {
+      e.preventDefault();
+      if (d.open) {
+        d.classList.remove('is-open');
+        const done = () => { d.open = false; body.removeEventListener('transitionend', done); };
+        body.addEventListener('transitionend', done);
+        setTimeout(() => { if (!d.classList.contains('is-open')) d.open = false; }, 500);
+      } else {
+        d.open = true;
+        requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('is-open')));
+      }
+    });
+  });
+
+  /* §10 — failsafe off once everything is armed */
+  if (window.__motionFailsafe) { clearTimeout(window.__motionFailsafe); }
+})();

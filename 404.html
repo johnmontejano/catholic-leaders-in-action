@@ -9,19 +9,20 @@
 <link rel="apple-touch-icon" href="/assets/brand/mark-256.png">
 <link rel="stylesheet" href="/styles.css">
 <style>
-  .nf{min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px}
-  .nf__in{max-width:40ch}
-  .nf__h{margin:0}
-  .nf__p{margin:20px auto 0;color:var(--muted)}
-  .nf__go{margin-top:28px}
+  .nf{min-height:100svh;display:grid;align-content:center;padding:var(--sec) var(--gutter)}
+  .nf__in{max-width:var(--wrap);margin-inline:auto;width:100%;display:grid;gap:var(--s-32);justify-items:start}
+  .nf__in img{width:64px;height:64px}
+  .nf__go{margin-top:var(--s-16)}
 </style>
 </head>
 <body>
-<main class="nf">
+<main class="nf" id="main">
   <div class="nf__in">
-    <h1 class="t-chapter nf__h">There is no page here.</h1>
-    <p class="t-lead nf__p">The site is one page, and this is not it.</p>
-    <a class="btn btn--brass nf__go" href="/">Go to the page</a>
+    <img src="/assets/brand/seal-gold-128.png" width="64" height="64" alt="The Catholic Leaders in Action seal: a cross on a hill, three figures on the path, a laurel branch">
+    <p class="t-cap">Catholic Leaders in Action</p>
+    <h1 class="t-h"><span class="line">There is</span><span class="line">no page here</span></h1>
+    <p class="t-body t-dim">The site is one page, and this is not it.</p>
+    <a class="btn nf__go" href="/">Go to the page</a>
   </div>
 </main>
 </body>
