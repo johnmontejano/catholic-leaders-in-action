@@ -2676,9 +2676,42 @@ main>section>*{min-width:0}
 @media (min-width:640px) and (max-width:899.98px){
   .act{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
     column-gap:var(--sp-3);align-items:start}
-  .act .t-chapter{grid-column:1;grid-row:1}
+  /* ── AND THE SENTENCE STOPS SHARING ITS ROW WITH THE DIRECTORY ─────────
+     Measured 2026-09-02 at 768x1024: half a 688px band is 332px of measure,
+     and a hundred characters of 34px Zodiak in 332px is SIX lines of about
+     seventeen — "Each lecture / and social event / is designed to be /
+     allied with a direct / ministry action / of some kind." That is a column
+     of a newspaper, not a display quotation, and it was the last band on the
+     page still setting one. 640 was worse at seven lines and 899 was five.
+
+     The two-column arrangement is kept, because the hole it was invented to
+     fill is still there; what changes is WHICH ROW the pair stands in. The
+     sentence takes the whole band across row 1 on a capped measure of 520,
+     which is the desktop band's own 499 plus one gutter, and the narrowest
+     setting that holds four lines at all three tablet widths. The cap is
+     what makes it a display line rather than a paragraph: uncapped, the
+     sentence would run the band's full 688 and set in three lines of
+     thirty-four, which is a measure for reading and not for a quotation.
+     The credit and the directory become the pair underneath it, one in each
+     column. The sentence sets in FOUR lines of about twenty-six at 640, 768
+     and 899 alike, at the size it already had: nothing is added to the type
+     census to pay for it, and every kinetic line re-splits on the resize the
+     media query crosses, with 6.7px of slack under the deepest descender.
+
+     The directory takes --su-12 rather than 0 so its first entry starts on
+     the credit's own line: they are row 2's two objects and they begin
+     together. (Stacked on the phone the same pair takes --su-64, for the
+     reason recorded above this media query.)
+
+     AND THE DIRECTORY STAYS IN A COLUMN RATHER THAN CROSSING THE BAND.
+     Running it full width in a row of its own was measured and refused: the
+     168px beside the capped sentence then joins the ground under it and
+     tools/slab.mjs reads 296x288 at 768x1024, 10.8% and over the ceiling.
+     Held in column 2 the worst shape on this screen is the 392x200 under the
+     credit, 9.97%, which is the reading the band already had at 9.8%. */
+  .act .t-chapter{grid-column:1 / 3;grid-row:1;max-width:520px}
   .act__a{grid-column:1;grid-row:2}
-  .act__w{grid-column:2;grid-row:1 / 3;margin-top:0}
+  .act__w{grid-column:2;grid-row:2;margin-top:var(--su-12)}
 }
 .say{margin:var(--su-12) 0 0;padding:0;max-width:var(--measure-head)}
 .say .t-chapter{text-wrap:balance}
@@ -3082,6 +3115,21 @@ img[src*="laughing-"]{object-position:30% 50%}
   text-transform:none;letter-spacing:0}
 
 @media (min-width:900px){
+  /* ── THE LEAD DOES NOT SIT ON THE POSTER ──────────────────────────────
+     `main>section` declares `row-gap:0`, which is right for every band whose
+     rows are ground and picture and wrong for the one band whose row 1 ends
+     in a sentence and whose row 2 begins with artwork. Measured 2026-09-02
+     at 1280/1440/1920: "One evening a month in San Francisco." closed at the
+     poster's top edge at ALL THREE — 0px between the last baseline of the
+     header and the first pixel of the title card, so the line read as the
+     card's caption rather than as the band's deck.
+
+     One row-gap of --su-20 (24px at this width) fixes it in one declaration
+     and fixes it for the fact list too: `.dl`'s first hairline is placed by
+     the same row line, so the list still starts exactly on the poster's top
+     edge — the alignment the note below this one exists to hold — and the
+     seam under the header opens by the same 24 on both columns. */
+  #next{row-gap:var(--su-20)}
   #next>.hd{grid-column:1 / 8;grid-row:1}
   /* THE SECOND ROW HAD A RAIL AND NOTHING TO PUT IN IT — SO IT NO LONGER HAS
      ONE. Two passes have now argued about where the rail's 260px of residue
@@ -3137,7 +3185,15 @@ img[src*="laughing-"]{object-position:30% 50%}
      rows of 56 plus the control under them is 340 against the poster's 394.7,
      so the two columns end within one module of each other instead of 312
      apart. */
-  #next>.next__r{grid-column:6 / 13;grid-row:2;align-self:start}
+  /* ── AND THE COLUMN CLOSES ON THE CHANNEL THE QUOTE ABOVE IT ALREADY HAS
+     8/13 and not 6/13, because `.next__why` — the aside that carries "We can
+     begin to act as if holiness…" — has stood at 8/13 in row 1 since it was
+     written, and the fact list sat one gridline to its left. Two objects in
+     the same right-hand column with two different left edges is the kind of
+     near-miss a jury reads before it reads anything else. On the same lines
+     the quotation, the ledger and the control share one 499px channel, and
+     the head and the poster share the seven columns opposite. */
+  #next>.next__r{grid-column:8 / 13;grid-row:2;align-self:start}
   #next>.next__r>.dl{
     /* `.blk` gives every block in this band its 64px head room, and the head
        room here belongs to the WRAPPER: the list's first hairline is the top
@@ -3147,8 +3203,17 @@ img[src*="laughing-"]{object-position:30% 50%}
     grid-template-columns:minmax(0,3fr) minmax(0,8fr);column-gap:var(--sp-2);
   }
   #next>.next__r>.dl dt,#next>.next__r>.dl dd{grid-column:auto;grid-row:auto}
-  #next>.next__r>.dl dt{padding-block:var(--su-12) var(--su-12)}
-  #next>.next__r>.dl dd{border-top:var(--rim) solid var(--rule);padding-block:var(--su-12) var(--su-12)}
+  /* --su-20 AND NOT --su-12, BECAUSE THE COLUMN NOW STANDS AGAINST A 560px
+     PICTURE. The ledger's rows were set against a 394px poster and closed
+     within one module of it. With the title card on its own rung the same
+     three rows leave 262px of navy under the control, which tools/slab.mjs
+     reads as one unbroken 620x252 rectangle — 12.1% at 1440x900, the worst
+     shape in the document and over the 10% ceiling.
+     The answer is the section scale, not a spacer: 24 is --su-20 at this
+     width, the same number the seam under the header now spends, and it buys
+     48px across the three rows without inventing a value. */
+  #next>.next__r>.dl dt{padding-block:var(--su-20) var(--su-20)}
+  #next>.next__r>.dl dd{border-top:var(--rim) solid var(--rule);padding-block:var(--su-20) var(--su-20)}
   #next>.next__r>.dl dt:nth-of-type(1),#next>.next__r>.dl dd:nth-of-type(1){grid-row:1}
   #next>.next__r>.dl dt:nth-of-type(2),#next>.next__r>.dl dd:nth-of-type(2){grid-row:2}
   #next>.next__r>.dl dt:nth-of-type(3),#next>.next__r>.dl dd:nth-of-type(3){grid-row:3}
@@ -3193,7 +3258,27 @@ img[src*="laughing-"]{object-position:30% 50%}
      facts and the control in the six columns beside it, both hung from its
      top edge. 1800 is the width the ladder already carries for it, so a 499
      box is served at 1.80x at DPR 2. */
-  #next>.next__f{grid-column:1 / 6;grid-row:2;align-self:start}
+  /* ── AND THE POSTER TAKES THE RUNG ABOVE, BECAUSE THE BAND WAS 0.76 OF A
+        SCREEN AND EVERY OTHER BAND ON THIS PAGE IS ONE ────────────────────
+     Measured 2026-09-02 at 1440x900: #next ran 680px — 0.76 vh — against
+     #rule 0.94, #act 1.05, #leaders 0.96 and #close 0.96. The short band was
+     not short of air; it was short of object. Five tracks put the title card
+     at 499x394, 0.35 of the window, on a page whose other pictures run 0.56
+     and 1.00 vw.
+
+     Seven tracks and six gutters is 708.7 CSS at 1440 — the SAME span #act's
+     photograph takes one band earlier, so the page keeps one wide-picture
+     measure instead of gaining a second — and the card is 559 tall at its own
+     1800x1422. The band closes at 869px, 0.97 vh, and the growth is the
+     artwork's, not the padding's.
+
+     THE FILE PAYS FOR IT. The ladder tops out at 1800w and DPR 2 asks
+     1417 for a 708.7 box, so tools/sharp.mjs still reads it at 1.27x rather
+     than at the 0.98 floor. index.html's `sizes` carries the seven-track
+     arithmetic to match; the five-track formula that was there would have
+     declared a 499px box for a 709px one, which is the exact lie that gate
+     was written to catch. */
+  #next>.next__f{grid-column:1 / 8;grid-row:2;align-self:start}
   /* ── AND THE CONTROL STANDS UNDER THE THING IT ACTS ON ─────────────────
      It used to be the band's last row, under the whole fact list. Measured
      2026-08-30: 345px from the bottom of the September title card to the top
@@ -3283,7 +3368,13 @@ img[src*="laughing-"]{object-position:30% 50%}
      facts; inside `.next__r` it is simply the next thing after the last
      hairline, one module under it, at the width the tablet band already gives
      it. Gap to the list: 124 -> 36. */
-  #next>.next__r>.next__go{justify-self:start;max-width:360px;margin-top:var(--sp-3)}
+  /* AND THE CONTROL'S HEAD ROOM COMES ONTO THE SECTION SCALE TOO. --sp-3 is
+     36px here, and this file already records that 36 "is not one of the seven
+     numbers this page spends". The ledger and the control are two ideas in one
+     column — a set of facts and the act that answers them — which is exactly
+     what --su-64 is for, thirteen other times on this page. It also carries
+     the button 36px further down the residue the taller poster opened. */
+  #next>.next__r>.next__go{justify-self:start;max-width:360px;margin-top:var(--su-64)}
   /* ── ROW 2 IS THE REASON, AND IT IS EIGHT COLUMNS BECAUSE THE CONTROL IS
         NOT THERE ANY MORE ─────────────────────────────────────────────────
      Row 2 was a 52px button at 1/5 and nothing else, under a head that stops
