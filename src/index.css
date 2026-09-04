@@ -1,0 +1,381 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-300.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-400.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-500.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/assets/fonts/Satoshi-700.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("/assets/fonts/Newsreader-italic.woff2") format("woff2");
+  font-display: swap;
+  font-style: italic;
+  font-weight: 400;
+}
+
+@theme {
+  --color-void-black: #000000;
+  --color-pure-white: #ffffff;
+  --color-charcoal: #202020;
+  --color-graphite: #333333;
+  --color-lamp-cream: #f5f5f0;
+  --color-smoke: #999999;
+  --font-sans: "Satoshi", system-ui, sans-serif;
+  --font-accent: "Newsreader", Georgia, serif;
+  --radius-cards: 10px;
+  --radius-inner: 8px;
+}
+
+:root {
+  color: #ffffff;
+  background: #000000;
+  font-family: "Satoshi", system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --ease-cinematic: cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #000000;
+  scroll-behavior: smooth;
+  scrollbar-color: #333333 #000000;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100dvh;
+  margin: 0;
+  overflow-x: hidden;
+  background: #000000;
+}
+
+body:has(.dialog-overlay[data-state="open"]) {
+  overflow: hidden;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+}
+
+img,
+video {
+  display: block;
+}
+
+::selection {
+  color: #000000;
+  background: #f5f5f0;
+}
+
+.z-nav {
+  z-index: 40;
+}
+
+.z-menu {
+  z-index: 50;
+}
+
+.z-modal {
+  z-index: 60;
+}
+
+.page-shell {
+  width: min(100% - 40px, 1200px);
+  margin-inline: auto;
+}
+
+.section-space {
+  padding-block: clamp(96px, 10vw, 144px);
+}
+
+.accent-word {
+  display: inline-block;
+  padding-bottom: 0.08em;
+  font-family: "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.display-title {
+  font-size: clamp(3rem, 7vw, 7.15rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.section-title {
+  max-width: 900px;
+  font-size: clamp(2.35rem, 4.45vw, 4rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.section-copy {
+  max-width: 650px;
+  color: #999999;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  line-height: 1.5;
+}
+
+.label-caps {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.button-primary,
+.button-ghost,
+.glass-control {
+  display: inline-flex;
+  min-height: 45px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  transition:
+    transform 180ms ease-out,
+    opacity 180ms ease-out,
+    border-color 180ms ease-out;
+}
+
+.button-primary {
+  padding-inline: 24px;
+  color: #000000;
+  background: #f5f5f0;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+}
+
+.button-ghost {
+  border: 1px solid #555555;
+  padding-inline: 22px;
+  color: #ffffff;
+  background: rgb(0 0 0 / 30%);
+}
+
+.glass-control {
+  border: 1px solid rgb(255 255 255 / 24%);
+  background: rgb(18 18 18 / 46%);
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 35%),
+    inset 0 1px 0 rgb(255 255 255 / 12%);
+}
+
+.button-primary:hover,
+.button-ghost:hover,
+.glass-control:hover {
+  transform: translateY(-2px);
+}
+
+.button-primary:active,
+.button-ghost:active,
+.glass-control:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.button-primary:focus-visible,
+.button-ghost:focus-visible,
+.glass-control:focus-visible,
+.focus-ring:focus-visible {
+  outline: 2px solid #f5f5f0;
+  outline-offset: 4px;
+}
+
+.media-scrim::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(0 0 0 / 78%) 0%,
+    rgb(0 0 0 / 18%) 52%,
+    transparent 78%
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.media-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #202020;
+}
+
+.media-card img,
+.media-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-card img {
+  transition: transform 600ms var(--ease-cinematic);
+}
+
+.media-card:hover img,
+.media-card:focus-within img {
+  transform: scale(1.025);
+}
+
+.media-card-content {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: clamp(22px, 3vw, 36px);
+}
+
+.membership-rail {
+  scrollbar-width: none;
+}
+
+.membership-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.fine-rule {
+  border-color: #333333;
+}
+
+.instagram-columns {
+  columns: 3;
+  column-gap: 16px;
+}
+
+.instagram-card {
+  display: block;
+  break-inside: avoid;
+  margin-bottom: 16px;
+}
+
+.instagram-card img {
+  width: 100%;
+  height: auto;
+}
+
+.dialog-overlay[data-state="open"] {
+  animation: fade-in 180ms ease-out;
+}
+
+.dialog-content[data-state="open"] {
+  animation: dialog-in 180ms ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (max-width: 767px) {
+  .page-shell {
+    width: min(100% - 32px, 1200px);
+  }
+
+  .section-space {
+    padding-block: 88px;
+  }
+
+  .display-title {
+    font-size: clamp(3.15rem, 15vw, 4.75rem);
+    line-height: 0.98;
+  }
+
+  .section-title {
+    font-size: clamp(2.4rem, 11vw, 3.5rem);
+  }
+
+  .instagram-columns {
+    columns: 2;
+    column-gap: 10px;
+  }
+
+  .instagram-card {
+    margin-bottom: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .media-card:hover img,
+  .media-card:focus-within img {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-control {
+    background: #202020;
+  }
+}
