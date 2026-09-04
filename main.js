@@ -1,0 +1,538 @@
+/* Catholic Leaders in Action — main.js, 2026-09-03.
+
+   Vanilla but for one dependency. The reference reaches for GSAP +
+   ScrollTrigger + Lenis; everything it actually does with the first two is a
+   scrubbed gsap.set() or a one-shot IntersectionObserver, and both survive the
+   translation to plain rAF and IO. Lenis does not survive it — the whole page's
+   motion is tuned against its ~500ms of scroll lag, and the same reveals fired
+   off a hard native scroll read as abrupt no matter how well timed they are.
+   So Lenis is vendored and the rest is hand-written. What does not survive
+   translation at all is the taste, so the numbers below are copied rather than
+   invented — they come from research/sequel/MOTION.md and
+   research/sequel/HOME.md.
+
+     §0 smooth scroll §6 the manifesto stage — the page's defining move
+     §1 menu          §7 counters
+     §2 nav           §8 partner marquee
+     §3 reveals       §9 the Instagram feed
+     §4 clock         §10 video tiles
+     §5 countdown     §11 the SMS signup                                    */
+
+(() => {
+  'use strict';
+
+  const q  = (s, r = document) => r.querySelector(s);
+  const qa = (s, r = document) => [...r.querySelectorAll(s)];
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+
+  /* §0 — the smooth-scroll layer -------------------------------------------
+     The reference's exact Lenis configuration (research/sequel/MOTION.md §2.1):
+     duration 1.2 on an expo-out curve, syncTouch on. This is the single
+     largest reason their page feels different from ours — every reveal below
+     is tuned against ~500ms of scroll lag, and firing the same reveals off a
+     hard native scroll is what made ours read as abrupt. Lenis drives real
+     scrollTop, so `scrollY` and getBoundingClientRect stay truthful and every
+     scrubbed section below keeps working unchanged. */
+  let lenis = null;
+  if (!calm && typeof Lenis === 'function') {
+    lenis = new Lenis({
+      duration: 1.2,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      smoothWheel: true,
+      syncTouch: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1,
+    });
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+
+    /* Anchors have to go through Lenis or the browser's own jump fights it.
+       The offset clears the fixed bar. */
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href');
+      if (id === '#' || id === '#top') { e.preventDefault(); lenis.scrollTo(0, { offset: 0 }); return; }
+      const t = document.querySelector(id);
+      if (!t) return;
+      e.preventDefault();
+      lenis.scrollTo(t, { offset: -72 });
+    });
+  }
+
+  /* One scroll bus. Every scrubbed section below reads the same frame, which is
+     the cheap version of their single global ScrollTrigger. When Lenis is
+     running it is the clock — its own event fires once per rAF already, so a
+     second rAF throttle would only add a frame of lag to the scrub. */
+  const onScroll = (() => {
+    const subs = [];
+    let ticking = false;
+    const run = () => {
+      ticking = false;
+      const y = scrollY;
+      for (const f of subs) f(y);
+    };
+    if (lenis) lenis.on('scroll', () => { ticking = false; run(); });
+    else addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(run); }
+    }, { passive: true });
+    addEventListener('resize', () => { if (!ticking) { ticking = true; requestAnimationFrame(run); } });
+    return f => { subs.push(f); f(scrollY); };
+  })();
+
+  /* §1 — menu -------------------------------------------------------------
+     The iris and the burger are CSS (§6). What has to be JS is the character
+     stagger, because open and close are not the same animation: opening, each
+     link starts 80ms after the one above it and its glyphs 20ms apart on a
+     400ms curve; closing, every glyph leaves together in 150ms. Setting the
+     delays inline and clearing them on the way out is what buys that
+     asymmetry with one set of CSS rules. */
+  const menu = q('#menu'), toggle = q('#navToggle');
+  if (menu && toggle) {
+    const links = qa('a', menu);
+    let chars = [];
+    let closeTimer = 0;
+
+    const set = open => {
+      clearTimeout(closeTimer);
+      menu.hidden = false;
+
+      if (open && !chars.length && !calm) {
+        links.forEach((a, li) => {
+          const n = splitChars(a, 0.02, 0.2 + li * 0.08);
+          if (!n) return;
+          chars.push(...qa('.ch', a));
+        });
+      }
+      /* the delays only exist on the way in */
+      if (!open) { menu.classList.add('closing'); chars.forEach(c => { c.style.transitionDelay = '0s'; }); }
+      else { menu.classList.remove('closing'); chars.forEach(c => { c.style.transitionDelay = c.dataset.d || ''; }); }
+
+      menu.toggleAttribute('data-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      nav && nav.toggleAttribute('data-menu', open);
+
+      /* Lenis owns the scroll now, so the lock goes through it; the overflow
+         fallback is for the reduced-motion path where Lenis never starts. */
+      if (lenis) open ? lenis.stop() : lenis.start();
+      document.body.style.overflow = open ? 'hidden' : '';
+
+      if (open) links[0] && links[0].focus({ preventScroll: true });
+      else {
+        toggle.focus({ preventScroll: true });
+        closeTimer = setTimeout(() => {
+          if (!menu.hasAttribute('data-open')) { menu.hidden = true; menu.classList.remove('closing'); }
+        }, 320);
+      }
+    };
+    toggle.addEventListener('click', () => set(!menu.hasAttribute('data-open')));
+    menu.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
+    addEventListener('keydown', e => { if (e.key === 'Escape' && menu.hasAttribute('data-open')) set(false); });
+  }
+
+  /* §2 — the nav's centre links fade out on the way down, back on the way up.
+     A deadband keeps a trackpad's jitter from flickering them. */
+  const nav = q('#nav');
+  if (nav) {
+    let last = scrollY;
+    onScroll(y => {
+      const d = y - last;
+      if (Math.abs(d) > 6) {
+        nav.toggleAttribute('data-hide', d > 0 && y > 160);
+        last = y;
+      }
+    });
+  }
+
+  /* §3 — reveals ----------------------------------------------------------- */
+
+  /* §3a the split. Their headlines do not fade as a block — every glyph is its
+     own element and they arrive 20ms apart, blurring in without travelling
+     (research/sequel/MOTION.md §3: startY 0, blur 8px, 500ms, stagger 20ms).
+     That single detail is most of the difference between their headlines and
+     a fade, so it is worth the DOM.
+
+     The walk is recursive because the one word per headline in the serif
+     italic is a real element and has to survive the split; words are wrapped
+     as well as characters so a line still breaks between words rather than
+     mid-word once every glyph is inline-block. */
+  const splitChars = (root, step, base) => {
+    let n = 0;
+    const walk = node => {
+      for (const child of [...node.childNodes]) {
+        if (child.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          /* keep the gaps as real text so wrapping and copy-paste survive */
+          for (const part of child.nodeValue.split(/(\s+)/)) {
+            if (!part) continue;
+            if (/^\s+$/.test(part)) { frag.append(part); continue; }
+            const word = document.createElement('span');
+            word.className = 'wd';
+            for (const ch of [...part]) {
+              const g = document.createElement('span');
+              g.className = 'ch';
+              g.textContent = ch;
+              g.dataset.d = `${(base + n++ * step).toFixed(3)}s`;
+              g.style.transitionDelay = g.dataset.d;
+              word.append(g);
+            }
+            frag.append(word);
+          }
+          child.replaceWith(frag);
+        } else if (child.nodeType === 1) walk(child);
+      }
+    };
+    walk(root);
+    if (n) root.classList.add('split');
+    return n;
+  };
+
+  /* §3b — the hero's load timeline ----------------------------------------
+     Their sequence, measured (MOTION.md §1.1): the bar drops 144px over 800ms
+     on power3.out the moment the fonts settle; 700ms later the headline's
+     glyphs blur in 50ms apart — a slower stagger than the section headings,
+     because this one is the only headline anybody watches arrive — and the
+     description and the play control rise 72px alongside them, 80ms apart. */
+  const heroIntro = () => {
+    const hero = q('.hero'), h1 = q('.hero h1');
+    if (h1 && !calm) { splitChars(h1, 0.05, 0.7); h1.classList.add('in'); }
+    const bar = q('#nav');
+    bar && bar.classList.add('in');
+    hero && hero.classList.add('in');
+  };
+
+  /* Fired at ~30% visible, once. The variants and their distances live in CSS
+     (§16); this only decides when. Waiting on document.fonts avoids revealing a
+     headline mid-swap, which is the one thing that makes a blur reveal look
+     cheap. */
+  const reveal = () => {
+    if (!calm) qa('.rv-t').forEach(el => splitChars(el, 0.02, 0));
+    const items = qa('.rv');
+    if (!items.length) return;
+    if (calm || !('IntersectionObserver' in window)) {
+      items.forEach(el => el.classList.add('in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.3, rootMargin: '0px 0px -5% 0px' });
+    items.forEach(el => {
+      /* Anything taller than the viewport can never reach 30%; watch those at 0. */
+      if (el.offsetHeight > innerHeight * 0.8) {
+        new IntersectionObserver((es, o) => es.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('in'); o.disconnect(); }
+        }), { threshold: 0, rootMargin: '0px 0px -12% 0px' }).observe(el);
+      } else io.observe(el);
+    });
+  };
+  (document.fonts ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 3000))]) : Promise.resolve())
+    .then(() => { heroIntro(); reveal(); });
+
+  /* §4 — the hero clock, in San Francisco time ---------------------------- */
+  const clock = q('#clock');
+  if (clock) {
+    const fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles', hour: '2-digit', minute: '2-digit',
+      second: '2-digit', hour12: false
+    });
+    const tick = () => { clock.textContent = fmt.format(new Date()) + ' — SAN FRANCISCO'; };
+    tick(); setInterval(tick, 1000);
+  }
+
+  /* §5 — countdown to the next evening ------------------------------------ */
+  /* Tuesday 6 October 2026, 6:30 PM Pacific = 2026-10-07T01:30:00Z. */
+  const cd = q('#countdown');
+  if (cd) {
+    const when = Date.parse('2026-10-07T01:30:00Z');
+    const tick = () => {
+      const ms = when - Date.now();
+      if (ms <= 0) { cd.textContent = 'Tonight'; return; }
+      const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24,
+            m = Math.floor(ms / 6e4) % 60, s = Math.floor(ms / 1e3) % 60;
+      cd.textContent = d > 0 ? `${d}d ${h}h ${m}m` : `${h}h ${m}m ${s}s`;
+    };
+    tick(); setInterval(tick, 1000);
+  }
+
+  /* §6 — the manifesto stage ---------------------------------------------- */
+  /* The reference's signature move, reproduced with its own windows:
+       0    → 7.8%   the content fades up
+       7.8  → 23.5%  the card widens from the card-grid width to 100vw,
+                     its radius goes 10 → 0 and its hairline 1px → 0
+       23.5 → 71.5%  five statements roll past on a three-dimensional drum
+       76.5 → 100%   all of it runs backwards and the content fades out
+     The card starting at exactly the width of the two-card grid above it is
+     the whole trick — it reads as one of those cards growing into the screen,
+     not as a new element arriving. */
+  const believe = q('#believe'), card = q('#believeCard'),
+        body = q('#believeBody'), drum = q('#drum'),
+        win = q('#believeLines'), duo = q('#duo');
+
+  if (believe && card && drum && win && !calm) {
+    const items = qa('li', drum);
+    const N = items.length;
+    /* their custom in/out — steep enough that each line clicks into place */
+    const snap = t => t < .5 ? Math.pow(2 * t, 3.5) / 2 : 1 - Math.pow(2 * (1 - t), 3.5) / 2;
+
+    const paint = () => {
+      const r = believe.getBoundingClientRect();
+      const span = believe.offsetHeight - innerHeight;
+      if (span <= 0) return;
+      const p = clamp01(-r.top / span);
+
+      /* the card */
+      const restW = duo ? duo.offsetWidth : Math.min(1080, innerWidth * 0.92);
+      const zoomIn  = clamp01((p - 0.078) / (0.2353 - 0.078));
+      const zoomOut = clamp01((p - 0.7647) / (1 - 0.7647));
+      const open = zoomIn * (1 - zoomOut);
+      card.style.setProperty('--w', `${Math.round(lerp(restW, innerWidth, open))}px`);
+      card.style.setProperty('--h', `${Math.round(lerp(restW * 9 / 16, innerHeight, open))}px`);
+      card.style.setProperty('--r', `${lerp(10, 0, open).toFixed(2)}px`);
+      card.style.setProperty('--bw', `${lerp(1, 0, open).toFixed(2)}px`);
+      if (body) body.style.setProperty('--o', clamp01(p / 0.078) * (1 - zoomOut));
+
+      /* the drum */
+      const t = clamp01((p - 0.2353) / (0.7147 - 0.2353));
+      const seg = t * (N - 1);
+      const i = Math.min(N - 2, Math.floor(seg));
+      const pos = N > 1 ? i + snap(seg - i) : 0;
+
+      const mid = win.clientHeight / 2;
+      const centreOf = el => el.offsetTop + el.offsetHeight / 2;
+      const a = items[Math.min(N - 1, Math.floor(pos))], b = items[Math.min(N - 1, Math.ceil(pos))];
+      const target = lerp(centreOf(a), centreOf(b), pos - Math.floor(pos));
+      const shift = mid - target;
+      drum.style.transform = `translateY(${shift.toFixed(2)}px)`;
+
+      for (const el of items) {
+        const signed = (centreOf(el) + shift - mid) / mid;   /* −1 above … +1 below */
+        const d = Math.min(1, Math.abs(signed));
+        el.style.opacity = Math.pow(1 - d, 3).toFixed(3);
+        el.style.transform =
+          `scale(${lerp(1, .6, d).toFixed(3)}) rotateX(${(60 * d * (signed > 0 ? -1 : 1)).toFixed(1)}deg)`;
+        el.style.filter = d > 0.01 ? `blur(${d.toFixed(2)}px)` : 'none';
+      }
+    };
+    onScroll(paint);
+  }
+
+  /* the hero's slow drift — 0.5px of travel per pixel of scroll, capped, so the
+     headline separates from the frame behind it without the frame ever
+     detaching from the section */
+  const heroMedia = q('.hero-media');
+  if (heroMedia && !calm) {
+    onScroll(y => {
+      if (y > innerHeight * 1.2) return;
+      heroMedia.style.transform = `translate3d(0,${Math.min(450, y * 0.5).toFixed(1)}px,0)`;
+    });
+  }
+
+  /* §7 — counters ---------------------------------------------------------- */
+  /* 2000ms, power2.out, once. Suffixes are static text beside the span so the
+     number can be replaced without touching the glyphs around it. */
+  const nums = qa('#stats [data-to]');
+  if (nums.length) {
+    const run = el => {
+      const to = +el.dataset.to, t0 = performance.now(), D = 2000;
+      const step = now => {
+        const p = Math.min(1, (now - t0) / D);
+        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    if (calm || !('IntersectionObserver' in window)) {
+      nums.forEach(el => { el.textContent = el.dataset.to; });
+    } else {
+      const io = new IntersectionObserver((es, obs) => {
+        es.forEach(e => { if (e.isIntersecting) { run(e.target); obs.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      nums.forEach(el => io.observe(el));
+    }
+  }
+
+  /* §8 — the partner marquee ---------------------------------------------- */
+  /* Two tracks at their two measured speeds, running against each other. The
+     list is printed twice so translateX(-50%) is a seamless wrap. */
+  const PARTNERS = [
+    'Archdiocese of San Francisco', 'Office of Human Life & Dignity',
+    'California Catholic Conference', 'Catholic Charities San Francisco',
+    'Order of Malta, Western Association', 'Lay Mission Institute',
+    'Pro-Life San Francisco', 'St. Anthony Foundation',
+    'Missionaries of Charity', 'Star of the Sea Young Adults',
+    'Bay Wide Young Adults', 'Marin Young Adult Group'
+  ];
+  qa('[data-track]').forEach((row, i) => {
+    row.style.setProperty('--dur', i ? '47.2s' : '45s');
+    if (row.children.length) return;          /* pre-rendered in the HTML */
+    const list = i ? [...PARTNERS].reverse() : PARTNERS;
+    row.innerHTML = [...list, ...list].map(n => `<span>${n}</span>`).join('');
+  });
+
+  /* §8b — the perk marquee -------------------------------------------------
+     /membership's answer to "what do I get": nine photo cards a row, two rows
+     running against each other at 30s. Each card is one sentence over a 45%
+     scrim. Every claim here is in research/instagram-dossier.md. */
+  const PERKS = [
+    ['sept-audience', 'A keynote on one theme of Catholic Social Teaching'],
+    ['panel-table',   'A panel of people who actually do the work'],
+    ['after-talk',    'A reception at 6:30, and another one after'],
+    ['laughing',      'Free, for ages 21 to 40'],
+    ['serve-crew',    'A direct ministry action every month'],
+    ['sept-group',    'Formed with the Archdiocese of San Francisco'],
+    ['room-back',     'Business casual. No application — only a registration'],
+    ['qa-hands',      'A room that has sold out every time'],
+    ['sept-network',  'Seventeen speakers and panelists so far']
+  ];
+  const PERK_W = { 'sept-audience':800, 'panel-table':800, 'after-talk':800, 'laughing':780,
+                   'serve-crew':900, 'sept-group':780, 'room-back':780, 'qa-hands':800,
+                   'sept-network':800 };
+  qa('[data-perks]').forEach((row, i) => {
+    if (row.children.length) return;          /* pre-rendered in the HTML */
+    const list = i ? [...PERKS].reverse() : PERKS;
+    const card = ([img, line]) =>
+      `<div class="perk"><img src="assets/img/${img}-${PERK_W[img]}.jpg" alt="" loading="lazy" decoding="async"><p>${line}</p></div>`;
+    row.innerHTML = [...list, ...list].map(card).join('');
+  });
+
+  /* §9 — the Instagram feed ------------------------------------------------ */
+  /* Every tile is a real post and links to its own permalink. Heights come from
+     each file's own aspect ratio, which is what gives the columns their
+     uneven, un-art-directed rhythm. */
+  const POSTS = [
+    ['Dc0IHIAFJ36_01', 'Dc0IHIAFJ36', 640, 335, 'Sep 1 · The room'],
+    ['Dc0IHIAFJ36_02', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · Fr. Michael Sweeney, OP'],
+    ['Dc0IHIAFJ36_10', 'Dc0IHIAFJ36', 640, 335, 'Sep 1 · Networking'],
+    ['Db3x4v6hxow',    'Db3x4v6hxow', 360, 640, 'Aug 10 · Roberto Lacayo', 'interview-lacayo'],
+    ['DcOpj1nG-9D_01', 'DcOpj1nG-9D', 640, 486, 'Aug 19 · The Shroud of Turin'],
+    ['Dc0IHIAFJ36_03', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · In the room'],
+    ['DchC3zoh-xg_01', 'DchC3zoh-xg', 640, 378, 'Aug 26 · After a meal'],
+    ['Dc0IHIAFJ36_09', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · After the talk'],
+    ['DbmTXzlGLPl_02', 'DbmTXzlGLPl', 640, 853, 'Aug 4 · Missionaries of Charity'],
+    ['Dc0IHIAFJ36_04', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · The panel'],
+    ['DbuObFxFJY3_03', 'DbuObFxFJY3', 640, 346, 'Aug 7 · The panel'],
+    ['Dc0IHIAFJ36_05', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · Listening'],
+    ['DbuObFxFJY3_02', 'DbuObFxFJY3', 640, 346, 'Aug 7 · Called to Serve'],
+    ['DbmTXzlGLPl_04', 'DbmTXzlGLPl', 640, 853, 'Aug 4 · At the encampment'],
+    ['Dc0IHIAFJ36_06', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · The panel'],
+    ['DcOpj1nG-9D_02', 'DcOpj1nG-9D', 640, 486, 'Aug 19 · Othonia’s replica'],
+    ['DZJY-BjJgjU_01', 'DZJY-BjJgjU', 640, 335, 'Jun 4 · The first evening'],
+    ['Dc0IHIAFJ36_07', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · Handouts'],
+    ['DawmlieFIHm_02', 'DawmlieFIHm', 640, 337, 'Jul 14 · Rights and Responsibilities'],
+    ['Dc0IHIAFJ36_11', 'Dc0IHIAFJ36', 640, 335, 'Sep 1 · The full panel'],
+    ['DbULpBWJ-ok',    'DbULpBWJ-ok', 640, 640, 'Jul 27 · Called to Serve'],
+    ['DZ6Ga2yptfR',    'DZ6Ga2yptfR', 640, 640, 'Jun 23 · Called to Lead'],
+    ['DcKANRuGtzj',    'DcKANRuGtzj', 640, 640, 'Aug 17 · The Work of Human Hands'],
+    ['DZGufi6JAbk',    'DZGufi6JAbk', 640, 640, 'Jun 3 · Called to Lead, Vol. I'],
+    ['DbuObFxFJY3_04', 'DbuObFxFJY3', 640, 346, 'Aug 7 · Questions from the floor'],
+    ['Dc0IHIAFJ36_08', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · The hall'],
+    ['DawmlieFIHm_09', 'DawmlieFIHm', 640, 337, 'Jul 14 · The reception'],
+    ['DbuObFxFJY3_01', 'DbuObFxFJY3', 640, 345, 'Aug 7 · The hall'],
+    ['DcOpj1nG-9D_01', 'DcOpj1nG-9D', 640, 486, 'Aug 19 · The Shroud, up close'],
+    ['DbmTXzlGLPl_02', 'DbmTXzlGLPl', 640, 853, 'Aug 4 · Homeless ministry, SF']
+  ];;
+  const feed = q('#feed');
+  if (feed) {
+    /* Five equal columns, filled round-robin so the aspect ratios interleave
+       rather than clumping. Every tile is 3:4 and cropped — the source shapes
+       vary wildly and a uniform tile is what makes the wall read as one
+       surface instead of a contact sheet. */
+    const COLS = 5;
+    const cols = Array.from({ length: COLS }, () => []);
+    POSTS.forEach((post, i) => cols[i % COLS].push(post));
+
+    const card = ([file, code, w, h, cap, vid]) => `
+      <a class="fcard" href="https://www.instagram.com/p/${code}/" target="_blank" rel="noopener"
+         aria-label="Instagram — ${cap.replace(/["<>]/g, '')}">
+        ${vid ? `<video muted loop playsinline preload="none"
+                   poster="assets/feed/${file}-640.jpg" data-src="assets/video/${vid}.mp4"></video>`
+              : `<img src="assets/feed/${file}-640.jpg" width="${w}" height="${h}"
+                   loading="lazy" decoding="async" alt="">`}
+        <span class="fcard-ov">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"
+            fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>`;
+
+    if (!feed.children.length) {              /* pre-rendered in the HTML */
+      feed.innerHTML = cols.map(c => `<div class="fcol">${c.map(card).join('')}</div>`).join('');
+    }
+
+    /* Each column drifts at its own rate as the section passes — .03 and .08 of
+       the scroll, alternating. Offsets are measured from the section's centre so
+       the drift stays bounded instead of accumulating down the page. */
+    if (!calm) {
+      const fcols = qa('.fcol', feed);
+      const K = [0.03, 0.08, 0.03, 0.08, 0.03];
+      onScroll(() => {
+        const r = feed.getBoundingClientRect();
+        if (r.bottom < -400 || r.top > innerHeight + 400) return;
+        const rel = (innerHeight / 2) - (r.top + r.height / 2);
+        fcols.forEach((c, i) => { c.style.transform = `translateY(${(rel * K[i]).toFixed(1)}px)`; });
+      });
+    }
+  }
+
+  /* §10 — video tiles ------------------------------------------------------ */
+  /* Sources attach on approach, so the first load is images only. Playing only
+     while on screen is both the polite thing to do to a battery and what the
+     reference does; these clips carry no audio track at all, so there is no
+     hover-to-unmute to reproduce. */
+  qa('video[poster]').forEach(v => {
+    if (v.querySelector('source') || v.dataset.src) return;
+    const m = (v.getAttribute('poster') || '').match(/assets\/video\/([\w-]+)-poster\.jpg$/);
+    if (m) v.dataset.src = `assets/video/${m[1]}.mp4`;
+  });
+
+  const hero = q('#heroVideo');
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      const v = e.target;
+      if (e.isIntersecting) {
+        if (v.dataset.src && !v.src) v.src = v.dataset.src;
+        if (!calm) v.play().catch(() => {});
+      } else if (!v.paused) v.pause();
+    }), { threshold: 0.1 });
+    qa('video').forEach(v => { if (v !== hero) io.observe(v); });
+  }
+
+  /* §10b — the hero video actually starting -------------------------------
+     `autoplay muted playsinline` is necessary and not sufficient: iOS Low
+     Power Mode, Safari's power-saver and some data-saver modes reject the
+     promise and leave the poster sitting there, which is exactly what "the
+     video doesn't play" looks like. So: ask once on load, ask again when the
+     tab comes back, and — the case the attribute alone can never cover — ask
+     once more on the first real gesture, which is the one moment the browser
+     will always say yes. Muted is re-asserted every time; a hero that
+     suddenly has sound is worse than one that never plays. */
+  if (hero && !calm) {
+    let settled = false;
+    const gestures = ['pointerdown', 'touchstart', 'keydown', 'wheel'];
+    const drop = () => gestures.forEach(t => removeEventListener(t, kick));
+
+    const attempt = () => {
+      hero.muted = true;                       /* required, and re-asserted */
+      const p = hero.play();
+      if (p && p.then) p.then(() => { settled = true; drop(); }).catch(() => {});
+    };
+    const kick = () => { if (!settled) attempt(); else drop(); };
+
+    hero.addEventListener('loadedmetadata', attempt, { once: true });
+    hero.addEventListener('canplay', attempt, { once: true });
+    hero.addEventListener('playing', () => { settled = true; drop(); }, { once: true });
+    attempt();
+
+    gestures.forEach(t => addEventListener(t, kick, { passive: true }));
+    addEventListener('visibilitychange', () => {
+      if (!document.hidden && hero.paused && scrollY < innerHeight) attempt();
+    });
+  }
+})();
