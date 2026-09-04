@@ -120,6 +120,13 @@
       if (lenis) open ? lenis.stop() : lenis.start();
       document.body.style.overflow = open ? 'hidden' : '';
 
+      /* Without this, Tab walks straight out of the open overlay and into the
+         page behind it — measured: the fourth Tab landed on "Watch the film"
+         in the hero. `inert` takes the rest of the document out of the tab
+         order and out of the accessibility tree in one attribute. */
+      const behind = [q('main'), nav].filter(Boolean);
+      behind.forEach(el => el.toggleAttribute('inert', open));
+
       if (open) links[0] && links[0].focus({ preventScroll: true });
       else {
         toggle.focus({ preventScroll: true });
@@ -449,11 +456,13 @@
     POSTS.forEach((post, i) => cols[i % COLS].push(post));
 
     const card = ([file, code, w, h, cap, vid]) => `
-      <a class="fcard" href="https://www.instagram.com/p/${code}/" target="_blank" rel="noopener"
-         aria-label="Instagram — ${cap.replace(/["<>]/g, '')}">
+      <a class="fcard" href="https://www.instagram.com/p/${code}/" target="_blank" rel="noopener noreferrer"
+         aria-label="Instagram — ${cap.replace(/["<>]/g, '')} (opens in a new tab)">
         ${vid ? `<video muted loop playsinline preload="none"
                    poster="assets/feed/${file}-640.jpg" data-src="assets/video/${vid}.mp4"></video>`
-              : `<img src="assets/feed/${file}-640.jpg" width="${w}" height="${h}"
+              : `<img src="assets/feed/${file}-640.jpg"
+                   srcset="assets/feed/${file}-240.jpg 240w, assets/feed/${file}-400.jpg 400w, assets/feed/${file}-640.jpg 640w"
+                   sizes="(max-width:800px) 33vw, 20vw" width="${w}" height="${h}"
                    loading="lazy" decoding="async" alt="">`}
         <span class="fcard-ov">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"

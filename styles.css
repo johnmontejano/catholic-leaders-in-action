@@ -34,10 +34,17 @@
 @font-face{font-family:'General Sans';font-weight:400;font-style:normal;font-display:swap;src:url(assets/fonts/GeneralSans-400.woff2) format('woff2')}
 @font-face{font-family:'General Sans';font-weight:500;font-style:normal;font-display:swap;src:url(assets/fonts/GeneralSans-500.woff2) format('woff2')}
 @font-face{font-family:'Newsreader';font-weight:400;font-style:italic;font-display:swap;src:url(assets/fonts/Newsreader-italic.woff2) format('woff2')}
+/* Numerals only. General Sans ships no tnum table, so `font-variant-numeric:
+   tabular-nums` was doing nothing and the stat counters visibly jittered as
+   they counted — a 1 advances 11.5px where an 8 advances 22.9px. Satoshi has
+   the table, and at these sizes nobody can tell the two faces apart on digits. */
+@font-face{font-family:'Satoshi';font-weight:300;font-style:normal;font-display:swap;src:url(assets/fonts/Satoshi-300.woff2) format('woff2')}
+@font-face{font-family:'Satoshi';font-weight:500;font-style:normal;font-display:swap;src:url(assets/fonts/Satoshi-500.woff2) format('woff2')}
 
 /* ─── §1 tokens ─────────────────────────────────────────────────────────── */
 
 :root{
+  color-scheme:dark;
   --bg:#000000;
   --surface:#202020;        /* every tile and card */
   --chip:#2a2a2a;
@@ -80,7 +87,9 @@
   --believe-void:calc((100svh - (min(1200px,100vw) - 2*clamp(20px,5vw,32px)) * .5625) / 2);
 
   --gutter:clamp(24px,4vw,80px);
-  --measure:600px;      /* body copy */
+  /* 600px is their number for a face wider than ours: at 17.6px the same box
+     gives them 66 characters a line and us 77. Scaled to their count. */
+  --measure:515px;      /* body copy */
   --heading:800px;      /* headings */
   --wide:1200px;        /* the card grid */
 }
@@ -117,10 +126,32 @@ body{margin:0;overflow-x:hidden;font-size:16px;line-height:1.5;font-weight:400}
 img,video{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* Hover does not exist on a phone, and there was not one :active rule in the
+   stylesheet — every tap on this page landed with no acknowledgement. */
+html{-webkit-tap-highlight-color:transparent}
+.btn:active{transform:translateY(0) scale(.97);transition-duration:.08s}
+.btn-fill:active{background:#dcdcd6}
+.btn-glass:active{background:rgba(255,255,255,.16)}
+.fcard:active img,.fcard:active video,.pcard:active>img{transform:scale(1.04)}
+.socials a:active,.foot-col a:active,.nav-links a:active,.menu a:active{opacity:.6}
 h1,h2,h3,h4,p,figure,blockquote{margin:0}
 ul,ol{margin:0;padding:0;list-style:none}
 
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+/* A single-colour ring cannot survive both grounds this page has: on black it
+   needs to be light, and on the cream RSVP button a cream ring measured 1.00:1
+   — invisible. Two tones, so one edge always has contrast. */
+:focus-visible{outline:2px solid #000;outline-offset:0;
+  box-shadow:0 0 0 5px var(--accent);border-radius:3px}
+/* .btn-fill carries its own box-shadow and comes later in the file, so the ring
+   has to out-specify it or it never paints on the one button that needs it. */
+.btn:focus-visible,.play:focus-visible,.nav-toggle:focus-visible{
+  border-radius:9999px;box-shadow:0 0 0 5px var(--accent),0 4px 20px rgba(0,0,0,.25)}
+.fcard:focus-visible,.pcard:focus-visible,.cell:focus-visible{border-radius:10px}
+
+::selection{background:var(--accent);color:#000}
+::-moz-selection{background:var(--accent);color:#000}
+html{scrollbar-color:rgba(255,255,255,.25) transparent}
 
 .skip{position:absolute;left:-9999px;top:0;z-index:200}
 .skip:focus{left:12px;top:12px;padding:10px 16px;background:var(--accent);color:#000;border-radius:9999px}
@@ -130,7 +161,20 @@ ul,ol{margin:0;padding:0;list-style:none}
 
 /* The signature move: one word per headline in the serif italic. Nothing else
    on the page is serif, and nothing anywhere is heavier than 500. */
-.em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.05em;margin:0 .1em}
+/* The whole system rests on one move — a single serif-italic word inside a
+   sans headline — and the substitute face was quietly losing it. Measured
+   x-heights: their Bradford italic sits at 0.982 of VisueltPro; our Newsreader
+   italic sat at 0.889 of General Sans, six times the deficit, so the accent
+   word read a size smaller than the words either side of it rather than as a
+   change of voice. font-size-adjust scales the face to the reference's own
+   parity without touching the declared font-size, so the character split and
+   every line-break calculation are untouched.
+   The word-gap is theirs too: they tune it per context (.25em before the
+   accent in a display line, .15em in a heading) rather than one flat number. */
+.em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.05em;
+  margin:0 .15em;font-size-adjust:ex-height .52}
+.hero h1 .em,.foot-line .em{margin-left:.25em;margin-right:.02em}
+.believe-lines .em{margin:0 .1em}
 
 /* Section heading. 32px at every desktop width — see the note at the top. */
 .title{
@@ -142,9 +186,21 @@ ul,ol{margin:0;padding:0;list-style:none}
   font-size:1.1rem;font-weight:400;line-height:1.4;
   color:var(--text-75);max-width:var(--measure);
 }
+/* Eight one-word widows on the page, including "it." alone on a 32px display
+   line. text-wrap:pretty costs nothing where it is unsupported. */
+.desc,.pcard p,.pcard h3,.cell p,.cell h3,.cell .lineup li,
+.qtile blockquote,.perk p,.stat .cap,.believe-lines li,.foot-fine{text-wrap:pretty}
+/* Two different jobs were sharing one token. A badge on a photograph is 11px;
+   the eyebrow that opens a section is 15.84px at +.07em on the reference, and
+   ours was rendering both at 11.2px — which is why our section openings read
+   quieter than theirs. */
 .label{
   font-size:.7rem;font-weight:500;line-height:1.2;
   letter-spacing:.05em;text-transform:uppercase;color:var(--text);
+}
+.eyebrow{
+  font-size:clamp(.9rem,1.1vw,1.1rem);font-weight:500;line-height:1.2;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--text);
 }
 
 /* ─── §4 buttons — the three-size pill ramp ─────────────────────────────── */
@@ -331,7 +387,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 .hero-time{
   position:absolute;z-index:2;left:var(--gutter);top:calc(50% - .5em);
   font-size:.6875rem;letter-spacing:.07em;color:var(--text-40);
-  font-variant-numeric:tabular-nums;
+  font-family:'Satoshi',var(--sans);font-variant-numeric:tabular-nums;
 }
 @media (max-width:899px){.hero-time{display:none}}
 
@@ -446,7 +502,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
   font-variant-numeric:tabular-nums;
 }
 .stat .cap{
-  font-size:.8rem;font-weight:400;line-height:1.4;letter-spacing:.03em;
+  font-size:clamp(.7rem,.96vw,.8rem);font-weight:400;line-height:1.4;letter-spacing:.03em;
   text-transform:uppercase;color:var(--text);opacity:.7;max-width:200px;
 }
 @media (max-width:1024px){
@@ -482,7 +538,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 .cell.has-media::before{content:'';position:absolute;inset:0;z-index:-1;
   background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,rgba(0,0,0,.15) 30%,rgba(0,0,0,.65) 66%,rgba(0,0,0,.95) 100%)}
 .cell h3{font-size:clamp(1rem,1.5vw,1.25rem);font-weight:500;letter-spacing:-.03em;line-height:1.3}
-.cell p{font-size:.8125rem;line-height:1.5;color:var(--text-94)}
+.cell p{font-size:.8125rem;line-height:1.5;color:var(--text-94);max-width:42ch}
 
 /* The filmic wash sequel puts behind its feature cells, warmed a step so it
    sits with parish-hall photography rather than against it. */
@@ -499,7 +555,8 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 
 .count{position:absolute;z-index:1;right:24px;top:24px;
   display:grid;gap:2px;justify-items:center;padding:12px 22px;text-align:center}
-.count b{font-size:clamp(1rem,1.6vw,1.375rem);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.count b{font-size:clamp(1rem,1.6vw,1.375rem);font-weight:500;letter-spacing:-.02em;
+  font-family:'Satoshi',var(--sans);font-variant-numeric:tabular-nums}
 .count span{font-size:.625rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-75)}
 
 /* Below the bento's own breakpoint the lead cell is a single narrow column, and
@@ -515,7 +572,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 }
 
 .cell .lineup{display:grid;gap:7px;margin-top:2px}
-.cell .lineup li{font-size:.8125rem;color:var(--text-94);line-height:1.4}
+.cell .lineup li{font-size:.8125rem;color:var(--text-94);line-height:1.4;max-width:42ch}
 .cell .lineup b{font-weight:500;color:var(--text)}
 
 
@@ -526,7 +583,12 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
    button was setting the min-content width of the whole page at 320. Let the
    pills wrap down there instead of letting the page scroll sideways. */
 @media (max-width:420px){
-  .btn{white-space:normal;height:auto;min-height:42px;padding-block:11px;line-height:1.25;text-align:center}
+  /* `height:auto` was discarding the 42/45/52 ramp, so the primary CTA lost
+     its hierarchy against every secondary button on the page. Floors instead. */
+  .btn{white-space:normal;height:auto;padding-block:11px;line-height:1.25;text-align:center}
+  .btn-sm{min-height:44px}
+  .btn-md{min-height:46px}
+  .btn-lg{min-height:52px;padding-block:14px}
   .opener{max-width:100%}
   .opener>*{max-width:100%}
 }
@@ -571,8 +633,13 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
    contact sheet. */
 .socials{display:flex;justify-content:center;gap:20px;padding:20px 24px;margin:0}
 .opener .socials{margin-top:-20px}
-.socials a{display:grid;place-items:center;width:16px;height:16px;
+/* The icons stay 16px — that is the reference's size and the row's whole
+   character — but the thing a thumb has to hit is 44px. An invisible
+   pseudo-element does it without moving a pixel of what renders. */
+.socials a{position:relative;display:grid;place-items:center;width:16px;height:16px;
   color:rgba(255,255,255,.4);transition:color var(--t) ease}
+.socials a::after{content:'';position:absolute;left:50%;top:50%;
+  width:44px;height:44px;transform:translate(-50%,-50%)}
 .socials a:hover{color:var(--text)}
 .socials a:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:.5rem;color:var(--text)}
 .socials svg{width:100%;height:100%;fill:currentColor}
@@ -634,6 +701,12 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 .foot-col{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 .foot-col .label{color:var(--text-40)}
 .foot-col a{position:relative;font-size:.9375rem;opacity:.75;transition:opacity .735s var(--ease-sig)}
+/* 23px tall with 12px between them: the required target circles overlapped
+   their neighbours. Padding inside the box, so desktop leading is untouched. */
+@media (max-width:759px){
+  .foot-col a{display:inline-block;padding-block:11px}
+  .foot-cols{gap:40px}
+}
 .foot-col a::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;
   transform:scaleX(0);transform-origin:right;transition:transform .735s var(--ease-sig)}
 .foot-col a:hover{opacity:1}
