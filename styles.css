@@ -181,9 +181,17 @@ ul,ol{margin:0;padding:0;list-style:none}
 
 .wrap{max-width:var(--wide);margin-inline:auto;padding-inline:clamp(20px,5vw,32px)}
 section{position:relative}
-.band{padding-block:clamp(80px,10vw,150px)}
+/* Their section rhythm is a flat 30vh of padding-top between every major
+   section and no padding-bottom — 270px on a 900-tall screen, 253px on a
+   phone. We were running clamp(80px,10vw,150px) top AND bottom, which is 144px
+   on the desktop it was tuned at and 80px on a phone: barely half their air,
+   and the single biggest reason the page read as tight next to theirs. The
+   clamp keeps it from running away on a very tall monitor. */
+.band{padding-block:clamp(150px,30vh,300px) 0}
+/* the blocks that close something get their own bottom air */
+#seat{padding-bottom:clamp(90px,20vh,200px)}
 
-.opener{text-align:center;display:grid;justify-items:center;gap:20px}
+.opener{text-align:center;display:grid;justify-items:center;gap:24px}
 .opener .title,.opener .desc{margin-inline:auto}
 .opener .desc{max-width:min(var(--measure),92%)}
 
@@ -197,8 +205,9 @@ section{position:relative}
 .nav{
   position:fixed;inset:0 0 auto;z-index:100;
   display:flex;align-items:center;justify-content:space-between;gap:24px;
-  padding:20px var(--gutter);
+  padding:24px;
 }
+@media (min-width:1024px){.nav{padding:40px}}
 .nav-mark{display:flex;align-items:center;gap:10px;font-size:.9375rem;font-weight:500;letter-spacing:-.02em}
 .nav-mark img{width:26px;height:26px}
 .nav-mark span{display:none}
@@ -206,20 +215,16 @@ section{position:relative}
 
 /* The centre links fade out on scroll down and return on scroll up — the one
    piece of chrome on the reference that moves at all. */
-.nav-links{display:none;gap:28px;font-size:.9375rem;font-weight:500;
+.nav-links{display:none;gap:28px;font-size:1rem;font-weight:500;
   transition:opacity var(--t) ease-out}
 .nav[data-hide] .nav-links{opacity:0;pointer-events:none}
 @media (min-width:900px){
   .nav-links{display:flex;position:absolute;left:50%;transform:translateX(-50%)}
 }
-/* Their link hover: the underline wipes in from the right on the 735ms curve. */
-.nav-links a{position:relative;color:var(--text);opacity:.75;transition:opacity .735s var(--ease-sig)}
-.nav-links a::after{
-  content:'';position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;
-  transform:scaleX(0);transform-origin:right;transition:transform .735s var(--ease-sig);
-}
-.nav-links a:hover{opacity:1}
-.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+/* Their bar link hover is a colour move and nothing else: 90% white to full
+   over 200ms. The underline wipe belongs to their footer, not up here. */
+.nav-links a{color:rgba(255,255,255,.9);transition:color .2s cubic-bezier(.4,0,.2,1)}
+.nav-links a:hover{color:#fff}
 
 .nav-toggle{display:grid;place-items:center;width:42px;height:42px;border-radius:9999px;
   position:relative;z-index:101}
@@ -247,7 +252,8 @@ section{position:relative}
   position:fixed;inset:0;z-index:99;display:grid;align-content:center;gap:8px;
   padding:0 var(--gutter);background:rgba(0,0,0,.96);
   -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
-  --ox:calc(100% - 45px);--oy:41px;
+  /* the burger's own centre: 24px of bar padding + half of the 42px control */
+  --ox:calc(100% - 45px);--oy:45px;
   clip-path:circle(0px at var(--ox) var(--oy));
   visibility:hidden;
   transition:clip-path .3s var(--ease-in),visibility 0s linear .3s;
@@ -283,7 +289,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 .hero-inner{
   position:relative;z-index:2;height:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:24px;
-  padding:80px var(--gutter) 7vh;
+  padding:80px clamp(25px,5.5vw,80px) 7vh;
 }
 @media (min-width:900px){
   .hero-inner{flex-direction:row;align-items:flex-end;justify-content:center;gap:24px}
@@ -320,9 +326,9 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 
 /* ─── §8 statement + the two photo cards ────────────────────────────────── */
 
-.statement{text-align:center;display:grid;justify-items:center;gap:20px}
+.statement{text-align:center;display:grid;justify-items:center;gap:24px}
 
-.duo{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:clamp(48px,6vw,90px)}
+.duo{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:clamp(72px,15vh,150px)}
 .pcard{
   position:relative;overflow:hidden;border-radius:10px;
   flex:1 1 360px;max-width:560px;aspect-ratio:1/1;background:var(--surface);
