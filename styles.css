@@ -209,7 +209,10 @@ section{position:relative}
 }
 @media (min-width:1024px){.nav{padding:40px}}
 .nav-mark{display:flex;align-items:center;gap:10px;font-size:.9375rem;font-weight:500;letter-spacing:-.02em}
-.nav-mark img{width:26px;height:26px}
+/* Inline, and painted with currentColor, so the mark is white on the hero
+   video and inherits whatever the bar inherits — a PNG could do neither, and
+   at 26px the old raster seal was mud. */
+.nav-mark .mark{width:22px;height:22px;flex:none}
 .nav-mark span{display:none}
 @media (min-width:560px){.nav-mark span{display:inline}}
 
@@ -485,6 +488,18 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
   display:grid;gap:2px;justify-items:center;padding:12px 22px;text-align:center}
 .count b{font-size:clamp(1rem,1.6vw,1.375rem);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .count span{font-size:.625rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-75)}
+
+/* Below the bento's own breakpoint the lead cell is a single narrow column, and
+   a countdown pinned to its top-right corner lands straight on the headline —
+   "Next · Called to Relat…". Absolute positioning is a desktop affordance here:
+   on one column both markers join the flow and stack above the title instead. */
+@media (max-width:759px){
+  .illus{position:static;order:-2;align-self:flex-start}
+  .count{position:static;order:-1;align-self:flex-start;padding:10px 18px;
+    justify-items:start;text-align:left;margin-bottom:2px}
+  .cell{min-height:0;padding:20px}
+  .cell.lead{min-height:0}
+}
 
 .cell .lineup{display:grid;gap:7px;margin-top:2px}
 .cell .lineup li{font-size:.8125rem;color:var(--text-94);line-height:1.4}

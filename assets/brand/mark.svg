@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Catholic Leaders in Action">
+  <!-- The old seal carried four things at hairline weight — a ring, a hill, a
+       winding path and a cross — which at 26px resolves to a dark disc with a
+       gold edge and reads as nothing at all. This spends the whole mark on one
+       idea instead: a cross standing out of a rising rhythm of bars, so it is a
+       congregation and a cross at once. Solid forms, no ring, no hairlines,
+       still legible at 16px. -->
+  <rect x="0.7"  y="15"   width="3.6" height="8"    rx=".3"/>
+  <rect x="5.6"  y="11"   width="3.6" height="12"   rx=".3"/>
+  <rect x="10.3" y="1.2"  width="3.8" height="21.8" rx=".3"/>
+  <rect x="6.7"  y="5.4"  width="11"  height="3.2"  rx=".3"/>
+  <rect x="15.2" y="11.5" width="3.6" height="11.5" rx=".3"/>
+  <rect x="20.1" y="15.5" width="3.2" height="7.5"  rx=".3"/>
+</svg>
