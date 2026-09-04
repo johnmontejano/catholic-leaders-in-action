@@ -1,19 +1,24 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { ArrowUpRight, Play, X } from "@phosphor-icons/react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { links } from "../data";
+import { asset } from "../lib/assets";
 import { cn } from "../lib/cn";
 
 type VideoDialogProps = {
   children: ReactNode;
   className?: string;
+  label?: string;
 };
 
-export function VideoDialog({ children, className }: VideoDialogProps) {
+export function VideoDialog({ children, className, label }: VideoDialogProps) {
+  const [embedLoaded, setEmbedLoaded] = useState(false);
+
   return (
-    <Dialog.Root>
+    <Dialog.Root onOpenChange={(open) => open && setEmbedLoaded(false)}>
       <Dialog.Trigger asChild>
         <button className={cn("group", className)} type="button">
+          {label ? <span className="sr-only">{label}</span> : null}
           {children}
         </button>
       </Dialog.Trigger>
@@ -21,7 +26,7 @@ export function VideoDialog({ children, className }: VideoDialogProps) {
         <Dialog.Overlay className="dialog-overlay fixed inset-0 z-modal bg-black/86" />
         <Dialog.Content
           aria-describedby="community-film-description"
-          className="dialog-content fixed left-1/2 top-1/2 z-modal w-[min(94vw,470px)] -translate-x-1/2 -translate-y-1/2 rounded-cards border border-graphite bg-charcoal p-2 shadow-2xl outline-none"
+          className="dialog-content fixed left-1/2 top-1/2 z-modal w-[min(94vw,470px)] rounded-cards border border-graphite bg-charcoal p-2 shadow-2xl outline-none"
         >
           <div className="flex items-center justify-between px-3 py-2">
             <div>
@@ -42,11 +47,21 @@ export function VideoDialog({ children, className }: VideoDialogProps) {
               <X aria-hidden="true" size={18} weight="bold" />
             </Dialog.Close>
           </div>
-          <div className="aspect-[9/16] overflow-hidden rounded-[8px] bg-void-black">
+          <div className="relative aspect-[9/16] overflow-hidden rounded-[8px] bg-void-black">
+            <img
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 size-full object-cover"
+              src={asset("assets/feed/Db3x4v6hxow-640.jpg")}
+            />
             <iframe
               allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-              className="size-full border-0"
+              className={cn(
+                "relative size-full border-0 transition-opacity duration-200",
+                embedLoaded ? "opacity-100" : "opacity-0",
+              )}
               loading="lazy"
+              onLoad={() => setEmbedLoaded(true)}
               src={links.instagramReelEmbed}
               title="Catholic Leaders in Action Instagram video"
             />

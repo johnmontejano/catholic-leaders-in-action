@@ -104,7 +104,7 @@ components:
 
 ## Overview
 
-This reconstructed system adapts Sequel's observable dark cinematic presentation to Catholic Leaders in Action, a monthly San Francisco community for Catholic young professionals ages 21-40. Real CLIA documentary photography and film carry the experience, while restrained typography and a single warm off-white action color keep the page contemporary, focused, and human.
+This reconstructed system adapts Sequel's observable dark cinematic presentation to Catholic Leaders in Action, a monthly San Francisco community for Catholic young professionals ages 21–40. Real CLIA documentary photography and film carry the experience, while restrained typography and a single warm off-white action color keep the page contemporary, focused, and human.
 
 ## Colors
 
@@ -116,7 +116,7 @@ Use Satoshi as the workhorse for navigation, body copy, labels, statistics, and 
 
 ## Layout
 
-Use a full-bleed black canvas with content centered in a 1200px column. The hero fills at least one dynamic viewport and anchors its headline and actions near the bottom edge over a media scrim. Separate major sections by 96-120px. Use 16-24px gaps inside asymmetric media and bento compositions. Collapse all multi-column compositions to one column below 768px.
+Use a full-bleed black canvas with content centered in a 1200px column. The hero fills at least one dynamic viewport and anchors its headline and actions near the bottom edge over a media scrim. Alternate compact 96–120px transitions with deliberate 180–208px pauses and full-viewport cinematic chapters. Use a 12-column desktop grid with 16–24px gaps inside asymmetric media and bento compositions. Collapse editorial layouts thoughtfully below 768px while preserving swipeable media where it helps discovery.
 
 ## Elevation & Depth
 
@@ -134,9 +134,9 @@ The primary button uses {components.button-primary}. Secondary actions use trans
 
 Media cards use {components.media-card} with full-bleed real photography, a bottom readability scrim, and concise copy anchored inside the lower edge. Frosted labels use {components.glass-badge} only when they communicate category or state.
 
-The social feed uses a responsive masonry composition. Portrait and landscape posts keep their native aspect ratios, use 10px clipping, and reveal only a restrained interaction cue on hover or focus.
+The social feed behaves like an editorial Stories surface: one dominant reel, two supporting landscape moments, and a quieter six-image grid. Every tile links to the represented Instagram post, uses descriptive accessible text, keeps 10px clipping, and reveals only a restrained interaction cue on hover or focus.
 
-Motion uses opacity and transform only. Entrances last 200-600ms with weighted ease-out timing. Scroll-linked media scaling is subtle, one horizontal media rail is permitted, and all automatic motion becomes static when reduced motion is requested.
+Motion has four authored voices rather than one repeated reveal. Copy uses a 520ms enter curve, headings use a 900ms cinematic mask, media uses a 900ms clip reveal, and the hero settles over 1200ms. Controls use 160–240ms feedback. The layered story chapter reveals each incoming scene over the prior scene, while the membership rail loops slowly on desktop and remains manually scrollable with visible controls. Pause continuous media when the page is hidden. When reduced motion is requested, render the hero poster, replace the sticky story with static cards, and disable the membership loop.
 
 ## Do's and Don'ts
 

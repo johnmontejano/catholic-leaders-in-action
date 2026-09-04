@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { ArrowRight, List, X } from "@phosphor-icons/react";
 import { motion, useScroll, useTransform } from "motion/react";
+import { eventDetails } from "../data";
 import { asset } from "../lib/assets";
 
 const navigation = [
@@ -13,7 +14,7 @@ function Brand() {
   return (
     <a
       aria-label="Catholic Leaders in Action home"
-      className="focus-ring pointer-events-auto flex min-h-11 items-center gap-3 rounded-full"
+      className="focus-ring pointer-events-auto flex min-h-11 min-w-11 items-center gap-3 rounded-full pr-2"
       href="#top"
     >
       <img
@@ -69,7 +70,7 @@ export function Navigation() {
 
         <div className="pointer-events-auto hidden lg:block">
           <a className="button-primary" href="#next">
-            October 6
+            {eventDetails.shortDate}
             <ArrowRight aria-hidden="true" size={16} weight="bold" />
           </a>
         </div>
@@ -85,8 +86,8 @@ export function Navigation() {
             </button>
           </Dialog.Trigger>
           <Dialog.Portal>
-            <Dialog.Overlay className="fixed inset-0 z-menu bg-void-black" />
-            <Dialog.Content className="fixed inset-0 z-menu flex flex-col bg-void-black px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(20px,env(safe-area-inset-top))] outline-none">
+            <Dialog.Overlay className="menu-overlay fixed inset-0 z-menu bg-void-black" />
+            <Dialog.Content className="menu-content fixed inset-0 z-menu flex flex-col bg-void-black px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-[max(20px,env(safe-area-inset-top))] outline-none">
               <div className="flex items-center justify-between">
                 <Brand />
                 <Dialog.Close
@@ -98,24 +99,24 @@ export function Navigation() {
               </div>
               <Dialog.Title className="sr-only">Navigation</Dialog.Title>
               <div className="flex flex-1 flex-col justify-center">
-                {navigation.map((item) => (
+                {navigation.map((item, index) => (
                   <Dialog.Close asChild key={item.href}>
                     <a
-                      className="focus-ring border-b border-graphite py-5 text-5xl font-medium tracking-[-0.04em] text-pure-white"
+                      className="menu-link focus-ring border-b border-graphite py-5 text-5xl font-medium tracking-[-0.04em] text-pure-white"
                       href={item.href}
+                      style={{ animationDelay: `${180 + index * 60}ms` }}
                     >
                       {item.label}
                     </a>
                   </Dialog.Close>
                 ))}
               </div>
-              <a
-                className="button-primary w-full"
-                href="#next"
-              >
-                October 6
-                <ArrowRight aria-hidden="true" size={16} weight="bold" />
-              </a>
+              <Dialog.Close asChild>
+                <a className="button-primary w-full" href="#next">
+                  {eventDetails.shortDate}
+                  <ArrowRight aria-hidden="true" size={16} weight="bold" />
+                </a>
+              </Dialog.Close>
             </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>
