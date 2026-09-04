@@ -188,8 +188,8 @@ section{position:relative}
    and the single biggest reason the page read as tight next to theirs. The
    clamp keeps it from running away on a very tall monitor. */
 .band{padding-block:clamp(150px,30vh,300px) 0}
-/* the blocks that close something get their own bottom air */
-#seat{padding-bottom:clamp(90px,20vh,200px)}
+/* Nothing gets its own bottom air: the next section's padding-top is the gap,
+   and anything added here double-counts against it. */
 
 .opener{text-align:center;display:grid;justify-items:center;gap:24px}
 .opener .title,.opener .desc{margin-inline:auto}
@@ -476,6 +476,10 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
   .cell.wide{grid-column:span 2}
   .cell.lead{min-height:400px}
 }
+
+.illus{position:absolute;z-index:1;left:24px;top:26px;
+  font-size:.625rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--text-40)}
 
 .count{position:absolute;z-index:1;right:24px;top:24px;
   display:grid;gap:2px;justify-items:center;padding:12px 22px;text-align:center}
