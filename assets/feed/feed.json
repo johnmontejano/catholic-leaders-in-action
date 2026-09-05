@@ -1,0 +1,216 @@
+{
+ "updated": "2026-09-05",
+ "tiles": [
+  {
+   "id": "Dc0IHIAFJ36_01",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 335,
+   "alt": "Sep 1 · The room"
+  },
+  {
+   "id": "Dc0IHIAFJ36_02",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · Fr. Michael Sweeney, OP"
+  },
+  {
+   "id": "Dc0IHIAFJ36_10",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 335,
+   "alt": "Sep 1 · Networking"
+  },
+  {
+   "id": "Db3x4v6hxow",
+   "shortcode": "Db3x4v6hxow",
+   "w": 360,
+   "h": 640,
+   "alt": "Aug 10 · Roberto Lacayo",
+   "video": "interview-lacayo"
+  },
+  {
+   "id": "DcOpj1nG-9D_01",
+   "shortcode": "DcOpj1nG-9D",
+   "w": 640,
+   "h": 486,
+   "alt": "Aug 19 · The Shroud of Turin"
+  },
+  {
+   "id": "Dc0IHIAFJ36_03",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · In the room"
+  },
+  {
+   "id": "DchC3zoh-xg_01",
+   "shortcode": "DchC3zoh-xg",
+   "w": 640,
+   "h": 378,
+   "alt": "Aug 26 · After a meal"
+  },
+  {
+   "id": "Dc0IHIAFJ36_09",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · After the talk"
+  },
+  {
+   "id": "DbmTXzlGLPl_02",
+   "shortcode": "DbmTXzlGLPl",
+   "w": 640,
+   "h": 853,
+   "alt": "Aug 4 · Missionaries of Charity"
+  },
+  {
+   "id": "Dc0IHIAFJ36_04",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · The panel"
+  },
+  {
+   "id": "DbuObFxFJY3_03",
+   "shortcode": "DbuObFxFJY3",
+   "w": 640,
+   "h": 346,
+   "alt": "Aug 7 · The panel"
+  },
+  {
+   "id": "Dc0IHIAFJ36_05",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · Listening"
+  },
+  {
+   "id": "DbuObFxFJY3_02",
+   "shortcode": "DbuObFxFJY3",
+   "w": 640,
+   "h": 346,
+   "alt": "Aug 7 · Called to Serve"
+  },
+  {
+   "id": "DbmTXzlGLPl_04",
+   "shortcode": "DbmTXzlGLPl",
+   "w": 640,
+   "h": 853,
+   "alt": "Aug 4 · At the encampment"
+  },
+  {
+   "id": "Dc0IHIAFJ36_06",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · The panel"
+  },
+  {
+   "id": "DcOpj1nG-9D_02",
+   "shortcode": "DcOpj1nG-9D",
+   "w": 640,
+   "h": 486,
+   "alt": "Aug 19 · Othonia’s replica"
+  },
+  {
+   "id": "DZJY-BjJgjU_01",
+   "shortcode": "DZJY-BjJgjU",
+   "w": 640,
+   "h": 335,
+   "alt": "Jun 4 · The first evening"
+  },
+  {
+   "id": "Dc0IHIAFJ36_07",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · Handouts"
+  },
+  {
+   "id": "DawmlieFIHm_02",
+   "shortcode": "DawmlieFIHm",
+   "w": 640,
+   "h": 337,
+   "alt": "Jul 14 · Rights and Responsibilities"
+  },
+  {
+   "id": "Dc0IHIAFJ36_11",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 335,
+   "alt": "Sep 1 · The full panel"
+  },
+  {
+   "id": "DbULpBWJ-ok",
+   "shortcode": "DbULpBWJ-ok",
+   "w": 640,
+   "h": 640,
+   "alt": "Jul 27 · Called to Serve"
+  },
+  {
+   "id": "DZ6Ga2yptfR",
+   "shortcode": "DZ6Ga2yptfR",
+   "w": 640,
+   "h": 640,
+   "alt": "Jun 23 · Called to Lead"
+  },
+  {
+   "id": "DcKANRuGtzj",
+   "shortcode": "DcKANRuGtzj",
+   "w": 640,
+   "h": 640,
+   "alt": "Aug 17 · The Work of Human Hands"
+  },
+  {
+   "id": "DZGufi6JAbk",
+   "shortcode": "DZGufi6JAbk",
+   "w": 640,
+   "h": 640,
+   "alt": "Jun 3 · Called to Lead, Vol. I"
+  },
+  {
+   "id": "DbuObFxFJY3_04",
+   "shortcode": "DbuObFxFJY3",
+   "w": 640,
+   "h": 346,
+   "alt": "Aug 7 · Questions from the floor"
+  },
+  {
+   "id": "Dc0IHIAFJ36_08",
+   "shortcode": "Dc0IHIAFJ36",
+   "w": 640,
+   "h": 337,
+   "alt": "Sep 1 · The hall"
+  },
+  {
+   "id": "DawmlieFIHm_09",
+   "shortcode": "DawmlieFIHm",
+   "w": 640,
+   "h": 337,
+   "alt": "Jul 14 · The reception"
+  },
+  {
+   "id": "DbuObFxFJY3_01",
+   "shortcode": "DbuObFxFJY3",
+   "w": 640,
+   "h": 345,
+   "alt": "Aug 7 · The hall"
+  },
+  {
+   "id": "DcOpj1nG-9D_01",
+   "shortcode": "DcOpj1nG-9D",
+   "w": 640,
+   "h": 486,
+   "alt": "Aug 19 · The Shroud, up close"
+  },
+  {
+   "id": "DbmTXzlGLPl_02",
+   "shortcode": "DbmTXzlGLPl",
+   "w": 640,
+   "h": 853,
+   "alt": "Aug 4 · Homeless ministry, SF"
+  }
+ ]
+}

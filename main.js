@@ -59,9 +59,62 @@
       const t = document.querySelector(id);
       if (!t) return;
       e.preventDefault();
-      lenis.scrollTo(t, { offset: -72 });
+      /* Sections below the fold are content-visibility:auto, so on a first jump
+         the ones in between may still be reporting their intrinsic-size guess
+         and the target moves under the animation. The guesses are measured
+         (styles.css §2c) so the error is small, but the settle check makes the
+         landing exact regardless: once the scroll finishes, if the target is
+         not where it should be, close the remainder without another animation. */
+      lenis.scrollTo(t, {
+        offset: -72,
+        onComplete: () => {
+          const drift = Math.round(t.getBoundingClientRect().top - 72);
+          if (Math.abs(drift) > 4) lenis.scrollTo(scrollY + drift, { immediate: true });
+        },
+      });
     });
   }
+
+  /* Geometry, measured once instead of every frame.
+
+     Every scrubbed section below used to call getBoundingClientRect() or read
+     offsetHeight INSIDE the scroll handler and then write a style — eight
+     forced synchronous layouts per frame between the pinned stage, the two
+     photo cards and the collage. On a desktop that is invisible. On a phone it
+     is the whole reason the scroll stutters: the browser cannot use its cached
+     layout, so it re-lays-out a 500-element document sixty times a second.
+
+     None of those numbers change while you scroll. A page-coordinate top and a
+     height are stable until something reflows, so they are read in one batch
+     here and the handlers do arithmetic against scrollY. Re-measured on resize,
+     after the fonts settle and after the images land — the three things that
+     actually move boxes. */
+  const measured = [];
+  let vh = innerHeight, vw = innerWidth;
+  const measureOne = (m, sy) => {
+    const r = m.el.getBoundingClientRect();
+    m.top = r.top + (sy === undefined ? scrollY : sy); m.h = r.height; m.w = r.width;
+  };
+  /* Sections below the fold are `content-visibility:auto` (§2c), so until one
+     has been rendered once it reports its contain-intrinsic-size guess rather
+     than its real height — and a cache filled at load would hold that guess
+     forever. Each tracked box re-measures itself as it approaches, a viewport
+     and a half out, which is well before its number is used for anything and
+     rare enough to cost nothing. */
+  const track = el => {
+    const m = { el, top: 0, h: 0, w: 0 };
+    measured.push(m);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) measureOne(m); },
+        { rootMargin: '150% 0px' }).observe(el);
+    }
+    return m;
+  };
+  const remeasure = () => {
+    vh = innerHeight; vw = innerWidth;
+    const sy = scrollY;
+    for (const m of measured) measureOne(m, sy);
+  };
 
   /* One scroll bus. Every scrubbed section below reads the same frame, which is
      the cheap version of their single global ScrollTrigger. When Lenis is
@@ -79,7 +132,10 @@
     else addEventListener('scroll', () => {
       if (!ticking) { ticking = true; requestAnimationFrame(run); }
     }, { passive: true });
-    addEventListener('resize', () => { if (!ticking) { ticking = true; requestAnimationFrame(run); } });
+    addEventListener('resize', () => {
+      remeasure();
+      if (!ticking) { ticking = true; requestAnimationFrame(run); }
+    });
     return f => { subs.push(f); f(scrollY); };
   })();
 
@@ -273,7 +329,12 @@
      whole of a 5.67s LCP on a cold throttled connection. Same mechanism, cap
      cut to the point where it still covers a slow swap. */
   (document.fonts ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 300))]) : Promise.resolve())
-    .then(() => { heroIntro(); reveal(); });
+    .then(() => { remeasure(); heroIntro(); reveal(); });
+
+  /* Images arriving change heights, so the cache has to catch up once they do —
+     and once more on full load for anything lazy that landed late. */
+  addEventListener('load', remeasure);
+  if (document.fonts) document.fonts.ready.then(remeasure);
 
   /* §4 — the hero clock, in San Francisco time ---------------------------- */
   const clock = q('#clock');
@@ -321,21 +382,22 @@
     /* their custom in/out — steep enough that each line clicks into place */
     const snap = t => t < .5 ? Math.pow(2 * t, 3.5) / 2 : 1 - Math.pow(2 * (1 - t), 3.5) / 2;
 
-    const paint = () => {
-      const r = believe.getBoundingClientRect();
-      const span = believe.offsetHeight - innerHeight;
+    const mBelieve = track(believe), mCard = track(card), mDuo = duo ? track(duo) : null;
+
+    const paint = y => {
+      const span = mBelieve.h - vh;
       if (span <= 0) return;
-      const p = clamp01(-r.top / span);
+      const p = clamp01((y - mBelieve.top) / span);
 
       /* The card. Its box is the whole stage and never changes — what opens is
          a clip, and the hairline rides a scale, because scrubbing width and
          height was layout on every frame and scored CLS 0.168 / 0.386. The
          geometry below is the same geometry; only what carries it changed. */
-      const W = card.offsetWidth, H = card.offsetHeight;
-      const restW = duo ? duo.offsetWidth : Math.min(1080, innerWidth * 0.92);
+      const W = mCard.w, H = mCard.h;
+      const restW = mDuo ? mDuo.w : Math.min(1080, vw * 0.92);
       /* On a phone a 16:9 card off a 350px column is 197px tall in an 844px
          stage — nearly all void. Floor it so the stage is mostly card. */
-      const restH = innerWidth < 600
+      const restH = vw < 600
         ? Math.max(restW * 9 / 16, Math.min(H * 0.66, 540))
         : restW * 9 / 16;
 
@@ -382,11 +444,13 @@
      detaching from the section */
   const heroMedia = q('.hero-media'), heroEl = q('.hero');
   if (heroMedia && !calm) {
+    let heroDone = false;
     onScroll(y => {
-      if (y > innerHeight * 1.2) return;
+      if (y > vh * 1.2) { if (!heroDone) { heroDone = true; heroEl && (heroEl.style.opacity = '0.5'); } return; }
+      heroDone = false;
       heroMedia.style.transform = `translate3d(0,${Math.min(450, y * 0.5).toFixed(1)}px,0)`;
       /* the other half of the parallax pair: the hero dims 1 → .5 across 20–80% */
-      if (heroEl) heroEl.style.opacity = (1 - 0.5 * clamp01((y - innerHeight * 0.2) / (innerHeight * 0.6))).toFixed(3);
+      if (heroEl) heroEl.style.opacity = (1 - 0.5 * clamp01((y - vh * 0.2) / (vh * 0.6))).toFixed(3);
     });
   }
 
@@ -395,12 +459,12 @@
      (top:-50%, height:150%). This is what the 1.08 hover scale was standing in
      for, and it is the one that is actually on the reference. */
   if (!calm) qa('.pcard>img').forEach(img => {
-    const card = img.parentElement;
-    onScroll(() => {
-      const r = card.getBoundingClientRect();
-      if (r.bottom < -100 || r.top > innerHeight + 100) return;
-      const p = clamp01((innerHeight - r.top) / (innerHeight + r.height));
-      img.style.transform = `translate3d(0,${(p * r.height * 0.5).toFixed(1)}px,0)`;
+    const m = track(img.parentElement);
+    onScroll(y => {
+      const top = m.top - y;
+      if (top + m.h < -100 || top > vh + 100) return;
+      const p = clamp01((vh - top) / (vh + m.h));
+      img.style.transform = `translate3d(0,${(p * m.h * 0.5).toFixed(1)}px,0)`;
     });
   });
 
@@ -513,6 +577,9 @@
     ['DcOpj1nG-9D_01', 'DcOpj1nG-9D', 640, 486, 'Aug 19 · The Shroud, up close'],
     ['DbmTXzlGLPl_02', 'DbmTXzlGLPl', 640, 853, 'Aug 4 · Homeless ministry, SF']
   ];;
+  let renderFeed = () => {};
+  let attachVideoTiles = () => {};
+
   const feed = q('#feed');
   if (feed) {
     /* Five equal columns, filled round-robin so the aspect ratios interleave
@@ -520,42 +587,87 @@
        vary wildly and a uniform tile is what makes the wall read as one
        surface instead of a contact sheet. */
     const COLS = 5;
-    const cols = Array.from({ length: COLS }, () => []);
-    POSTS.forEach((post, i) => cols[i % COLS].push(post));
 
     const card = ([file, code, w, h, cap, vid]) => `
       <a class="fcard" href="https://www.instagram.com/p/${code}/" target="_blank" rel="noopener noreferrer"
-         aria-label="Instagram — ${cap.replace(/["<>]/g, '')} (opens in a new tab)">
+         aria-label="Instagram — ${String(cap).replace(/["<>]/g, '')} (opens in a new tab)">
         ${vid ? `<video muted loop playsinline preload="none"
                    poster="assets/feed/${file}-640.jpg" data-src="assets/video/${vid}.mp4"></video>`
-              : `<img src="assets/feed/${file}-640.jpg"
+              : `<picture><source type="image/webp"
+                   srcset="assets/feed/${file}-240.webp 240w, assets/feed/${file}-400.webp 400w, assets/feed/${file}-640.webp 640w"
+                   sizes="(max-width:800px) 33vw, 20vw"><img src="assets/feed/${file}-640.jpg"
                    srcset="assets/feed/${file}-240.jpg 240w, assets/feed/${file}-400.jpg 400w, assets/feed/${file}-640.jpg 640w"
                    sizes="(max-width:800px) 33vw, 20vw" width="${w}" height="${h}"
-                   loading="lazy" decoding="async" alt="">`}
+                   loading="lazy" decoding="async" alt=""></picture>`}
         <span class="fcard-ov">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"
             fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </a>`;
 
-    if (!feed.children.length) {              /* pre-rendered in the HTML */
-      feed.innerHTML = cols.map(c => `<div class="fcol">${c.map(card).join('')}</div>`).join('');
-    }
+    /* One renderer, used both for the no-JS-markup case and for a refresh from
+       feed.json, so a rebuilt wall is identical to a shipped one. */
+    let fcols = qa('.fcol', feed);
+    renderFeed = (el, posts) => {
+      const cols = Array.from({ length: COLS }, () => []);
+      posts.forEach((post, i) => cols[i % COLS].push(post));
+      el.innerHTML = cols.map(c => `<div class="fcol">${c.map(card).join('')}</div>`).join('');
+      fcols = qa('.fcol', el);
+      attachVideoTiles(el);
+    };
+
+    if (!feed.children.length) renderFeed(feed, POSTS);   /* otherwise pre-rendered in the HTML */
 
     /* Each column drifts at its own rate as the section passes — .03 and .08 of
        the scroll, alternating. Offsets are measured from the section's centre so
        the drift stays bounded instead of accumulating down the page. */
     if (!calm) {
-      const fcols = qa('.fcol', feed);
       const K = [0.03, 0.08, 0.03, 0.08, 0.03];
-      onScroll(() => {
-        const r = feed.getBoundingClientRect();
-        if (r.bottom < -400 || r.top > innerHeight + 400) return;
-        const rel = (innerHeight / 2) - (r.top + r.height / 2);
-        fcols.forEach((c, i) => { c.style.transform = `translateY(${(rel * K[i]).toFixed(1)}px)`; });
+      const mFeed = track(feed);
+      onScroll(y => {
+        const top = mFeed.top - y;
+        if (top + mFeed.h < -400 || top > vh + 400) return;
+        const rel = (vh / 2) - (top + mFeed.h / 2);
+        fcols.forEach((c, i) => { c.style.transform = `translate3d(0,${(rel * K[i]).toFixed(1)}px,0)`; });
       });
     }
   }
+
+  /* §9b — the feed refreshes itself from data, not from markup -------------
+     The wall is pre-rendered in index.html so it is real HTML for a crawler and
+     for a visitor whose JS never arrives. But the source of truth is
+     assets/feed/feed.json: on every load the page reads it, and if it names a
+     different set of tiles than the DOM is showing, it rebuilds the columns.
+
+     So publishing new posts is a data change. Drop a new feed.json (and its
+     media) — from tools/refresh-feed.mjs, a scheduled job, or by hand — and
+     every visitor gets the new wall on their next load, with no HTML edit and
+     no redeploy of the page itself. The rebuild reuses renderFeed() below, so
+     the parallax, the aspect ratios and the lazy video all come along. */
+  const refreshFeed = async () => {
+    const feed = q('#feed');
+    if (!feed || !('fetch' in window)) return;
+    try {
+      const res = await fetch('assets/feed/feed.json', { cache: 'no-cache' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || !Array.isArray(data.tiles) || data.tiles.length < 15) return;
+
+      const shown = qa('.fcard img, .fcard video', feed)
+        .map(el => (el.getAttribute('src') || el.getAttribute('poster') || '')
+          .replace(/^.*\/(.*?)-\d+\.(?:jpg|webp)$/, '$1'));
+      /* Compare the SET, not the order: the shipped markup is column-major and
+         the file is row-major, so an order comparison would rebuild the wall on
+         every single load. What matters is whether the posts changed. */
+      const next = data.tiles.map(t => t.id);
+      const same = shown.length === next.length &&
+        shown.slice().sort().join('|') === next.slice().sort().join('|');
+      if (same) return;
+
+      renderFeed(feed, data.tiles.map(t => [t.id, t.shortcode, t.w, t.h, t.alt, t.video]));
+      remeasure();
+    } catch { /* a feed that will not load is a feed that stays as it was */ }
+  };
 
   /* §10 — video tiles ------------------------------------------------------ */
   /* Sources attach on approach, so the first load is images only. Playing only
@@ -564,7 +676,7 @@
      hover-to-unmute to reproduce. */
   qa('video[poster]').forEach(v => {
     if (v.querySelector('source') || v.dataset.src) return;
-    const m = (v.getAttribute('poster') || '').match(/assets\/video\/([\w-]+)-poster\.jpg$/);
+    const m = (v.getAttribute('poster') || '').match(/assets\/video\/([\w-]+)-poster\.(?:jpg|webp)$/);
     if (m) { v.dataset.src = `assets/video/${m[1]}.mp4`; v.dataset.srcMobile = `assets/video/${m[1]}-mobile.mp4`; }
   });
 
@@ -581,8 +693,21 @@
         if (!calm) v.play().catch(() => {});
       } else if (!v.paused) v.pause();
     }), { threshold: 0.1 });
-    qa('video').forEach(v => { if (v !== hero) io.observe(v); });
+    /* Exported so a feed rebuilt from feed.json gets its tiles observed too. */
+    attachVideoTiles = (root = document) => qa('video', root).forEach(v => {
+      if (v === hero) return;
+      if (v.dataset.src === undefined) {
+        const m = (v.getAttribute('poster') || '').match(/assets\/feed\/([\w-]+)-\d+\.(?:jpg|webp)$/);
+        if (m) v.dataset.src = v.dataset.src || '';
+      }
+      io.observe(v);
+    });
+    attachVideoTiles();
   }
+
+  /* The feed's own refresh runs after the observers exist, so a rebuilt wall is
+     wired up exactly like the shipped one. */
+  refreshFeed();
 
   /* §12 — the specular on the buttons ------------------------------------
      One delegated listener writes the pointer's position into the button as

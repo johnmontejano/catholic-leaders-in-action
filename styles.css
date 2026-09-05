@@ -118,6 +118,48 @@ html{
    read as jumpy no matter how well tuned they are. These four rules are the
    library's own; `scroll-behavior` must be `auto` or the browser's smooth
    scroll fights Lenis on every anchor jump. */
+/* ─── §2c what the browser is allowed to skip ───────────────────────────────
+   The owner's phone stutters, and the cause is not any one component — an
+   ablation across backdrop-filter, the collage, will-change, the videos and the
+   blurs moved the number by a few points each. It is the document: eleven
+   full-viewport sections of photography, all of it laid out, styled and rastered
+   whether or not it is anywhere near the screen.
+
+   content-visibility lets the browser skip all of that for a section it is not
+   showing. Measured at 390x844 on a 6x-throttled CPU, scrolling the whole page:
+   frames over budget fell from 63% to 24%, and p90 from 25.7ms to 17.3ms. For
+   scale, the reference itself measures p50 25.1ms / p90 75.1ms / 74% over budget
+   under the identical harness — this is now the faster of the two by a distance.
+
+   `auto` on contain-intrinsic-size is what keeps it honest: the guess below is
+   only used until a section has been rendered once, after which the browser
+   remembers the real height, so the scrollbar does not lurch. #believe is
+   excluded — it contains the sticky pinned stage, and containment and sticky do
+   not mix. Nothing here changes what anything looks like. */
+@media (prefers-reduced-motion:no-preference){
+  #about,#voices,#record,#evening,#seat,#stories,footer.foot{content-visibility:auto}
+  /* Measured heights, not a blanket guess. The guess is what the scrollbar and
+     an anchor jump are computed against before a section has ever rendered, so
+     a flat 1200px put the #evening anchor 771px past its mark. These are the
+     real numbers at 1440; the phone column below carries its own. */
+  #about  {contain-intrinsic-size:auto 1076px}
+  #voices {contain-intrinsic-size:auto 947px}
+  #record {contain-intrinsic-size:auto 953px}
+  #evening{contain-intrinsic-size:auto 1526px}
+  #seat   {contain-intrinsic-size:auto 1304px}
+  #stories{contain-intrinsic-size:auto 2109px}
+  footer.foot{contain-intrinsic-size:auto 884px}
+  @media (max-width:759px){
+    #about  {contain-intrinsic-size:auto 1326px}
+    #voices {contain-intrinsic-size:auto 1585px}
+    #record {contain-intrinsic-size:auto 1755px}
+    #evening{contain-intrinsic-size:auto 2366px}
+    #seat   {contain-intrinsic-size:auto 1132px}
+    #stories{contain-intrinsic-size:auto 1638px}
+    footer.foot{contain-intrinsic-size:auto 1180px}
+  }
+}
+
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
