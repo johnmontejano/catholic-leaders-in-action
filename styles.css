@@ -132,6 +132,9 @@
     rgba(0,0,0,.684) 37.5%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.316) 62.5%,
     rgba(0,0,0,.156) 75%,rgba(0,0,0,.043) 87.5%,transparent 100%;
 
+  /* the column every block on the page is measured against */
+  --col:min(1136px,100vw - 2 * clamp(20px,5vw,32px));
+
   --gutter:clamp(24px,4vw,80px);
   /* 600px is their number for a face wider than ours: at 17.6px the same box
      gives them 66 characters a line and us 77. Scaled to their count. */
@@ -242,7 +245,9 @@ ul,ol{margin:0;padding:0;list-style:none}
    has to out-specify it or it never paints on the one button that needs it. */
 .btn:focus-visible,.play:focus-visible,.nav-toggle:focus-visible{
   border-radius:9999px;box-shadow:0 0 0 5px var(--accent),0 1px 2px rgba(0,0,0,.35),0 4px 20px rgba(0,0,0,.25)}
-.fcard:focus-visible,.pcard:focus-visible,.cell:focus-visible{border-radius:10px}
+/* .fcard rests at 8px, so a 10px focus ring made a keyboard pass twitch; .cell
+   is an <article> and not focusable at all. */
+.fcard:focus-visible{border-radius:inherit}
 
 ::selection{background:var(--accent);color:#000}
 ::-moz-selection{background:var(--accent);color:#000}
@@ -268,7 +273,10 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
    accent in a display line, .15em in a heading) rather than one flat number. */
 .em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.05em;
   margin:0 .15em;font-size-adjust:ex-height .52}
-.hero h1 .em,.foot-line .em{margin-left:.25em;margin-right:.02em}
+/* letter-spacing applies after the LAST glyph too, so .em's -.05em pulls the
+   next character back: at the hero's 57.6px that is -2.88px against a 1.15px
+   margin, and the period collided with the italic. */
+.hero h1 .em,.foot-line .em{margin-left:.25em;margin-right:.08em}
 .believe-lines .em{margin:0 .1em}
 
 /* Section heading. 32px at every desktop width — see the note at the top. */
@@ -297,6 +305,23 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
   font-size:clamp(.9rem,1.1vw,1.1rem);font-weight:500;line-height:1.2;
   letter-spacing:.07em;text-transform:uppercase;color:var(--text);
 }
+
+/* ─── §3d figures inside all-caps ────────────────────────────────────────
+   General Sans's default figures are lining at 676 units against a 718 cap, so
+   in an uppercase line the numbers sit 42 units low — "AGES 21 TO 40" reads
+   with the digits dropped. `case` substitutes the cap-height set. There is no
+   high-level property for it, and naming only `case` leaves kern/liga/calt and
+   font-variant-numeric alone. Inert on a string with no figures.
+   NOT on .stat b or .count b: those are Satoshi, whose `case` table holds no
+   figures at all, and they carry the tabular-nums that keeps the counters from
+   jittering. */
+.eyebrow,.label,.badge,.stat .cap,.illus,.seat-note,
+.vtile .role,.qtile .role,.foot-base{font-feature-settings:'case' 1}
+/* The one glyph the font cannot fix: General Sans ships no cap-height middot,
+   and the default sits .0925em below the cap band's centre. vertical-align
+   rather than transform, so the glyph stays inline and line-breaking is
+   untouched — 1px of extra inline box on a single-line label. */
+.sep{vertical-align:.0925em}
 
 /* ─── §4 buttons — the three-size pill ramp ─────────────────────────────── */
 
@@ -362,7 +387,9 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
 /* 7b — the five elements that are both .btn and .glass drew two 1px inset rims
    at the same pixel row: .08 under .22 composites to .28, three and a half times
    the reference's glass rim. The badges keep the ported .08. */
-.btn.glass{box-shadow:0 10px 30px rgba(0,0,0,.35)}
+/* A glass button was casting a heavier shadow than the bone RSVP beside it, so
+   the page's one accent object sat LOWER to the page than its secondary. */
+.btn.glass{box-shadow:0 2px 10px rgba(0,0,0,.28)}
 
 /* The signature curve is reserved for links. The arrow is a mechanism, and it
    was running the 735ms link curve compressed into 300ms; the reference's own
@@ -672,15 +699,32 @@ picture{display:contents}
   padding:20px;display:flex;flex-direction:column;gap:12px;min-height:140px;
 }
 .qtile .badge{align-self:flex-start}
-.qtile blockquote{font-size:clamp(.875rem,1.2vw,1rem);font-weight:500;line-height:1.4;flex:1}
+/* Optical margin alignment: the opening quote mark hangs into the padding so
+   the first letterform, not the punctuation, sits on the text edge. General
+   Sans's quotedblleft has advance 478 and lsb 48, so the whole advance clears
+   the column. hanging-punctuation is Safari-only, so it is the upgrade and the
+   negative indent is the mechanism. */
+.qtile blockquote{font-size:clamp(.875rem,1.2vw,1rem);font-weight:500;line-height:1.4;flex:1;
+  text-indent:-.478em}
+@supports (hanging-punctuation:first){
+  .qtile blockquote{text-indent:0;hanging-punctuation:first}
+}
 .qtile .role{font-size:.7rem;font-weight:400;line-height:1.5;letter-spacing:.05em;text-transform:uppercase;color:var(--text-75)}
 
 /* ─── §11 the numbers ───────────────────────────────────────────────────── */
 
-.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;
-  margin-top:clamp(16px,10vh,110px);padding-inline:clamp(20px,5vw,32px)}
+/* The row was arithmetic, not a grid: four 282.6px tiles centred in the
+   viewport put its left edge at 131 where every other block on the page —
+   .duo, .pcard, .bento, .cell — sits at 152. Same column now, and the
+   hairlines land on the card verticals. */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  width:var(--col);margin-inline:auto;padding-inline:0;
+  margin-top:clamp(16px,10vh,110px)}
 .stat{
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:1rem;
+  /* flex-end, not space-between: the badge and the number were 100px apart in
+     a 282px square — 36% of the cell as a hole. .pcard and .cell already stack
+     their content at the foot. */
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:1rem;
   width:clamp(211.97px,21.197vw,282.62px);height:clamp(211.97px,21.197vw,282.62px);
   flex-shrink:0;padding:1.2rem;
   border-left:1px solid var(--rule);
@@ -703,7 +747,7 @@ picture{display:contents}
 }
 @media (max-width:1024px){
   .stat{align-items:center;justify-content:center;width:100%;max-width:400px;
-        height:clamp(245px,26vw,350px);border:none;border-radius:.75rem}
+        height:clamp(245px,26vw,350px);border:none;border-radius:10px}
   .stat-body{align-items:center}
   .stat b,.stat .cap{text-align:center}
 }
@@ -880,12 +924,21 @@ picture{display:contents}
 
 .fcard{position:relative;display:block;width:100%;aspect-ratio:3/4;border-radius:.5rem;
   overflow:hidden;background:var(--surface)}
-.fcard img,.fcard video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-.fcard:hover img,.fcard:hover video{transform:scale(1.05)}
+/* No zoom: every other grid on this page is inert on hover — .pcard, .cell and
+   .perk all are, and .vtile only dims. The overlay fade is the affordance. */
+.fcard img,.fcard video{width:100%;height:100%;object-fit:cover;display:block}
 .fcard-ov{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:flex-end;
   padding:clamp(.5rem,1vw,.75rem);pointer-events:none;
-  background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,0) 35%);opacity:0;transition:opacity .3s}
+  background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,0) 35%);opacity:0;transition:opacity var(--t) ease}
 .fcard:hover .fcard-ov{opacity:1}
+.fcard:active .fcard-ov{opacity:1}
+/* Twenty-four links to Instagram had no affordance at all on a touch screen —
+   hover does not exist there and the overlay rests at 0. The glyph only, not
+   the scrim, so the feathered collage keeps its quiet. */
+@media (hover:none){
+  .fcard-ov{opacity:1;background:none}
+  .fcard-ov svg{opacity:.62;filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
+}
 .fcard-ov svg{width:14px;height:14px;fill:#fff}
 
 #stories{padding-bottom:clamp(56px,10vh,110px)}
@@ -927,8 +980,8 @@ picture{display:contents}
 .foot-col a:hover::after{transform:scaleX(1);transform-origin:left}
 
 .venue{display:flex;flex-direction:column;align-items:flex-start;gap:5px;align-self:start;
-  padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1)}
-.venue svg{width:20px;height:24px;margin-bottom:12px;stroke:#fffafa;fill:none;stroke-width:1.1}
+  padding-bottom:14px;border-bottom:1px solid var(--rule)}
+.venue svg{margin-left:-2px;width:20px;height:24px;margin-bottom:12px;stroke:#fffafa;fill:none;stroke-width:1.1}
 .venue h3{font-size:clamp(1.05rem,1.4vw,1.375rem);font-weight:400;letter-spacing:-.02em}
 .venue .label{color:var(--text-40)}
 
@@ -950,7 +1003,7 @@ picture{display:contents}
 .btn:active{transform:translateY(0) scale(.97);transition-duration:.08s}
 .btn-fill:active{background:#dcdcd6}
 .btn-glass:active{background:rgba(255,255,255,.16)}
-.fcard:active img,.fcard:active video{transform:scale(1.04)}
+.fcard:active .fcard-ov{opacity:1}
 .socials a:active,.nav-links a:active,.menu a:active{opacity:.6}
 .foot-col a:active{opacity:.5;transition-duration:.09s}
 
@@ -1038,6 +1091,33 @@ html.motion .rv-b[data-d="1"].in{transition-delay:.15s}
 html.motion .rv-b[data-d="2"].in{transition-delay:.3s}
 html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
 
+/* ─── §17 the hero, on the compositor ──────────────────────────────────────
+   The same two moves main.js has always made — 0.5px of travel per pixel of
+   scroll capped at 450, and a dim from 1 to .5 across 20-80% of the exit —
+   expressed as scroll-driven animations so they run off the main thread
+   entirely. main.js tests the identical string and stands down when this
+   applies, so exactly one of the two is ever live.
+   The range is a LENGTH, not 100vh: at a 1200px viewport the JS caps at y=900
+   and a viewport unit would not. svh for the dim, because the URL-bar-showing
+   viewport is the one a phone starts in. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media{
+      animation:heroDrift linear both;
+      animation-timeline:scroll(root block);
+      animation-range:0 900px;
+    }
+    @keyframes heroDrift{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,450px,0)}}
+
+    .hero{
+      animation:heroDim linear both;
+      animation-timeline:scroll(root block);
+      animation-range:20svh 80svh;
+    }
+    @keyframes heroDim{from{opacity:1}to{opacity:.5}}
+  }
+}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   html.motion .rv,html.motion .rv.in{opacity:1;transform:none;filter:none;transition:none}
@@ -1055,5 +1135,10 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   .believe-lines{display:grid;gap:16px;min-height:0;perspective:none}
   .believe-lines li{grid-area:auto;opacity:1!important;transform:none!important;filter:none!important}
   .btn::before,.play::before{--mx:50%!important;--my:40%!important}
+  /* A progress-driven animation has no duration to shorten, so the blanket
+     override below would pin these at their end keyframe — full drift at half
+     opacity. They have to be named. */
+  .hero-media{animation:none!important;transform:none!important}
+  .hero{animation:none!important;opacity:1!important}
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
 }

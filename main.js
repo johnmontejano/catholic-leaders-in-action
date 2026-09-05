@@ -24,6 +24,11 @@
   const q  = (s, r = document) => r.querySelector(s);
   const qa = (s, r = document) => [...r.querySelectorAll(s)];
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Read once. styles.css §17 runs the hero's drift and dim as scroll-driven
+     animations where the engine supports them; this is the same test, so
+     exactly one of the two is ever live. The string appears once on each side
+     on purpose — a typo in a second place is the failure mode. */
+  const NATIVE = !calm && typeof CSS !== 'undefined' && CSS.supports && CSS.supports('animation-timeline', 'view()');
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
 
@@ -436,6 +441,12 @@
          and dropped wherever the page's other geometry is dropped. */
       if (!centres) measureDrum();
       const mid = winH / 2;
+      /* The falloff has to be normalised to the LINE PITCH, not the container.
+         Against half the box (~260px) a neighbouring statement 110px away
+         scored d=0.42, so (1-d)^3 left it at 0.195 opacity — three statements
+         legible at once, and at the midpoint a full double image. Against the
+         pitch, a neighbour scores 1 and disappears. */
+      const pitch = N > 1 ? (centres[N - 1] - centres[0]) / (N - 1) : mid;
       const ia = Math.min(N - 1, Math.floor(pos)), ib = Math.min(N - 1, Math.ceil(pos));
       const target = lerp(centres[ia], centres[ib], pos - Math.floor(pos));
       const shift = mid - target;
@@ -443,7 +454,7 @@
 
       for (let i2 = 0; i2 < N; i2++) {
         const el = items[i2];
-        const signed = (centres[i2] + shift - mid) / mid;   /* −1 above … +1 below */
+        const signed = (centres[i2] + shift - mid) / pitch;   /* −1 above … +1 below */
         const d = Math.min(1, Math.abs(signed));
         el.style.opacity = Math.pow(1 - d, 3).toFixed(3);
         el.style.transform =
@@ -458,7 +469,7 @@
      headline separates from the frame behind it without the frame ever
      detaching from the section */
   const heroMedia = q('.hero-media'), heroEl = q('.hero');
-  if (heroMedia && !calm) {
+  if (heroMedia && !calm && !NATIVE) {
     let heroDone = false;
     onScroll(y => {
       if (y > vh * 1.2) { if (!heroDone) { heroDone = true; heroEl && (heroEl.style.opacity = '0.5'); } return; }
