@@ -27,6 +27,17 @@
    Chosen on letterform comparison; the reasoning is at the end of
    research/refero/sequel.md. */
 
+/* Registered so the engine knows their type. An unregistered custom property
+   inherits, so writing these on .believe-card invalidated its whole subtree
+   sixty times a second. --r/--sx/--sy/--bo are deliberately NOT registered:
+   .believe-card::after reads all four, and a pseudo-element inherits from its
+   originating element — a non-inheriting property would never reach it and the
+   hairline would stop scaling. An engine that cannot parse the at-rule ignores
+   it and everything behaves exactly as it does today. */
+@property --ix{syntax:"<length>";inherits:false;initial-value:0px}
+@property --iy{syntax:"<length>";inherits:false;initial-value:0px}
+@property --o {syntax:"<number>";inherits:false;initial-value:1}
+
 /* ─── §0 the two faces ──────────────────────────────────────────────────── */
 
 @font-face{font-family:'General Sans';font-weight:300;font-style:normal;font-display:swap;src:url(assets/fonts/GeneralSans-300.woff2) format('woff2')}
@@ -39,6 +50,23 @@
    the table, and at these sizes nobody can tell the two faces apart on digits. */
 @font-face{font-family:'Satoshi';font-weight:300;font-style:normal;font-display:swap;src:url(assets/fonts/Satoshi-300.woff2) format('woff2')}
 @font-face{font-family:'Satoshi';font-weight:500;font-style:normal;font-display:swap;src:url(assets/fonts/Satoshi-500.woff2) format('woff2')}
+
+/* ─── §0b the fallback that wears General Sans's metrics ────────────────────
+   Every face is font-display:swap and the stack fell back to system-ui, which
+   is 8.1% wider and 10% shorter in the ascender — so the hero headline painted
+   in the system font and then jumped when the real face landed. Measured
+   advance ratios against General Sans 500: Helvetica Neue .9831, Arial 1.0171,
+   both inside 1.7%, so there is no size-adjust to maintain and no per-platform
+   number. The real mismatch is vertical, and these three overrides are General
+   Sans's own metrics on its 1000 upem, exact on every platform.
+   local() never downloads, so this costs nothing. */
+@font-face{
+  font-family:'General Sans fallback';
+  src:local('Helvetica Neue'),local('Arial'),local('Helvetica');
+  ascent-override:101%;
+  descent-override:24%;
+  line-gap-override:10%;
+}
 
 /* ─── §1 tokens ─────────────────────────────────────────────────────────── */
 
@@ -67,14 +95,20 @@
   --glass-edge:rgba(255,255,255,.2);
   --rule:rgba(255,255,255,.15);      /* their hairline, on stats and the card */
 
-  --sans:'General Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sans:'General Sans','General Sans fallback',system-ui,-apple-system,'Segoe UI',sans-serif;
   --serif:'Newsreader',Georgia,'Times New Roman',serif;
 
   /* Their four curves, by role. The first is the signature — long tail, almost
      no ease-in — and is reserved for links and the scrubbed moves. */
   --ease-sig:cubic-bezier(.625,.05,0,1);
-  --ease-2:cubic-bezier(.215,.61,.355,1);   /* power2.out — text reveals */
-  --ease-3:cubic-bezier(.165,.84,.44,1);    /* power3.out — block reveals */
+  /* The comments were right and the values were one power order off. Sampled
+     at 1000 points, the old --ease-2 was 16.8% from power2.out and 2.2% from
+     power3.out — it WAS power3; the old --ease-3 was 13.2% from power3 and is
+     power4. That is 6px of position error on a 36px line and 9.5px on a 72px
+     block, on every reveal on the page. These solve to 0.19% of the analytic
+     curves. */
+  --ease-2:cubic-bezier(.5,1,.89,1);        /* power2.out — text reveals */
+  --ease-3:cubic-bezier(.33,1,.68,1);       /* power3.out — block reveals */
   --ease-mat:cubic-bezier(0,0,.2,1);        /* the footer's long arrival */
   --ease-in:cubic-bezier(.55,.085,.68,.53);  /* power2.in — the menu's iris */
   --ease-inout:cubic-bezier(.455,.03,.515,.955); /* power2.inOut — the burger */
@@ -88,6 +122,15 @@
      instead of guessing. */
   --band-gap:clamp(150px,30vh,300px);
   --believe-void:calc((100svh - (min(1200px,100vw) - 2*clamp(20px,5vw,32px)) * .5625) / 2);
+
+  /* Smoothstep in space — the same idea as the --ease-* curves in time.
+     alpha = 1 − (3t² − 2t³) has zero slope at BOTH ends, so the fade has no
+     findable termination edge over dark photography, and it integrates to
+     exactly 0.5: the same total ink as the linear ramp it replaces, so the
+     collage is no lighter than the reference's. */
+  --feather:var(--bg) 0%,rgba(0,0,0,.957) 12.5%,rgba(0,0,0,.844) 25%,
+    rgba(0,0,0,.684) 37.5%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.316) 62.5%,
+    rgba(0,0,0,.156) 75%,rgba(0,0,0,.043) 87.5%,transparent 100%;
 
   --gutter:clamp(24px,4vw,80px);
   /* 600px is their number for a face wider than ours: at 17.6px the same box
@@ -103,6 +146,15 @@
 
 html{
   scrollbar-gutter:stable;
+  /* Nothing here paints. It stops the page's scroll chaining into browser
+     chrome: -x:none keeps a horizontal flick over the two marquees off
+     swipe-back navigation (neither is a scroll container, and the viewport has
+     no horizontal scroll to consume it), -y:contain blocks Android
+     pull-to-refresh — which matters because a reduced-motion phone runs native
+     scroll with no Lenis at all. `contain`, not `none`, so iOS keeps its rubber
+     band; killing that is what makes a page feel like a webview. */
+  overscroll-behavior-x:none;
+  overscroll-behavior-y:contain;
   background:var(--bg);
   color:var(--text);
   font-family:var(--sans);
@@ -173,13 +225,11 @@ a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* Hover does not exist on a phone, and there was not one :active rule in the
-   stylesheet — every tap on this page landed with no acknowledgement. */
+   stylesheet — every tap on this page landed with no acknowledgement. The press
+   states themselves live in §15b: :active and :hover are both (0,2,0), so source
+   order decides, and from here they lost every collision to hover rules hundreds
+   of lines below. */
 html{-webkit-tap-highlight-color:transparent}
-.btn:active{transform:translateY(0) scale(.97);transition-duration:.08s}
-.btn-fill:active{background:#dcdcd6}
-.btn-glass:active{background:rgba(255,255,255,.16)}
-.fcard:active img,.fcard:active video,.pcard:active>img{transform:scale(1.04)}
-.socials a:active,.foot-col a:active,.nav-links a:active,.menu a:active{opacity:.6}
 h1,h2,h3,h4,p,figure,blockquote{margin:0}
 ul,ol{margin:0;padding:0;list-style:none}
 
@@ -292,14 +342,32 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
 
 .glass{
   background:var(--glass);
-  -webkit-backdrop-filter:blur(20px) saturate(1.4);
-  backdrop-filter:blur(20px) saturate(1.4);
   border:1px solid var(--glass-edge);
   box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.08);
   border-radius:9999px;
 }
+/* Six of the fifteen glass elements sit on flat --bg — the four stat badges and
+   the two opener buttons. Over a uniform field blur(20px) returns that field and
+   saturate() on an achromatic backdrop is the identity, so those six were paying
+   a GPU render-surface and a backdrop readback per frame to draw nothing. The
+   filter stays wherever the backdrop is imagery. */
+.hero .glass,          /* the play control, over the hero video */
+.pcard .glass,         /* two badges and two buttons, over the photograph */
+.believe-card .glass,  /* "Take a seat", over the nave */
+.vtile .glass,         /* two badges, over playing video */
+.cell .glass{          /* the countdown, over the lead cell's illustration */
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  backdrop-filter:blur(20px) saturate(1.4);
+}
+/* 7b — the five elements that are both .btn and .glass drew two 1px inset rims
+   at the same pixel row: .08 under .22 composites to .28, three and a half times
+   the reference's glass rim. The badges keep the ported .08. */
+.btn.glass{box-shadow:0 10px 30px rgba(0,0,0,.35)}
 
-.btn .arrow{width:1em;height:1em;flex:none;transition:transform var(--t) var(--ease-sig)}
+/* The signature curve is reserved for links. The arrow is a mechanism, and it
+   was running the 735ms link curve compressed into 300ms; the reference's own
+   button is `transition: all .3s ease`. */
+.btn .arrow{width:1em;height:1em;flex:none;transition:transform var(--t) ease}
 .btn:hover .arrow{transform:translateX(3px)}
 
 /* Badge: 35px tall, 8px/16px padding, 11.2px uppercase at .05em. */
@@ -491,7 +559,19 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
    the reference's geometry (top:-50%, height:150%) gives it half a card of
    travel; the scrub is in main.js §6. Nothing happens on hover: their cards
    carry a button too and their image still does not move. */
-.pcard>img{position:absolute;left:0;top:-50%;z-index:-2;width:100%;height:150%;
+/* `>` and <picture> do not mix: wrapping each <img> for a WebP source pushed
+   every one of these a level deeper, and a child combinator stopped matching —
+   seven photographs on this page were rendering at their intrinsic size,
+   unpositioned and stretched. display:contents keeps the wrapper out of layout;
+   the selectors have to name both shapes because <video> is not wrapped. */
+picture{display:contents}
+/* The crop point, defaulting to exactly today's rendering. Paint-time only, so
+   it cannot cause reflow, and with no --op set nothing moves. sept-group is
+   1420x743 in a 2:3 box, so a default centre crop discards 65% of a fifty-person
+   group photograph — the values are a judgement for a human, the hook is not. */
+.pcard picture img,.cell picture img,.believe-card picture img,
+.fcard img,.perk img{object-position:var(--op,50% 50%)}
+.pcard>img,.pcard>picture>img{position:absolute;left:0;top:-50%;z-index:-2;width:100%;height:150%;
   object-fit:cover;will-change:transform}
 .pcard::before{
   content:'';position:absolute;inset:0;z-index:-1;
@@ -546,7 +626,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
   transform:scale(var(--sx,1),var(--sy,1));
   opacity:var(--bo,1);
 }
-.believe-card>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.believe-card>img,.believe-card>picture>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
 .believe-body{position:relative;z-index:2;display:grid;justify-items:center;gap:22px;text-align:center;padding:0 6vw;opacity:var(--o,1)}
 
 .believe-lines{position:relative;display:grid;place-items:center;width:100%;min-height:5.2em;perspective:1000px}
@@ -663,7 +743,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
   padding:24px;min-height:240px;isolation:isolate;
   display:flex;flex-direction:column;justify-content:flex-end;gap:10px;
 }
-.cell>img,.cell>video{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;opacity:.85}
+.cell>img,.cell>picture>img,.cell>video{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;opacity:.85}
 .cell.has-media::before{content:'';position:absolute;inset:0;z-index:-1;
   background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,rgba(0,0,0,.15) 30%,rgba(0,0,0,.65) 66%,rgba(0,0,0,.95) 100%)}
 .cell h3{font-size:clamp(1.2rem,1.5vw,2rem);font-weight:500;letter-spacing:-.02em;line-height:1.2}
@@ -782,10 +862,14 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 /* A percentage mask on a content-sized container scales with the collage: 20%
    of a 1500px wall is 303px of erased photographs at each end. Fixed height. */
 .feed::before,.feed::after{content:'';position:absolute;left:0;right:0;height:clamp(56px,10vh,100px);z-index:2;pointer-events:none}
-.feed::before{top:0;transform:translateY(-4px);background:linear-gradient(to bottom,var(--bg) 0%,transparent 100%)}
-.feed::after{bottom:0;transform:translateY(4px);background:linear-gradient(to top,var(--bg) 0%,transparent 100%)}
+.feed::before{top:0;transform:translateY(-4px);background:linear-gradient(to bottom,var(--feather))}
+.feed::after{bottom:0;transform:translateY(4px);background:linear-gradient(to top,var(--feather))}
 
-.fcol{display:flex;flex-direction:column;gap:.75rem;will-change:transform;transition:transform .1s linear}
+/* No transition: the scrub writes this transform every frame, so a .1s
+   transition restarted sixty times a second and never completed — five
+   compositor animations permanently in flight, trailing the thumb by 100ms.
+   Smooth the scroll signal, not the animation. */
+.fcol{display:flex;flex-direction:column;gap:.75rem;will-change:transform}
 .fcol:nth-child(2n){margin-top:calc(-13.3333cqi + .4rem)}
 /* Desktop shows four of the six tiles per column. This is not a detail: the
    feathered edges are 20% of the collage's own height, so six rows makes the
@@ -827,7 +911,10 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 @media (min-width:1000px){.foot-cols{grid-template-columns:repeat(2,.8fr) repeat(3,1.15fr);gap:64px 40px}}
 .foot-col{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 .foot-col .label{color:var(--text-40)}
-.foot-col a{position:relative;font-size:.9375rem;opacity:.75;transition:opacity .735s var(--ease-sig)}
+/* Their footer link rests at #fff and SUBTRACTS ink on hover; ours rested at
+   .75 and added. The 735ms curve and the right-to-left origin flip on ::after
+   were ported correctly — only the direction was inverted. */
+.foot-col a{position:relative;font-size:.9375rem;opacity:1;transition:opacity .735s var(--ease-sig)}
 /* 23px tall with 12px between them: the required target circles overlapped
    their neighbours. Padding inside the box, so desktop leading is untouched. */
 @media (max-width:759px){
@@ -836,7 +923,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 }
 .foot-col a::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;
   transform:scaleX(0);transform-origin:right;transition:transform .735s var(--ease-sig)}
-.foot-col a:hover{opacity:1}
+.foot-col a:hover{opacity:.6}
 .foot-col a:hover::after{transform:scaleX(1);transform-origin:left}
 
 .venue{display:flex;flex-direction:column;align-items:flex-start;gap:5px;align-self:start;
@@ -848,6 +935,25 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 .foot-base{display:grid;gap:16px;align-items:center;margin-top:clamp(56px,7vw,96px);
   font-size:.6875rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-40)}
 @media (min-width:760px){.foot-base{grid-template-columns:1fr auto 1fr}.foot-base .mid{text-align:center}.foot-base .end{justify-self:end}}
+/* ─── §15b press ────────────────────────────────────────────────────────────
+   :active and :hover are both (0,2,0), so source order decides and this has to
+   come after every hover rule it shares a property with. In §2 base it was
+   losing all of them: the page's one call to action acknowledged a mouse click
+   with nothing at all, and .btn-glass was worse than nothing — on press it fell
+   back toward --glass and dimmed.
+   Only .foot-col a needs a duration; it inherits the 735ms link curve, on which
+   a 110ms tap moves opacity by 0.006. The others never transition opacity, so
+   their press is already instant.
+   .pcard is dropped rather than moved: it is an <article> containing its own
+   button, so a press state on it is a false affordance that would also fire
+   when the visitor presses the button inside it. */
+.btn:active{transform:translateY(0) scale(.97);transition-duration:.08s}
+.btn-fill:active{background:#dcdcd6}
+.btn-glass:active{background:rgba(255,255,255,.16)}
+.fcard:active img,.fcard:active video{transform:scale(1.04)}
+.socials a:active,.nav-links a:active,.menu a:active{opacity:.6}
+.foot-col a:active{opacity:.5;transition-duration:.09s}
+
 .foot-base a{display:inline-block;padding-block:10px}
 .foot-base a:hover{color:var(--text)}
 .foot-base .socials{margin:0;gap:16px}
@@ -940,7 +1046,7 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
     opacity:1;transform:none;filter:none;transition:none;animation:none}
   .mrow,.perks-row{animation:none}
   .fcol{transform:none!important}
-  .pcard>img{transform:none!important;top:0;height:100%}
+  .pcard>img,.pcard>picture>img{transform:none!important;top:0;height:100%}
   .believe{height:auto}
   .believe-stage{position:static;height:auto;padding-block:clamp(80px,10vw,150px)}
   .believe-card{position:static;inset:auto;clip-path:none;margin-inline:auto;

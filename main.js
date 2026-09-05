@@ -110,10 +110,12 @@
     }
     return m;
   };
+  let dropDrumCache = null;
   const remeasure = () => {
     vh = innerHeight; vw = innerWidth;
     const sy = scrollY;
     for (const m of measured) measureOne(m, sy);
+    dropDrumCache && dropDrumCache();
   };
 
   /* One scroll bus. Every scrubbed section below reads the same frame, which is
@@ -382,6 +384,13 @@
     /* their custom in/out — steep enough that each line clicks into place */
     const snap = t => t < .5 ? Math.pow(2 * t, 3.5) / 2 : 1 - Math.pow(2 * (1 - t), 3.5) / 2;
 
+    let winH = 1, centres = null;
+    const measureDrum = () => {
+      winH = win.clientHeight || 1;
+      centres = items.map(el => el.offsetTop + el.offsetHeight / 2);
+    };
+    dropDrumCache = () => { centres = null; };
+
     const mBelieve = track(believe), mCard = track(card), mDuo = duo ? track(duo) : null;
 
     const paint = y => {
@@ -420,15 +429,21 @@
       const i = Math.min(N - 2, Math.floor(seg));
       const pos = N > 1 ? i + snap(seg - i) : 0;
 
-      const mid = win.clientHeight / 2;
-      const centreOf = el => el.offsetTop + el.offsetHeight / 2;
-      const a = items[Math.min(N - 1, Math.floor(pos))], b = items[Math.min(N - 1, Math.ceil(pos))];
-      const target = lerp(centreOf(a), centreOf(b), pos - Math.floor(pos));
+      /* The drum moves by transform, which by definition does not affect layout,
+         so clientHeight and every offsetTop are constants for the whole scrub.
+         They used to be read after a style write, five times over, every frame
+         of a 425vh section — write, read, write, read. Measured once instead,
+         and dropped wherever the page's other geometry is dropped. */
+      if (!centres) measureDrum();
+      const mid = winH / 2;
+      const ia = Math.min(N - 1, Math.floor(pos)), ib = Math.min(N - 1, Math.ceil(pos));
+      const target = lerp(centres[ia], centres[ib], pos - Math.floor(pos));
       const shift = mid - target;
       drum.style.transform = `translateY(${shift.toFixed(2)}px)`;
 
-      for (const el of items) {
-        const signed = (centreOf(el) + shift - mid) / mid;   /* −1 above … +1 below */
+      for (let i2 = 0; i2 < N; i2++) {
+        const el = items[i2];
+        const signed = (centres[i2] + shift - mid) / mid;   /* −1 above … +1 below */
         const d = Math.min(1, Math.abs(signed));
         el.style.opacity = Math.pow(1 - d, 3).toFixed(3);
         el.style.transform =
@@ -458,8 +473,9 @@
      over the card's whole traverse, linear, on the reference's own geometry
      (top:-50%, height:150%). This is what the 1.08 hover scale was standing in
      for, and it is the one that is actually on the reference. */
-  if (!calm) qa('.pcard>img').forEach(img => {
-    const m = track(img.parentElement);
+  if (!calm) qa('.pcard img').forEach(img => {
+    /* .closest, not .parentElement — the WebP <picture> sits between them now. */
+    const m = track(img.closest('.pcard'));
     onScroll(y => {
       const top = m.top - y;
       if (top + m.h < -100 || top > vh + 100) return;
@@ -477,7 +493,8 @@
       const to = +el.dataset.to, t0 = performance.now(), D = 2000;
       const step = now => {
         const p = Math.min(1, (now - t0) / D);
-        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+        /* power2.out — MOTION.md §1.2 row 17 names it verbatim; this was cubed. */
+        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 2)));
         if (p < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -674,9 +691,15 @@
      while on screen is both the polite thing to do to a battery and what the
      reference does; these clips carry no audio track at all, so there is no
      hover-to-unmute to reproduce. */
-  qa('video[poster]').forEach(v => {
+  /* The four below-the-fold tiles hold their poster in data-poster, because
+     preload="none" stops the media bytes and not the poster — all four were
+     being fetched eagerly, 168 KB of images two screens below the fold. The
+     selector and the regex both have to know about it, or the source derivation
+     below silently stops finding these videos and they stay still images. */
+  qa('video[poster],video[data-poster]').forEach(v => {
     if (v.querySelector('source') || v.dataset.src) return;
-    const m = (v.getAttribute('poster') || '').match(/assets\/video\/([\w-]+)-poster\.(?:jpg|webp)$/);
+    const m = (v.dataset.poster || v.getAttribute('poster') || '')
+      .match(/assets\/video\/([\w-]+)-poster\.(?:jpg|webp)$/);
     if (m) { v.dataset.src = `assets/video/${m[1]}.mp4`; v.dataset.srcMobile = `assets/video/${m[1]}-mobile.mp4`; }
   });
 
@@ -686,6 +709,7 @@
     const io = new IntersectionObserver(es => es.forEach(e => {
       const v = e.target;
       if (e.isIntersecting) {
+        if (v.dataset.poster && !v.poster) v.poster = v.dataset.poster;
         if (v.dataset.src && !v.src) {
           const mobile = matchMedia('(max-width:900px)').matches && v.dataset.srcMobile;
           v.src = mobile || v.dataset.src;
