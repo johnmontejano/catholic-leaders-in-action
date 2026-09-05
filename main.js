@@ -173,6 +173,7 @@
      mid-word once every glyph is inline-block. */
   const splitChars = (root, step, base) => {
     let n = 0;
+    const text = root.textContent.replace(/\s+/g, ' ').trim();
     const walk = node => {
       for (const child of [...node.childNodes]) {
         if (child.nodeType === 3) {
@@ -198,7 +199,12 @@
       }
     };
     walk(root);
-    if (n) root.classList.add('split');
+    if (n) {
+      /* The accessible name has to be the sentence, not fifteen letters. */
+      root.setAttribute('aria-label', text);
+      root.querySelectorAll('.wd').forEach(w => w.setAttribute('aria-hidden', 'true'));
+      root.classList.add('split');
+    }
     return n;
   };
 
@@ -374,13 +380,29 @@
   /* the hero's slow drift — 0.5px of travel per pixel of scroll, capped, so the
      headline separates from the frame behind it without the frame ever
      detaching from the section */
-  const heroMedia = q('.hero-media');
+  const heroMedia = q('.hero-media'), heroEl = q('.hero');
   if (heroMedia && !calm) {
     onScroll(y => {
       if (y > innerHeight * 1.2) return;
       heroMedia.style.transform = `translate3d(0,${Math.min(450, y * 0.5).toFixed(1)}px,0)`;
+      /* the other half of the parallax pair: the hero dims 1 → .5 across 20–80% */
+      if (heroEl) heroEl.style.opacity = (1 - 0.5 * clamp01((y - innerHeight * 0.2) / (innerHeight * 0.6))).toFixed(3);
     });
   }
+
+  /* The photo cards' photographs pan with the scroll — half a card of travel
+     over the card's whole traverse, linear, on the reference's own geometry
+     (top:-50%, height:150%). This is what the 1.08 hover scale was standing in
+     for, and it is the one that is actually on the reference. */
+  if (!calm) qa('.pcard>img').forEach(img => {
+    const card = img.parentElement;
+    onScroll(() => {
+      const r = card.getBoundingClientRect();
+      if (r.bottom < -100 || r.top > innerHeight + 100) return;
+      const p = clamp01((innerHeight - r.top) / (innerHeight + r.height));
+      img.style.transform = `translate3d(0,${(p * r.height * 0.5).toFixed(1)}px,0)`;
+    });
+  });
 
   /* §7 — counters ---------------------------------------------------------- */
   /* 2000ms, power2.out, once. Suffixes are static text beside the span so the
@@ -399,8 +421,13 @@
     if (calm || !('IntersectionObserver' in window)) {
       nums.forEach(el => { el.textContent = el.dataset.to; });
     } else {
-      const io = new IntersectionObserver((es, obs) => {
-        es.forEach(e => { if (e.isIntersecting) { run(e.target); obs.unobserve(e.target); } });
+      /* Re-arm on the way out, so scrolling back gets the count again — the
+         reference resets to 0 below half visibility and replays. */
+      const io = new IntersectionObserver(es => {
+        es.forEach(e => {
+          if (e.isIntersecting && !e.target.dataset.ran) { e.target.dataset.ran = '1'; run(e.target); }
+          else if (!e.isIntersecting && e.target.dataset.ran) { delete e.target.dataset.ran; e.target.textContent = '0'; }
+        });
       }, { threshold: 0.6 });
       nums.forEach(el => io.observe(el));
     }
@@ -538,7 +565,7 @@
   qa('video[poster]').forEach(v => {
     if (v.querySelector('source') || v.dataset.src) return;
     const m = (v.getAttribute('poster') || '').match(/assets\/video\/([\w-]+)-poster\.jpg$/);
-    if (m) v.dataset.src = `assets/video/${m[1]}.mp4`;
+    if (m) { v.dataset.src = `assets/video/${m[1]}.mp4`; v.dataset.srcMobile = `assets/video/${m[1]}-mobile.mp4`; }
   });
 
   const hero = q('#heroVideo');
@@ -547,11 +574,35 @@
     const io = new IntersectionObserver(es => es.forEach(e => {
       const v = e.target;
       if (e.isIntersecting) {
-        if (v.dataset.src && !v.src) v.src = v.dataset.src;
+        if (v.dataset.src && !v.src) {
+          const mobile = matchMedia('(max-width:900px)').matches && v.dataset.srcMobile;
+          v.src = mobile || v.dataset.src;
+        }
         if (!calm) v.play().catch(() => {});
       } else if (!v.paused) v.pause();
     }), { threshold: 0.1 });
     qa('video').forEach(v => { if (v !== hero) io.observe(v); });
+  }
+
+  /* §12 — the specular on the buttons ------------------------------------
+     One delegated listener writes the pointer's position into the button as
+     two custom properties; the CSS (§4) draws the highlight there. Percentages
+     rather than px so the same rule serves every size of pill. Nothing runs
+     for a touch pointer — there is no hover to track — and the values rest at
+     the centre when the pointer leaves, so the next hover starts from a
+     plausible place rather than the last exit point. */
+  if (!calm && matchMedia('(hover:hover)').matches) {
+    document.addEventListener('pointermove', e => {
+      const b = e.target.closest('.btn,.play');
+      if (!b) return;
+      const r = b.getBoundingClientRect();
+      b.style.setProperty('--mx', `${((e.clientX - r.left) / r.width * 100).toFixed(1)}%`);
+      b.style.setProperty('--my', `${((e.clientY - r.top) / r.height * 100).toFixed(1)}%`);
+    }, { passive: true });
+    document.addEventListener('pointerleave', e => {
+      const b = e.target.closest && e.target.closest('.btn,.play');
+      if (b) { b.style.removeProperty('--mx'); b.style.removeProperty('--my'); }
+    }, { passive: true, capture: true });
   }
 
   /* §10b — the hero video actually starting -------------------------------

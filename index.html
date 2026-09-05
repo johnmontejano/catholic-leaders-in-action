@@ -36,7 +36,35 @@
   "logo":"https://catholicleadersinaction.org/assets/brand/mark-512.png",
   "description":"A community formed in partnership with the Archdiocese of San Francisco, dedicated to connecting and equipping Catholics who desire to lead with conviction, excellence, and faith in everyday life.",
   "areaServed":"San Francisco Bay Area",
-  "sameAs":["https://www.instagram.com/catholicleadersinaction/"]
+  "sameAs":["https://www.instagram.com/catholicleadersinaction/"],
+  "@id":"https://catholicleadersinaction.org/#org"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"EventSeries",
+  "name":"Catholic Leaders in Action — monthly evenings",
+  "description":"One Tuesday a month: a keynote on a theme of Catholic Social Teaching, a panel, a reception, and a direct ministry action. Free, for ages 21 to 40, in a parish hall in San Francisco.",
+  "url":"https://catholicleadersinaction.org/#evening",
+  "organizer":{"@id":"https://catholicleadersinaction.org/#org"},
+  "location":{"@type":"Place","name":"San Francisco","address":{"@type":"PostalAddress","addressLocality":"San Francisco","addressRegion":"CA","addressCountry":"US"}},
+  "isAccessibleForFree":true,
+  "typicalAgeRange":"21-40",
+  "subEvent":{
+    "@type":"Event",
+    "name":"Called to Relationship",
+    "description":"Dating, love, and the spiritual battle for our relationships. Speaker: Ed Hopfner, Director of Marriage and Family Life, Archdiocese of San Francisco.",
+    "startDate":"2026-10-06T18:30:00-07:00",
+    "endDate":"2026-10-06T21:30:00-07:00",
+    "eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus":"https://schema.org/EventScheduled",
+    "location":{"@type":"Place","name":"San Francisco","address":{"@type":"PostalAddress","addressLocality":"San Francisco","addressRegion":"CA","addressCountry":"US"}},
+    "organizer":{"@id":"https://catholicleadersinaction.org/#org"},
+    "isAccessibleForFree":true,
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"USD","url":"https://luma.com/649axdrt","availability":"https://schema.org/InStock"},
+    "image":"https://catholicleadersinaction.org/assets/img/next-relationship-1520.jpg"
+  }
 }
 </script>
 </head>
@@ -84,6 +112,10 @@
            asset requested after the HTML. The codecs string is deliberate —
            it makes Safari's canPlayType exact, so a build that cannot decode
            VP9 falls through to the mp4 instead of selecting and failing. -->
+      <!-- A phone shows the centre ~416 source px of the 1600-wide frame anyway;
+           this is that same framing, encoded portrait at 720x1280 and 610 KB
+           instead of 2.5 MB, and no longer a 2.8x upscale on a dpr3 screen. -->
+      <source media="(max-width:900px)" src="assets/video/sf-hero-p.mp4" type="video/mp4">
       <source src="assets/video/sf-hero.webm" type='video/webm; codecs="vp9"'>
       <source src="assets/video/sf-hero.mp4" type="video/mp4">
     </video>
@@ -146,10 +178,18 @@
 <section class="believe" id="believe" aria-label="What we believe">
   <div class="believe-stage">
     <div class="believe-card" id="believeCard">
-      <img src="assets/img/nave-1600.jpg"
-           srcset="assets/img/nave-800.jpg 800w, assets/img/nave-1100.jpg 1100w, assets/img/nave-1600.jpg 1600w, assets/img/nave-2400.jpg 2400w"
-           sizes="100vw" width="2400" height="1821" loading="lazy" decoding="async"
-           alt="The nave of Saint Philip the Apostle from the centre aisle, the gilded reredos and altar lit at the far end.">
+      <picture>
+        <!-- portrait viewports get the portrait crop that was already on disk:
+             cover-fitting the landscape file to a 390x844 box needed 2400px of
+             width for a 390px hole, and still picked the 1600 -->
+        <source media="(max-aspect-ratio:1/1)"
+                srcset="assets/img/nave-p-720.jpg 720w, assets/img/nave-p-1080.jpg 1080w, assets/img/nave-p-1440.jpg 1440w"
+                sizes="100vw">
+        <img src="assets/img/nave-1600.jpg"
+             srcset="assets/img/nave-800.jpg 800w, assets/img/nave-1100.jpg 1100w, assets/img/nave-1600.jpg 1600w, assets/img/nave-2400.jpg 2400w"
+             sizes="100vw" width="2400" height="1821" loading="lazy" decoding="async"
+             alt="The nave of Saint Philip the Apostle from the centre aisle, the gilded reredos and altar lit at the far end.">
+      </picture>
       <div class="believe-body" id="believeBody">
         <p class="eyebrow">We believe in</p>
         <div class="believe-lines" id="believeLines">
