@@ -40,8 +40,16 @@
      hard native scroll is what made ours read as abrupt. Lenis drives real
      scrollTop, so `scrollY` and getBoundingClientRect stay truthful and every
      scrubbed section below keeps working unchanged. */
+  /* Not on touch. The reference sets syncTouch, but syncTouch takes Android's
+     native scroll — which is already momentum-smooth and runs on the compositor
+     — and re-drives it from JavaScript on the main thread. On the owner's
+     Samsung that reads as stutter, and no amount of tuning fixes it because the
+     platform was already doing the job better. Wheel devices keep Lenis; touch
+     devices get the scroll the OS gives them, and the bus below falls through
+     to the native listener, so every scrubbed section behaves identically. */
+  const touch = matchMedia('(hover:none) and (pointer:coarse)').matches;
   let lenis = null;
-  if (!calm && typeof Lenis === 'function') {
+  if (!calm && !touch && typeof Lenis === 'function') {
     lenis = new Lenis({
       duration: 1.2,
       easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -155,7 +163,7 @@
      asymmetry with one set of CSS rules. */
   const menu = q('#menu'), toggle = q('#navToggle');
   if (menu && toggle) {
-    const links = qa('a', menu);
+    const links = qa('.menu-nav a', menu);
     let chars = [];
     let closeTimer = 0;
 
@@ -165,7 +173,7 @@
 
       if (open && !chars.length && !calm) {
         links.forEach((a, li) => {
-          const n = splitChars(a, 0.02, 0.2 + li * 0.08);
+          const n = splitChars(a.querySelector('.lbl') || a, 0.02, 0.2 + li * 0.08);
           if (!n) return;
           chars.push(...qa('.ch', a));
         });
@@ -484,7 +492,7 @@
      over the card's whole traverse, linear, on the reference's own geometry
      (top:-50%, height:150%). This is what the 1.08 hover scale was standing in
      for, and it is the one that is actually on the reference. */
-  if (!calm) qa('.pcard img').forEach(img => {
+  if (!calm) qa('.pcard img, .pcard > video').forEach(img => {
     /* .closest, not .parentElement — the WebP <picture> sits between them now. */
     const m = track(img.closest('.pcard'));
     onScroll(y => {

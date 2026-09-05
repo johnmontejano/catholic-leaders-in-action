@@ -482,9 +482,15 @@ section{position:relative}
 /* The overlay is a circle opening from the burger itself — 500ms power2.in on
    the way in, 300ms on the way out, and the close is deliberately not a
    reverse (MOTION.md §1.6: open is 1.4s of choreography, close is ~500ms). */
+/* The overlay had four links floating in the middle of an otherwise empty
+   screen and no way to RSVP — you opened the menu and the one thing the site
+   exists for was not in it. It is a screen now, not a list: numbered sections
+   holding the top, and the evening's date, price and CTA holding the foot. */
 .menu{
-  position:fixed;inset:0;z-index:99;display:grid;align-content:center;gap:8px;
-  padding:0 var(--gutter);background:rgba(0,0,0,.96);
+  position:fixed;inset:0;z-index:99;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:96px var(--gutter) max(32px,env(safe-area-inset-bottom));
+  background:rgba(0,0,0,.96);
   -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
   /* the burger's own centre: 24px of bar padding + half of the 42px control */
   --ox:calc(100% - 45px);--oy:45px;
@@ -497,17 +503,43 @@ section{position:relative}
   clip-path:circle(150% at var(--ox) var(--oy));
   transition:clip-path .5s var(--ease-in),visibility 0s;
 }
-.menu a{font-size:clamp(2rem,9vw,3rem);font-weight:500;letter-spacing:-.05em;line-height:1.3}
+.menu-nav{display:flex;flex-direction:column;gap:2px}
+/* The label is its own box because splitChars turns each word into an element,
+   and a flex gap would then apply between every word rather than between the
+   index and the label. */
+.menu-nav a{position:relative;display:flex;align-items:baseline;gap:14px;padding:6px 0;
+  font-size:clamp(2rem,9vw,3rem);font-weight:500;letter-spacing:-.05em;line-height:1.2}
+.menu-nav a .lbl{display:block}
+/* The index sets the sections against each other and gives the eye a left edge
+   to run down — the reference's own device on its founders list. */
+.menu-nav a i{font-family:'Satoshi',var(--sans);font-style:normal;font-variant-numeric:tabular-nums;
+  font-size:.7rem;font-weight:500;letter-spacing:.08em;color:var(--text-40);
+  flex:none;width:2.2ch;transition:color var(--t) ease}
+.menu-nav a:hover i,.menu-nav a:active i{color:var(--accent)}
+
+.menu-foot{display:grid;gap:20px;justify-items:start;border-top:1px solid var(--rule);padding-top:28px}
+.menu-next{font-size:.9375rem;line-height:1.5;color:var(--text-75)}
+.menu-next .eyebrow{display:block;margin-bottom:8px;color:var(--text)}
+.menu-foot .btn{align-self:stretch}
+.menu-foot .socials{justify-content:flex-start;padding:0}
 
 /* Menu links arrive character by character — 400ms, 20ms apart, each link
    starting 80ms after the one above it; on the way out they leave upward in
    150ms, which is what makes the close read as decisive rather than undone. */
-html.motion .menu a .ch{opacity:0;transform:translateY(30px);
+/* filter:none is load-bearing. splitChars adds .split to these links too, so
+   they were picking up the headline pre-state from §16 — blur(8px) — and the
+   rule that clears it only ever fires on .in, which a menu link never gets.
+   The links were rendering permanently out of focus. */
+html.motion .menu-nav a .ch{opacity:0;transform:translateY(30px);filter:none;
   transition:opacity .15s var(--ease-2),transform .15s var(--ease-2)}
-html.motion .menu[data-open] a .ch{opacity:1;transform:none;
+html.motion .menu[data-open] .menu-nav a .ch{opacity:1;transform:none;filter:none;
   transition:opacity .4s var(--ease-2),transform .4s var(--ease-2)}
 /* leaving, they go out of the top — not back down the way they came */
-html.motion .menu.closing a .ch{transform:translateY(-15px)}
+html.motion .menu.closing .menu-nav a .ch{transform:translateY(-15px)}
+html.motion .menu-foot{opacity:0;transform:translateY(20px);
+  transition:opacity .3s var(--ease-2),transform .3s var(--ease-2)}
+html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
+  transition:opacity .5s var(--ease-3) .38s,transform .5s var(--ease-3) .38s}
 
 /* ─── §7 hero ───────────────────────────────────────────────────────────── */
 
@@ -598,7 +630,7 @@ picture{display:contents}
    group photograph — the values are a judgement for a human, the hook is not. */
 .pcard picture img,.cell picture img,.believe-card picture img,
 .fcard img,.perk img{object-position:var(--op,50% 50%)}
-.pcard>img,.pcard>picture>img{position:absolute;left:0;top:-50%;z-index:-2;width:100%;height:150%;
+.pcard>img,.pcard>picture>img,.pcard>video{position:absolute;left:0;top:-50%;z-index:-2;width:100%;height:150%;
   object-fit:cover;will-change:transform}
 .pcard::before{
   content:'';position:absolute;inset:0;z-index:-1;
@@ -720,6 +752,11 @@ picture{display:contents}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
   width:var(--col);margin-inline:auto;padding-inline:0;
   margin-top:clamp(16px,10vh,110px)}
+/* Four columns is a desktop shape. Below 1024 it becomes two, and one on a
+   phone — a 390px viewport divided four ways is a 78px card, which is how the
+   third and fourth ran off the screen. */
+@media (max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.stats{grid-template-columns:1fr;max-width:400px}}
 .stat{
   /* flex-end, not space-between: the badge and the number were 100px apart in
      a 282px square — 36% of the cell as a hole. .pcard and .cell already stack
@@ -746,7 +783,7 @@ picture{display:contents}
   min-height:2.8em;   /* reserve the second line, so all four numbers share a baseline */
 }
 @media (max-width:1024px){
-  .stat{align-items:center;justify-content:center;width:100%;max-width:400px;
+  .stat{align-items:center;justify-content:center;width:auto;max-width:none;
         height:clamp(245px,26vw,350px);border:none;border-radius:10px}
   .stat-body{align-items:center}
   .stat b,.stat .cap{text-align:center}
@@ -1126,7 +1163,7 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
     opacity:1;transform:none;filter:none;transition:none;animation:none}
   .mrow,.perks-row{animation:none}
   .fcol{transform:none!important}
-  .pcard>img,.pcard>picture>img{transform:none!important;top:0;height:100%}
+  .pcard>img,.pcard>picture>img,.pcard>video{transform:none!important;top:0;height:100%}
   .believe{height:auto}
   .believe-stage{position:static;height:auto;padding-block:clamp(80px,10vw,150px)}
   .believe-card{position:static;inset:auto;clip-path:none;margin-inline:auto;
