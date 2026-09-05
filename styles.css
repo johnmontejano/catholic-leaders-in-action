@@ -192,7 +192,7 @@ html{
    excluded — it contains the sticky pinned stage, and containment and sticky do
    not mix. Nothing here changes what anything looks like. */
 @media (prefers-reduced-motion:no-preference){
-  #about,#voices,#record,#evening,#seat,#stories,footer.foot{content-visibility:auto}
+  #about,#voices,#record,#evening,#team,#seat,#stories,footer.foot{content-visibility:auto}
   /* Measured heights, not a blanket guess. The guess is what the scrollbar and
      an anchor jump are computed against before a section has ever rendered, so
      a flat 1200px put the #evening anchor 771px past its mark. These are the
@@ -201,6 +201,7 @@ html{
   #voices {contain-intrinsic-size:auto 947px}
   #record {contain-intrinsic-size:auto 953px}
   #evening{contain-intrinsic-size:auto 1526px}
+  #team   {contain-intrinsic-size:auto 814px}
   #seat   {contain-intrinsic-size:auto 1304px}
   #stories{contain-intrinsic-size:auto 2109px}
   footer.foot{contain-intrinsic-size:auto 884px}
@@ -209,6 +210,7 @@ html{
     #voices {contain-intrinsic-size:auto 1585px}
     #record {contain-intrinsic-size:auto 1755px}
     #evening{contain-intrinsic-size:auto 2366px}
+    #team   {contain-intrinsic-size:auto 1133px}
     #seat   {contain-intrinsic-size:auto 1132px}
     #stories{contain-intrinsic-size:auto 1638px}
     footer.foot{contain-intrinsic-size:auto 1180px}
@@ -885,6 +887,95 @@ picture{display:contents}
   .cell{min-height:280px}
   .perk p{font-size:.9375rem}
 }
+
+/* ─── §12b the team ─────────────────────────────────────────────────────────
+   The only text-only block on the page, seated between the bento's six media
+   cells and the perk marquee's two rows of photography. Two heavy neighbours
+   are what let a quiet typographic block read as a decision rather than as
+   something left over.
+
+   It is the reference's .quoteTile, not its .videoTile: without media the video
+   tile is a 400x457 empty rectangle, and no publicly served portrait of these
+   six clears half the 1120 device px this page would paint — the best is
+   200x200 and two of them have no image at all (research/team/REFERENCE.md
+   §11). Two faces among four placeholders is the hole this section must not
+   have, so the card is typographic by design, not a photo card waiting for a
+   photo.
+
+   Nothing below keys a height, width, colour, weight or font to a person or a
+   position. Saul leads on position and content alone: he is named in the
+   description, he is the first <li>, and he is the only one with a second
+   verified line, which under align-items:stretch sets his row — the mechanism
+   REFERENCE.md §3 measured on the reference. */
+
+/* Not a grid: a wrapping flex row of fixed columns, centred, like .voices.
+   3 x 400 + 2 x 16 is 1232px against a 1136px content column, so the row lives
+   outside .wrap with its own gutter.
+   The phone gutter is the one deliberate deviation from the reference. Their
+   #founders holds a 360px column floor against 32px of padding, so at 390 the
+   326px content box is narrower than the column and justify-content centres a
+   10px overflow — 15px of gutter, with overflow-x:hidden covering the rest.
+   Their own note says to lower the floor, not the padding. A text card has no
+   minimum photographic width, so the floor comes off and the phone lands on a
+   350px card inside the same 20px gutter as every .wrap here.
+   THE 16px AT THE BOTTOM IS NOT AIR — §5's rule stands, the row closes on the
+   same 16px it separates its rows by. It is there because the last card sat
+   flush with #team's content-visibility containment edge, where the reveal
+   observer delivered two records for it across a whole traverse (ratio 0.105
+   in, 0 out) and never one above the 0.3 threshold main.js §3 waits for: Fr.
+   Tom stayed at opacity 0 on a real scroll at every one-column width. One gap
+   of trailing box clears it everywhere; 8px did not. */
+.crew{
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:16px;
+  padding-inline:clamp(20px,5vw,32px);padding-bottom:16px;
+  margin-top:clamp(56px,10vh,110px);
+}
+.ccard{
+  flex:0 0 auto;width:min(400px,(100% - 32px) / 3);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  min-height:140px;padding:20px;border-radius:10px;background:var(--surface);
+}
+/* A straight 3 -> 1, no 2-up: three columns still fit at exactly 800
+   (3 x 234 + 2 x 16 + 2 x 32), and a 2-up row of six people reads as a table.
+   The 140px floor goes with the second column, because it is a row instrument —
+   at 1440 it is what row two falls to once row one has been set by the one
+   person with a second line. On one column there is no row to equalise, so
+   under justify-content:flex-end the same floor is 48px of void above five of
+   the six names. The reference does not bottom-anchor an under-filled tile
+   either; at 390 its columns size themselves. */
+@media (max-width:799px){.ccard{width:100%;max-width:400px;min-height:0}}
+
+/* The rest state sits one level in, not on the card: .ccard is the .rv target
+   and html.motion .rv.in{opacity:1} would overwrite an opacity written there.
+   The reference is built the same way — the tile reveals, the media inside
+   carries the dim. One channel only: 0.8 -> 1.0 over 300ms, their measured
+   curve. No scale, no lift, no shadow, no border, no colour change, and
+   nothing faked on touch. */
+.ccard-in{display:flex;flex-direction:column;gap:4px;opacity:.8;transition:opacity var(--t) ease}
+.ccard:hover .ccard-in{opacity:1}
+
+/* h3, not cite: cite is for the title of a work, and .vtile cite already
+   misuses it for a person's name one section up. */
+.ccard h3{font-size:clamp(1rem,1.5vw,1.25rem);font-weight:500;line-height:1.5;letter-spacing:normal}
+/* The flat .75rem .vtile .role already carries, rather than the reference's
+   second clamp: matching the name/role pair already on this page beats a curve
+   that is pinned at both test widths anyway. --text-70 is /founders' own
+   --color-text-muted, which the homepage leaves undefined and therefore renders
+   white. Off the painted pixels over #202020: 5.72:1 at the card's 0.8 rest and
+   8.21:1 on hover, with the name at 10.78 and the note at 6.69 at rest. */
+.ccard .role{
+  font-size:.75rem;font-weight:400;line-height:1.5;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--text-70);
+}
+.ccard .note{
+  font-size:clamp(.875rem,1.2vw,1rem);font-weight:400;line-height:1.4;
+  color:var(--text-75);margin-top:8px;
+}
+
+/* Inert until a headshot exists for every person in the section — a partial set
+   is the hole this design was built around. 64 CSS px against a >= 192px file
+   is 1.5x at DPR 2, inside tools/sharp.mjs's rule. */
+.ccard .face{width:64px;height:64px;border-radius:10px;object-fit:cover;margin-bottom:8px}
 
 /* ─── §13 take a seat — the membership page's perk marquee ──────────────── */
 
