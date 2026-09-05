@@ -611,10 +611,10 @@
         ${vid ? `<video muted loop playsinline preload="none"
                    poster="assets/feed/${file}-640.jpg" data-src="assets/video/${vid}.mp4"></video>`
               : `<picture><source type="image/webp"
-                   srcset="assets/feed/${file}-240.webp 240w, assets/feed/${file}-400.webp 400w, assets/feed/${file}-640.webp 640w"
+                   srcset="assets/feed/${file}-400.webp 400w, assets/feed/${file}-640.webp 640w, assets/feed/${file}-900.webp 900w"
                    sizes="(max-width:800px) 33vw, 20vw"><img src="assets/feed/${file}-640.jpg"
-                   srcset="assets/feed/${file}-240.jpg 240w, assets/feed/${file}-400.jpg 400w, assets/feed/${file}-640.jpg 640w"
-                   sizes="(max-width:800px) 33vw, 20vw" width="${w}" height="${h}"
+                   srcset="assets/feed/${file}-400.jpg 400w, assets/feed/${file}-640.jpg 640w, assets/feed/${file}-900.jpg 900w"
+                   sizes="(max-width:800px) 33vw, 20vw" width="640" height="853"
                    loading="lazy" decoding="async" alt=""></picture>`}
         <span class="fcard-ov">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"
