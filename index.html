@@ -80,8 +80,12 @@
   <div class="hero-media">
     <video id="heroVideo" autoplay muted loop playsinline preload="auto"
            disablepictureinpicture poster="assets/video/sf-hero-poster.jpg" aria-hidden="true">
+      <!-- webm first: it is 570 KB smaller than the mp4 and it is the first
+           asset requested after the HTML. The codecs string is deliberate —
+           it makes Safari's canPlayType exact, so a build that cannot decode
+           VP9 falls through to the mp4 instead of selecting and failing. -->
+      <source src="assets/video/sf-hero.webm" type='video/webm; codecs="vp9"'>
       <source src="assets/video/sf-hero.mp4" type="video/mp4">
-      <source src="assets/video/sf-hero.webm" type="video/webm">
     </video>
   </div>
 

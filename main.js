@@ -124,7 +124,12 @@
          page behind it — measured: the fourth Tab landed on "Watch the film"
          in the hero. `inert` takes the rest of the document out of the tab
          order and out of the accessibility tree in one attribute. */
-      const behind = [q('main'), nav].filter(Boolean);
+      /* Not `nav` — #navToggle lives inside it, so inerting the header took
+         the close button out of the hit-test stack and left the only exit as
+         the Escape key, which no phone has. Inert the bar's contents around
+         the toggle instead, and the footer, which Tab was escaping into. */
+      const behind = [q('#main'), q('.foot'), q('.skip'), q('.nav-links'), q('.nav-mark'), q('.nav .btn-fill')]
+        .filter(Boolean);
       behind.forEach(el => el.toggleAttribute('inert', open));
 
       if (open) links[0] && links[0].focus({ preventScroll: true });
@@ -205,7 +210,24 @@
      description and the play control rise 72px alongside them, 80ms apart. */
   const heroIntro = () => {
     const hero = q('.hero'), h1 = q('.hero h1');
-    if (h1 && !calm) { splitChars(h1, 0.05, 0.7); h1.classList.add('in'); }
+    /* Only split if we are still early enough for the reveal to BE the first
+       sight of the headline. The h1 renders at full opacity before this script
+       runs, so on a cold throttled connection it painted at 1.5s and splitting
+       at 4.1s yanked it away for the better part of a second before fading it
+       back — a worse defect than the missing animation. Past this point the
+       page has already been read; leave it alone. */
+    const LATE = 900;
+    if (h1 && !calm && performance.now() < LATE) {
+      splitChars(h1, 0.05, 0.7);
+      /* The glyphs' opacity:0/blur(8px) pre-state has to be resolved by the
+         style engine BEFORE .in lands, or the browser coalesces both into one
+         computation and the headline is simply born at its end state — which
+         is what it has been doing. One forced reflow between the two is the
+         whole fix. (The section headings never had this: their .in comes from
+         an IntersectionObserver, which is already a later task.) */
+      void h1.offsetWidth;
+      h1.classList.add('in');
+    }
     const bar = q('#nav');
     bar && bar.classList.add('in');
     hero && hero.classList.add('in');
@@ -239,7 +261,12 @@
       } else io.observe(el);
     });
   };
-  (document.fonts ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 3000))]) : Promise.resolve())
+  /* The reference races fonts.ready against a 3000ms cap and we copied it, but
+     their faces are not font-display:swap and ours all are — three of them
+     preloaded — so the long cap buys us nothing it buys them, and it was the
+     whole of a 5.67s LCP on a cold throttled connection. Same mechanism, cap
+     cut to the point where it still covers a slow swap. */
+  (document.fonts ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 300))]) : Promise.resolve())
     .then(() => { heroIntro(); reveal(); });
 
   /* §4 — the hero clock, in San Francisco time ---------------------------- */

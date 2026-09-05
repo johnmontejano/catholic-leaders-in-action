@@ -58,7 +58,11 @@
   --text-94:rgba(255,255,255,.94);
   --text-75:rgba(255,255,255,.753);
   --text-70:rgba(255,255,255,.7);
-  --text-40:rgba(255,255,255,.4);
+  /* .4 is 3.66:1 on black — below AA — and it is not the reference's either:
+     their text ink ladder is .94/.90/.851/.753/.70 and rgba(255,255,255,.4)
+     appears once, as a social-icon stroke, never as text. .48 computes to
+     4.92:1 on #000 and 5.00:1 on the footer's #0d0d0d. */
+  --text-40:rgba(255,255,255,.48);
 
   --glass:rgba(200,200,200,.1);
   --glass-edge:rgba(255,255,255,.2);
@@ -365,7 +369,10 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 }
 .hero-left{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
 .hero h1{
-  font-size:clamp(3rem,4vw,3.6rem);
+  /* 3.6rem was the reference's *rendered value at 1440* pasted into the cap
+     slot, so the headline froze at 57.6px on every larger monitor. Their cap
+     is 6.5rem; the 3rem floor and the 4vw slope were already right. */
+  font-size:clamp(3rem,4vw,6.5rem);
   font-weight:500;line-height:1;letter-spacing:-.05em;margin:0;
 }
 .hero-eyebrow{display:flex;align-items:center;gap:10px;color:var(--text-75)}
@@ -522,6 +529,9 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 .stat b{
   display:block;margin-top:1rem;
   font-size:clamp(2.96rem,4.06vw,3.38rem);font-weight:300;line-height:1.2;
+  /* Without the face that actually has a tnum table this declaration is inert,
+     and the right edge of each number swung 47px as the counter ran. */
+  font-family:'Satoshi',var(--sans);
   font-variant-numeric:tabular-nums;
 }
 .stat .cap{
@@ -744,7 +754,7 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 @media (min-width:760px){.foot-base{grid-template-columns:1fr auto 1fr}.foot-base .mid{text-align:center}.foot-base .end{justify-self:end}}
 .foot-base a:hover{color:var(--text)}
 .foot-base .socials{margin:0;gap:16px}
-.foot-fine{margin-top:22px;font-size:.6875rem;line-height:1.5;color:rgba(255,255,255,.45);max-width:70ch}
+.foot-fine{margin-top:22px;font-size:.6875rem;line-height:1.5;color:rgba(255,255,255,.48);max-width:56ch}
 
 /* ─── §16 motion ────────────────────────────────────────────────────────── */
 
@@ -783,15 +793,24 @@ html.motion .nav.in{opacity:1;transform:none;
   transition:opacity .8s var(--ease-3),transform .8s var(--ease-3)}
 
 html.motion .hero h1{opacity:1}
+
+/* These three used to wait for a class that main.js adds after racing
+   document.fonts.ready. That put the hero's description — which is the page's
+   LCP element at 29,355px² — on the *script's* clock rather than the page's,
+   and on a cold throttled connection main.js does not start executing until
+   ~3.8s. Measured LCP 5.56s, with reduced-motion collapsing it to 1.44s, which
+   is what proved the animation and not the network was the cost.
+
+   Same delays, same durations, same curve — only the clock changed. As a CSS
+   animation with fill-mode both they start at page render, so LCP is bounded
+   by the fade beginning rather than by when a 27KB script finishes parsing.
+   The headline still splits in JS; it is not the LCP element. */
+@keyframes heroRise{from{opacity:0;transform:translateY(72px)}to{opacity:1;transform:none}}
 html.motion .hero .hero-eyebrow,
 html.motion .hero .hero-aside>*,
-html.motion .hero .hero-time{opacity:0;transform:translateY(72px)}
-html.motion .hero.in .hero-eyebrow,
-html.motion .hero.in .hero-aside>*,
-html.motion .hero.in .hero-time{opacity:1;transform:none;
-  transition:opacity .7s var(--ease-3),transform .7s var(--ease-3);transition-delay:.7s}
-html.motion .hero.in .hero-aside>*:nth-child(2){transition-delay:.78s}
-html.motion .hero.in .hero-time{transition-delay:.86s;opacity:1}
+html.motion .hero .hero-time{animation:heroRise .7s var(--ease-3) .7s both}
+html.motion .hero .hero-aside>*:nth-child(2){animation-delay:.78s}
+html.motion .hero .hero-time{animation-delay:.86s}
 
 /* a line of copy or a small element: 36px, 8px of blur, 500ms */
 html.motion .rv-l{transform:translateY(36px);filter:blur(8px)}
@@ -821,7 +840,7 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   html.motion .rv,html.motion .rv.in{opacity:1;transform:none;filter:none;transition:none}
   html.motion .split .ch,html.motion .nav,html.motion .hero .hero-eyebrow,
   html.motion .hero .hero-aside>*,html.motion .hero .hero-time{
-    opacity:1;transform:none;filter:none;transition:none}
+    opacity:1;transform:none;filter:none;transition:none;animation:none}
   .mrow,.perks-row{animation:none}
   .fcol{transform:none!important}
   .pcard>img,.pcard:hover>img{transform:none}
