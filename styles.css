@@ -430,12 +430,35 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 #voices{position:relative;z-index:1;padding-top:0;
   margin-top:calc(var(--band-gap) - var(--believe-void))}
 .believe-stage{position:sticky;top:0;height:100svh;display:grid;place-items:center;overflow:hidden}
+/* The card used to BE the size of the window and grow — scrubbing width and
+   height on every scroll frame. That is layout on every frame, and it scored
+   CLS 0.168 at 1440 and 0.386 at 390, both of which fail Core Web Vitals
+   outright (0.1 is the pass mark, 0.25 the floor of "poor").
+
+   So the box no longer moves. The card is always the full stage, and what
+   opens is a clip: `clip-path: inset()` is a paint operation, and the hairline
+   rides a `transform: scale()` — the layout-instability spec excludes transform
+   changes by definition. Same visual, zero layout, zero shift.
+
+   The photograph now holds still while the frame opens over it, rather than
+   rescaling with the box. On a backdrop held at 50% opacity that reads as the
+   better version of the move, not a compromise. */
 .believe-card{
-  position:relative;overflow:hidden;
-  width:var(--w,min(1080px,92vw));height:var(--h,min(100svh,calc(var(--w,1080px) * 9 / 16)));
-  border-radius:var(--r,10px);
-  box-shadow:0 0 0 var(--bw,1px) var(--rule);
+  position:absolute;inset:0;overflow:hidden;
+  --ix:calc((100vw - min(1080px,92vw)) / 2);
+  --iy:calc((100svh - min(1080px,92vw) * 9 / 16) / 2);
+  clip-path:inset(var(--iy) var(--ix) round var(--r,10px));
   display:grid;place-items:center;
+}
+/* The hairline has to sit on the moving edge, which a clip cannot draw, so it
+   is its own layer riding a scale. A 1px border under a 0.79/0.71 scale renders
+   at 0.79/0.71px — indistinguishable from the hairline it replaces. */
+.believe-card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:3;
+  border:1px solid var(--rule);
+  border-radius:calc(var(--r,10px) / var(--sx,1));
+  transform:scale(var(--sx,1),var(--sy,1));
+  opacity:var(--bo,1);
 }
 .believe-card>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
 .believe-body{position:relative;z-index:2;display:grid;justify-items:center;gap:22px;text-align:center;padding:0 6vw;opacity:var(--o,1)}
@@ -677,11 +700,9 @@ html.motion .menu.closing a .ch{transform:translateY(-15px)}
 
 #stories{padding-bottom:clamp(56px,10vh,110px)}
 
-@media (max-width:600px){
-  /* At 390 the resting card is 350x197 in a 100svh stage — a 323px void above
-     and below it. Give the card a floor so the stage is mostly card. */
-  .believe-card{min-height:min(66svh,540px)}
-}
+/* At 390 the resting card would be 350x197 inside an 844px stage — a 323px
+   void above and below. The floor now lives in the scrub (main.js §6) because
+   the box no longer carries the size. */
 
 @media (max-width:800px){
   .feed{grid-template-columns:repeat(3,1fr);gap:.5rem;padding:0 .5rem}
@@ -806,7 +827,9 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   .pcard>img,.pcard:hover>img{transform:none}
   .believe{height:auto}
   .believe-stage{position:static;height:auto;padding-block:clamp(80px,10vw,150px)}
-  .believe-card{width:min(1080px,92vw);height:auto;aspect-ratio:16/9;border-radius:10px}
+  .believe-card{position:static;inset:auto;clip-path:none;margin-inline:auto;
+    width:min(1080px,92vw);height:auto;aspect-ratio:16/9;border-radius:10px}
+  .believe-card::after{display:none}
   .believe-lines{display:grid;gap:16px;min-height:0;perspective:none}
   .believe-lines li{grid-area:auto;opacity:1!important;transform:none!important;filter:none!important}
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}

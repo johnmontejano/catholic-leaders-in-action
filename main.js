@@ -294,15 +294,29 @@
       if (span <= 0) return;
       const p = clamp01(-r.top / span);
 
-      /* the card */
+      /* The card. Its box is the whole stage and never changes — what opens is
+         a clip, and the hairline rides a scale, because scrubbing width and
+         height was layout on every frame and scored CLS 0.168 / 0.386. The
+         geometry below is the same geometry; only what carries it changed. */
+      const W = card.offsetWidth, H = card.offsetHeight;
       const restW = duo ? duo.offsetWidth : Math.min(1080, innerWidth * 0.92);
+      /* On a phone a 16:9 card off a 350px column is 197px tall in an 844px
+         stage — nearly all void. Floor it so the stage is mostly card. */
+      const restH = innerWidth < 600
+        ? Math.max(restW * 9 / 16, Math.min(H * 0.66, 540))
+        : restW * 9 / 16;
+
       const zoomIn  = clamp01((p - 0.078) / (0.2353 - 0.078));
       const zoomOut = clamp01((p - 0.7647) / (1 - 0.7647));
       const open = zoomIn * (1 - zoomOut);
-      card.style.setProperty('--w', `${Math.round(lerp(restW, innerWidth, open))}px`);
-      card.style.setProperty('--h', `${Math.round(lerp(restW * 9 / 16, innerHeight, open))}px`);
-      card.style.setProperty('--r', `${lerp(10, 0, open).toFixed(2)}px`);
-      card.style.setProperty('--bw', `${lerp(1, 0, open).toFixed(2)}px`);
+
+      const w = lerp(restW, W, open), h = lerp(restH, H, open);
+      card.style.setProperty('--ix', `${Math.max(0, (W - w) / 2).toFixed(1)}px`);
+      card.style.setProperty('--iy', `${Math.max(0, (H - h) / 2).toFixed(1)}px`);
+      card.style.setProperty('--r',  `${lerp(10, 0, open).toFixed(2)}px`);
+      card.style.setProperty('--sx', (W ? w / W : 1).toFixed(4));
+      card.style.setProperty('--sy', (H ? h / H : 1).toFixed(4));
+      card.style.setProperty('--bo', (1 - open).toFixed(3));
       if (body) body.style.setProperty('--o', clamp01(p / 0.078) * (1 - zoomOut));
 
       /* the drum */
