@@ -295,7 +295,8 @@ html{
    excluded — it contains the sticky pinned stage, and containment and sticky do
    not mix. Nothing here changes what anything looks like. */
 @media (prefers-reduced-motion:no-preference){
-  #about,#voices,#record,#evening,#team,#seat,#stories,footer.foot{content-visibility:auto}
+  #about,#voices,#record,#evening,#team,#seat,#stories,
+  #upcoming,#past,footer.foot{content-visibility:auto}
   /* Measured heights, not a blanket guess. The guess is what the scrollbar and
      an anchor jump are computed against before a section has ever rendered, so
      a flat 1200px put the #evening anchor 771px past its mark. These are the
@@ -304,18 +305,28 @@ html{
   #voices {contain-intrinsic-size:auto 947px}
   #record {contain-intrinsic-size:auto 953px}
   #evening{contain-intrinsic-size:auto 1526px}
-  #team   {contain-intrinsic-size:auto 814px}
+  /* #team moved to /team/ and #upcoming/#past are that page's neighbours on
+     /events/. All three are measured on the pages they now live on, with
+     containment off, not carried over from the section #team used to be:
+     the old 814/1133 were 25% and 16% out once the section became a page.
+     #next-up is deliberately absent — it is the first section on its page and
+     containment on the thing that is already on screen is a pessimization. */
+  #team   {contain-intrinsic-size:auto 652px}
   #seat   {contain-intrinsic-size:auto 1304px}
   #stories{contain-intrinsic-size:auto 2109px}
+  #upcoming{contain-intrinsic-size:auto 562px}
+  #past   {contain-intrinsic-size:auto 284px}
   footer.foot{contain-intrinsic-size:auto 884px}
   @media (max-width:759px){
     #about  {contain-intrinsic-size:auto 1326px}
     #voices {contain-intrinsic-size:auto 1585px}
     #record {contain-intrinsic-size:auto 1755px}
     #evening{contain-intrinsic-size:auto 2366px}
-    #team   {contain-intrinsic-size:auto 1133px}
+    #team   {contain-intrinsic-size:auto 981px}
     #seat   {contain-intrinsic-size:auto 1132px}
     #stories{contain-intrinsic-size:auto 1638px}
+    #upcoming{contain-intrinsic-size:auto 536px}
+    #past   {contain-intrinsic-size:auto 250px}
     footer.foot{contain-intrinsic-size:auto 1180px}
   }
 }
@@ -1040,6 +1051,15 @@ picture{display:contents}
   .cell.lead{min-height:0}
 }
 
+/* The lead cell's next-evening block and its empty state. Both are one group
+   the build stamps with one end instant, but the cell is the flex container
+   the countdown's order:-1 and the 10px gap are measured against, so the
+   wrapper generates no box of its own and every line inside it stays a direct
+   flex item of the cell. Hidden it must still collapse the subtree, and
+   display:contents would otherwise outrank the UA's [hidden]. */
+.next-live{display:contents}
+.next-live[hidden]{display:none}
+
 .cell .lineup{display:grid;gap:7px;margin-top:2px}
 .cell .lineup li{font-size:.8125rem;color:var(--text-94);line-height:1.4;max-width:42ch}
 .cell .lineup b{font-weight:500;color:var(--text)}
@@ -1157,6 +1177,94 @@ picture{display:contents}
    is the hole this design was built around. 64 CSS px against a >= 192px file
    is 1.5x at DPR 2, inside tools/sharp.mjs's rule. */
 .ccard .face{width:64px;height:64px;border-radius:10px;object-fit:cover;margin-bottom:8px}
+
+/* ─── §12c the subpages ─────────────────────────────────────────────────────
+   /events/ and /team/ are the site's first pages that are not the home page.
+   Nothing here is a new idea: the surface, the radius, the ink ladder, the
+   reveal classes, the .band rhythm and the 160ms button response are the ones
+   already in this file. What is new is only the two shapes the home page never
+   needed — an event card and a list of past ones.
+
+   The first band on a subpage carries its own top padding. --band-gap is 30vh,
+   which is right between two full sections and wrong as the very first thing
+   under a fixed bar with no hero above it: at 1440 it opened the page with
+   342px of black. The 72px on <main> is the fixed-nav offset the rest of the
+   site scrolls anchors to (F-05), so a subpage's first section lands exactly
+   where an anchored one does; the shorter band padding above the heading is
+   what the eye reads as the opener.                                          */
+main.sub{padding-top:72px}
+main.sub>.band:first-of-type{padding-block-start:clamp(64px,12vh,120px)}
+/* --band-gap is 30vh, and it is right on the home page, where every band holds
+   a full screen of photography and the gap is the pause between two chapters.
+   The three bands here hold one heading and a short list each, so the same 270px
+   at 1440 reads as a page that has run out rather than as air. This is the same
+   rhythm scaled to the amount of matter it separates; the token itself is
+   untouched and the home page is not affected. */
+main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
+.page-head{margin-bottom:clamp(40px,6vh,60px)}
+
+/* One column below 800, two at and above it. Six people wanted three columns
+   because a name is short; an event card carries four to six lines and a third
+   column would set them at a width that wraps every one of them. */
+.elist{display:flex;flex-direction:column;gap:16px}
+@media (min-width:800px){.elist{flex-direction:row;flex-wrap:wrap}
+  .elist>.ecard{flex:0 0 auto;width:calc((100% - 16px)/2)}}
+
+.ecard{position:relative;background:var(--surface);border-radius:10px;padding:24px;
+  display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.ecard-lead{padding:clamp(24px,4vw,40px)}
+/* §1c's lamp, on §1c's own tints. .ecard is a convex plate like .cell and takes
+   the same masked rim from the same fixed light; the declaration is repeated
+   here rather than added to §1c's selector list so the stylesheet's diff stays
+   inside this one new region. .ccard still does not take it — F-09 ruled the
+   crew card the page's one deliberately flat plate and that ruling stands. */
+.ecard::after{
+  content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+  border:1px solid var(--lamp-rim-strong);border-radius:inherit;
+  -webkit-mask:var(--lamp-arc);mask:var(--lamp-arc);
+}
+.ecard .when{font-size:.75rem;font-weight:400;line-height:1.5;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--text-70)}
+.ecard .at{font-size:.875rem;line-height:1.5;color:var(--text-75)}
+.ecard h2{font-size:clamp(1.25rem,2vw,1.5rem);font-weight:500;line-height:1.3;letter-spacing:-.01em}
+.ecard h3{font-size:clamp(1rem,1.5vw,1.25rem);font-weight:500;line-height:1.4;letter-spacing:normal}
+.ecard .where,.ecard .note{font-size:clamp(.875rem,1.2vw,1rem);line-height:1.4;color:var(--text-75)}
+/* Not a chip and not a badge: the word, set the way every other small label on
+   the site is set. A price that was not stated never reaches this element. */
+.ecard .tag{font-size:.75rem;font-weight:500;line-height:1.5;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--accent)}
+/* The one thing an owner who forgets the Luma link sees. It is a sentence, not
+   a disabled control: a dead button is worse than no button. */
+.ecard .pending{font-size:.875rem;line-height:1.5;color:var(--text-70)}
+.ecard .btn{margin-top:8px}
+
+/* The record is a list, not a wall of cards: past events carry no control and
+   nothing to click, so a card around each one would be a box drawn for its own
+   sake. */
+/* main.js §13 hides a card whose end has passed, and hides #upcoming when
+   nothing in it survives. Every one of those elements sets its own display, so
+   the UA's [hidden] rule loses on source order and the attribute would do
+   nothing without this. */
+.ecard[hidden],#upcoming[hidden],.epast li[hidden],.count[hidden]{display:none}
+
+.epast li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:14px 0;
+  border-bottom:1px solid var(--rule);align-items:baseline}
+.epast li:first-child{border-top:1px solid var(--rule)}
+.epast .when{flex:none;min-width:11em;font-size:.75rem;font-weight:400;line-height:1.5;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--text-70)}
+.epast .what{font-size:1rem;line-height:1.5;color:var(--text-94)}
+.epast .where{font-size:.875rem;line-height:1.5;color:var(--text-70)}
+
+.empty{font-size:clamp(.9375rem,1.2vw,1.0625rem);line-height:1.5;color:var(--text-75);
+  max-width:var(--measure)}
+.empty a{text-decoration:underline;text-underline-offset:3px;
+  transition:color var(--t-resp) var(--ease-out-quad)}
+.empty a:hover{color:var(--accent)}
+
+/* The events page's own headings sit on the same 40/60 rhythm R19 holds the
+   home page's bands to. */
+#upcoming .title,#past .title{margin-bottom:40px}
+@media (min-width:900px){#upcoming .title,#past .title{margin-bottom:60px}}
 
 /* ─── §13 take a seat — the membership page's perk marquee ──────────────── */
 

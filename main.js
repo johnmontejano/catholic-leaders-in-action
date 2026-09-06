@@ -64,10 +64,22 @@
 
     /* Anchors have to go through Lenis or the browser's own jump fights it.
        The offset clears the fixed bar. */
+    /* The chrome is shared across four pages now, so its section links are
+       written root-absolute — /#evening, not #evening — and one string works
+       from every depth. On the home page those are still same-document
+       anchors and must still land on the same 72px; anywhere else they are
+       real navigations and the browser takes them. The test is the resolved
+       URL, not the attribute: same origin and same path means same document. */
     document.addEventListener('click', e => {
-      const a = e.target.closest('a[href^="#"]');
+      const a = e.target.closest('a[href]');
       if (!a) return;
-      const id = a.getAttribute('href');
+      let id;
+      try {
+        const u = new URL(a.href, location.href);
+        if (u.origin !== location.origin || u.pathname !== location.pathname) return;
+        id = u.hash;
+      } catch { return; }
+      if (!id) return;
       if (id === '#' || id === '#top') { e.preventDefault(); lenis.scrollTo(0, { offset: 0 }); return; }
       const t = document.querySelector(id);
       if (!t) return;
@@ -363,10 +375,31 @@
   }
 
   /* §5 — countdown to the next evening ------------------------------------ */
-  /* Tuesday 6 October 2026, 6:30 PM Pacific = 2026-10-07T01:30:00Z. */
+  /* The instant used to be typed here, which meant the page was wrong the
+     morning after the evening and stayed wrong until someone edited a file.
+     tools/build-pages.mjs writes the attribute from the calendar data at
+     build time now, so the date on the page and the date in the countdown
+     cannot disagree. Nothing here reads a file: the instant is already in the
+     HTML, which is why the block works with the network off.
+     Once the evening is over the block goes: "Tonight" forever, or a negative
+     number, is worse than an absent countdown, and the hourly job may be up to
+     an hour behind (§7.6). Over means over — the end instant the card carries,
+     the same one §13 prunes the card itself against, never a fixed window past
+     the start. A three-hour evening that finished an hour ago is finished. The
+     six-hour window survives only as the fallback for a card with no end at
+     all, which the build no longer emits. */
   const cd = q('#countdown');
-  if (cd) {
-    const when = Date.parse('2026-10-07T01:30:00Z');
+  const cdWhen = cd && cd.dataset.when ? Date.parse(cd.dataset.when) : NaN;
+  const cdCard = cd && cd.closest('[data-end]');
+  const cdEnd = cdCard ? Date.parse(cdCard.dataset.end) : NaN;
+  const cdOver = !Number.isNaN(cdEnd)
+    ? Date.now() >= cdEnd
+    : Date.now() - cdWhen > 6 * 36e5;
+  if (cd && !Number.isNaN(cdWhen) && cdOver) {
+    const box = cd.closest('.count');
+    if (box) box.hidden = true;
+  } else if (cd && !Number.isNaN(cdWhen)) {
+    const when = cdWhen;
     const tick = () => {
       const ms = when - Date.now();
       if (ms <= 0) { cd.textContent = 'Tonight'; return; }
@@ -847,5 +880,35 @@
     addEventListener('visibilitychange', () => {
       if (!document.hidden && hero.paused && scrollY < innerHeight) attempt();
     });
+  }
+
+  /* §13 — the hourly gap ---------------------------------------------------
+     The build-time filter in tools/refresh-events.mjs is authoritative and it
+     is right to within one hour, because that is how often the scheduled job
+     runs. This closes that hour, and it is the whole of the client-side event
+     logic: one pass over the elements that carry an end instant, at load, with
+     no listener, no observer, no timer and no scroll work. A past event is
+     never shown as next — not for an hour, not for a minute.
+
+     With JavaScript off nothing here runs, and the page is still correct to
+     within that hour, which is the right trade for a page that must work
+     without script at all. */
+  const now = Date.now();
+  const dead = qa('[data-end]').filter(el => {
+    const t = Date.parse(el.dataset.end);
+    return !Number.isNaN(t) && t <= now;
+  });
+  if (dead.length) {
+    dead.forEach(el => {
+      el.hidden = true;
+      /* A card that has an empty state keeps it as its own next sibling: the
+         events page's lead card, and the home page's next-evening block. One
+         rule serves both, which is the point — two prune rules on one site is
+         how the home page came to outlive its own event. */
+      const empty = el.nextElementSibling;
+      if (empty && empty.hasAttribute('data-empty')) empty.hidden = false;
+    });
+    const up = q('#upcoming');
+    if (up && !qa('.ecard', up).some(li => !li.hidden)) up.hidden = true;
   }
 })();

@@ -1,0 +1,50 @@
+{
+ "updated": "2026-09-05T12:00:00.000Z",
+ "zone": "America/Los_Angeles",
+ "source": "google-calendar-ics",
+ "feedOk": true,
+ "upcoming": [
+  {
+   "id": "seed:evening-2026-10-06",
+   "title": "Called to Relationship",
+   "start": "2026-10-07T01:30:00.000Z",
+   "end": "2026-10-07T04:30:00.000Z",
+   "startDate": "2026-10-06",
+   "endDate": "2026-10-06",
+   "allDay": false,
+   "dateLabel": "Tuesday, October 6, 2026",
+   "timeLabel": "6:30 PM to 9:30 PM PDT",
+   "isoLocal": "2026-10-06T18:30:00-07:00",
+   "location": "San Francisco",
+   "rsvp": "https://luma.com/649axdrt",
+   "rsvpMissing": false,
+   "free": true,
+   "note": null,
+   "kind": "evening",
+   "recurring": false,
+   "origin": "seed"
+  },
+  {
+   "id": "seed:action-2026-10-10",
+   "title": "Volunteering at St. Vincent de Paul of San Francisco (SVDP-SF) DCNC Shelter",
+   "start": "2026-10-10T17:00:00.000Z",
+   "end": "2026-10-10T21:00:00.000Z",
+   "startDate": "2026-10-10",
+   "endDate": "2026-10-10",
+   "allDay": false,
+   "dateLabel": "Saturday, October 10, 2026",
+   "timeLabel": "10:00 AM to 2:00 PM PDT",
+   "isoLocal": "2026-10-10T10:00:00-07:00",
+   "location": "Division Circle Navigation Center, 224 S Van Ness Ave, San Francisco",
+   "rsvp": "https://luma.com/u6a7bkgx",
+   "rsvpMissing": false,
+   "free": true,
+   "note": "Online waiver required.",
+   "kind": "action",
+   "recurring": false,
+   "origin": "seed"
+  }
+ ],
+ "past": [],
+ "warnings": []
+}

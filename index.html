@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- #include head -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Catholic Leaders in Action — San Francisco</title>
@@ -26,6 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Newsreader-italic.woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <script>document.documentElement.className='motion';</script>
+<!-- /include head -->
 
 <script type="application/ld+json">
 {
@@ -70,24 +72,27 @@
 </head>
 <body>
 
+<!-- #include header -->
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- ─── header ──────────────────────────────────────────────────────────── -->
 <div class="nav-scrim" aria-hidden="true"></div>
 <header class="nav" id="nav">
-  <a class="nav-mark" href="#top" aria-label="Catholic Leaders in Action, home">
+  <a class="nav-mark" href="/#top" aria-label="Catholic Leaders in Action, home">
     <svg class="mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="0.7" y="15" width="3.6" height="8" rx=".3"/><rect x="5.6" y="11" width="3.6" height="12" rx=".3"/><rect x="10.3" y="1.2" width="3.8" height="21.8" rx=".3"/><rect x="6.7" y="5.4" width="11" height="3.2" rx=".3"/><rect x="15.2" y="11.5" width="3.6" height="11.5" rx=".3"/><rect x="20.1" y="15.5" width="3.2" height="7.5" rx=".3"/></svg>
     <span>Catholic Leaders in Action</span>
   </a>
   <nav class="nav-links" aria-label="Primary">
-    <a href="#evening">The evening</a>
-    <a href="#record">The record</a>
-    <a href="#voices">Voices</a>
+    <a href="/events/" data-nav="events">Events</a>
+    <a href="/#record">The record</a>
+    <a href="/#voices">Voices</a>
+    <a href="/team/" data-nav="team">The team</a>
   </nav>
+<!-- #include events:nav-cta -->
   <a class="btn btn-sm btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="RSVP free on Luma (opens in a new tab)">
     RSVP
     <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </a>
+<!-- /include events:nav-cta -->
   <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="menu">
     <span class="sr">Menu</span>
     <span class="burger" aria-hidden="true"><i></i><i></i></span>
@@ -96,20 +101,31 @@
 
 <div class="menu" id="menu" hidden>
   <nav class="menu-nav" aria-label="Sections">
-    <a href="#evening"><i aria-hidden="true">01</i><span class="lbl">The evening</span></a>
-    <a href="#record"><i aria-hidden="true">02</i><span class="lbl">The record</span></a>
-    <a href="#voices"><i aria-hidden="true">03</i><span class="lbl">Voices</span></a>
-    <a href="#stories"><i aria-hidden="true">04</i><span class="lbl">Stories</span></a>
-    <a href="#seat"><i aria-hidden="true">05</i><span class="lbl">Take a seat</span></a>
-    <a href="#team"><i aria-hidden="true">06</i><span class="lbl">The team</span></a>
+    <a href="/#evening"><i aria-hidden="true">01</i><span class="lbl">The evening</span></a>
+    <a href="/#record"><i aria-hidden="true">02</i><span class="lbl">The record</span></a>
+    <a href="/#voices"><i aria-hidden="true">03</i><span class="lbl">Voices</span></a>
+    <a href="/#stories"><i aria-hidden="true">04</i><span class="lbl">Stories</span></a>
+    <a href="/#seat"><i aria-hidden="true">05</i><span class="lbl">Take a seat</span></a>
+    <a href="/events/" data-nav="events"><i aria-hidden="true">06</i><span class="lbl">Events</span></a>
+    <a href="/team/" data-nav="team"><i aria-hidden="true">07</i><span class="lbl">The team</span></a>
   </nav>
 
   <div class="menu-foot">
-    <p class="menu-next"><span class="eyebrow">Next evening</span>
-      Tuesday October 6 <span class="sep">·</span> 6:30 PM <br>Free, ages 21 to 40</p>
-    <a class="btn btn-lg btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer"
-       aria-label="RSVP free on Luma (opens in a new tab)">RSVP free
-      <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<!-- #include events:menu-next -->
+    <div class="next-live" data-end="2026-10-07T04:30:00.000Z">
+      <p class="menu-next"><span class="eyebrow">Next evening</span>
+        Tuesday October 6 <span class="sep">·</span> 6:30 PM <br>Free, ages 21 to 40</p>
+      <a class="btn btn-lg btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer"
+         aria-label="RSVP free on Luma (opens in a new tab)">RSVP free
+        <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="next-live" data-empty hidden>
+      <p class="menu-next"><span class="eyebrow">Next evening</span>
+        The next evening is announced here and on Instagram.</p>
+      <a class="btn btn-lg btn-fill" href="/events/">See the events
+        <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+<!-- /include events:menu-next -->
     <div class="socials">
       <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 0 0-2.13 1.38A5.9 5.9 0 0 0 .63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13a5.9 5.9 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 0 0 2.13-1.38 5.9 5.9 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.13A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Z"/><path d="M12 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
@@ -120,6 +136,7 @@
     </div>
   </div>
 </div>
+<!-- /include header -->
 
 <main id="main">
 
@@ -331,18 +348,28 @@
              sizes="(min-width:760px) 64vw, 92vw" width="1536" height="1024" loading="lazy" decoding="async"
              alt="Illustration of the October evening: two speakers seated in conversation at the front of a parish hall, seen from within the audience."></picture>
         <span class="illus">Illustration</span>
-        <div class="count glass">
-          <b id="countdown">—</b>
-          <span>until the next evening</span>
+<!-- #include events:home-next -->
+        <div class="next-live" data-end="2026-10-07T04:30:00.000Z">
+          <div class="count glass">
+            <b id="countdown" data-when="2026-10-07T01:30:00.000Z">—</b>
+            <span>until the next evening</span>
+          </div>
+          <h3>Next · <span class="em">Called to Relationship</span></h3>
+          <p>Tuesday October 6 · Dating, love, and the spiritual battle for our relationships.</p>
+          <ul class="lineup">
+            <li><b>Speaker</b> — Ed Hopfner, Director of Marriage and Family Life, Archdiocese of San Francisco</li>
+            <li><b>Panel</b> — Paul Campa</li>
+          </ul>
+          <a class="btn btn-sm btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;margin-top:6px">RSVP on Luma
+            <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <h3>Next · <span class="em">Called to Relationship</span></h3>
-        <p>Tuesday October 6 · Dating, love, and the spiritual battle for our relationships.</p>
-        <ul class="lineup">
-          <li><b>Speaker</b> — Ed Hopfner, Director of Marriage and Family Life, Archdiocese of San Francisco</li>
-          <li><b>Panel</b> — Paul Campa</li>
-        </ul>
-        <a class="btn btn-sm btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" style="align-self:flex-start;margin-top:6px">RSVP on Luma
-          <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="next-live" data-empty hidden>
+          <h3>Next <span class="sep">·</span> to be announced</h3>
+          <p>The next evening will be announced here and on Instagram.</p>
+          <a class="btn btn-sm btn-fill" href="/events/" style="align-self:flex-start;margin-top:6px">See the events
+            <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+<!-- /include events:home-next -->
       </article>
 
       <article class="cell has-media rv rv-b" data-d="1">
@@ -388,56 +415,6 @@
       </article>
     </div>
   </div>
-</section>
-
-<!-- ─── the team ────────────────────────────────────────────────────────── -->
-<section class="band" id="team" aria-labelledby="team-h">
-  <div class="wrap">
-    <div class="opener">
-      <h2 class="title rv rv-t" id="team-h">The <span class="em">team</span></h2>
-      <p class="desc rv rv-l" data-d="1">Saul Perez leads Catholic Leaders in Action. He is one of its four co-founders.</p>
-    </div>
-  </div>
-
-  <ul class="crew">
-    <li class="ccard rv rv-b" data-d="0">
-      <div class="ccard-in">
-        <h3>Saul Perez</h3>
-        <p class="role">President <span class="sep">·</span> Co-founder</p>
-        <p class="note">Social Action and Digital Media Coordinator, Office of Human Life &amp; Dignity, Archdiocese of San Francisco.</p>
-      </div>
-    </li>
-    <li class="ccard rv rv-b" data-d="1">
-      <div class="ccard-in">
-        <h3>Daniel Ramirez</h3>
-        <p class="role">Vice President <span class="sep">·</span> Co-founder</p>
-      </div>
-    </li>
-    <li class="ccard rv rv-b" data-d="2">
-      <div class="ccard-in">
-        <h3>Jessica Glennon</h3>
-        <p class="role">Director of Development <span class="sep">·</span> Co-founder</p>
-      </div>
-    </li>
-    <li class="ccard rv rv-b" data-d="0">
-      <div class="ccard-in">
-        <h3>Jerry Sharp III</h3>
-        <p class="role">Co-founder</p>
-      </div>
-    </li>
-    <li class="ccard rv rv-b" data-d="1">
-      <div class="ccard-in">
-        <h3>Dan Abreo</h3>
-        <p class="role">Treasurer</p>
-      </div>
-    </li>
-    <li class="ccard rv rv-b" data-d="2">
-      <div class="ccard-in">
-        <h3>Fr. Tom</h3>
-        <p class="role">Chaplain</p>
-      </div>
-    </li>
-  </ul>
 </section>
 
 <!-- ─── take a seat ─────────────────────────────────────────────────────── -->
@@ -620,7 +597,7 @@
 
 </main>
 
-<!-- ─── footer ──────────────────────────────────────────────────────────── -->
+<!-- #include footer -->
 <footer class="foot">
   <div class="wrap rv rv-f">
     <p class="foot-line">Faith, in <span class="em">action</span>.</p>
@@ -628,11 +605,12 @@
     <div class="foot-cols">
       <div class="foot-col">
         <p class="label">Explore</p>
-        <a href="#evening">The evening</a>
-        <a href="#record">The record</a>
-        <a href="#voices">Voices</a>
-        <a href="#seat">Take a seat</a>
-        <a href="#team">The team</a>
+        <a href="/#evening">The evening</a>
+        <a href="/#record">The record</a>
+        <a href="/#voices">Voices</a>
+        <a href="/#seat">Take a seat</a>
+        <a href="/events/" data-nav="events">Events</a>
+        <a href="/team/" data-nav="team">The team</a>
       </div>
       <div class="foot-col">
         <p class="label">Attend</p>
@@ -675,6 +653,7 @@
     <p class="foot-fine">Catholic Leaders in Action is a community formed in partnership with the Archdiocese of San Francisco. Except where noted, the photographs and clips on this page are the organization’s own; the hero film and the manifesto backdrop are stock footage, graded but not staged (“A Thick Fog Covering a View of the City”, Zetong Li, and “Round Shaped Windows In The Church”, cottonbro studio, both Pexels License); neither depicts a CLIA gathering or a room the organization uses; the September 1 photographs are by Nicole Ostrowski, and some clips are from posts co-authored with the Office of Human Life &amp; Dignity, Star of the Sea Young Adults and Pro-Life San Francisco. Two images in “The evening” are illustrations, marked as such where they appear: they are generated rather than photographed, and depict neither a past gathering nor any identifiable person. Attendee quotations are reproduced with attribution from the Archdiocese of San Francisco.</p>
   </div>
 </footer>
+<!-- /include footer -->
 
 <script src="assets/js/lenis.min.js" defer></script>
 <script src="main.js" defer></script>
