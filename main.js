@@ -756,20 +756,64 @@
      One delegated listener writes the pointer's position into the button as
      two custom properties; the CSS (§4) draws the highlight there. Percentages
      rather than px so the same rule serves every size of pill. Nothing runs
-     for a touch pointer — there is no hover to track — and the values rest at
-     the centre when the pointer leaves, so the next hover starts from a
-     plausible place rather than the last exit point. */
+     for a touch pointer — there is no hover to track — and with the pointer
+     away the properties are absent, so §4's initial values put the highlight at
+     styles.css §1c's fixed lamp rather than at the button's centre.
+
+     Three defects fixed here, none of them visible and all of them the class of
+     thing the rest of this page has already been optimised against:
+
+     (a) The rect was read inside the move handler. Event N+1's
+         getBoundingClientRect() therefore followed event N's style write with
+         style dirty — a forced synchronous layout per pointer event, at
+         trackpad rates of 120Hz and up. It is cached on entry instead: nothing
+         in the hover vocabulary alters the button's layout box (translateY is a
+         transform, and the transformed box is the one we want anyway), so it
+         cannot go stale while the pointer is inside. Any scroll that WOULD move
+         it also moves the pointer out of it, which re-enters and re-reads.
+     (b) pointerleave was capture-phase on document, so moving from the label
+         onto the inner <svg class="arrow"> fired it and wiped the position —
+         the light teleported for a frame on the way across every button on the
+         page. relatedTarget settles it: a leave into the button's own subtree
+         is not a leave.
+     (c) --mx/--my are now registered inherits:false in styles.css, so the write
+         no longer invalidates the label span and the arrow on every move.
+
+     The travel is compressed to 62% of the pointer's excursion around the lamp.
+     A highlight on a convex surface moves less than the eye that sees it; this
+     is optics, not taste. It is a spatial remap inside the write that already
+     happened — no transition, no lag, no extra frame. (The lagged version was
+     proposed and killed in research/ui-2026/PLAN.md item 14; it stays killed.)
+     None of this runs on the compositor and none of it touches scroll: it
+     repaints one radial gradient while the pointer is over a 45x95px pill. */
   if (!calm && matchMedia('(hover:hover)').matches) {
+    const K = 0.62;
+    let hot = null, rect = null;
+    /* Read from the stylesheet once, so the lamp has exactly one definition. */
+    const rs = getComputedStyle(document.documentElement);
+    const lamp = { x: parseFloat(rs.getPropertyValue('--lamp-x')) || 18,
+                   y: parseFloat(rs.getPropertyValue('--lamp-y')) || 0 };
+
+    document.addEventListener('pointerover', e => {
+      const b = e.target.closest && e.target.closest('.btn,.play');
+      if (b && b !== hot) { hot = b; rect = b.getBoundingClientRect(); }
+    }, { passive: true, capture: true });
+
     document.addEventListener('pointermove', e => {
       const b = e.target.closest('.btn,.play');
       if (!b) return;
-      const r = b.getBoundingClientRect();
-      b.style.setProperty('--mx', `${((e.clientX - r.left) / r.width * 100).toFixed(1)}%`);
-      b.style.setProperty('--my', `${((e.clientY - r.top) / r.height * 100).toFixed(1)}%`);
+      if (b !== hot || !rect) { hot = b; rect = b.getBoundingClientRect(); }
+      const px = (e.clientX - rect.left) / rect.width * 100;
+      const py = (e.clientY - rect.top) / rect.height * 100;
+      b.style.setProperty('--mx', `${(lamp.x + (px - lamp.x) * K).toFixed(1)}%`);
+      b.style.setProperty('--my', `${(lamp.y + (py - lamp.y) * K).toFixed(1)}%`);
     }, { passive: true });
+
     document.addEventListener('pointerleave', e => {
       const b = e.target.closest && e.target.closest('.btn,.play');
-      if (b) { b.style.removeProperty('--mx'); b.style.removeProperty('--my'); }
+      if (!b || (e.relatedTarget && b.contains(e.relatedTarget))) return;
+      b.style.removeProperty('--mx'); b.style.removeProperty('--my');
+      if (b === hot) { hot = null; rect = null; }
     }, { passive: true, capture: true });
   }
 

@@ -197,20 +197,17 @@
 <section class="believe" id="believe" aria-label="What we believe">
   <div class="believe-stage">
     <div class="believe-card" id="believeCard">
-      <picture>
-        <!-- portrait viewports get the portrait crop that was already on disk:
-             cover-fitting the landscape file to a 390x844 box needed 2400px of
-             width for a 390px hole, and still picked the 1600 -->
-        <source type="image/webp" media="(max-aspect-ratio:1/1)" srcset="assets/img/nave-p-720.webp 720w, assets/img/nave-p-1080.webp 1080w, assets/img/nave-p-1440.webp 1440w" sizes="100vw">
-        <source media="(max-aspect-ratio:1/1)"
-                srcset="assets/img/nave-p-720.jpg 720w, assets/img/nave-p-1080.jpg 1080w, assets/img/nave-p-1440.jpg 1440w"
-                sizes="100vw">
-        <source type="image/webp" srcset="assets/img/nave-800.webp 800w, assets/img/nave-1100.webp 1100w, assets/img/nave-1600.webp 1600w, assets/img/nave-2400.webp 2400w" sizes="100vw">
-        <img src="assets/img/nave-1600.jpg"
-             srcset="assets/img/nave-800.jpg 800w, assets/img/nave-1100.jpg 1100w, assets/img/nave-1600.jpg 1600w, assets/img/nave-2400.jpg 2400w"
-             sizes="100vw" width="2400" height="1821" loading="lazy" decoding="async"
-             alt="The nave of Saint Philip the Apostle from the centre aisle, the gilded reredos and altar lit at the far end.">
-      </picture>
+      <!-- The stage moves. preload="none" and no src in the markup: main.js §10
+           derives assets/video/believe-vault{,-mobile}.mp4 from the poster
+           filename and its IntersectionObserver attaches the source on
+           approach, so this costs the first load nothing and needs no new JS.
+           A paused video showing its poster is what a reduced-motion visitor
+           gets — §17 already reflows the card to a static 16:9 block — and with
+           preload="none" and no play() call, that visitor never fetches the
+           clip at all. Decorative, like the hero: it evokes, it does not
+           document, and the footer says whose it is. -->
+      <video muted loop playsinline preload="none" disablepictureinpicture
+             data-poster="assets/video/believe-vault-poster.webp" aria-hidden="true"></video>
       <div class="believe-body" id="believeBody">
         <p class="eyebrow">We believe in</p>
         <div class="believe-lines" id="believeLines">
@@ -397,7 +394,7 @@
 <section class="band" id="team" aria-labelledby="team-h">
   <div class="wrap">
     <div class="opener">
-      <h2 class="title rv rv-t" id="team-h">Who <span class="em">runs</span> it.</h2>
+      <h2 class="title rv rv-t" id="team-h">The <span class="em">team</span></h2>
       <p class="desc rv rv-l" data-d="1">Saul Perez leads Catholic Leaders in Action. He is one of its four co-founders.</p>
     </div>
   </div>
@@ -675,7 +672,7 @@
       </div>
     </div>
 
-    <p class="foot-fine">Catholic Leaders in Action is a community formed in partnership with the Archdiocese of San Francisco. Except where noted, the photographs and clips on this page are the organization’s own; the hero film is stock footage (“A Thick Fog Covering a View of the City”, Zetong Li, Pexels License); the September 1 photographs are by Nicole Ostrowski, and some clips are from posts co-authored with the Office of Human Life &amp; Dignity, Star of the Sea Young Adults and Pro-Life San Francisco. Two images in “The evening” are illustrations, marked as such where they appear: they are generated rather than photographed, and depict neither a past gathering nor any identifiable person. Attendee quotations are reproduced with attribution from the Archdiocese of San Francisco.</p>
+    <p class="foot-fine">Catholic Leaders in Action is a community formed in partnership with the Archdiocese of San Francisco. Except where noted, the photographs and clips on this page are the organization’s own; the hero film and the manifesto backdrop are stock footage, graded but not staged (“A Thick Fog Covering a View of the City”, Zetong Li, and “Round Shaped Windows In The Church”, cottonbro studio, both Pexels License); neither depicts a CLIA gathering or a room the organization uses; the September 1 photographs are by Nicole Ostrowski, and some clips are from posts co-authored with the Office of Human Life &amp; Dignity, Star of the Sea Young Adults and Pro-Life San Francisco. Two images in “The evening” are illustrations, marked as such where they appear: they are generated rather than photographed, and depict neither a past gathering nor any identifiable person. Attendee quotations are reproduced with attribution from the Archdiocese of San Francisco.</p>
   </div>
 </footer>
 

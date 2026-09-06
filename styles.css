@@ -37,6 +37,16 @@
 @property --ix{syntax:"<length>";inherits:false;initial-value:0px}
 @property --iy{syntax:"<length>";inherits:false;initial-value:0px}
 @property --o {syntax:"<number>";inherits:false;initial-value:1}
+/* Same defect as --ix/--iy had, in the other half of the file and unfixed until
+   now: main.js §12 writes --mx/--my on .btn on every pointermove, and while
+   they were unregistered they inherited — so each write invalidated the
+   button's whole subtree (the label span and the arrow <svg>) at pointer rate.
+   inherits:false is the entire point. Deliberately no transition on either:
+   research/ui-2026/PLAN.md item 14 killed the lagged specular and it stays
+   killed. The initial values are the lamp's, so a button that has never been
+   pointed at rests where the fixed light is rather than at its own centre. */
+@property --mx{syntax:"<percentage>";inherits:false;initial-value:18%}
+@property --my{syntax:"<percentage>";inherits:false;initial-value:0%}
 
 /* ─── §0 the two faces ──────────────────────────────────────────────────── */
 
@@ -114,6 +124,16 @@
   --ease-inout:cubic-bezier(.455,.03,.515,.955); /* power2.inOut — the burger */
   --t-fast:.2s;
   --t:.3s;
+  /* The response clock, and it is not the same job as --t. --t is for moves the
+     visitor is meant to WATCH; --t-resp is an object acknowledging a pointer,
+     which at 300ms reads as "a thing animated" and at 160ms as "the thing
+     responded". Measured off live stylesheets this pass: Linear's button is
+     160ms on cubic-bezier(.25,.46,.45,.94), family.co's is 100ms, and Vero's
+     300ms is on `color` alone with everything else at 650ms/1s and deliberate.
+     Ours had 300ms on the response, which is the literal thing that made the
+     hover read as an animation rather than as material. */
+  --t-resp:.16s;
+  --ease-out-quad:cubic-bezier(.25,.46,.45,.94);  /* power2.out — the response */
 
   /* The one number the whole page's rhythm comes from, and the one that spoils
      it: the pinned stage centres a 16:9 card in a 100svh box, so there is an
@@ -142,6 +162,89 @@
   --heading:800px;      /* headings */
   --wide:1200px;        /* the card grid */
 }
+
+/* ─── §1c the lamp ──────────────────────────────────────────────────────────
+   The reference describes its own material as a single warm lamp in an
+   otherwise unlit cinema. A lamp has a position, and it does not move when you
+   move your head. Ours did: every button lit from the pointer, which means the
+   page had no lighting at all until you touched something and none whatsoever
+   on a phone — and a highlight nailed to the cursor reads as a sticker on the
+   cursor rather than as a surface catching light.
+
+   So there is now one fixed light, upper-left and just above the horizon, and
+   every convex object on the page — the three pill sizes, the play control, the
+   badges, the six bento cells, the two photo cards, the video and quote tiles,
+   the six crew cards — catches it from the same place. The rim brightens on the
+   arc facing it and darkens on the arc away from it. The tints are Linear's
+   measured numbers off EdgeShine.BKCmF3VB.css: 6% white for the general case,
+   12% for the step up; their --edge-highlight-x/y are likewise STATIC, set by
+   class, never written by script.
+
+   Nothing here animates, so nothing here runs on the compositor and nothing
+   here needs to: these are static paints, rasterized once per element and held
+   in the layer. Zero per-frame cost, zero JS, and — the whole point — fully
+   present on touch, under prefers-reduced-motion, and in a screenshot, which is
+   where most people see this page first.
+
+   The shadow carries the lamp's temperature. Ours were rgba(0,0,0,.35): a black
+   shadow on a black page draws nothing, which is why the objects sat ON the
+   page instead of IN it. Vero's key/bounce pair is orange at 3.9% from upper
+   left and deep red at 3.1% from lower right; the principle is theirs and the
+   value is ours — the key is our own accent's temperature (#f5f5f0, warm
+   off-white) rather than an orange this palette does not contain, and it sits
+   below the amplitude at which anyone would name a hue.
+
+   The bounce is gone, and it went for the reason it should: it was measured.
+   Rendering the whole page twice with only --lamp-bounce neutralised
+   (tools/_shadowcensus.mjs --diff) moved 8,177 pixels out of 23.1 million, and
+   moved them by ONE level of 255 at the 90th percentile and two at the 99th.
+   That is a shadow layer on nineteen elements, at 34-52px of blur, painting
+   something no eye resolves. The key, measured the same way, moves 13,183
+   pixels by 2/4/5 levels at p50/p90/p99 — thin, but present, and it is the one
+   that reads as light coming from somewhere. So the page keeps the half of the
+   pair that draws and drops the half that does not: nineteen fewer non-inset,
+   two-axis box-shadow layers, 57 down to 38 at 1440, against a §7.5 rule the
+   base build was already over. An unlit room does return a bounce; a room this
+   dark, at 4% of a desaturated grey, returns it below the floor of vision. */
+:root{
+  --lamp-x:18%;                              /* where the light sits, in the object's own box */
+  --lamp-y:0%;
+  --lamp-rim:rgba(255,255,255,.06);
+  --lamp-rim-strong:rgba(255,255,255,.12);
+  --lamp-shade:rgba(0,0,0,.28);
+  --lamp-key:rgba(245,238,214,.055);         /* the key, warm, upper-left */
+  /* The arc: a duplicate of the object's own edge, masked so only the ~90°
+     facing the lamp survives. Named once so every host reads the same shape. */
+  --lamp-arc:radial-gradient(ellipse 60% 90% at var(--lamp-x) var(--lamp-y),
+    #000 0%,#000 8%,transparent 88%);
+}
+
+/* Everything with a radius and a body catches the arc. Deliberately NOT on
+   .believe-card, whose ::after is the scaled hairline the file header
+   documents, nor on .perk or .fcard, which live inside transformed marquee and
+   collage layers. -webkit-mask ships alongside mask for Safari; if both were
+   dropped the ring would paint unmasked at 12% white, which is a mild
+   over-brightening rather than a break.
+
+   And deliberately NOT on .ccard. The rim is drawn as a masked 1px border, and
+   the crew card is the one surface on this page that is not allowed to compute
+   a border at all — nor a box-shadow, nor a background-image, which rules out
+   every other way of drawing an edge here (a gradient rim would also be a
+   fourth gradient background-image outside #top/#voice, which §7.6's ninth tell
+   forbids on its own). That constraint is not an accident to route around: the
+   crew card is the only text-only plate on the page, §12b states its rest state
+   as "no scale, no lift, no shadow, no border, no colour change", and the lamp
+   model is about convex objects catching light off their own edge. A flat
+   typographic plate at --surface has no edge to catch it. So it does not take
+   the rim, and its lighting is the one it always had: the value step between
+   #202020 and the black page around it. */
+.cell::after,.pcard::after,.vtile::after,.qtile::after,
+.badge:not(.btn)::after{
+  content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+  border:1px solid var(--lamp-rim-strong);border-radius:inherit;
+  -webkit-mask:var(--lamp-arc);mask:var(--lamp-arc);
+}
+.qtile{position:relative}
 
 /* ─── §2 base ───────────────────────────────────────────────────────────── */
 
@@ -327,50 +430,77 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
 
 /* ─── §4 buttons — the three-size pill ramp ─────────────────────────────── */
 
-/* The specular pill. Every button is lit as an object: a rim-light along its
-   top edge, a hairline of shade along the bottom, a tight contact shadow and a
-   soft ambient one — and on hover a highlight that sits wherever the pointer
-   is, so the surface reads as curved under a light rather than as a flat
-   shape with a colour. The highlight position is two custom properties that
-   main.js §12 writes on pointermove; with no pointer it rests at the centre.
-   Nothing moves on its own, nothing overshoots, and every transition is the
-   system's 300ms. */
+/* The lit pill. Every button is an object under §1c's one fixed lamp: a rim
+   along the arc that faces it, a hairline of shade along the arc that does not,
+   a tight contact shadow, and an ambient pair that carries the lamp's own
+   temperature. On hover a specular highlight arrives — but it is now the moving
+   half of a lighting model whose fixed half is always there, rather than the
+   whole model. The highlight rests at the lamp, not at the button's centre, so
+   it arrives at and departs from the light instead of teleporting to the
+   middle; main.js §12 writes --mx/--my on pointermove and they are registered
+   at the top of this file so the write no longer invalidates the label and the
+   arrow with it.
+
+   The clock is --t-resp (160ms), not --t (300ms). Nothing moves on its own,
+   nothing overshoots. `filter` and `transform` are compositor properties;
+   `box-shadow` and `color` are not, and are unchanged in kind, only halved in
+   duration — so every hover repaint on this page is now half as long as it was
+   and .btn-fill's is gone entirely. */
 .btn{
   position:relative;isolation:isolate;overflow:hidden;
   display:inline-flex;align-items:center;justify-content:center;
   border-radius:9999px;font-weight:500;white-space:nowrap;border:none;
-  --mx:50%;--my:40%;
-  transition:background var(--t) ease,box-shadow var(--t) ease,transform var(--t) ease,color var(--t) ease;
+  --mx:var(--lamp-x);--my:var(--lamp-y);
+  transition:
+    background-color var(--t-resp) var(--ease-out-quad),
+    box-shadow       var(--t-resp) var(--ease-out-quad),
+    transform        var(--t-resp) var(--ease-out-quad),
+    filter           var(--t-resp) var(--ease-out-quad),
+    color            var(--t-resp) var(--ease-out-quad);
 }
 .btn::before{
   content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
   background:radial-gradient(120px circle at var(--mx) var(--my),var(--spec,rgba(255,255,255,.22)),transparent 62%);
-  opacity:0;transition:opacity var(--t) ease;
+  opacity:0;transition:opacity var(--t-resp) var(--ease-out-quad);
 }
 .btn:hover::before,.btn:focus-visible::before{opacity:1}
-/* the rim: light on top, shade below, and the object's own two shadows */
+/* The rim, made directional. It used to be `inset 0 1px` over `inset 0 -1px` —
+   symmetric, i.e. lit from directly overhead, which reads as a UI token rather
+   than as an object in a room. Offsetting both on the diagonal puts the lit
+   crescent on the arc facing §1c's lamp and the shaded crescent opposite it, on
+   the same side as every card, badge and tile on the page. Static paint. */
 .btn::after{
   content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  box-shadow:inset 0 1px 0 var(--rim,rgba(255,255,255,.35)),inset 0 -1px 0 var(--shade,rgba(0,0,0,.18));
+  box-shadow:inset 1px 1px 0 var(--rim,var(--lamp-rim-strong)),
+             inset -1px -1px 0 var(--shade,var(--lamp-shade));
 }
 .btn-sm{height:42px;padding:0 20px;gap:5px;font-size:.875rem}
 .btn-md{height:45px;padding:0 24px;gap:7px;font-size:.9375rem}
 .btn-lg{height:52px;padding:0 28px;gap:9px;font-size:1.0625rem}
 
+/* The two ambient layers are the lamp's key and bounce, offset on the same
+   diagonal as the rim: a black shadow on a black page is a shadow that draws
+   nothing, which is the whole reason these objects read as stickers. The
+   contact shadow stays black — that one is occlusion, not light.
+   The hover brightens the fill with `filter` rather than swapping the
+   background: brightness runs on the compositor, a background-color change
+   repaints for the whole duration. --accent-hover (#e5e5e0) is 93.6% of
+   --accent, so .936 lands on exactly the colour the token named. */
 .btn-fill{background:var(--accent);color:#000;
   --rim:rgba(255,255,255,.75);--shade:rgba(0,0,0,.12);--spec:rgba(255,255,255,.9);
-  box-shadow:0 1px 2px rgba(0,0,0,.35),0 4px 20px rgba(0,0,0,.15)}
-.btn-fill:hover{background:var(--accent-hover);transform:translateY(-2px);
-  box-shadow:0 2px 4px rgba(0,0,0,.35),0 12px 32px -6px rgba(0,0,0,.45)}
+  box-shadow:-14px -4px 34px var(--lamp-key),0 1px 2px rgba(0,0,0,.35)}
+.btn-fill:hover{filter:brightness(.936);transform:translateY(-2px);
+  box-shadow:-16px -5px 40px var(--lamp-key),0 2px 4px rgba(0,0,0,.35)}
 
 .btn-glass{background:transparent;color:var(--text);
   --rim:rgba(255,255,255,.22);--shade:rgba(0,0,0,.35);--spec:rgba(255,255,255,.16)}
-.btn-glass:hover{background:rgba(255,255,255,.1)}
+.btn-glass:hover{background-color:rgba(255,255,255,.1)}
 
 .glass{
   background:var(--glass);
   border:1px solid var(--glass-edge);
-  box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.08);
+  box-shadow:-12px -3px 30px var(--lamp-key),
+             0 6px 20px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.08);
   border-radius:9999px;
 }
 /* Six of the fifteen glass elements sit on flat --bg — the four stat badges and
@@ -391,16 +521,22 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
    the reference's glass rim. The badges keep the ported .08. */
 /* A glass button was casting a heavier shadow than the bone RSVP beside it, so
    the page's one accent object sat LOWER to the page than its secondary. */
-.btn.glass{box-shadow:0 2px 10px rgba(0,0,0,.28)}
+.btn.glass{box-shadow:-10px -3px 26px var(--lamp-key),0 2px 10px rgba(0,0,0,.28)}
 
 /* The signature curve is reserved for links. The arrow is a mechanism, and it
-   was running the 735ms link curve compressed into 300ms; the reference's own
-   button is `transition: all .3s ease`. */
-.btn .arrow{width:1em;height:1em;flex:none;transition:transform var(--t) ease}
+   was running the 735ms link curve compressed into 300ms; it now runs on the
+   response clock with the rest of the pill. transform: compositor. */
+.btn .arrow{width:1em;height:1em;flex:none;transition:transform var(--t-resp) var(--ease-out-quad)}
 .btn:hover .arrow{transform:translateX(3px)}
+
+/* Promote the layer at the moment of press, not permanently: a standing
+   will-change on nine buttons is nine layers the compositor holds for the life
+   of the page. Linear applies it exactly here and nowhere else. */
+.btn:active{will-change:transform}
 
 /* Badge: 35px tall, 8px/16px padding, 11.2px uppercase at .05em. */
 .badge{
+  position:relative;
   display:inline-flex;align-items:center;height:35px;padding:0 16px;
   background:var(--chip);border-radius:9999px;
   font-size:.7rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
@@ -430,8 +566,15 @@ section{position:relative}
 
 /* A gradient scrim sits behind the bar so the wordmark survives a bright
    frame of the hero video without the bar itself acquiring a background. */
+/* Both this and .hero-media::after were tuned against a frame whose mean was
+   170/255. The graded hero is 99, so the same scrims now over-darken a sky that
+   is already dark and put a visible band across the top of the fold. Lightened
+   to suit the footage. Measured on the composited page across eight frames of
+   the clip, the RSVP pill against the pixels actually painted around it: 5.94:1
+   worst at 1440 and 5.00:1 worst at 390, against a 4.5 floor. Before the grade,
+   with the heavier scrims, the same measurement read 4.68 and 4.60. */
 .nav-scrim{position:fixed;inset:0 0 auto;height:128px;z-index:98;pointer-events:none;
-  background:linear-gradient(180deg,rgba(0,0,0,.4),transparent)}
+  background:linear-gradient(180deg,rgba(0,0,0,.28),transparent)}
 
 .nav{
   position:fixed;inset:0 0 auto;z-index:100;
@@ -552,7 +695,7 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
    dark again under the headline. Never a flat veil. */
 .hero-media::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,.1) 26%,transparent 46%,rgba(0,0,0,.3) 78%,rgba(0,0,0,.7) 100%);
+  background:linear-gradient(180deg,rgba(0,0,0,.30) 0%,rgba(0,0,0,.07) 26%,transparent 46%,rgba(0,0,0,.26) 78%,rgba(0,0,0,.62) 100%);
 }
 .hero-inner{
   position:relative;z-index:2;height:100%;
@@ -584,14 +727,18 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
 }
 
 .play{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px 0 7px;font-size:.875rem;font-weight:500;
-  position:relative;isolation:isolate;overflow:hidden;--mx:50%;--my:40%}
+  position:relative;isolation:isolate;overflow:hidden;--mx:var(--lamp-x);--my:var(--lamp-y)}
 .play::before{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
   background:radial-gradient(120px circle at var(--mx) var(--my),rgba(255,255,255,.16),transparent 62%);
-  opacity:0;transition:opacity var(--t) ease}
+  opacity:0;transition:opacity var(--t-resp) var(--ease-out-quad)}
 .play:hover::before{opacity:1}
-.play .disc{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);flex:none;transition:background var(--t) ease}
+/* The same directional rim the pills carry, so the one control on the hero is
+   lit from where everything else on the page is lit. Static paint. */
+.play::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 1px 1px 0 var(--lamp-rim-strong),inset -1px -1px 0 var(--lamp-shade)}
+.play .disc{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);flex:none;transition:background-color var(--t-resp) var(--ease-out-quad)}
 .play .disc svg{width:9px;height:9px;margin-left:1px}
-.play:hover .disc{background:rgba(255,255,255,.28)}
+.play:hover .disc{background-color:rgba(255,255,255,.28)}
 
 .hero-time{
   position:absolute;z-index:2;left:var(--gutter);top:calc(50% - .5em);
@@ -687,10 +834,44 @@ picture{display:contents}
   transform:scale(var(--sx,1),var(--sy,1));
   opacity:var(--bo,1);
 }
-.believe-card>img,.believe-card>picture>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+/* One added token, `video`, is the whole CSS cost of making this stage move:
+   the media element was already absolutely positioned, inset:0, cover-fitted
+   and held at half opacity, so a <video> drops into the same box with no
+   layout work and no new rule. object-position is set deliberately rather than
+   left at centre — on a viewport wider than 16:9 the cover crop takes it out of
+   the vertical, and 40% keeps the rose windows in the upper third, above the
+   band the statements occupy, instead of behind them. */
+.believe-card>img,.believe-card>picture>img,.believe-card>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.believe-card>video{object-position:50% 40%}
 .believe-body{position:relative;z-index:2;display:grid;justify-items:center;gap:22px;text-align:center;padding:0 6vw;opacity:var(--o,1)}
 
 .believe-lines{position:relative;display:grid;place-items:center;width:100%;min-height:5.2em;perspective:1000px}
+/* The lens shade. The statements are the only white type on this page that
+   sits over moving footage, and the footage is a rose window: measured on the
+   composited page with the glyphs masked (tools/_believeink.mjs), the worst
+   backdrop pixel under a stroke came to 4.82:1 at 390 across the whole 12s —
+   over the WCAG floor, but by 7%, on a backdrop that is moving. Seven percent
+   is not a margin, it is a coin toss on the next frame.
+
+   This is a scrim and not a text-shadow because a shadow on 32px type at this
+   weight reads as a cheap glow, and it is a masked solid rather than a
+   gradient background because a gradient here would be a fourth gradient
+   background-image outside #top/#voice, which §7.6's ninth tell forbids — the
+   same masking technique §1c and .perks already use. Feathered to closest-side
+   with nothing solid until 40%, so there is no edge to see: it reads as the
+   falloff of the room's own light, and the rosette above the band and the
+   floor below it are untouched.
+
+   It paints once and never again. No animation, no filter, no JS, no
+   compositor work, no main-thread work — present identically on touch, under
+   prefers-reduced-motion (where §17 stacks the five statements and the shade
+   grows with the box), and with scripts off. */
+.believe-lines::before{
+  content:'';position:absolute;inset:-2.4em -14%;z-index:-1;pointer-events:none;
+  background:rgba(0,0,0,.26);
+  -webkit-mask:radial-gradient(closest-side ellipse at 50% 50%,#000 0%,#000 40%,transparent 100%);
+  mask:radial-gradient(closest-side ellipse at 50% 50%,#000 0%,#000 40%,transparent 100%);
+}
 .believe-lines li{
   grid-area:1/1;
   font-size:2rem;font-weight:500;line-height:1.2;letter-spacing:-.03em;
@@ -1095,14 +1276,23 @@ picture{display:contents}
 /* Their footer link rests at #fff and SUBTRACTS ink on hover; ours rested at
    .75 and added. The 735ms curve and the right-to-left origin flip on ::after
    were ported correctly — only the direction was inverted. */
-.foot-col a{position:relative;font-size:.9375rem;opacity:1;transition:opacity .735s var(--ease-sig)}
-/* 23px tall with 12px between them: the required target circles overlapped
-   their neighbours. Padding inside the box, so desktop leading is untouched. */
+/* F-02 / R60. 15px type on a normal line box is 22.5px tall with 12px between,
+   a 34.5px pitch — every target on this page clears 44px except these six, and
+   the rule they share is inherited, so the fix is one rule for all six rather
+   than anything scoped to the new #team link. The phone already had the right
+   answer (padding inside the box, so the leading is untouched); it was only
+   ever gated to the phone. The negative block margin hands the column back the
+   12px the padding added at each end, so the six boxes come out at a 44.5px
+   pitch and 44.5px tall — abutting exactly, never overlapping, which is the
+   failure the phone rule already had to design around. */
+.foot-col a{position:relative;display:inline-block;padding-block:11px;margin-block:-6px;
+  font-size:.9375rem;opacity:1;transition:opacity .735s var(--ease-sig)}
 @media (max-width:759px){
-  .foot-col a{display:inline-block;padding-block:11px}
   .foot-cols{gap:40px}
 }
-.foot-col a::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;
+/* 9px, not −2: the hit box now carries 11px of padding under the baseline, and
+   the wipe belongs under the word, not under the target. */
+.foot-col a::after{content:'';position:absolute;left:0;right:0;bottom:9px;height:1px;background:currentColor;
   transform:scaleX(0);transform-origin:right;transition:transform .735s var(--ease-sig)}
 .foot-col a:hover{opacity:.6}
 .foot-col a:hover::after{transform:scaleX(1);transform-origin:left}
@@ -1262,7 +1452,10 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   .believe-card::after{display:none}
   .believe-lines{display:grid;gap:16px;min-height:0;perspective:none}
   .believe-lines li{grid-area:auto;opacity:1!important;transform:none!important;filter:none!important}
-  .btn::before,.play::before{--mx:50%!important;--my:40%!important}
+  /* The lamp, not the geometric centre. §1c's rim is fully present in this
+     state — it is the only part of the lighting model that ever was — and the
+     resting specular now agrees with it instead of contradicting it. */
+  .btn::before,.play::before{--mx:var(--lamp-x)!important;--my:var(--lamp-y)!important}
   /* A progress-driven animation has no duration to shorten, so the blanket
      override below would pin these at their end keyframe — full drift at half
      opacity. They have to be named. */
