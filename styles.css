@@ -1131,20 +1131,65 @@ picture{display:contents}
   padding-inline:clamp(20px,5vw,32px);padding-bottom:16px;
   margin-top:clamp(56px,10vh,110px);
 }
+/* THE CARD IS A PLATE WITH A MEDIA FIELD, not a paragraph in a box.
+   The owner's word for the old one was "template", and the cause was
+   structural rather than cosmetic: sequel's founder card is media-FIRST — a
+   person fills the frame and the name is set into its bottom edge — and ours
+   had no media region at all, so six equal grey rectangles of text was the
+   whole design.
+
+   Five of the six have no obtainable photograph (an Instagram avatar that
+   tops out at 150px, two LinkedIn walls, three with nothing located), and a
+   substituted face is not an option, so the field is built to be legible
+   EMPTY. It is a --chip plate the width of the card carrying the person's
+   initials in the display italic at display size, cropped by the plate's own
+   bottom edge. That is what a person-card without a portrait has always been;
+   drawn at 120px instead of 32px it reads as a monogram rather than as a hole.
+
+   The plate is a flex ITEM with flex-grow, not an absolute layer, so on a row
+   whose height was set by Saul's third line the other two plates grow and all
+   three name/role blocks still sit on one baseline. R64's row rhythm therefore
+   still comes only from the note, and from nothing else. */
 .ccard{
+  --plate:clamp(200px,23vw,330px);
+  position:relative;overflow:hidden;
   flex:0 0 auto;width:min(400px,(100% - 32px) / 3);
-  display:flex;flex-direction:column;justify-content:flex-end;
-  min-height:140px;padding:20px;border-radius:10px;background:var(--surface);
+  display:flex;flex-direction:column;
+  padding:20px;border-radius:10px;background:var(--surface);
 }
 /* A straight 3 -> 1, no 2-up: three columns still fit at exactly 800
-   (3 x 234 + 2 x 16 + 2 x 32), and a 2-up row of six people reads as a table.
-   The 140px floor goes with the second column, because it is a row instrument —
-   at 1440 it is what row two falls to once row one has been set by the one
-   person with a second line. On one column there is no row to equalise, so
-   under justify-content:flex-end the same floor is 48px of void above five of
-   the six names. The reference does not bottom-anchor an under-filled tile
-   either; at 390 its columns size themselves. */
-@media (max-width:799px){.ccard{width:100%;max-width:400px;min-height:0}}
+   (3 x 234 + 2 x 16 + 2 x 32), and a 2-up row of six people reads as a table. */
+@media (max-width:799px){.ccard{width:100%;max-width:400px}}
+
+/* The media field. Bleeds to the card's edges through the 20px padding and is
+   clipped by the card's own radius, so it carries no radius of its own and the
+   page's radius set stays {0px, 10px}. */
+.cface{
+  position:relative;flex:1 1 auto;min-height:var(--plate);
+  margin:-20px -20px 20px;overflow:hidden;
+  background:linear-gradient(155deg,rgba(255,255,255,.05),transparent 58%),var(--chip);
+  border-bottom:1px solid var(--rule);
+}
+/* Generated content, deliberately: the monogram is decoration for a name that
+   is already in the DOM two lines below, so it stays out of the accessibility
+   tree, out of innerText and off the page's word count. .16 white on #2a2a2a
+   is a watermark and is not text — every string a reader actually has to read
+   is still on --surface at the ratios §12b was measured at. */
+.cface::before{
+  content:attr(data-mono);position:absolute;left:14px;bottom:-.15em;
+  font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(7rem,14.5vw,13rem);line-height:1;letter-spacing:-.05em;
+  color:rgba(255,255,255,.2);
+}
+/* THE DROP-IN SLOT. tools/build-pages.mjs writes a <picture> in here for all
+   six people or for none of them, and only for files that clear twice the
+   plate's widest painted width. Drop the six headshots into site/assets/team/
+   and rebuild; no other file changes. `>` is named on both shapes because a
+   <picture> wrapper puts the <img> one level deeper — the same trap §8 hit. */
+.cface>picture>img,.cface>img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:var(--op,50% 28%);
+}
 
 /* The rest state sits one level in, not on the card: .ccard is the .rv target
    and html.motion .rv.in{opacity:1} would overwrite an opacity written there.
@@ -1152,7 +1197,7 @@ picture{display:contents}
    carries the dim. One channel only: 0.8 -> 1.0 over 300ms, their measured
    curve. No scale, no lift, no shadow, no border, no colour change, and
    nothing faked on touch. */
-.ccard-in{display:flex;flex-direction:column;gap:4px;opacity:.8;transition:opacity var(--t) ease}
+.ccard-in{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;opacity:.8;transition:opacity var(--t) ease}
 .ccard:hover .ccard-in{opacity:1}
 
 /* h3, not cite: cite is for the title of a work, and .vtile cite already
@@ -1172,11 +1217,6 @@ picture{display:contents}
   font-size:clamp(.875rem,1.2vw,1rem);font-weight:400;line-height:1.4;
   color:var(--text-75);margin-top:8px;
 }
-
-/* Inert until a headshot exists for every person in the section — a partial set
-   is the hole this design was built around. 64 CSS px against a >= 192px file
-   is 1.5x at DPR 2, inside tools/sharp.mjs's rule. */
-.ccard .face{width:64px;height:64px;border-radius:10px;object-fit:cover;margin-bottom:8px}
 
 /* ─── §12c the subpages ─────────────────────────────────────────────────────
    /events/ and /team/ are the site's first pages that are not the home page.
@@ -1211,8 +1251,44 @@ main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
   .elist>.ecard{flex:0 0 auto;width:calc((100% - 16px)/2)}}
 
 .ecard{position:relative;background:var(--surface);border-radius:10px;padding:24px;
-  display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+  display:flex;flex-direction:column;gap:20px;align-items:stretch}
+.ebody{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .ecard-lead{padding:clamp(24px,4vw,40px)}
+
+/* THE PHOTOGRAPH. This page shipped with none, which is the whole of what the
+   owner saw. Every frame here is the organisation's own and is chosen by the
+   event's KIND, so an evening card can only ever carry an evening and an
+   action card can only ever carry an action; the mapping and the reasoning are
+   in src/data/event-art.json.
+   6px inside the card's 10px is the nested-radius pair this file already uses
+   for a frame and its plate, and it means the media never has to fight the
+   card's own corner. --op is the crop point, set per frame from the data:
+   a 4:5 negative in a 3:2 box keeps a little over half its height and the half
+   with the faces in it is near the top, not the middle. */
+.ephoto{position:relative;margin:0;overflow:hidden;border-radius:6px;
+  background:var(--chip);aspect-ratio:3/2;flex:none}
+.ephoto>picture>img,.ephoto>img{display:block;width:100%;height:100%;
+  object-fit:cover;object-position:var(--op,50% 50%)}
+/* The card names what the photograph is, on the photograph. An event that has
+   not happened has no picture of itself and the page may not imply that it
+   does. It is the site's own .badge, in the reference's own position, and it is
+   opaque for a measured reason: the first draft set the line over a bottom
+   scrim instead, and against the bright wall in room-back at 390 that read
+   3.4:1 — a scrim strong enough to fix it would have been dark enough to be
+   the point of the picture. --chip under --text-75 is 6.2:1 over any frame
+   that will ever go here, because the frame is not underneath it. */
+.ephoto figcaption{position:absolute;z-index:1;left:12px;top:12px}
+
+/* At 900 the lead card is wide enough that a full-bleed band would make a
+   letterbox of a portrait negative and push the RSVP below the fold on a
+   laptop. So it splits: the frame takes 60% and the four lines sit beside it,
+   centred against it. Below 900 it stacks, which is also every width the list
+   cards ever see. */
+@media (min-width:900px){
+  .ecard-lead{flex-direction:row;align-items:center;gap:clamp(24px,3vw,40px)}
+  .ecard-lead>.ephoto{flex:0 0 60%}
+  .ecard-lead>.ebody{flex:1 1 auto}
+}
 /* §1c's lamp, on §1c's own tints. .ecard is a convex plate like .cell and takes
    the same masked rim from the same fixed light; the declaration is repeated
    here rather than added to §1c's selector list so the stylesheet's diff stays
