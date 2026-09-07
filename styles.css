@@ -983,7 +983,10 @@ picture{display:contents}
   .stat b,.stat .cap{text-align:center}
 }
 
-/* The marquee: their two tracks, ~59 and ~79 px/s, opposite directions. */
+/* The marquee: their two tracks, 67 and 63 px/s at 1440, opposite directions. The
+   durations are the ones that were measured (45s / 47.2s); the px/s follow from
+   how much each track carries, and the marks track carries four repeats of the
+   set per half so translateX(-50%) stays seamless out to a 3200px viewport. */
 .marquee{margin-top:clamp(72px,15vh,150px);display:grid;gap:24px;overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
   mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
@@ -993,6 +996,35 @@ picture{display:contents}
 .mrow span{flex:none;padding-inline:clamp(20px,2.6vw,40px);font-size:.875rem;font-weight:500;
   color:var(--text-40);white-space:nowrap;letter-spacing:-.01em;transition:color var(--t) ease}
 .mrow span:hover{color:var(--text)}
+
+/* The marks track. Sizes are hand-set, not height-matched — the whole point of
+   §3 of research/partner-logos/PLAN.md is that Vercel's row runs 15px to 40px
+   tall and holds its *widths* in a band instead, because what the eye levels is
+   optical mass. Painted 182x36, 111x43 and 76x66; measured off the composited
+   page at 1440, box areas 6,559 / 4,793 / 5,014 px^2 (-12%..+20% about the
+   mean) and lit areas — the integral of the excess luminance over the ground —
+   683 / 1,153 / 1,032 px^2 (-29%..+21%). Vercel's own published row runs
+   -41%..+44% on box, so this is the tighter family. Every mark is also well
+   inside its source: the Lay Mission file is 337px for a 111px paint and the
+   Missionaries of Charity file is 160px for a 76px paint. 66px is that mark's
+   floor — it is a square of fine meridians and arched serif type and it closes
+   up below it, which is why it is the tall one rather than the short one. */
+/* One rest value for the whole track. A raster cannot inherit currentColor, so
+   the vector spends it as an alpha on the ink and the two PNGs spend the same
+   number as an opacity; both lift to full on hover, with the track below at
+   .48 so the marks lead and the names caption. .86 rather than Vercel's .93 —
+   compared at 2x against .94, .78 and .70, .70 greys the Missionaries of
+   Charity serif out and .94 glares against the very thin numerals above it. */
+.mrow-marks{--mink:.86}
+.mrow-marks span{display:flex;align-items:center;padding-inline:clamp(20px,4.4vw,72px)}
+.pmark{display:block;width:auto;color:rgba(255,255,255,var(--mink));
+  transition:color var(--t) ease,opacity var(--t) ease}
+.m-lm,.m-mc{opacity:var(--mink)}
+.mrow-marks span:hover .pmark{color:var(--text)}
+.mrow-marks span:hover .m-lm,.mrow-marks span:hover .m-mc{opacity:1}
+.m-sa{height:36px;aspect-ratio:706.13/139.51}
+.m-lm{height:43px}
+.m-mc{height:66px}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ─── §12 the bento ─────────────────────────────────────────────────────── */
