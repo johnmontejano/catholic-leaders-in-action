@@ -311,7 +311,12 @@ html{
      the old 814/1133 were 25% and 16% out once the section became a page.
      #next-up is deliberately absent — it is the first section on its page and
      containment on the thing that is already on screen is a pessimization. */
-  #team   {contain-intrinsic-size:auto 652px}
+  /* Re-measured with containment off after the lead card: 1680.4 at 1440 and
+     2421.0 at 390. The old 652/981 were taken before the card had a media
+     field at all and were 61% and 59% short of the section as it now paints,
+     which is the number the scrollbar and a cross-page anchor are computed
+     against before #team has ever rendered. */
+  #team   {contain-intrinsic-size:auto 1680px}
   #seat   {contain-intrinsic-size:auto 1304px}
   #stories{contain-intrinsic-size:auto 2109px}
   #upcoming{contain-intrinsic-size:auto 562px}
@@ -322,7 +327,7 @@ html{
     #voices {contain-intrinsic-size:auto 1585px}
     #record {contain-intrinsic-size:auto 1755px}
     #evening{contain-intrinsic-size:auto 2366px}
-    #team   {contain-intrinsic-size:auto 981px}
+    #team   {contain-intrinsic-size:auto 2421px}
     #seat   {contain-intrinsic-size:auto 1132px}
     #stories{contain-intrinsic-size:auto 1638px}
     #upcoming{contain-intrinsic-size:auto 536px}
@@ -1135,11 +1140,19 @@ picture{display:contents}
    have, so the card is typographic by design, not a photo card waiting for a
    photo.
 
-   Nothing below keys a height, width, colour, weight or font to a person or a
-   position. Saul leads on position and content alone: he is named in the
-   description, he is the first <li>, and he is the only one with a second
-   verified line, which under align-items:stretch sets his row — the mechanism
-   REFERENCE.md §3 measured on the reference. */
+   Nothing in the ROW below keys a height, width, colour, weight or font to a
+   person or a position. Saul used to lead on position and content alone: he is
+   named in the description, he is the first <li>, and he is the only one with a
+   second verified line, which under align-items:stretch sets his row — the
+   mechanism REFERENCE.md §3 measured on the reference.
+
+   THAT IS NO LONGER THE WHOLE STORY, and the change is deliberate rather than
+   drift. The owner asked, in those words, that Saul have his own dedicated card
+   so that it is obvious he is the one who leads this organisation. That is an
+   explicit override of §3's finding, and it is recorded here rather than
+   quietly applied: the reference does not promote a founder, this page now
+   does, and the instruction to do it came from the person whose organisation it
+   is. `.ccard--lead` at the foot of this block is the whole of it. */
 
 /* Not a grid: a wrapping flex row of fixed columns, centred, like .voices.
    3 x 400 + 2 x 16 is 1232px against a 1136px content column, so the row lives
@@ -1248,6 +1261,91 @@ picture{display:contents}
 .ccard .note{
   font-size:clamp(.875rem,1.2vw,1rem);font-weight:400;line-height:1.4;
   color:var(--text-75);margin-top:8px;
+}
+
+/* THE LEAD CARD. Same <li>, same media field, same three lines, same reveal,
+   same 0.8 -> 1.0 hover: a bigger box holding the same contents is the cheap
+   version of this and it is not what is below. What changes is the CARD'S
+   COMPOSITION — the object is turned on its side.
+
+   Every other card is media-FIRST and stacked: a portrait plate across the top,
+   the name set under its bottom edge. The lead card is that card turned on its
+   side. The plate becomes a full-height column bleeding to the card's top,
+   bottom and left edges, the card runs two columns and a gutter wide instead of
+   one, and the name still sits on the plate's bottom edge — now beside it
+   rather than beneath it. At 1440 that is 816x480 against the row's 400x423:
+   2.3x the area, the tallest portrait on the page, alone on the first line,
+   its two edges landing exactly on the two-card row that closes the section.
+   It reads as the masthead of the roster rather than as a member of it, which
+   is the claim the owner asked the page to make.
+
+   WHAT IS NOT USED, and why. No type-scale change: `.ccard h3` and `.role` are
+   the same 20/12px here as in the row, because the six names are one roster and
+   a name in a size no other name uses says "a different kind of person" rather
+   than "the person in charge". No colour, no surface, no rim, no shadow, no
+   border the row does not already have — §12b's flat-plate ruling stands and
+   §1c's lamp still skips this card. No second hover channel, no second reveal.
+   Everything carrying the promotion is geometry, so all of it survives a
+   screenshot, a phone, JS-off, prefers-reduced-motion and a print, which is
+   more than a type bump or a hover treatment would.
+
+   THE PLATE IS CAPPED AT 400px WIDE ON PURPOSE. That is the widest painted
+   width the build's FACE_MIN_WIDTH=800 gate is built around, so the lead's
+   portrait is held to exactly the same 2x rule as the row's (R72b) and the gate
+   does not have to move. The box is 5/6 — shallower than the 4/5 the headshots
+   are cut to — so an 800px file that clears the gate is 1000px tall against a
+   960px requirement and clears the doubling on both axes too. It is also why
+   the card is 816 and not the full 1232 of the row: past two columns there is
+   no legal width left for the portrait to balance, and a 1232px card with a
+   400px plate is three quarters empty surface.
+
+   The card's height comes from the plate's aspect-ratio, not from a magic
+   number: the plate's negative top and bottom margins cancel the card's 20px
+   padding, so the card is exactly as tall as the portrait, in BOTH states — the
+   plate's box is the same box whether the build fills it with a <picture> or
+   with a monogram, so the day saul-perez.jpg lands nothing on this page moves.
+   align-items:flex-end then drops the identity block onto the card's bottom
+   padding, on the portrait's own bottom edge. The air collects at the top
+   right, where a masthead's air belongs, rather than beside the type. */
+.lead-slot{flex:0 1 100%;display:flex;justify-content:center}
+.ccard--lead{
+  width:100%;max-width:816px;
+  flex-direction:row;align-items:flex-end;
+  gap:clamp(20px,2.6vw,40px);
+}
+.ccard--lead .cface{
+  flex:0 0 clamp(240px,52%,400px);
+  min-height:0;aspect-ratio:5/6;
+  margin:-20px 0 -20px -20px;
+  border-bottom:0;border-inline-end:1px solid var(--rule);
+}
+/* The monogram is drawn against a plate half again as tall as the row's, so it
+   steps up with it — the same crop off the bottom edge, at the size this box
+   asks for. It stays inside 400px of plate at every width. */
+.ccard--lead .cface::before{font-size:clamp(8rem,16vw,15rem)}
+/* A measure, not a margin. The note is the longest line on the page; given the
+   whole of the card's right half it would set at ~60ch and read as a paragraph
+   of body copy rather than as the second line of an identity. */
+.ccard--lead .ccard-in{flex:1 1 auto;max-width:46ch}
+
+/* On one column the rotation has nowhere to go — a 350px card cannot hold a
+   portrait beside three lines without making the lead's face SMALLER than the
+   five below it, which is the opposite of what this card is for. So the phone
+   keeps the stacked card and promotes the plate instead: 5/6 of the card's full
+   width, 350x420 against the row's 350x200 band. His portrait is still the
+   largest object in the section by a distance, he is still alone at the top of
+   it, and the card is still the only one of the six the page had to describe
+   twice. The one-column card also cannot outgrow the reveal threshold main.js
+   §3 watches at 0.3 — at 390 it is 598px against a 675px ceiling — so it
+   reveals on the same rule as the other five and not on the tall-element
+   fallback. */
+@media (max-width:799px){
+  .ccard--lead{max-width:400px;flex-direction:column;align-items:stretch}
+  .ccard--lead .cface{
+    flex:0 0 auto;margin:-20px -20px 20px;
+    border-inline-end:0;border-bottom:1px solid var(--rule);
+  }
+  .ccard--lead .ccard-in{max-width:none}
 }
 
 /* ─── §12c the subpages ─────────────────────────────────────────────────────
