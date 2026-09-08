@@ -311,12 +311,12 @@ html{
      the old 814/1133 were 25% and 16% out once the section became a page.
      #next-up is deliberately absent — it is the first section on its page and
      containment on the thing that is already on screen is a pessimization. */
-  /* Re-measured with containment off after the lead card: 1680.4 at 1440 and
-     2421.0 at 390. The old 652/981 were taken before the card had a media
-     field at all and were 61% and 59% short of the section as it now paints,
-     which is the number the scrollbar and a cross-page anchor are computed
-     against before #team has ever rendered. */
-  #team   {contain-intrinsic-size:auto 1680px}
+  /* Re-measured with containment off every time this section's contents change,
+     because this number is what the scrollbar and a cross-page anchor are
+     computed against before #team has ever rendered. 652/981 predated the
+     card's media field; 1680/2421 predated the sequel hero and Saul's career.
+     Now 2435.1 at 1440 and 3319.0 at 390. */
+  #team   {contain-intrinsic-size:auto 2435px}
   #seat   {contain-intrinsic-size:auto 1304px}
   #stories{contain-intrinsic-size:auto 2109px}
   #upcoming{contain-intrinsic-size:auto 562px}
@@ -327,7 +327,7 @@ html{
     #voices {contain-intrinsic-size:auto 1585px}
     #record {contain-intrinsic-size:auto 1755px}
     #evening{contain-intrinsic-size:auto 2366px}
-    #team   {contain-intrinsic-size:auto 2421px}
+    #team   {contain-intrinsic-size:auto 3319px}
     #seat   {contain-intrinsic-size:auto 1132px}
     #stories{contain-intrinsic-size:auto 1638px}
     #upcoming{contain-intrinsic-size:auto 536px}
@@ -437,7 +437,7 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
    figures at all, and they carry the tabular-nums that keeps the counters from
    jittering. */
 .eyebrow,.label,.badge,.stat .cap,.illus,.seat-note,
-.vtile .role,.qtile .role,.foot-base{font-feature-settings:'case' 1}
+.vtile .role,.qtile .role,.foot-base,.thero-cta,.tline-when{font-feature-settings:'case' 1}
 /* The one glyph the font cannot fix: General Sans ships no cap-height middot,
    and the default sits .0925em below the cap band's centre. vertical-align
    rather than transform, so the glyph stays inline and line-breaking is
@@ -1307,7 +1307,11 @@ picture{display:contents}
    align-items:flex-end then drops the identity block onto the card's bottom
    padding, on the portrait's own bottom edge. The air collects at the top
    right, where a masthead's air belongs, rather than beside the type. */
-.lead-slot{flex:0 1 100%;display:flex;justify-content:center}
+/* The slot takes the whole flex line and now stacks two things in it: the card
+   and, on the row's own 16px, the career that is the reason the card exists.
+   Column direction, so `justify-content:center` becomes `align-items:center`;
+   the card's own width:100%/max-width:816px is untouched by the change. */
+.lead-slot{flex:0 1 100%;display:flex;flex-direction:column;align-items:center;gap:16px}
 .ccard--lead{
   width:100%;max-width:816px;
   flex-direction:row;align-items:flex-end;
@@ -1471,6 +1475,154 @@ main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
    home page's bands to. */
 #upcoming .title,#past .title{margin-bottom:40px}
 @media (min-width:900px){#upcoming .title,#past .title{margin-bottom:60px}}
+
+/* ─── §12d /team/'s hero, and the one career on it ──────────────────────────
+   THE HERO IS A TRANSLATION, NOT A COPY, AND THE THING BEING TRANSLATED IS A
+   RATIO. Three passes at this page failed because they were built from a
+   description of sequel.co/founders rather than from its numbers, and a
+   description loses exactly the part that makes it work. The reference,
+   measured in a browser at 1440x900:
+
+     h1        56px / line-height 56 / weight 500 / letter-spacing -1.68px,
+               centred, box 1000px wide
+     italic    a serif face at the same 56px, letter-spacing -2.8px
+     the pill  100 x 56, radius 16.8, overflow hidden, inline, vertically
+               centred on the line, 16.8px of margin either side — a looping
+               muted clip sitting INSIDE the sentence
+     the cta   uppercase 12.84px / weight 500 / letter-spacing .642px,
+               underlined, 32px below the h1
+
+   Divide all of that by the h1's own 56px and every number becomes a ratio
+   that survives a change of type scale:
+
+     measure   17.857em      pill w   1.786em     pill radius  .3em
+     cta size    .2293em     pill h   1em         cta gap      .5714em
+     tracking  -.03em (the h1) and -.05em (the italic word)
+
+   So --h1 is the only px in this block. Its clamp lands 56.16px at 1440 —
+   the reference's 56 — and 30.4px at 390, which is what their mobile hero
+   measures; everything else is em OF THAT and therefore correct at both ends
+   and everywhere between. -.03em is also what .title already carries and
+   -.05em is what .em already carries, so the two tracking numbers are this
+   site's own, not borrowed.
+
+   WHAT DID NOT COME ACROSS, and why. Their pill is a <button> that opens a
+   founders' intro film. We have no such film, and a control that does nothing
+   is worse than no control, so ours is a decorative <span>: aria-hidden, not
+   focusable, and drawn with no play triangle, because a play triangle on a
+   thing that cannot be played is a lie about the interface. What is left is
+   the part that actually reads at 100x56 — a moving inlay in the middle of a
+   sentence. */
+.thero{
+  --h1:clamp(1.9rem,3.9vw,4rem);
+  text-align:center;display:grid;justify-items:center;
+}
+.thero-h{
+  font-size:var(--h1);font-weight:500;line-height:1;letter-spacing:-.03em;
+  max-width:17.86em;text-wrap:balance;
+}
+/* The pill. Its height is one line-height exactly, which is why the sentence
+   only grows by the few px a vertical-align:middle box adds and not by a whole
+   line. --chip under the video so the box is a shape rather than a hole for
+   the frame before the poster paints. The margin is .2em rather than the
+   reference's .3em because there is real whitespace either side of this
+   element in the markup — .2em plus a word space lands on their measured
+   26px gap — and that whitespace is what lets the sentence break beside the
+   pill instead of dragging it through the line-break with its neighbours. */
+.thero-pill{
+  position:relative;
+  display:inline-flex;vertical-align:middle;overflow:hidden;
+  width:1.786em;height:1em;border-radius:.3em;margin:0 .25em;
+  background:var(--chip);
+}
+/* The still is the element that ships and the clip is laid over it, both
+   filling the same box, so the moment main.js §10a appends the video nothing
+   moves and nothing flashes: the video carries the still as its own poster. */
+.thero-pill>img,.thero-pill>video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
+/* The two floors are the one place this block stops being a ratio, and they
+   are the reference's own behaviour rather than a rescue: their CTA is ~11px
+   at 390 against an h1 that has come down to 30px, so it does NOT ride the
+   headline all the way down. Pure .2293em would set it at 6.97px on a phone,
+   which is not a control, it is a smudge. Above ~880px wide the ratio is what
+   applies and the floors are inert. */
+.thero-cta{
+  margin-top:max(24px,calc(var(--h1) * .5714));
+  font-size:max(.6875rem,calc(var(--h1) * .2293));font-weight:500;line-height:1.2;
+  letter-spacing:.05em;text-transform:uppercase;
+  text-decoration:underline;text-underline-offset:.18em;
+  transition:color var(--t-resp) var(--ease-out-quad);
+}
+.thero-cta:hover{color:var(--accent)}
+
+/* THE CAREER. The owner asked for this page's lead card so that it is obvious
+   who leads this organisation; the timeline is the reason that card exists,
+   so it goes with the card rather than somewhere else on the page. It is the
+   same plate at the same radius at the same width, stacked under it on the
+   row's own 16px, so the two read as one masthead and not as a card plus an
+   appendix.
+
+   THE LOGO SLOT IS DELIBERATELY EMPTY, and that is a decision rather than an
+   omission. The owner asked for organisation marks on these rows. LinkedIn
+   serves all five at 100x100, which is a blurred smear at any size this row
+   would paint, and two of the five — MIT and The George Washington University
+   — publish trademark policies that a redrawn or resampled mark would be in
+   breach of. So the row is built to be handsome with nothing in the slot:
+   a date column, a role, an organisation set as a name and not as a picture.
+   tools/build-pages.mjs looks for site/assets/orgs/<slug>.{svg,png} on every
+   run and emits an <img class="tline-mark"> in front of the name for any file
+   it finds, and nothing at all for the ones it does not. Drop an official file
+   in and the mark appears; no other edit anywhere.
+
+   The rule and the date column are .epast's, which is this site's existing
+   answer to "a list of dated things": 11em of uppercase .75rem, a hairline
+   between rows, no box around each entry. */
+.tline{
+  width:100%;max-width:816px;
+  background:var(--surface);border-radius:10px;
+  padding:clamp(20px,2.6vw,32px);
+}
+.tline-cap{margin-bottom:clamp(18px,2.4vw,28px);color:var(--text-70)}
+.tline-row{
+  display:grid;grid-template-columns:11.5em 1fr;gap:2px 24px;align-items:baseline;
+  padding:16px 0;border-top:1px solid var(--rule);
+}
+.tline-row:first-child{border-top:0;padding-top:0}
+.tline-when{
+  font-size:.75rem;font-weight:400;line-height:1.5;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--text-70);
+}
+/* The one live row. The same 6px accent dot the hero eyebrow uses for the same
+   job — saying which of these is happening now — rather than a second colour
+   or a second weight in a column that has neither.
+   It HANGS: -14 + 6 + 8 is zero, so the dot costs the line no inline width and
+   all five dates keep one left edge. A marker that pushes its own row out of
+   the column it is marking is worse than no marker. 14px of hang against the
+   plate's 20px of padding at its narrowest, so it never leaves the card. */
+.tline-when .dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);margin-left:-14px;margin-right:8px;vertical-align:.08em;
+}
+.tline-role{font-size:clamp(1rem,1.3vw,1.0625rem);font-weight:500;line-height:1.4;
+  letter-spacing:-.01em;color:var(--text-94)}
+.tline-org{font-size:.9375rem;line-height:1.5;color:var(--text-70);margin-top:2px}
+/* The slot, sized off the line it sits on rather than off a px number, so a
+   mark that does land is the height of the name beside it at every width. */
+.tline-mark{display:inline-block;height:1.15em;width:auto;
+  margin-right:.5em;vertical-align:-.22em}
+.tline-note{font-size:.875rem;line-height:1.5;color:var(--text-75);
+  margin-top:8px;max-width:52ch}
+.tline-foot{font-size:.875rem;line-height:1.5;color:var(--text-75);
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule)}
+/* One column below 700: an 11.5em date column against a 350px card is two
+   thirds of the row, and the roles here are long. The date goes above its own
+   role, which is the shape this list has on a phone everywhere else. */
+@media (max-width:699px){
+  .tline-row{grid-template-columns:1fr;gap:6px}
+  .tline-when{margin-bottom:2px}
+}
+@media (max-width:799px){.tline{max-width:400px}}
 
 /* ─── §13 take a seat — the membership page's perk marquee ──────────────── */
 
@@ -1668,6 +1820,15 @@ html.motion .rv-t.in{filter:blur(0);transition:opacity .5s var(--ease-2),filter 
    inline-block, and it is the only reason `text-wrap:balance` still works. */
 .wd{display:inline-block}
 html.motion .rv-t.split{opacity:1;filter:none}
+/* The one thing in a split headline that is not a glyph. splitChars only walks
+   text, so the inline pill is left at full opacity while the sentence around it
+   blurs in — an element popping into a headline that is still arriving. It
+   takes the same 500ms curve, delayed to roughly the middle of the stagger, so
+   it arrives with the words it sits between. Scale rather than travel: this box
+   is inside a line of type and 8px of blur on a 100x56 video is a smear. */
+html.motion .thero-pill{opacity:0;transform:scale(.86)}
+html.motion .thero-h.in .thero-pill{opacity:1;transform:none;
+  transition:opacity .5s var(--ease-2) .28s,transform .5s var(--ease-2) .28s}
 html.motion .split .ch{display:inline-block;opacity:0;filter:blur(8px)}
 html.motion .split.in .ch{opacity:1;filter:blur(0);
   transition:opacity .5s var(--ease-2),filter .5s var(--ease-2)}
@@ -1754,7 +1915,8 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   html{scroll-behavior:auto}
   html.motion .rv,html.motion .rv.in{opacity:1;transform:none;filter:none;transition:none}
   html.motion .split .ch,html.motion .nav,html.motion .hero .hero-eyebrow,
-  html.motion .hero .hero-aside>*,html.motion .hero .hero-time{
+  html.motion .hero .hero-aside>*,html.motion .hero .hero-time,
+  html.motion .thero-pill{
     opacity:1;transform:none;filter:none;transition:none;animation:none}
   .mrow,.perks-row{animation:none}
   .fcol{transform:none!important}

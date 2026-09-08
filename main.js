@@ -748,6 +748,32 @@
      being fetched eagerly, 168 KB of images two screens below the fold. The
      selector and the regex both have to know about it, or the source derivation
      below silently stops finding these videos and they stay still images. */
+  /* §10a — /team/'s inline pill ------------------------------------------
+     The hero on /team/ sets a looping clip inside the sentence. What ships in
+     the markup is the still, because a <video> in a document with scripting
+     disabled gets user-agent controls whether or not it asked for them —
+     Chromium draws a play triangle, a mute button and a scrub bar, which on a
+     decorative aria-hidden loop is a set of promises the element cannot keep.
+     So the element is built here, from the still that is already correct, and
+     only when it is going to move: a visitor on prefers-reduced-motion keeps
+     the image and never has a video element at all. Everything after this
+     line then treats it as one more tile — the same derivation, the same
+     observer, the same play-on-screen. */
+  if (!calm) qa('.thero-pill[data-clip]').forEach(pill => {
+    const still = pill.querySelector('img');
+    if (!still) return;
+    const v = document.createElement('video');
+    v.muted = v.loop = v.playsInline = true;
+    v.preload = 'none';
+    v.disablePictureInPicture = true;
+    v.setAttribute('aria-hidden', 'true');
+    v.width = still.width; v.height = still.height;
+    v.poster = still.currentSrc || still.src;
+    v.src = pill.dataset.clip;
+    v.dataset.src = pill.dataset.clip;      /* so the derivation below stops */
+    pill.append(v);
+  });
+
   qa('video[poster],video[data-poster]').forEach(v => {
     if (v.querySelector('source') || v.dataset.src) return;
     const m = (v.dataset.poster || v.getAttribute('poster') || '')

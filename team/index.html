@@ -102,9 +102,28 @@
 <!-- ─── the team ────────────────────────────────────────────────────────── -->
 <section class="band" id="team" aria-labelledby="team-h">
   <div class="wrap">
-    <div class="opener">
-      <h1 class="title rv rv-t" id="team-h">The <span class="em">team</span>.</h1>
-      <p class="desc rv rv-l" data-d="1">Saul Perez leads Catholic Leaders in Action. He is one of its four co-founders.</p>
+    <!-- The hero is sequel.co/founders' hero, measured rather than described:
+         a centred sentence with one serif-italic word, a looping clip set into
+         the line itself, and a small underlined CTA beneath. Every ratio and
+         the reasoning are in styles.css §12d.
+         The pill is decoration and says so: aria-hidden, no href, no play
+         triangle.
+         WHAT SHIPS IN THE MARKUP IS THE STILL, and the <video> is built by
+         main.js §10a. The HTML spec tells a user agent to expose media
+         controls of its own when scripting is disabled, and Chromium does:
+         a <video> here put a play triangle, a mute button, a fullscreen
+         button, a kebab menu and a scrub bar inside the headline for every
+         visitor with JavaScript off. A control on a thing that cannot be
+         played is the one claim this pill must not make, and the still makes
+         none of them. It also means no video element and no video bytes at
+         all for a visitor who has asked for reduced motion — the clip is
+         built only when it is going to move. -->
+    <div class="thero">
+      <h1 class="thero-h rv rv-t" id="team-h">We run Catholic Leaders in Action on <span class="em">hospitality,</span>
+        <span class="thero-pill" aria-hidden="true" data-clip="../assets/video/team-pill.mp4"><img
+          src="../assets/video/team-pill-poster.webp" width="228" height="128" alt="" decoding="async"></span>
+        teaching, service &amp; a room worth walking into.</h1>
+      <a class="thero-cta rv rv-c" data-d="1" href="/events/">Come to an evening</a>
     </div>
   </div>
 
@@ -121,6 +140,48 @@
           <p class="role">President <span class="sep">·</span> Co-founder</p>
           <p class="note">Social Action and Digital Media Coordinator, Office of Human Life &amp; Dignity, Archdiocese of San Francisco.</p>
         </div>
+      </div>
+      <div class="tline rv rv-b" data-d="1">
+        <p class="label tline-cap">Saul Perez <span class="sep">·</span> Career</p>
+        <ol class="tline-list">
+        <li class="tline-row">
+          <p class="tline-when"><span class="dot" aria-hidden="true"></span><time datetime="2024-03">Mar 2024</time> — Present</p>
+          <div class="tline-what">
+            <p class="tline-role">Social Action and Digital Media Coordinator</p>
+            <p class="tline-org">Archdiocese of San Francisco</p>
+            <p class="tline-note">Leads partnerships with Catholic Charities San Francisco and the University of San Francisco School of Law on community outreach, legal education and resource fairs.</p>
+          </div>
+        </li>
+        <li class="tline-row">
+          <p class="tline-when"><time datetime="2023-02">Feb</time> — May 2023</p>
+          <div class="tline-what">
+            <p class="tline-role">Government Relations Intern</p>
+            <p class="tline-org">Vita Inclinata Technologies</p>
+          </div>
+        </li>
+        <li class="tline-row">
+          <p class="tline-when"><time datetime="2023-01">Jan</time> — May 2023</p>
+          <div class="tline-what">
+            <p class="tline-role">Pro bono Consultant, Graduate Capstone Research</p>
+            <p class="tline-org">Virginia Department of Emergency Management</p>
+          </div>
+        </li>
+        <li class="tline-row">
+          <p class="tline-when"><time datetime="2022-08">Aug</time> — Dec 2022</p>
+          <div class="tline-what">
+            <p class="tline-role">Instructor</p>
+            <p class="tline-org">The George Washington University, Columbian College of Arts &amp; Sciences</p>
+          </div>
+        </li>
+        <li class="tline-row">
+          <p class="tline-when"><time datetime="2020-01">Jan 2020</time></p>
+          <div class="tline-what">
+            <p class="tline-role">Policy Research Intern</p>
+            <p class="tline-org">Massachusetts Institute of Technology</p>
+          </div>
+        </li>
+        </ol>
+        <p class="tline-foot">He holds a Master of Public Administration.</p>
       </div>
     </li>
     <li class="ccard rv rv-b" data-d="0">
