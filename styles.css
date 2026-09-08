@@ -1141,18 +1141,18 @@ picture{display:contents}
    photo.
 
    Nothing in the ROW below keys a height, width, colour, weight or font to a
-   person or a position. Saul used to lead on position and content alone: he is
-   named in the description, he is the first <li>, and he is the only one with a
+   person or a position. Saul leads on position and content alone: he is named
+   in the description, he is the first <li>, and he is the only one with a
    second verified line, which under align-items:stretch sets his row — the
    mechanism REFERENCE.md §3 measured on the reference.
 
-   THAT IS NO LONGER THE WHOLE STORY, and the change is deliberate rather than
-   drift. The owner asked, in those words, that Saul have his own dedicated card
-   so that it is obvious he is the one who leads this organisation. That is an
-   explicit override of §3's finding, and it is recorded here rather than
-   quietly applied: the reference does not promote a founder, this page now
-   does, and the instruction to do it came from the person whose organisation it
-   is. `.ccard--lead` at the foot of this block is the whole of it. */
+   A `.ccard--lead` variant lived here briefly: a wider, two-column card built
+   on the owner's explicit instruction to give Saul a visibly bigger card. He
+   then asked, separately, that the page match sequel.co/founders exactly —
+   and the reference promotes no one, verified independently three times, so
+   the two instructions could not both hold. Put to him directly, he chose
+   parity with the reference. The uniform row below is that choice; nothing
+   in this file still reads `.ccard--lead`. */
 
 /* Not a grid: a wrapping flex row of fixed columns, centred, like .voices.
    3 x 400 + 2 x 16 is 1232px against a 1136px content column, so the row lives
@@ -1307,50 +1307,11 @@ picture{display:contents}
    align-items:flex-end then drops the identity block onto the card's bottom
    padding, on the portrait's own bottom edge. The air collects at the top
    right, where a masthead's air belongs, rather than beside the type. */
-/* The slot takes the whole flex line and now stacks two things in it: the card
-   and, on the row's own 16px, the career that is the reason the card exists.
-   Column direction, so `justify-content:center` becomes `align-items:center`;
-   the card's own width:100%/max-width:816px is untouched by the change. */
-.lead-slot{flex:0 1 100%;display:flex;flex-direction:column;align-items:center;gap:16px}
-.ccard--lead{
-  width:100%;max-width:816px;
-  flex-direction:row;align-items:center;
-  gap:clamp(20px,2.6vw,40px);
-}
-.ccard--lead .cface{
-  flex:0 0 clamp(240px,52%,400px);
-  min-height:0;aspect-ratio:5/6;
-  margin:-20px 0 -20px -20px;
-  border-bottom:0;border-inline-end:1px solid var(--rule);
-}
-/* The monogram is drawn against a plate half again as tall as the row's, so it
-   steps up with it — the same crop off the bottom edge, at the size this box
-   asks for. It stays inside 400px of plate at every width. */
-.ccard--lead .cface::before{font-size:clamp(8rem,16vw,15rem)}
-/* A measure, not a margin. The note is the longest line on the page; given the
-   whole of the card's right half it would set at ~60ch and read as a paragraph
-   of body copy rather than as the second line of an identity. */
-.ccard--lead .ccard-in{flex:1 1 auto;max-width:46ch}
-
-/* On one column the rotation has nowhere to go — a 350px card cannot hold a
-   portrait beside three lines without making the lead's face SMALLER than the
-   five below it, which is the opposite of what this card is for. So the phone
-   keeps the stacked card and promotes the plate instead: 5/6 of the card's full
-   width, 350x420 against the row's 350x200 band. His portrait is still the
-   largest object in the section by a distance, he is still alone at the top of
-   it, and the card is still the only one of the six the page had to describe
-   twice. The one-column card also cannot outgrow the reveal threshold main.js
-   §3 watches at 0.3 — at 390 it is 598px against a 675px ceiling — so it
-   reveals on the same rule as the other five and not on the tall-element
-   fallback. */
-@media (max-width:799px){
-  .ccard--lead{max-width:400px;flex-direction:column;align-items:stretch}
-  .ccard--lead .cface{
-    flex:0 0 auto;margin:-20px -20px 20px;
-    border-inline-end:0;border-bottom:1px solid var(--rule);
-  }
-  .ccard--lead .ccard-in{max-width:none}
-}
+/* .lead-slot and .ccard--lead lived here: a wider two-column card wrapping
+   Saul and his career together. Removed when the owner chose reference parity
+   over the promoted card — see the note at the top of this section. The career
+   itself did not go with it; .tline below is now a plain sibling of .crew,
+   centred under the grid at the same measure the card used to sit at. */
 
 /* ─── §12c the subpages ─────────────────────────────────────────────────────
    /events/ and /team/ are the site's first pages that are not the home page.
@@ -1579,7 +1540,8 @@ main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
    answer to "a list of dated things": 11em of uppercase .75rem, a hairline
    between rows, no box around each entry. */
 .tline{
-  width:100%;max-width:816px;
+  width:min(816px,100% - 2 * clamp(20px,5vw,32px));margin-inline:auto;
+  margin-top:clamp(40px,6vh,72px);
   background:var(--surface);border-radius:10px;
   padding:clamp(20px,2.6vw,32px);
 }
