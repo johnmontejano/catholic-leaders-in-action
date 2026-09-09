@@ -1454,7 +1454,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    3.4:1 — a scrim strong enough to fix it would have been dark enough to be
    the point of the picture. --chip under --text-75 is 6.2:1 over any frame
    that will ever go here, because the frame is not underneath it. */
-.ephoto figcaption{position:absolute;z-index:1;left:12px;top:12px}
+.ephoto figcaption,.hubphoto figcaption{position:absolute;z-index:1;left:12px;top:12px}
 
 /* At 900 the lead card is wide enough that a full-bleed band would make a
    letterbox of a portrait negative and push the RSVP below the fold on a
@@ -2066,6 +2066,16 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .fine{font-size:.75rem;line-height:1.45;color:var(--text-70);max-width:var(--measure)}
 #instead .desc{margin-top:20px}
 #instead .rv-c{margin-top:24px}
+
+/* The hub page's one photograph. Borrows .ephoto's shape rather than inventing
+   a second figure: same 3:2, same radius, same cover, same .badge in the same
+   corner. It only differs in being full-measure instead of a card's 60%. */
+.hubphoto{position:relative;margin:clamp(40px,6vh,64px) auto 0;overflow:hidden;
+  border-radius:10px;background:var(--chip);aspect-ratio:3/2;
+  width:100%;max-width:1136px}
+.hubphoto>picture>img{display:block;width:100%;height:100%;
+  object-fit:cover;object-position:var(--op,50% 50%)}
+@media (max-width:759px){.hubphoto{aspect-ratio:4/3}}
 
 /* ─── §13 take a seat — the membership page's perk marquee ──────────────── */
 
