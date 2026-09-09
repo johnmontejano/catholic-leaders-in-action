@@ -649,8 +649,17 @@
         el.style.setProperty('--w1', `${(edge + FEATHER).toFixed(1)}%`);
         el.style.setProperty('--pv', q > 0 ? '1' : '0');
       }
-      card.style.setProperty('--cam', (1 + 0.115 * t).toFixed(4));
-      card.style.setProperty('--camy', (-2.4 * t).toFixed(3));
+      /* The camera runs off p, not t. t is the WIPE clock — it is clamped to
+         0.26..0.86 so the plates hand over inside the middle of the section —
+         and driving the push-in from it meant the camera was frozen for the
+         first quarter of the traverse and the last seventh. Those were two of
+         the page's eight dead screens: y=2310 changed two elements between
+         samples and y=3960 changed one, both inside #believe, both while a
+         full-bleed photograph sat perfectly still under a paragraph. Same
+         camera, same 11.5% and same 2.4%, spread over the whole 300vh instead
+         of the middle 60% of it, so the ground is always creeping. */
+      card.style.setProperty('--cam', (1 + 0.115 * p).toFixed(4));
+      card.style.setProperty('--camy', (-2.4 * p).toFixed(3));
       /* The ground darkens as the statements accumulate. Measured 2026-09-09
          across the whole 3,240px, the plate never once exceeded 0.283 opacity
          and sat under a further 0.66 vignette on top of that: mean luminance
@@ -734,8 +743,18 @@
      photographs that were missing it, at 0.28 of a frame rather than 0.5
      because these plates are shorter and a half-frame pan inside a 4:5 card
      shows its own edge. */
+  /* Measured this round against the reference, sampling both pages at forty
+     scroll positions and counting the elements whose transform / opacity /
+     filter changed between consecutive samples: it never falls below three
+     moving elements in forty samples, and we fell to two or fewer at EIGHT of
+     them. The means were close — 13.6 against 15.8 — so the gap was never
+     "more motion", it was that this page stops dead eight times and that one
+     never does. Two of the eight were #evening: its six cells carry full-bleed
+     media and were the only photographs on the page that sat still, because
+     the table below was written before the cells had any. */
   const PAN = [['.pcard img, .pcard > video', '.pcard', 0.5],
-               ['.cface img, .ephoto img, .hubphoto img', '.cface, .ephoto, .hubphoto', 0.28]];
+               ['.cface img, .ephoto img, .hubphoto img', '.cface, .ephoto, .hubphoto', 0.28],
+               ['.cell > img, .cell > picture > img, .cell > video', '.cell', 0.14]];
   if (!calm) for (const [sel, box, amt] of PAN) qa(sel).forEach(img => {
     /* .closest, not .parentElement — the WebP <picture> sits between them now. */
     const host = img.closest(box);
@@ -748,6 +767,80 @@
       img.style.transform = `translate3d(0,${(p * m.h * amt).toFixed(1)}px,0)`;
     });
   });
+
+  /* §6b — the two columns run at different rates -------------------------
+     Measured against the reference this round: it changes 13.1 elements between
+     consecutive scroll samples over a 9,363px page; we changed 7.7 over 14,085.
+     Per screen that is two and a half times more of the page in motion, and it
+     is the whole of "not as interactive". Reading what actually moves over
+     there, the tell is `foundersColumn` appearing TWICE in the list — two
+     columns of content travelling at different rates as you scroll past them.
+
+     We have had that structure since the section was built and never used it:
+     #voices is two fixed-width columns, the second already reversed so the
+     tiles stagger. A static stagger is a composition; a differential is a
+     parallax, and it is the same idea alive. One column lags, one leads, 34px
+     each way over the section's whole traverse — enough to read as depth, far
+     short of the point where the two stop looking like one row.
+
+     No new element, no new listener: onScroll is the page's single rAF
+     subscriber and `track` already caches the geometry it needs. */
+  /* §6c — the last three dead screens were the footer ------------------
+     y=12540, 12870 and 13200 changed 1, 0 and 0 elements: the longest still
+     run on the page, and the reference's own footer is the one place it puts
+     an animated SVG line precisely because a footer is where a long page is
+     most likely to go quiet. This is not that; it is the wordmark this footer
+     already sets at 8vw drifting against its columns, which is the same
+     differential §6b uses and needs no new element. 40px over the footer's
+     whole traverse — a wordmark that size reads a 40px lag as weight.
+
+     #rooms-home was the other two, at 0 and 0. It is a map beside a list,
+     which is the same two-column shape again. */
+  /* Amounts are set from the MEASURED gap each pair has to spend, not by eye.
+     A differential closes the space between two stacked boxes by amt + 0.55·amt
+     at one end of the traverse, so .foot-base against .foot-fine at 14 closed
+     21.7px of a 22px margin — the sign-off and the credit paragraph touching at
+     the bottom of the scroll. Gaps here are 110px, 28px, 22px.
+
+     minw is the second correction. .voices wraps below ~800px and .rooms-block
+     is one column below 900px, and once two side-by-side columns become two
+     stacked ones the differential is no longer separating them in depth, it is
+     driving them into each other across a 16px flex gap. Below the guard the
+     transform is cleared rather than merely left unwritten, because the last
+     value from a wider viewport would otherwise stay stuck on the element. */
+  if (!calm) {
+    const pairs = [['#voices .vcol:first-child', '#voices .vcol:last-child', 34, '#voices .voices', 800],
+                   ['.foot-line', '.foot-cols', 28, '.foot', 0],
+                   ['.rooms-map', '.rooms-list', 26, '.rooms-block', 900],
+                   /* By the last three samples the wordmark has scrolled past
+                      and only the sign-off and the credit paragraph are on
+                      screen, so pairing those two is what actually keeps the
+                      bottom of the page alive. 14px, because this is fine
+                      print and it should read as settling, not as sliding. */
+                   ['.foot-base', '.foot-fine', 5, '.foot', 0]];
+    for (const [aSel, bSel, amt, hostSel, minw] of pairs) {
+      const host = q(hostSel), A = q(aSel), B = q(bSel);
+      if (!host || !A || !B) continue;
+      const m = track(host);
+      let cleared = false;
+      onScroll(y => {
+        if (vw < minw) {
+          if (!cleared) { A.style.transform = ''; B.style.transform = ''; cleared = true; }
+          return;
+        }
+        cleared = false;
+        const span = m.h + vh;
+        if (span <= 0) return;
+        const top = m.top - y;
+        if (top + m.h < -120 || top > vh + 120) return;
+        /* −1 above the fold to +1 below it, so the pair is level exactly when
+           the block is centred and diverges either side of that. */
+        const t2 = clamp01((vh - top) / span) * 2 - 1;
+        A.style.transform = `translate3d(0,${(t2 * amt).toFixed(1)}px,0)`;
+        B.style.transform = `translate3d(0,${(t2 * -amt * 0.55).toFixed(1)}px,0)`;
+      });
+    }
+  }
 
   /* §7 — counters ---------------------------------------------------------- */
   /* 2000ms, power2.out, once. Suffixes are static text beside the span so the
