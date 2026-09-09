@@ -1562,7 +1562,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    the part that actually reads at 100x56 — a moving inlay in the middle of a
    sentence. */
 .thero{
-  --h1:clamp(1.9rem,3.9vw,4rem);
+  /* The floor was 1.9rem, so at 390 and again at 768 the page's own name set
+     at 30.4px underneath its 32px section heads -- the same inversion /events/
+     had. 2.25rem keeps it above them at every width; the 3.9vw slope and the
+     4rem cap, which were measured against the reference, are unchanged. */
+  --h1:clamp(2.25rem,3.9vw,4rem);
   text-align:center;display:grid;justify-items:center;
 }
 .thero-h{
