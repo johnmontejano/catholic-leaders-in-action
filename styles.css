@@ -152,6 +152,28 @@
   --t-resp:.16s;
   --ease-out-quad:cubic-bezier(.25,.46,.45,.94);  /* power2.out — the response */
 
+  /* ASYMMETRIC HOVER, 2026-09-09. Every hover on this page ran the same curve
+     and the same duration in both directions, which is the single most common
+     tell of a competently-built site rather than an expensive one: a pointer
+     arriving and a pointer leaving are not the same event, and the winners
+     treat them differently without exception — ERA uses an ease-IN curve
+     nineteen times and every one of them is an exit.
+     The rule: IN decelerates and takes its time (it is arriving, and it should
+     look like it settled); OUT accelerates and is shorter (it is leaving, and a
+     slow exit reads as the interface not letting go). Applied by putting the
+     OUT values on the resting rule and the IN values on :hover, which is the
+     direction CSS transitions actually work in and costs no extra rule.
+
+     Two tiers, because this page has two kinds of hover and one pair of
+     numbers cannot serve both. A RESPONSE — a colour, an opacity, an arrow —
+     must stay inside the 160ms this file already argues hard for, or it stops
+     reading as material and starts reading as an animation. A MATERIAL move —
+     a photograph scaling inside its card, a plate changing shape — is the one
+     the winners run at 600/400, and at 160ms it would look like a twitch. */
+  --t-in:.16s;      --ease-in-soft:cubic-bezier(.25,1,.5,1);
+  --t-out:.11s;     --ease-out-hard:cubic-bezier(.5,0,.75,0);
+  --t-mat-in:.6s;   --t-mat-out:.4s;
+
   /* The one number the whole page's rhythm comes from, and the one that spoils
      it: the pinned stage centres a 16:9 card in a 100svh box, so there is an
      empty half-band above and below it that stacks on the neighbouring
@@ -631,8 +653,20 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
 /* The signature curve is reserved for links. The arrow is a mechanism, and it
    was running the 735ms link curve compressed into 300ms; it now runs on the
    response clock with the rest of the pill. transform: compositor. */
-.btn .arrow{width:1em;height:1em;flex:none;transition:transform var(--t-resp) var(--ease-out-quad)}
-.btn:hover .arrow{transform:translateX(3px)}
+/* THE ARROW LEADS, 2026-09-09. It travelled 3px, and this project's own motion
+   audit set the threshold at 8: below that a translate is a compositor layer
+   for something nobody sees. 8px, and — the part that is actually the detail —
+   it is STAGGERED against the plate it sits on. The background answers the
+   pointer immediately and the arrow follows it 50ms later, so a button reads as
+   one object with a part that moves rather than as two things timed together;
+   on the way out both leave at once, because a staggered exit reads as
+   hesitation. Fifty milliseconds is under the threshold at which a delay is
+   perceived AS a delay, which is exactly why it works: you do not see the
+   stagger, you see the arrow being carried. */
+.btn .arrow{width:1em;height:1em;flex:none;
+  transition:transform var(--t-out) var(--ease-out-hard)}
+.btn:hover .arrow,.btn:focus-visible .arrow{transform:translateX(8px);
+  transition:transform var(--t-in) var(--ease-in-soft) .05s}
 
 /* Promote the layer at the moment of press, not permanently: a standing
    will-change on nine buttons is nine layers the compositor holds for the life
@@ -2668,6 +2702,23 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    many tiles each column holds, and that is markup, not CSS. Tried and
    reverted 2026-09-09; the note is here so it is not tried again. */
 }
+/* THE WALL'S ARRIVAL — a travelling feathered mask, built and REMOVED
+   2026-09-09. Seventeen stops on easeInOutSine, mask-size 200%, --mask-y
+   registered with @property and swept 100%→0% over 1.2s: correct in every
+   detail and imperceptible on this page, which is a fourth failure mode the
+   research that proposed it does not list. The travelling edge lives in the
+   lower half of the mask, so on an element TALLER than the viewport it spends
+   the whole of its travel below the fold. The wall is 1,495px against a 900px
+   screen. Frozen at 70%, 50% and 30% the three frames are identical.
+   Two things worth keeping from it. mask-position percentages resolve like
+   background-position — offset = (container − mask) × p — and with a mask
+   taller than its container that bracket is negative, so the percentage runs
+   backwards: 0% is revealed, 100% is hidden. And @property is not optional; an
+   unregistered custom property is a token, not a number, and would jump
+   between its endpoints rather than interpolate.
+   To make it work the mask would have to be anchored to the VIEWPORT and
+   scroll-linked rather than to the element — a different effect, and not one
+   this wall needs. */
 /* A percentage mask on a content-sized container scales with the collage: 20%
    of a 1500px wall is 303px of erased photographs at each end. Fixed height. */
 .feed::before,.feed::after{content:'';position:absolute;left:0;right:0;height:clamp(56px,10vh,100px);z-index:2;pointer-events:none}
@@ -2966,4 +3017,59 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   .hero-media{animation:none!important;transform:none!important}
   .hero{animation:none!important;opacity:1!important}
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+
+/* ─── §18 the asymmetry, applied ───────────────────────────────────────────
+   LAST IN THE FILE, and it has to be. Every component declares its own
+   transition, several of them at the same (0,2,0) this needs — .foot-col a's
+   735ms signature curve among them — so at §5 it lost the cascade to half the
+   page and measured identical in both directions. Here it wins by order alone,
+   with no !important and no invented specificity.
+   One pair of rules rather than twenty edits: transition-duration and
+   transition-timing-function are longhands, so setting them here overrides the
+   shorthand each component declares WITHOUT touching its transition-property.
+   Every component keeps deciding what animates; this decides how long it takes
+   and which way the curve leans, in each direction.
+   The resting rule carries the OUT values because that is the state a control
+   returns to, and :hover / :focus-visible carry the IN values. */
+/* NOT the signature-wipe family — .foot-col a, .rooms-more a, .epast li,
+   .tline-row, .rooms-list a. Those run the reference's own 735ms curve and
+   their asymmetry is already the better kind: the rule's transform-origin
+   flips, so it wipes IN from the left and OUT to the right, which is a
+   direction change rather than a duration change and is the thing that was
+   ported. Flattening them to 160ms measured identical to everything else and
+   threw the port away. */
+.btn,.play,.nav-links a,.nav-mark,.socials a,.marks>span,
+.pin .dot,.hpin,.fcard,.vtile,.qtile,.ccard,.ecard,.perk,#city,.sig-in{
+  transition-duration:var(--t-out);
+  transition-timing-function:var(--ease-out-hard);
+}
+.btn:hover,.btn:focus-visible,.play:hover,.play:focus-visible,
+.nav-links a:hover,.nav-mark:hover,.socials a:hover,.marks>span:hover,
+.pin .dot:hover,.pin .dot:focus-visible,
+.fcard:hover,.fcard:focus-visible,.vtile:hover,.qtile:hover,
+.ccard:hover,.ccard:focus-within,.ecard:hover,.ecard:focus-within,
+.perk:hover,#city:hover,#city:focus-visible,.sig-in:focus-visible{
+  transition-duration:var(--t-in);
+  transition-timing-function:var(--ease-in-soft);
+}
+/* The material tier: a photograph moving inside its own frame is not a
+   response and must not be timed like one. */
+.cface>picture>img,.cface>img,.ephoto>picture>img,.ephoto>img{
+  transition-duration:var(--t-mat-out);transition-timing-function:var(--ease-out-hard)}
+.ccard:hover .cface img,.ccard:focus-within .cface img,
+.ecard:hover .ephoto img,.ecard:focus-within .ephoto img{
+  transition-duration:var(--t-mat-in);transition-timing-function:var(--ease-in-soft)}
+
+/* And the press is faster than either, which it has to be: a press is not a
+   transition, it is the interface conceding to a finger, and at 160ms it reads
+   as a delay. This sits after the hover pair above because :active and :hover
+   are both live during a press and carry the same specificity — the later of
+   the two wins, so it has to be this one. */
+.btn:active,.play:active,.fcard:active,.rooms-list a:active,.foot-col a:active{
+  transition-duration:.08s;transition-timing-function:var(--ease-out-hard)}
+@media (hover:none){
+  /* Touch has no hover to precede the press, so the press is the whole of the
+     feedback and needs more of it. */
+  .btn:active{transform:translateY(0) scale(.955)}
 }
