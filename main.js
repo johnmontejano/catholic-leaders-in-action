@@ -13,7 +13,7 @@
 
      §0 smooth scroll §6 the manifesto stage — the page's defining move
      §1 menu          §7 counters
-     §2 nav           §8 partner row   §8c the evening's clock
+     §2 nav           §8 partner row   §8b2 the rooms   §8c the evening's clock
      §3 reveals       §9 the Instagram feed
      §4 clock         §10 video tiles
      §5 countdown     §11 the SMS signup
@@ -748,6 +748,37 @@
      names, both written in the HTML, so there is no track to fill and no
      duration to set. The names live in index.html because they are content.
      Removed: PARTNERS, the [data-track] loop, and @keyframes slide. */
+
+  /* §8b2 — the rooms answer each other -------------------------------------
+     The map and the list are two views of five things and they were two views
+     that had never met: an independent read of the band captured a pin's
+     transform and opacity before and after hovering its row and found them
+     identical, and called the whole block "bolted on" for it — correctly. A
+     list beside a map that does not point at the map is a list printed twice.
+     So: pointing at a room lights its pin, and pointing at a pin lights its
+     row. `data-room` is the venue id build-map.mjs already writes on both
+     sides, so there is nothing to keep in step. Class, not inline style, so the
+     transition lives in CSS with every other one; and it is bound on the LIST,
+     which is where the anchors are, so a keyboard visitor gets it from focus
+     for free without the map holding a single tab stop. */
+  const roomsBlock = q('#rooms-home');
+  if (roomsBlock) {
+    const pinsById = new Map(qa('.hpin', roomsBlock).map(el => [el.dataset.room, el]));
+    const lit = new Set();
+    const light = (id, on) => {
+      const pin = pinsById.get(id);
+      if (pin) pin.classList.toggle('is-lit', on);
+      if (on) lit.add(id); else lit.delete(id);
+    };
+    for (const a of qa('.rooms-list a', roomsBlock)) {
+      const id = a.dataset.room;
+      const on = () => light(id, true), off = () => light(id, false);
+      a.addEventListener('pointerenter', on);
+      a.addEventListener('pointerleave', off);
+      a.addEventListener('focus', on);
+      a.addEventListener('blur', off);
+    }
+  }
 
   /* §8c — the evening's clock ---------------------------------------------
      Three hours over one section, driven by where the section sits in the
