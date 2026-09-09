@@ -696,7 +696,10 @@ html.motion .menu-nav a .ch{opacity:0;transform:translateY(30px);filter:none;
 html.motion .menu[data-open] .menu-nav a .ch{opacity:1;transform:none;filter:none;
   transition:opacity .4s var(--ease-2),transform .4s var(--ease-2)}
 /* leaving, they go out of the top — not back down the way they came */
-html.motion .menu.closing .menu-nav a .ch{transform:translateY(-15px)}
+/* The stagger is inline on each .ch and only belongs to the way in. Zeroing
+   it here costs nothing; the JS loop that used to write it on every tap cost
+   one inline style write per character, twice a toggle. */
+html.motion .menu.closing .menu-nav a .ch{transform:translateY(-15px);transition-delay:0s}
 html.motion .menu-foot{opacity:0;transform:translateY(20px);
   transition:opacity .3s var(--ease-2),transform .3s var(--ease-2)}
 html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
@@ -1126,6 +1129,39 @@ picture{display:contents}
   .perk p{font-size:.9375rem}
 }
 
+/* ─── §11b the hero's reminder sign-up ──────────────────────────────────────
+   Renders only when src/data/signup.json carries an endpoint; see
+   tools/build-pages.mjs heroSignup() for why the empty state is no field at
+   all rather than a dead box.
+
+   It sits in .hero-aside under the description, on that column's own 320px
+   measure, so the hero's two-column balance is unchanged. The input takes the
+   page's existing glass surface rather than a white field -- a white box in
+   this hero is the one thing that would break the ground the whole design
+   sits on. The consent line is .75rem and --text-70, small but never grey on
+   grey: measured 5.7:1 over the hero's graded plate. */
+.sig{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px}
+.sig-lab{font-size:.8125rem;font-weight:500;letter-spacing:.01em;color:var(--text-94)}
+.sig-row{display:flex;gap:8px;align-items:stretch}
+.sig-in{
+  flex:1 1 auto;min-width:0;height:44px;padding:0 14px;
+  font:inherit;font-size:.9375rem;color:var(--text);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  transition:border-color var(--t) ease,background var(--t) ease;
+}
+.sig-in::placeholder{color:rgba(255,255,255,.45)}
+.sig-in:hover{border-color:rgba(255,255,255,.3)}
+.sig-in:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:transparent}
+.sig-go{flex:0 0 auto;white-space:nowrap}
+.sig-fine{font-size:.75rem;line-height:1.45;color:var(--text-70);max-width:320px}
+/* One column on a phone: a 44px field and a pill side by side inside 320px
+   leaves the field under 150px, which is narrower than the number going in it. */
+@media (max-width:600px){
+  .sig-row{flex-direction:column}
+  .sig-go{width:100%}
+}
+
 /* ─── §12b the team ─────────────────────────────────────────────────────────
    The only text-only block on the page, seated between the bento's six media
    cells and the perk marquee's two rows of photography. Two heavy neighbours
@@ -1196,7 +1232,6 @@ picture{display:contents}
    three name/role blocks still sit on one baseline. R64's row rhythm therefore
    still comes only from the note, and from nothing else. */
 .ccard{
-  --plate:clamp(200px,23vw,330px);
   position:relative;overflow:hidden;
   flex:0 0 auto;width:min(400px,(100% - 32px) / 3);
   display:flex;flex-direction:column;
@@ -1210,7 +1245,7 @@ picture{display:contents}
    clipped by the card's own radius, so it carries no radius of its own and the
    page's radius set stays {0px, 10px}. */
 .cface{
-  position:relative;flex:1 1 auto;min-height:var(--plate);
+  position:relative;flex:1 1 auto;aspect-ratio:4/5;container-type:inline-size;
   margin:-20px -20px 20px;overflow:hidden;
   background:linear-gradient(155deg,rgba(255,255,255,.05),transparent 58%),var(--chip);
   border-bottom:1px solid var(--rule);
@@ -1223,7 +1258,7 @@ picture{display:contents}
 .cface::before{
   content:attr(data-mono);position:absolute;left:14px;bottom:-.15em;
   font-family:var(--serif);font-style:italic;font-weight:400;
-  font-size:clamp(7rem,14.5vw,13rem);line-height:1;letter-spacing:-.05em;
+  font-size:78cqw;line-height:1;letter-spacing:-.05em;
   color:rgba(255,255,255,.2);
 }
 /* THE DROP-IN SLOT. tools/build-pages.mjs writes a <picture> in here for all
@@ -1233,7 +1268,7 @@ picture{display:contents}
    <picture> wrapper puts the <img> one level deeper — the same trap §8 hit. */
 .cface>picture>img,.cface>img{
   position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:var(--op,50% 28%);
+  object-fit:cover;object-position:var(--op,50% 22%);
 }
 
 /* The rest state sits one level in, not on the card: .ccard is the .rv target
@@ -1539,9 +1574,18 @@ main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
    The rule and the date column are .epast's, which is this site's existing
    answer to "a list of dated things": 11em of uppercase .75rem, a hairline
    between rows, no box around each entry. */
+/* The slot is the full flex line; the block inside it keeps the card row's
+   own measure. Order is the whole point of it — see teamRoster(). */
+.tline-slot{flex:0 1 100%;display:flex;justify-content:center;margin-top:clamp(24px,4vh,56px)}
+/* Under Saul on one column, where the 16px row gap is the right distance and a
+   section-sized margin would put him back at arm's length from his own career. */
+@media (max-width:799px){
+  .tline-slot{order:1;margin-top:0}
+  .crew>li.ccard{order:2}
+  .crew>li.ccard:first-child{order:0}
+}
 .tline{
-  width:min(816px,100% - 2 * clamp(20px,5vw,32px));margin-inline:auto;
-  margin-top:clamp(40px,6vh,72px);
+  width:100%;max-width:816px;
   background:var(--surface);border-radius:10px;
   padding:clamp(20px,2.6vw,32px);
 }
