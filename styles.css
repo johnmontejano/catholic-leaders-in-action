@@ -1114,9 +1114,16 @@ picture{display:contents}
    compositor work, no main-thread work — present identically on touch, under
    prefers-reduced-motion (where §17 stacks the five statements and the shade
    grows with the box), and with scripts off. */
+/* .26 was solved against a plate held at 0.5 opacity. --veil is a brightness now
+   and runs 0.92 down to 0.74, so the ground under these words is roughly twice
+   as bright as the one this number was measured on, and the first statement
+   over the vault's rose window came to 1.21:1 — the lowest contrast anywhere
+   on the site, on its largest body of type. .52, and the mask is unchanged:
+   still nothing solid until 40%, still no edge to see, still the falloff of the
+   room's own light. */
 .believe-lines::before{
   content:'';position:absolute;inset:-2.4em -14%;z-index:-1;pointer-events:none;
-  background:rgba(0,0,0,.26);
+  background:rgba(0,0,0,.52);
   -webkit-mask:radial-gradient(closest-side ellipse at 50% 50%,#000 0%,#000 40%,transparent 100%);
   mask:radial-gradient(closest-side ellipse at 50% 50%,#000 0%,#000 40%,transparent 100%);
 }
@@ -1199,7 +1206,16 @@ picture{display:contents}
    phone — a 390px viewport divided four ways is a 78px card, which is how the
    third and fourth ran off the screen. */
 @media (max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:600px){.stats{grid-template-columns:1fr;max-width:400px}}
+/* max-width without an inline margin is left-aligned, so at 390 the one-column
+   stat stack sat in a 350px box against a 390px viewport and centred on x=142
+   instead of 175 — 52.5px off, on the one band of the page that is nothing but
+   alignment. And aspect-ratio:1 survives into this block, which is what made a
+   350px-wide cell 350px tall for two lines of text; a square is a four-across
+   shape and there is nothing across here. */
+@media (max-width:600px){
+  .stats{grid-template-columns:1fr;max-width:400px;margin-inline:auto}
+  .stat{aspect-ratio:auto;min-height:clamp(160px,42vw,190px)}
+}
 .stat{
   /* flex-end, not space-between: the badge and the number were 100px apart in
      a 282px square — 36% of the cell as a hole. .pcard and .cell already stack

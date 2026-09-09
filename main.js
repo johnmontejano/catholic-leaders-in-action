@@ -265,13 +265,39 @@
        pixel of scroll and leaves the home page's fold exactly as it was. */
     const heroEl0 = q('.hero');
     const groundAt = () => (heroEl0 ? heroEl0.offsetHeight - 72 : 8);
+    /* AND NOT OVER A FULL-BLEED PICTURE. A ground fixes the collision and, laid
+       over the manifesto's plates or the photo wall, it also lays a 122px black
+       letterbox across the top of a picture that runs to the edge of the
+       screen — which is a worse fault than the one it fixes, and not one the
+       reference has, because the reference's bar is transparent over film
+       everywhere. So the ground asks what is actually beneath it: two hit tests
+       down the middle of the bar, and if either lands inside something marked
+       data-bleed the bar goes back to being a lens shade over the picture.
+       Geometry, not elementFromPoint: the bar is not pointer-events:none — the
+       reference's is and ours cannot be, because the whole bar is a target —
+       so a hit test down the middle of it returns the BAR, every time, and the
+       check silently never fires. Measured that way it reported 0 of 120.
+       Marked: the manifesto's stage and the photo wall — the two blocks that
+       are pure picture to their own top edge. NOT the perk marquee: its cards
+       are only 306px tall and each carries a caption, so a bar without a ground
+       over that band puts the caption straight back under the links, which is
+       the fault this whole mechanism exists to remove. Measured: marking it
+       took the collisions from 2 to 6. */
+    const bleeds = qa('[data-bleed]');
+    const overBleed = () => {
+      for (const el of bleeds) {
+        const r = el.getBoundingClientRect();
+        if (r.top < 96 && r.bottom > 0 && r.width > 8) return true;
+      }
+      return false;
+    };
     onScroll(y => {
       const d = y - last;
       if (Math.abs(d) > 6) {
         nav.toggleAttribute('data-hide', d > 0 && y > 160);
         last = y;
       }
-      nav.toggleAttribute('data-ground', y > groundAt());
+      nav.toggleAttribute('data-ground', y > groundAt() && !overBleed());
     });
   }
 
@@ -420,6 +446,17 @@
     if (firstScreen.length) {
       requestAnimationFrame(() => firstScreen.forEach(el => el.classList.add('in')));
     }
+    /* FOCUS REVEALS. A .rv block that has not been scrolled to is at opacity 0,
+       and a keyboard visitor can reach the controls inside it before the
+       observer ever fires — measured, five across the four pages, including
+       "See the format" and "See the events". The focus ring was correct and
+       painted on nothing. Focus is the same statement of intent that scrolling
+       into view is, so it reveals the same way. Capture phase, one listener on
+       the document, and it cannot fire twice because `.in` is checked first. */
+    addEventListener('focusin', (e) => {
+      const host = e.target instanceof Element && e.target.closest('.rv');
+      if (host && !host.classList.contains('in')) host.classList.add('in');
+    }, true);
     items.forEach(el => {
       if (el.classList.contains('in')) return;
       /* Anything taller than the viewport can never reach 30%; watch those at 0. */
