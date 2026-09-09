@@ -398,6 +398,11 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
    next character back: at the hero's 57.6px that is -2.88px against a 1.15px
    margin, and the period collided with the italic. */
 .hero h1 .em,.foot-line .em{margin-left:.25em;margin-right:.08em}
+/* Same collision, and .title is where it shows most: every subpage heading
+   ends "the <em>lecture</em>." and the italic's -.05em tracking pulled the
+   period into the l. Only the trailing side needs correcting here -- .em's
+   own .15em left margin is right at this size. */
+.title .em{margin-right:.08em}
 .believe-lines .em{margin:0 .1em}
 
 /* Section heading. 32px at every desktop width — see the note at the top. */
@@ -1245,7 +1250,7 @@ picture{display:contents}
    clipped by the card's own radius, so it carries no radius of its own and the
    page's radius set stays {0px, 10px}. */
 .cface{
-  position:relative;flex:1 1 auto;aspect-ratio:4/5;container-type:inline-size;
+  position:relative;flex:0 0 auto;aspect-ratio:4/5;container-type:inline-size;
   margin:-20px -20px 20px;overflow:hidden;
   background:linear-gradient(155deg,rgba(255,255,255,.05),transparent 58%),var(--chip);
   border-bottom:1px solid var(--rule);
@@ -1371,6 +1376,9 @@ main.sub>.band:first-of-type{padding-block-start:clamp(64px,12vh,120px)}
    rhythm scaled to the amount of matter it separates; the token itself is
    untouched and the home page is not affected. */
 main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
+/* A section cannot close on the 16px that belongs to its own last row. The
+   reference leaves 90px under its final band before the footer starts. */
+main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .page-head{margin-bottom:clamp(40px,6vh,60px)}
 
 /* One column below 800, two at and above it. Six people wanted three columns
