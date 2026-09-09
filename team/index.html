@@ -24,6 +24,20 @@
   <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 
+<!-- Five pages, ten links between them, and every navigation was a 95ms white
+     hard cut because the browser started from nothing each time. Speculation
+     rules let it start earlier: `moderate` fires on a 200ms hover or a
+     pointerdown, which is after intent and before the click, and `prerender`
+     means the next page is already painted when the click lands.
+     This is not a page transition — MOTION.md §8.8 rules those out by name and
+     that still stands. Nothing here is visible, nothing animates, and a browser
+     that does not support it ignores the block and navigates exactly as before.
+     Same-origin only, and the two external RSVP links are excluded by not being
+     same-origin in the first place. -->
+<script type="speculationrules">
+{"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"selector_matches":"[rel~=nofollow]"}}]},"eagerness":"moderate"}]}
+</script>
+
 <link rel="canonical" href="https://catholicleadersinaction.org/team/">
 <link rel="icon" href="../assets/brand/mark-64.png" sizes="64x64" type="image/png">
 <link rel="icon" href="../assets/brand/mark-256.png" sizes="256x256" type="image/png">
@@ -47,11 +61,20 @@
     <svg class="mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="0.7" y="15" width="3.6" height="8" rx=".3"/><rect x="5.6" y="11" width="3.6" height="12" rx=".3"/><rect x="10.3" y="1.2" width="3.8" height="21.8" rx=".3"/><rect x="6.7" y="5.4" width="11" height="3.2" rx=".3"/><rect x="15.2" y="11.5" width="3.6" height="11.5" rx=".3"/><rect x="20.1" y="15.5" width="3.2" height="7.5" rx=".3"/></svg>
     <span>Catholic Leaders in Action</span>
   </a>
+  <!-- THE PAGES, 2026-09-09. This carried Events, The record, Voices and The
+       team: two whole pages and two anchors into a section of the home page,
+       mixed, while /start/ — a fifth page with a map on it — appeared only in
+       the mobile menu. A visitor on a laptop could not reach it from the bar at
+       all, and the eight-destination menu underneath said so.
+       A primary bar names destinations. The three pages are the destinations;
+       the anchors are section links and they already live where section links
+       live, in the footer's Explore column and in the menu, both of which are
+       on every page. Which also lands this on the reference's own count: their
+       bar is Founders / Membership / Stories and nothing else. -->
   <nav class="nav-links" aria-label="Primary">
     <a href="/events/" data-nav="events">Events</a>
-    <a href="/#record">The record</a>
-    <a href="/#voices">Voices</a>
     <a href="/team/" data-nav="team" aria-current="page">The team</a>
+    <a href="/start/" data-nav="start">Start a hub</a>
   </nav>
 <!-- #include events:nav-cta -->
   <a class="btn btn-sm btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="RSVP free on Luma (opens in a new tab)">
@@ -184,7 +207,9 @@
       </div>
     </li>
     <li class="ccard rv rv-b" data-d="2">
-      <div class="cface" data-mono="T"></div>
+      <div class="cface cface-mark">
+        <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
+      </div>
       <div class="ccard-in">
         <h3>Fr. Tom</h3>
         <p class="role">Chaplain</p>
@@ -264,21 +289,26 @@
         <a href="https://sfarch.org/" target="_blank" rel="noopener noreferrer">Archdiocese</a>
       </div>
 
+<!-- #include footer:venues -->
       <div class="venue">
         <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
         <h3>St. Philip the Apostle</h3>
-        <p class="label">725 Diamond St <span class="sep">·</span> Noe Valley</p>
-      </div>
-      <div class="venue">
-        <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
-        <h3>St. James</h3>
-        <p class="label">Dolores Heights <span class="sep">·</span> San Francisco</p>
+        <p class="label">725 Diamond St &middot; Noe Valley</p>
+        <p class="venue-last">2 evenings &middot; last <time datetime="2026-09-01">1 September 2026</time></p>
       </div>
       <div class="venue">
         <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
         <h3>St. Paul</h3>
-        <p class="label">221 Valley St <span class="sep">·</span> Noe Valley</p>
+        <p class="label">221 Valley St &middot; Noe Valley</p>
+        <p class="venue-last">one evening &middot; last <time datetime="2026-08-05">5 August 2026</time></p>
       </div>
+      <div class="venue">
+        <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
+        <h3>St. Monica</h3>
+        <p class="label">470 24th Ave &middot; Outer Richmond</p>
+        <p class="venue-last">one evening &middot; last <time datetime="2026-07-30">30 July 2026</time></p>
+      </div>
+<!-- /include footer:venues -->
     </div>
 
     <div class="foot-base">

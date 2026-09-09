@@ -13,7 +13,7 @@
 
      §0 smooth scroll §6 the manifesto stage — the page's defining move
      §1 menu          §7 counters
-     §2 nav           §8 partner marquee
+     §2 nav           §8 partner row   §8c the evening's clock
      §3 reveals       §9 the Instagram feed
      §4 clock         §10 video tiles
      §5 countdown     §11 the SMS signup
@@ -250,12 +250,28 @@
   const nav = q('#nav');
   if (nav) {
     let last = scrollY;
+    /* THE BAR NEEDS A GROUND ONCE IT IS OFF THE HERO — on a phone, and only
+       there. The reference's bar is transparent forever and it can be: every
+       one of its pages is film under the chrome. Ours are white type on black
+       at a full-width measure below 900px, so body copy ran straight through
+       the mark and the RSVP pill — captured at 390 on /team/, "Virginia
+       Department of Emergency Managem[RSVP →]ent" with the organisation's own
+       logo sitting on top of another organisation's. A scrim cannot fix that;
+       it darkens the copy but the copy is still there, and a half-legible word
+       under a button reads as breakage, not as depth.
+       So: transparent over a hero, grounded past it. The threshold is the
+       hero's own height where there is one and 8px where there is not, which
+       is what makes /team/, /start/ and /events/ grounded from the first
+       pixel of scroll and leaves the home page's fold exactly as it was. */
+    const heroEl0 = q('.hero');
+    const groundAt = () => (heroEl0 ? heroEl0.offsetHeight - 72 : 8);
     onScroll(y => {
       const d = y - last;
       if (Math.abs(d) > 6) {
         nav.toggleAttribute('data-hide', d > 0 && y > 160);
         last = y;
       }
+      nav.toggleAttribute('data-ground', y > groundAt());
     });
   }
 
@@ -271,6 +287,19 @@
      italic is a real element and has to survive the split; words are wrapped
      as well as characters so a line still breaks between words rather than
      mid-word once every glyph is inline-block. */
+  /* A WAVE HAS A CEILING. The reference staggers characters 20ms apart, which
+     is right for "Not just another VC" and wrong for a 89-character sentence:
+     measured, /team/'s h1 ran 2,100ms and the home page's second headline
+     2,260ms, both of them still arriving long after the eye had settled and
+     the /team/ one being the LCP element. The reference's own waves finish
+     inside a second. So the step given is a MAXIMUM and the wave is capped at
+     WAVE_MS — a short headline is unchanged at 20ms, a long one tightens.
+     470 rather than 620 because the wave and the per-glyph transition ADD: an
+     89-character sentence spent 1,152ms with its last word — which is always
+     the payoff word, and on this page it is always the italic one — sitting
+     between 20% and 35% ink. 470 + 380 is 850ms end to end, inside the second
+     the reference's own waves finish in. */
+  const WAVE_MS = 470;
   const splitChars = (root, step, base) => {
     let n = 0;
     const text = root.textContent.replace(/\s+/g, ' ').trim();
@@ -299,6 +328,16 @@
       }
     };
     walk(root);
+    if (n > 1) {
+      const cap = WAVE_MS / 1000 / (n - 1);
+      if (cap < step) {
+        let k = 0;
+        for (const g of root.querySelectorAll('.ch')) {
+          const d = `${(base + k++ * cap).toFixed(3)}s`;
+          g.dataset.d = d; g.style.transitionDelay = d;
+        }
+      }
+    }
     if (n) {
       /* The accessible name has to be the sentence, not fifteen letters. */
       root.setAttribute('aria-label', text);
@@ -357,13 +396,37 @@
         e.target.classList.add('in');
         obs.unobserve(e.target);
       });
-    }, { threshold: 0.3, rootMargin: '0px 0px -5% 0px' });
+      /* Measured 2026-09-09: a threshold of 0.3 against a −5% margin fires with
+         the element's top at 0.72–0.93 of the viewport height, which is below
+         the line anyone reads at — the reveal is over before the eye arrives
+         and the reader meets a static block. The reference triggers before the
+         element is visible at all. A −22% bottom margin moves the line up into
+         the middle third, where a reveal is something you watch rather than
+         something you find already finished. */
+    }, { threshold: 0.15, rootMargin: '0px 0px -22% 0px' });
+    /* THE FIRST SCREEN ARRIVES ON LOAD. The −22% line above is right for
+       something you scroll to and wrong for something already on the screen
+       when the page opens: /start/'s map sits at 0.82 of the viewport height at
+       scroll 0, so it fell below the trigger line and the page's landing frame
+       lost the one component it is built around. Anything whose top is inside
+       the first viewport is revealed on the load timeline instead, staggered by
+       the same data-d it already carries — which is the reference's own
+       behaviour and the reason its folds are never half-empty. */
+    const firstScreen = [];
     items.forEach(el => {
+      const top = el.getBoundingClientRect().top + scrollY;
+      if (top < innerHeight * 0.98) firstScreen.push(el);
+    });
+    if (firstScreen.length) {
+      requestAnimationFrame(() => firstScreen.forEach(el => el.classList.add('in')));
+    }
+    items.forEach(el => {
+      if (el.classList.contains('in')) return;
       /* Anything taller than the viewport can never reach 30%; watch those at 0. */
       if (el.offsetHeight > innerHeight * 0.8) {
         new IntersectionObserver((es, o) => es.forEach(e => {
           if (e.isIntersecting) { e.target.classList.add('in'); o.disconnect(); }
-        }), { threshold: 0, rootMargin: '0px 0px -12% 0px' }).observe(el);
+        }), { threshold: 0, rootMargin: '0px 0px -22% 0px' }).observe(el);
       } else io.observe(el);
     });
   };
@@ -454,6 +517,23 @@
     };
     dropDrumCache = () => { centres = null; };
 
+    /* THE GROUNDS, 2026-09-09. Every element in the card carrying data-at is a
+       ground, and the attribute is where in the drum it is centred. The weight
+       is a straight linear ramp between neighbouring centres, deliberately not
+       eased: two eased weights either side of a boundary do not sum to 1, and
+       the missing fraction is a visible dip to black in the middle of every
+       cross-fade. Linear, they always sum to 1. */
+    /* Every ground in the stack, bottom first: the film carries data-at (it is
+       always the floor and never wipes), each photograph carries the data-in /
+       data-out pair that is its own wipe. data-w is the ground's own weight —
+       the nave is the brightest and busiest frame in the archive and carries
+       the middle of the section, so it sits below the film's weight and not at
+       it — and it is written once here rather than every frame. */
+    const plates = qa('[data-at],[data-in]', card);
+    plates.forEach(el => {
+      if (el.dataset.w) el.style.setProperty('--pw', el.dataset.w);
+    });
+
     const mBelieve = track(believe), mCard = track(card), mDuo = duo ? track(duo) : null;
 
     const paint = y => {
@@ -473,8 +553,15 @@
         ? Math.max(restW * 9 / 16, Math.min(H * 0.66, 540))
         : restW * 9 / 16;
 
-      const zoomIn  = clamp01((p - 0.078) / (0.2353 - 0.078));
-      const zoomOut = clamp01((p - 0.7647) / (1 - 0.7647));
+      /* THE OUTRO USED TO COST A SCREEN. The drum finished at p=0.7147 and the
+         card did not begin closing until 0.7647, so a fifth of a 425vh section
+         — 121vh, more than a full viewport at 1440x900 — was a plate with no
+         statement on it and nothing else happening. Captured cold it is a
+         completely empty frame, and it is the last thing the section says.
+         The last statement now holds to 0.86 and the close runs from 0.88,
+         which is 36vh: long enough to read as a bookend, too short to sit in. */
+      const zoomIn  = clamp01((p - 0.09) / (0.26 - 0.09));
+      const zoomOut = clamp01((p - 0.88) / (1 - 0.88));
       const open = zoomIn * (1 - zoomOut);
 
       const w = lerp(restW, W, open), h = lerp(restH, H, open);
@@ -484,10 +571,58 @@
       card.style.setProperty('--sx', (W ? w / W : 1).toFixed(4));
       card.style.setProperty('--sy', (H ? h / H : 1).toFixed(4));
       card.style.setProperty('--bo', (1 - open).toFixed(3));
-      if (body) body.style.setProperty('--o', clamp01(p / 0.078) * (1 - zoomOut));
+      /* THE LAST STATEMENT RIDES THE CARD OUT. Fading the body with zoomOut
+         left the section's final 900px as a photograph with nothing written on
+         it — captured cold at y=4350 and y=4600, two full screens of the shroud
+         plate carrying no eyebrow, no sentence and no button, which is the last
+         thing the manifesto says. The card's own clip is what closes the
+         section; the body does not need to leave for that to read, and at the
+         closed size (the duo card's 1080px) a 32px statement on a 20ch measure
+         still fits with room. So it holds, and the section ends on its own
+         conclusion instead of on an empty plate. */
+      if (body) body.style.setProperty('--o', clamp01(p / 0.09).toFixed(3));
 
       /* the drum */
-      const t = clamp01((p - 0.2353) / (0.7147 - 0.2353));
+      const t = clamp01((p - 0.26) / (0.86 - 0.26));
+
+      /* THE GROUNDS. A WIPE, NOT A DISSOLVE — 2026-09-09.
+         Cross-fading was the obvious thing and it was wrong: measured at the
+         boundary, the nave sat at 0.350 while the vault was still at 0.338, so
+         a third of the section's length showed two unrelated photographs
+         superimposed, and where the nave's arch crossed the vault's rib it
+         produced a hard diagonal seam that belongs to neither picture. Two
+         frames of one continuous shot can dissolve. Two different rooms cannot.
+         So each ground WIPES over the one below it behind a feathered edge:
+         the plate is at full weight the whole time and what travels is a mask,
+         which means no pixel on the screen is ever showing two photographs and
+         there is no moment when the ground is darker than either of them. The
+         stack does the rest — once a plate is fully in, the one under it is
+         simply covered.
+         data-in / data-out are where in the drum each wipe starts and ends. */
+      for (let k = 0; k < plates.length; k++) {
+        const el = plates[k];
+        const a = +el.dataset.in, bnd = +el.dataset.out;
+        if (Number.isNaN(a)) { el.style.setProperty('--pv', '1'); continue; }
+        const q = clamp01((t - a) / (bnd - a));
+        /* The band is 100% of travel plus the feather either side, so the mask
+           is fully off screen at q=0 and fully past it at q=1. */
+        const FEATHER = 16;
+        const edge = -FEATHER + q * (100 + 2 * FEATHER);
+        el.style.setProperty('--w0', `${(edge - FEATHER).toFixed(1)}%`);
+        el.style.setProperty('--w1', `${(edge + FEATHER).toFixed(1)}%`);
+        el.style.setProperty('--pv', q > 0 ? '1' : '0');
+      }
+      card.style.setProperty('--cam', (1 + 0.115 * t).toFixed(4));
+      card.style.setProperty('--camy', (-2.4 * t).toFixed(3));
+      /* The ground darkens as the statements accumulate. Measured 2026-09-09
+         across the whole 3,240px, the plate never once exceeded 0.283 opacity
+         and sat under a further 0.66 vignette on top of that: mean luminance
+         13.3, 53.6% of the frame at pure black. That is not atmosphere, that is
+         a section with the lights off, and it threw away the only thing in it a
+         reader can look at. The arc is the same arc — it still closes darker
+         than it opens — with the whole range lifted so the photograph is
+         actually present. */
+      card.style.setProperty('--veil', (0.92 - 0.18 * t).toFixed(3));
       const seg = t * (N - 1);
       const i = Math.min(N - 2, Math.floor(seg));
       const pos = N > 1 ? i + snap(seg - i) : 0;
@@ -514,7 +649,19 @@
         const el = items[i2];
         const signed = (centres[i2] + shift - mid) / pitch;   /* −1 above … +1 below */
         const d = Math.min(1, Math.abs(signed));
-        el.style.opacity = Math.pow(1 - d, 3).toFixed(3);
+        /* LINEAR, 2026-09-09. (1−d)³ was chosen to stop three statements being
+           legible at once, and it did — by making sure that between any two of
+           them NONE of them is. Two neighbours at the midpoint each score
+           d=0.5, so a cubed falloff gives 0.125 each and 0.25 total: the drum
+           spends every handoff at a quarter of full ink. Measured at the four
+           handoffs the totals were 0.33 / 0.36 / 0.16 / 0.40 — the third one
+           is the strongest line on the section reading at a tenth of white,
+           over the brightest ground on it.
+           A linear falloff sums to exactly 1.0 at every position, which is the
+           whole point and is what the reference does. The pitch normalisation
+           above is what keeps a third statement out of it — that was always the
+           part doing the work, and it still is. */
+        el.style.opacity = (1 - d).toFixed(3);
         el.style.transform =
           `scale(${lerp(1, .6, d).toFixed(3)}) rotateX(${(60 * d * (signed > 0 ? -1 : 1)).toFixed(1)}deg)`;
         el.style.filter = d > 0.01 ? `blur(${d.toFixed(2)}px)` : 'none';
@@ -542,14 +689,26 @@
      over the card's whole traverse, linear, on the reference's own geometry
      (top:-50%, height:150%). This is what the 1.08 hover scale was standing in
      for, and it is the one that is actually on the reference. */
-  if (!calm) qa('.pcard img, .pcard > video').forEach(img => {
+  /* And on the three subpages, the SAME move at a shorter throw. Measured
+     2026-09-09: after the one-shot fade-up, exactly one element on /team/ and
+     /events/ changed with scroll — the footer. Six portraits, two event cards
+     and a photograph on /start/ all sat still for the whole page. This is not
+     a new effect; it is the effect the home page already runs, given to the
+     photographs that were missing it, at 0.28 of a frame rather than 0.5
+     because these plates are shorter and a half-frame pan inside a 4:5 card
+     shows its own edge. */
+  const PAN = [['.pcard img, .pcard > video', '.pcard', 0.5],
+               ['.cface img, .ephoto img, .hubphoto img', '.cface, .ephoto, .hubphoto', 0.28]];
+  if (!calm) for (const [sel, box, amt] of PAN) qa(sel).forEach(img => {
     /* .closest, not .parentElement — the WebP <picture> sits between them now. */
-    const m = track(img.closest('.pcard'));
+    const host = img.closest(box);
+    if (!host) return;
+    const m = track(host);
     onScroll(y => {
       const top = m.top - y;
       if (top + m.h < -100 || top > vh + 100) return;
       const p = clamp01((vh - top) / (vh + m.h));
-      img.style.transform = `translate3d(0,${(p * m.h * 0.5).toFixed(1)}px,0)`;
+      img.style.transform = `translate3d(0,${(p * m.h * amt).toFixed(1)}px,0)`;
     });
   });
 
@@ -583,23 +742,52 @@
     }
   }
 
-  /* §8 — the partner marquee ---------------------------------------------- */
-  /* Two tracks at their two measured speeds, running against each other. The
-     list is printed twice so translateX(-50%) is a seamless wrap. */
-  const PARTNERS = [
-    'Archdiocese of San Francisco', 'Office of Human Life & Dignity',
-    'California Catholic Conference', 'Catholic Charities San Francisco',
-    'Order of Malta, Western Association', 'Lay Mission Institute',
-    'Pro-Life San Francisco', 'St. Anthony Foundation',
-    'Missionaries of Charity', 'Star of the Sea Young Adults',
-    'Bay Wide Young Adults', 'Marin Young Adult Group'
-  ];
-  qa('[data-track]').forEach((row, i) => {
-    row.style.setProperty('--dur', i ? '47.2s' : '45s');
-    if (row.children.length) return;          /* pre-rendered in the HTML */
-    const list = i ? [...PARTNERS].reverse() : PARTNERS;
-    row.innerHTML = [...list, ...list].map(n => `<span>${n}</span>`).join('');
-  });
+  /* §8 — the partner row --------------------------------------------------- */
+  /* Nothing. The strip was two counter-scrolling tracks built from this list at
+     runtime; since 2026-09-09 it is three marks standing still and one line of
+     names, both written in the HTML, so there is no track to fill and no
+     duration to set. The names live in index.html because they are content.
+     Removed: PARTNERS, the [data-track] loop, and @keyframes slide. */
+
+  /* §8c — the evening's clock ---------------------------------------------
+     Three hours over one section, driven by where the section sits in the
+     viewport rather than by a timer: at the moment #evening's top reaches the
+     bottom of the window it reads 18:30, and when its bottom reaches the top
+     it reads 21:30. Between those it is linear, quantised to five minutes so
+     the digits step rather than flicker — a clock that changes every frame is
+     a stopwatch, and this is meant to read as the evening passing.
+     onScroll is the page's single rAF subscriber; this adds no listener and no
+     timer, and under prefers-reduced-motion (`calm`) it is left at the 18:30
+     the HTML already contains, which is a true statement about when the
+     evening starts. */
+  const eClock = q('#eveningClock');
+  if (eClock && !calm) {
+    const out = eClock.firstElementChild || eClock;
+    const evening = q('#evening');
+    if (evening) {
+      const mE = track(evening);
+      const START = 18 * 60 + 30, END = 21 * 60 + 30;
+      let last = '';
+      onScroll(y => {
+        /* Measured from the section's own top, not from the moment it appears:
+           tied to the viewport's bottom edge the clock read 19:25 before the
+           heading had finished arriving, which says the evening is an hour old
+           at the moment it is introduced. It now reads 18:30 while the header
+           is on screen and reaches 21:30 as the last cell leaves. */
+        const span = mE.h - vh;
+        if (span <= 0) return;
+        const p = clamp01((y - mE.top) / span);
+        const mins = Math.round((START + (END - START) * p) / 5) * 5;
+        /* Twelve-hour, because the sentence directly above this line says "6:30
+           to 9:30" and the four cells below say "6:30 — the reception". A clock
+           reading 18:30 beside copy reading 6:30 is the same moment written two
+           ways on one screen. The hero's clock stays 24-hour: that one is the
+           wall in San Francisco, not this evening. */
+        const t = `${((Math.floor(mins / 60) - 1) % 12) + 1}:${String(mins % 60).padStart(2, '0')}`;
+        if (t !== last) { out.textContent = t; last = t; }
+      });
+    }
+  }
 
   /* §8b — the perk marquee -------------------------------------------------
      /membership's answer to "what do I get": nine photo cards a row, two rows

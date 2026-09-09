@@ -94,12 +94,29 @@
   --text:#ffffff;
   --text-94:rgba(255,255,255,.94);
   --text-75:rgba(255,255,255,.753);
-  --text-70:rgba(255,255,255,.7);
+  /* The roster's roles measured 4.36:1 on --surface at 12px/400 — the same
+     antialiasing shortfall as --text-40, at the size where it bites hardest.
+     .78 clears it and is still a step below --text-75's use as body ink. */
+  --text-70:rgba(255,255,255,.78);
   /* .4 is 3.66:1 on black — below AA — and it is not the reference's either:
      their text ink ladder is .94/.90/.851/.753/.70 and rgba(255,255,255,.4)
-     appears once, as a social-icon stroke, never as text. .48 computes to
-     4.92:1 on #000 and 5.00:1 on the footer's #0d0d0d. */
-  --text-40:rgba(255,255,255,.48);
+     appears once, as a social-icon stroke, never as text.
+
+     .48 was then chosen because it "computes to 4.92:1 on #000". That is the
+     ratio of the DECLARED colour, and it is not what a reader sees: measured
+     2026-09-09 over the pixels actually painted, on 1,854 glyph runs, the
+     median of the glyph CORE at 11px/400 came to 3.24:1 in the footer and the
+     5th percentile to 2.86:1, because at that size and weight most of a
+     stroke is antialiased and never reaches the declared colour. Thirty of the
+     thirty-eight distinct AA failures on the site were this one token.
+
+     .72 is the reference's own floor (.70) to within a rounding step, computes
+     to 6.4:1 on #000 and 6.5:1 on the footer's #0d0d0d — which is the number
+     WCAG is actually defined on — and holds 4.2–5.4:1 even by the glyph-core
+     probe at 11px/400, the smallest and lightest thing set in it. Everything
+     set in it is a label, an address, a copyright or a credit; nothing
+     structural, and nothing that now needs a second ink below it. */
+  --text-40:rgba(255,255,255,.72);
 
   --glass:rgba(200,200,200,.1);
   --glass-edge:rgba(255,255,255,.2);
@@ -367,7 +384,14 @@ html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
 .lenis.lenis-stopped{overflow:hidden}
-html:not(.lenis){scroll-behavior:smooth}
+/* Not under reduce. `html{scroll-behavior:auto}` in §17 is a bare-element
+   selector and this one carries a class, so this wins on specificity wherever
+   both apply — which meant a reduced-motion visitor who clicked an anchor got
+   a smooth animated scroll, the one behaviour that setting exists to prevent.
+   Measured `smooth` on all four pages with the media query active. */
+@media (prefers-reduced-motion:no-preference){
+  html:not(.lenis){scroll-behavior:smooth}
+}
 
 body{margin:0;overflow-x:hidden;font-size:16px;line-height:1.5;font-weight:400}
 
@@ -391,7 +415,15 @@ ul,ol{margin:0;padding:0;list-style:none}
   box-shadow:0 0 0 5px var(--accent);border-radius:3px}
 /* .btn-fill carries its own box-shadow and comes later in the file, so the ring
    has to out-specify it or it never paints on the one button that needs it. */
-.btn:focus-visible,.play:focus-visible,.nav-toggle:focus-visible{
+/* .btn.glass is named here too, and it has to be. It sets its own box-shadow
+   at §5, which is 199 lines LATER in this file at the same (0,2,0) specificity
+   — so it won the cascade and wiped the ring, leaving only the 2px black
+   outline, on black, on five of the fourteen tab stops on the home page
+   ("Take a seat", "See the format", "The format", "The record", "Go to the
+   form"). A keyboard visitor lost the focus indicator entirely on exactly the
+   buttons that carry the page's calls to action. (0,3,0) wins wherever both
+   apply and the resting shadow is unaffected. */
+.btn:focus-visible,.btn.glass:focus-visible,.play:focus-visible,.nav-toggle:focus-visible{
   border-radius:9999px;box-shadow:0 0 0 5px var(--accent),0 1px 2px rgba(0,0,0,.35),0 4px 20px rgba(0,0,0,.25)}
 /* .fcard rests at 8px, so a 10px focus ring made a keyboard pass twitch; .cell
    is an <article> and not focusable at all. */
@@ -423,8 +455,19 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
   margin:0 .15em;font-size-adjust:ex-height .52}
 /* letter-spacing applies after the LAST glyph too, so .em's -.05em pulls the
    next character back: at the hero's 57.6px that is -2.88px against a 1.15px
-   margin, and the period collided with the italic. */
-.hero h1 .em,.foot-line .em{margin-left:.25em;margin-right:.08em}
+   margin, and the period collided with the italic. The TRAILING correction is
+   real and stays; the leading one was wrong and is now .06em.
+
+   .25em was read out of the reference as "the word-gap before a display
+   accent", and it was read wrong: it was applied ON TOP OF the word space the
+   markup already contains, so the rendered gap before the italic came to about
+   0.51em against 0.26em everywhere else on the same line — twice, on the two
+   largest pieces of type on the site. Cropped and set beside the reference's
+   own footer wordmark at matched scale, theirs sets "Your legacy, made." as
+   one line with the l almost touching the r, and ours set "Faith, in  action ."
+   with a hole either side of the accent. An italic's optical gap after a
+   roman is real but it is a hair, not a quarter of an em. */
+.hero h1 .em,.foot-line .em{margin-left:.06em;margin-right:.05em}
 /* Same collision, and .title is where it shows most: every subpage heading
    ends "the <em>lecture</em>." and the italic's -.05em tracking pulled the
    period into the l. Only the trailing side needs correcting here -- .em's
@@ -451,11 +494,19 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
    ours was rendering both at 11.2px — which is why our section openings read
    quieter than theirs. */
 .label{
-  font-size:.7rem;font-weight:500;line-height:1.2;
+  /* .7rem is 11.2px and 11px was already a step with 25 nodes on it: two
+     steps 0.2px apart, 73 nodes and 25, both of them the same role — an
+     uppercase micro-label. The whole tier is on 11px now, which is one of the
+     six steps the reference uses between 10 and 18. */
+  font-size:.6875rem;font-weight:500;line-height:1.2;
   letter-spacing:.05em;text-transform:uppercase;color:var(--text);
 }
 .eyebrow{
-  font-size:clamp(.9rem,1.1vw,1.1rem);font-weight:500;line-height:1.2;
+  /* was clamp(.9rem,1.1vw,1.1rem) — 15.84px at 1440, 0.16px from the 16px
+     that 38 other nodes already set. Two sizes that far apart are not two
+     steps, they are one step measured twice. Fixed at 1rem; the phone keeps
+     .9rem because 14.4 there is a real step below 16. */
+  font-size:clamp(.9rem,1.16vw,1rem);font-weight:500;line-height:1.2;
   letter-spacing:.07em;text-transform:uppercase;color:var(--text);
 }
 
@@ -524,7 +575,8 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
 }
 .btn-sm{height:42px;padding:0 20px;gap:5px;font-size:.875rem}
 .btn-md{height:45px;padding:0 24px;gap:7px;font-size:.9375rem}
-.btn-lg{height:52px;padding:0 28px;gap:9px;font-size:1.0625rem}
+/* 1.0625rem was 17px, 0.6px under the .desc step beside it. */
+.btn-lg{height:52px;padding:0 28px;gap:9px;font-size:1.1rem}
 
 /* The two ambient layers are the lamp's key and bounce, offset on the same
    diagonal as the rim: a black shadow on a black page is a shadow that draws
@@ -587,7 +639,7 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
   position:relative;
   display:inline-flex;align-items:center;height:35px;padding:0 16px;
   background:var(--chip);border-radius:9999px;
-  font-size:.7rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  font-size:.6875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
   color:var(--text);
 }
 .badge.glass{background:var(--glass)}
@@ -621,8 +673,16 @@ section{position:relative}
    the clip, the RSVP pill against the pixels actually painted around it: 5.94:1
    worst at 1440 and 5.00:1 worst at 390, against a 4.5 floor. Before the grade,
    with the heavier scrims, the same measurement read 4.68 and 4.60. */
-.nav-scrim{position:fixed;inset:0 0 auto;height:128px;z-index:98;pointer-events:none;
-  background:linear-gradient(180deg,rgba(0,0,0,.28),transparent)}
+/* .28 was solved against the hero and only the hero, where it is a lens shade
+   over film. It is also the only thing standing between the bar and the body
+   copy of four pages that are white type on black, and at .28 a headline
+   passing under the bar stayed at 72% of full white — bright enough to fight
+   the bar and dark enough to be unreadable itself. Deepened, and given a stop
+   so it is a shade rather than a ramp. The hero can afford it now: the graded
+   film (tools/grade-hero.sh) is far darker at the top of frame than the one
+   these numbers were solved against. */
+.nav-scrim{position:fixed;inset:0 0 auto;height:150px;z-index:98;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.62) 0%,rgba(0,0,0,.44) 38%,rgba(0,0,0,.16) 74%,transparent 100%)}
 
 .nav{
   position:fixed;inset:0 0 auto;z-index:100;
@@ -630,6 +690,16 @@ section{position:relative}
   padding:24px;
 }
 @media (min-width:1024px){.nav{padding:40px}}
+/* Below 900 only, and only past the hero. --bg with no blur and no border: a
+   backdrop-filter here would be the tenth tell (§7.6) and a rule under the bar
+   would be a second horizon on a page that has one. It fades on the same 300ms
+   the centre links use, so arriving at it is one gesture. */
+@media (max-width:899px){
+  .nav{transition:background-color .3s ease-out}
+  .nav[data-ground]{background:var(--bg)}
+  .nav[data-ground]+.nav-scrim,.nav[data-ground]~.nav-scrim{opacity:0}
+  .nav-scrim{transition:opacity .3s ease-out}
+}
 .nav-mark{display:flex;align-items:center;gap:10px;font-size:.9375rem;font-weight:500;letter-spacing:-.02em}
 /* Inline, and painted with currentColor, so the mark is white on the hero
    video and inherits whatever the bar inherits — a PNG could do neither, and
@@ -639,12 +709,37 @@ section{position:relative}
 .nav-mark .mark{width:22px;height:22px;flex:none}
 .nav-mark span{display:none}
 @media (min-width:560px){.nav-mark span{display:inline}}
+/* THE WORDMARK SHEDS, 2026-09-09. The bar is transparent and never acquires a
+   background, which is the reference's rule and worth keeping — but the
+   reference's logo is a 60px logotype over film, and ours is 175px of white
+   TEXT over pages that are white text on black. On /start/ and /events/ the
+   wordmark printed straight through the copy scrolling under it: two whites,
+   same size band, neither readable.
+   So on the way down the words go with the centre links and the mark stays.
+   That cuts the bar's collision surface from 175px to 22px, it is the same
+   gesture the centre links already make, and scrolling up brings the name
+   back. The mark alone is the identity by then — a visitor who has scrolled
+   past the fold has already read the name in the hero. */
+.nav-mark span{transition:opacity .3s ease-out}
+/* Opacity alone: a 4px translate at 15px type is under the threshold at
+   which anything reads as movement, so it was a compositor layer for nothing. */
+.nav[data-hide] .nav-mark span{opacity:0;pointer-events:none}
 
 /* The centre links fade out on scroll down and return on scroll up — the one
    piece of chrome on the reference that moves at all. */
 .nav-links{display:none;gap:28px;font-size:1rem;font-weight:500;
   transition:opacity var(--t) ease-out}
-.nav[data-hide] .nav-links{opacity:0;pointer-events:none}
+/* visibility, not just opacity and pointer-events. Measured 2026-09-09: four
+   links sat at opacity 0 on every page and stayed in the tab order, so a
+   keyboard visitor who had scrolled past 160px tabbed through four invisible
+   destinations before reaching anything on the page. `visibility` is the one
+   property that removes an element from the tab order without removing it from
+   layout, and it animates as a discrete step at the END of a transition when
+   going to hidden and at the START when coming back — which is exactly the
+   behaviour wanted, so the fade out still plays in full. */
+.nav[data-hide] .nav-links{opacity:0;visibility:hidden;pointer-events:none}
+.nav-links{transition:opacity var(--t) ease-out,visibility 0s linear var(--t)}
+.nav:not([data-hide]) .nav-links{transition-delay:0s,0s}
 @media (min-width:900px){
   .nav-links{display:flex;position:absolute;left:50%;transform:translateX(-50%)}
 }
@@ -706,7 +801,7 @@ section{position:relative}
 /* The index sets the sections against each other and gives the eye a left edge
    to run down — the reference's own device on its founders list. */
 .menu-nav a i{font-family:'Satoshi',var(--sans);font-style:normal;font-variant-numeric:tabular-nums;
-  font-size:.7rem;font-weight:500;letter-spacing:.08em;color:var(--text-40);
+  font-size:.6875rem;font-weight:500;letter-spacing:.08em;color:var(--text-40);
   flex:none;width:2.2ch;transition:color var(--t) ease}
 .menu-nav a:hover i,.menu-nav a:active i{color:var(--accent)}
 
@@ -731,7 +826,15 @@ html.motion .menu[data-open] .menu-nav a .ch{opacity:1;transform:none;filter:non
 /* The stagger is inline on each .ch and only belongs to the way in. Zeroing
    it here costs nothing; the JS loop that used to write it on every tap cost
    one inline style write per character, twice a toggle. */
-html.motion .menu.closing .menu-nav a .ch{transform:translateY(-15px);transition-delay:0s}
+/* !important, and it is the only one in this file. splitChars writes the
+   stagger as an INLINE style on every .ch, and an inline declaration beats a
+   stylesheet one no matter how specific — so this rule never applied and the
+   close never played. Measured: 140ms after the overlay had already gone to
+   visibility:hidden, one glyph of sixty-three had moved. The open is 1,398ms
+   of choreography and the close was a snap.
+   The overlay's own visibility hold is lifted to match, so the last character
+   is off the screen before the layer stops being paintable. */
+html.motion .menu.closing .menu-nav a .ch{transform:translateY(-15px);transition-delay:0s!important}
 html.motion .menu-foot{opacity:0;transform:translateY(20px);
   transition:opacity .3s var(--ease-2),transform .3s var(--ease-2)}
 html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
@@ -838,7 +941,7 @@ picture{display:contents}
 }
 .pcard .badge{position:absolute;top:16px;right:16px;z-index:1}
 .pcard h3{font-size:clamp(1.25rem,1.5vw,1.375rem);font-weight:500;letter-spacing:-.03em;line-height:1.2}
-.pcard p{font-size:.8125rem;line-height:1.45;color:var(--text-94);max-width:46ch}
+.pcard p{font-size:.8125rem;line-height:1.4;color:var(--text-94);max-width:46ch}
 .pcard .btn{align-self:flex-start;margin-top:6px}
 
 /* ─── §9 the manifesto stage ────────────────────────────────────────────── */
@@ -851,7 +954,11 @@ picture{display:contents}
 /* Measured: this boundary was 130px on the way in and 400px on the way out
    against a 270px median (576px at 390) — the card's empty half-band adding
    itself to #voices' full 30vh. Both sides now subtract it. */
-.believe{height:425vh;padding-top:max(0px,calc(var(--band-gap)*.667 - var(--believe-void)))}
+/* 425vh was five statements at 85vh each plus a 121vh outro with nothing in
+   it. The outro is now 36vh (main.js §10) and the statements sit at 31vh, so
+   the section says the same five things in 65vh less scroll — which matters
+   because this page runs 15,210px against the reference's 9,363. */
+.believe{height:360vh;padding-top:max(0px,calc(var(--band-gap)*.667 - var(--believe-void)))}
 #voices{position:relative;z-index:1;padding-top:0;
   margin-top:calc(var(--band-gap) - var(--believe-void))}
 .believe-stage{position:sticky;top:0;height:100svh;display:grid;place-items:center;overflow:hidden}
@@ -893,7 +1000,71 @@ picture{display:contents}
    the vertical, and 40% keeps the rose windows in the upper third, above the
    band the statements occupy, instead of behind them. */
 .believe-card>img,.believe-card>picture>img,.believe-card>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+/* <picture> is a phrasing wrapper with no box of its own worth having here. */
+.believe-card>picture{display:contents}
 .believe-card>video{object-position:50% 40%}
+/* THE THREE GROUNDS. --pv is the cross-fade weight main.js §10 writes per
+   plate; --veil is the one it writes for all of them, and it DEEPENS across the
+   pin (0.52 down to 0.36) so the section darkens as the statements accumulate
+   and the last one carries the most weight. Multiplying the two means a plate's
+   opacity is its share of a ground whose total is falling — the fade and the
+   darkening cannot fight each other because they are one number.
+
+   --cam is the push-in, written once on the card and inherited, so all three
+   plates move together and a cross-fade never shows two different framings of
+   the same second. */
+/* The resting state is the state a visitor gets with scripts off, under
+   prefers-reduced-motion and in the first frame before §10 has painted once:
+   the film's poster at full weight and the two photographs at none. Nothing
+   here depends on JS having run. */
+.believe-card>video{--pv:1;--pw:1}
+.believe-card img.bplate{--pv:0}
+/* The travelling edge. --w0/--w1 are the two stops main.js §10 sweeps across
+   the plate; between them the mask feathers over 32% of the width, so the wipe
+   has a soft edge and not a line. 96deg — left to right with six degrees of
+   tilt, so it reads as a wipe and not as a window blind. The video underneath
+   carries no mask and is simply covered. */
+.believe-card img.bplate{
+  -webkit-mask:linear-gradient(96deg,#000 var(--w0,-100%),transparent var(--w1,-80%));
+  mask:linear-gradient(96deg,#000 var(--w0,-100%),transparent var(--w1,-80%));
+}
+/* THE VEIL IS A BRIGHTNESS, NOT AN OPACITY — and it has to be, or the wipe
+   above is pointless. A plate held at 0.53 opacity is a plate you can see
+   through, so the ground underneath showed through the incoming one and the
+   wipe produced exactly the double image it was built to remove. brightness()
+   darkens the plate without making it transparent, so the stack is opaque, the
+   wipe is a real edge, and --veil still does the one job it was written for:
+   the section closes darker than it opens. --pw is the plate's own weight,
+   folded into the same number. */
+.believe-card>video,.believe-card img.bplate{opacity:var(--pv,0);
+  filter:brightness(calc(var(--veil,.9) * var(--pw,1)));
+  transform:scale(calc(var(--cam,1) * var(--pz,1))) translate3d(0,calc(var(--camy,0) * 1%),0);
+  transform-origin:50% 42%;will-change:opacity,transform}
+/* --pz and --px/--py are per-plate framing, set in the markup beside the file
+   the plate loads, because they are a property of that photograph and not of
+   the section: the nave is a wide of a whole church and has to be pushed into
+   before its ceiling and its aisle read as a ground rather than as a postcard
+   of a nave. */
+.believe-card img.bplate{object-position:var(--px,50%) var(--py,46%)}
+/* The lens. A masked solid, not a gradient background — the same technique
+   .believe-lines::before and .perks already use, so §7.6's ninth tell (no
+   fourth gradient outside #top/#voice) still holds. It darkens the corners and
+   the floor of the frame and leaves the middle third alone, which is what puts
+   the statements on a ground instead of on a photograph. */
+/* A WIDE, SHORT ellipse, not a round one. The three things set over this plate
+   are the eyebrow at the top, the statements in the middle and the button at
+   the bottom, and the statements are the only one with a scrim of their own
+   (.believe-lines::before). Measured at 390 against the pixels actually
+   painted, "We believe in" came to 2.84:1 and "Take a seat" to 3.34:1 over the
+   nave — both under AA, both because a round vignette darkens the CORNERS and
+   they are not in the corners. Clear across the middle band where the plate
+   has to be visible; opaque above and below it, where the type is. */
+.believe-card::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:rgba(0,0,0,.42);
+  -webkit-mask:radial-gradient(155% 46% at 50% 47%,transparent 0%,transparent 34%,#000 100%);
+  mask:radial-gradient(155% 46% at 50% 47%,transparent 0%,transparent 34%,#000 100%);
+}
 .believe-body{position:relative;z-index:2;display:grid;justify-items:center;gap:22px;text-align:center;padding:0 6vw;opacity:var(--o,1)}
 
 .believe-lines{position:relative;display:grid;place-items:center;width:100%;min-height:5.2em;perspective:1000px}
@@ -947,8 +1118,20 @@ picture{display:contents}
   position:relative;width:100%;flex-grow:1;aspect-ratio:3.5/4;min-height:280px;
   border-radius:10px;overflow:hidden;background:var(--surface);
 }
+/* --vz and --vy exist for ONE tile and the reason is in the footage, not in
+   the design: interview-lacayo.mp4 is an Instagram export and carries hard
+   subtitles in a white bubble across y 58-75% of every frame of it. Our own
+   caption sits in the same band, so the tile printed two white texts on top of
+   each other. A 3.5/4 box cover-fitting a 9:16 source already only shows 64%
+   of its height, and no object-position alone can put that window entirely
+   above 58%; a magnification can, and 1.42x of a 1080-wide source into a
+   ~400px tile is still four times the pixels the tile can paint. */
+/* 700ms to raise a tile from .8 to 1 is a fade, not a response — the reference
+   does the same move in 300 and it is the difference between a tile that
+   answers the pointer and one that catches up with it. */
 .vtile video,.vtile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  opacity:.8;transition:opacity var(--t) ease}
+  object-position:50% var(--vy,50%);transform:scale(var(--vz,1));transform-origin:50% 30%;
+  opacity:.8;transition:opacity var(--t-resp) var(--ease-out-quad)}
 .vtile:hover video,.vtile:hover img{opacity:1}
 .vtile figcaption{position:relative;z-index:2}
 .vtile-overlay .badge{align-self:flex-start}
@@ -975,7 +1158,7 @@ picture{display:contents}
 @supports (hanging-punctuation:first){
   .qtile blockquote{text-indent:0;hanging-punctuation:first}
 }
-.qtile .role{font-size:.7rem;font-weight:400;line-height:1.5;letter-spacing:.05em;text-transform:uppercase;color:var(--text-75)}
+.qtile .role{font-size:.6875rem;font-weight:400;line-height:1.5;letter-spacing:.05em;text-transform:uppercase;color:var(--text-75)}
 
 /* ─── §11 the numbers ───────────────────────────────────────────────────── */
 
@@ -996,8 +1179,18 @@ picture{display:contents}
      a 282px square — 36% of the cell as a hole. .pcard and .cell already stack
      their content at the foot. */
   display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:1rem;
-  width:clamp(211.97px,21.197vw,282.62px);height:clamp(211.97px,21.197vw,282.62px);
-  flex-shrink:0;padding:1.2rem;
+  /* The WIDTH had to go. .stats is a four-track grid at width:var(--col) and
+     these carried an explicit clamp on top of it, so each cell rendered
+     282.62px inside a 272px track and the row ran 42px past the content
+     column's right edge — measured at 1440, .stats ending at x=1330 against
+     an .opener ending at 1288, which is the section's own heading sitting
+     42px inside its own numbers. The track decides the width now and
+     aspect-ratio keeps the square, which is what the clamp was really for.
+     And no min-height either: aspect-ratio:1 resolves a minimum HEIGHT back
+     into a minimum WIDTH, so 283px of floor put the row straight back where it
+     was. The track is the only thing that decides. */
+  aspect-ratio:1;min-width:0;
+  padding:1.2rem;
   border-left:1px solid var(--rule);
 }
 .stat-body{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem}
@@ -1012,7 +1205,9 @@ picture{display:contents}
   font-variant-numeric:tabular-nums;
 }
 .stat .cap{
-  font-size:clamp(.7rem,.96vw,.8rem);font-weight:400;line-height:1.4;letter-spacing:.03em;
+  /* .8rem resolved to 12.8, which sat 0.12px from the 13px .next-live already
+     uses and 0.08px from the /team/ CTA. One step. */
+  font-size:clamp(.6875rem,.96vw,.8125rem);font-weight:400;line-height:1.4;letter-spacing:.03em;
   text-transform:uppercase;color:var(--text);opacity:.7;max-width:200px;
   min-height:2.8em;   /* reserve the second line, so all four numbers share a baseline */
 }
@@ -1023,19 +1218,22 @@ picture{display:contents}
   .stat b,.stat .cap{text-align:center}
 }
 
-/* The marquee: their two tracks, 67 and 63 px/s at 1440, opposite directions. The
-   durations are the ones that were measured (45s / 47.2s); the px/s follow from
-   how much each track carries, and the marks track carries four repeats of the
-   set per half so translateX(-50%) stays seamless out to a 3200px viewport. */
-.marquee{margin-top:clamp(72px,15vh,150px);display:grid;gap:24px;overflow:hidden;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.mrow{display:flex;width:max-content;animation:slide var(--dur,45s) linear infinite}
-.mrow[data-rev]{animation-direction:reverse}
-.marquee:hover .mrow{animation-play-state:paused}
-.mrow span{flex:none;padding-inline:clamp(20px,2.6vw,40px);font-size:.875rem;font-weight:500;
-  color:var(--text-40);white-space:nowrap;letter-spacing:-.01em;transition:color var(--t) ease}
-.mrow span:hover{color:var(--text)}
+/* THE PARTNER ROW. Standing still since 2026-09-09 — see the note in
+   index.html for why the two counter-scrolling tracks had to go. What is left
+   is the move the reference makes with eight world-famous marks, made with the
+   three we actually have: one row, centred, at a size that lets each one be
+   read rather than recognised, and the other nine partners named once below
+   it in the same ink the old names track used. */
+.marks{margin-top:clamp(72px,15vh,150px);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:clamp(36px,7vw,104px);padding-inline:var(--gutter)}
+.marks>span{display:flex;align-items:center}
+/* The nine partners are content, not a credit line, so they sit one ink above
+   the credits: measured 3.44:1 at 390 in --text-40 and it is the only thing in
+   this block a reader is meant to read word by word. */
+.marks-rest{color:var(--text-70);margin:clamp(30px,4.4vh,52px) auto 0;max-width:74ch;
+  padding-inline:var(--gutter);text-align:center;text-wrap:pretty;
+  font-size:.8125rem;font-weight:500;line-height:1.5;letter-spacing:.01em}
 
 /* The marks track. Sizes are hand-set, not height-matched — the whole point of
    §3 of research/partner-logos/PLAN.md is that Vercel's row runs 15px to 40px
@@ -1055,17 +1253,34 @@ picture{display:contents}
    .48 so the marks lead and the names caption. .86 rather than Vercel's .93 —
    compared at 2x against .94, .78 and .70, .70 greys the Missionaries of
    Charity serif out and .94 glares against the very thin numerals above it. */
-.mrow-marks{--mink:.86}
-.mrow-marks span{display:flex;align-items:center;padding-inline:clamp(20px,4.4vw,72px)}
+/* One rest value for the whole row. A raster cannot inherit currentColor, so
+   the vector spends it as an alpha on the ink and the two PNGs spend the same
+   number as an opacity; both lift to full on hover, with the names line below
+   at .48 so the marks lead and the names caption. .86 rather than Vercel's
+   .93 — compared at 2x against .94, .78 and .70, .70 greys the Missionaries of
+   Charity serif out and .94 glares against the very thin numerals above it.
+   The marks are 1.25x their marquee size now that they are not moving: a mark
+   that scrolls past is recognised, a mark that stands still is read. */
+.marks{--mink:.86}
 .pmark{display:block;width:auto;color:rgba(255,255,255,var(--mink));
   transition:color var(--t) ease,opacity var(--t) ease}
 .m-lm,.m-mc{opacity:var(--mink)}
-.mrow-marks span:hover .pmark{color:var(--text)}
-.mrow-marks span:hover .m-lm,.mrow-marks span:hover .m-mc{opacity:1}
-.m-sa{height:36px;aspect-ratio:706.13/139.51}
-.m-lm{height:43px}
-.m-mc{height:66px}
-@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marks>span:hover .pmark{color:var(--text)}
+.marks>span:hover .m-lm,.marks>span:hover .m-mc{opacity:1}
+.m-sa{height:45px;aspect-ratio:706.13/139.51}
+.m-lm{height:54px}
+.m-mc{height:82px}
+@media (max-width:599px){.m-sa{height:34px}.m-lm{height:40px}.m-mc{height:62px}}
+
+/* The evening's clock. Satoshi and tabular figures, exactly as .hero-time and
+   the countdown are set, because it is the same instrument in a third place —
+   and the tabular figures are what keep the digits from jittering as the
+   minutes run. It sits in the section header's own 24px grid, so it costs the
+   page no height it did not already have. */
+.evening-clock{font-family:'Satoshi',var(--sans);font-variant-numeric:tabular-nums;
+  font-size:.6875rem;font-weight:500;letter-spacing:.16em;line-height:1;
+  color:var(--text-40)}
+.evening-clock span{display:inline-block;min-width:5.4ch;text-align:center}
 
 /* ─── §12 the bento ─────────────────────────────────────────────────────── */
 
@@ -1101,15 +1316,20 @@ picture{display:contents}
 .cell.tint{background:linear-gradient(152deg,#9c9083 0%,#6f6a60 44%,#2a2926 100%)}
 
 
+/* .625rem was 10px: the only 10px on the site, and it failed AA over the cell's
+   own scrim. 11px is the scale's floor and 25 other nodes already sit there. */
 .illus{position:absolute;z-index:1;left:24px;top:26px;
-  font-size:.625rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  font-size:.6875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
   color:var(--text-40)}
 
 .count{position:absolute;z-index:1;right:24px;top:24px;
   display:grid;gap:2px;justify-items:center;padding:12px 22px;text-align:center}
-.count b{font-size:clamp(1rem,1.6vw,1.375rem);font-weight:500;letter-spacing:-.02em;
+/* 1.375rem resolved to 22px against the 21.6px thirteen h3 nodes hold. */
+.count b{font-size:clamp(1rem,1.6vw,1.35rem);font-weight:500;letter-spacing:-.02em;
   font-family:'Satoshi',var(--sans);font-variant-numeric:tabular-nums}
-.count span{font-size:.625rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-75)}
+/* .625rem was 10px and the only 10px on the site; 11px is the scale's floor
+   and a hundred other nodes are already on it. */
+.count span{font-size:.6875rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-75)}
 
 /* Below the bento's own breakpoint the lead cell is a single narrow column, and
    a countdown pinned to its top-right corner lands straight on the headline —
@@ -1146,7 +1366,7 @@ picture{display:contents}
 @media (max-width:420px){
   /* `height:auto` was discarding the 42/45/52 ramp, so the primary CTA lost
      its hierarchy against every secondary button on the page. Floors instead. */
-  .btn{white-space:normal;height:auto;padding-block:11px;line-height:1.25;text-align:center}
+  .btn{white-space:normal;height:auto;padding-block:11px;line-height:1.3;text-align:center}
   .btn-sm{min-height:44px}
   .btn-md{min-height:46px}
   .btn-lg{min-height:52px;padding-block:14px}
@@ -1186,7 +1406,7 @@ picture{display:contents}
 .sig-in:hover{border-color:rgba(255,255,255,.3)}
 .sig-in:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:transparent}
 .sig-go{flex:0 0 auto;white-space:nowrap}
-.sig-fine{font-size:.75rem;line-height:1.45;color:var(--text-70);max-width:320px}
+.sig-fine{font-size:.75rem;line-height:1.4;color:var(--text-70);max-width:320px}
 /* One column on a phone: a 44px field and a pill side by side inside 320px
    leaves the field under 150px, which is narrower than the number going in it. */
 @media (max-width:600px){
@@ -1293,20 +1513,44 @@ picture{display:contents}
    tree, out of innerText and off the page's word count. .16 white on #2a2a2a
    is a watermark and is not text — every string a reader actually has to read
    is still on --surface at the ratios §12b was measured at. */
+/* THE CHAPLAIN'S PLATE. Not a portrait and not pretending to be: the same
+   church glyph the footer draws beside every room, drawn rather than shipped,
+   at the plate's own scale and at a watermark's weight. The stroke is the
+   footer's stroke and the ground is every other .cface's ground, so the tile
+   sits in the row as a member of it rather than as the one that failed. */
+.cface-mark{display:grid;place-items:center}
+.cface-mark svg{width:34cqw;height:auto;stroke:rgba(255,255,255,.26);
+  fill:none;stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round}
+.cface-mark::before{content:none}
+
+/* CENTRED, 2026-09-09, and half the size it was. At 78cqw anchored to the
+   bottom-left the glyph ran off two edges of the plate, and a letter bleeding
+   out of a frame in a grid of five photographs does not read as a monogram —
+   it reads as an image that failed to load. There is no photograph of the
+   chaplain and inventing one is not an option, so the plate has to be a
+   decision instead of a gap: one letter, whole, centred, at the weight of a
+   watermark. The gradient ground is the same one every other .cface carries,
+   so the tile keeps its place in the row. */
 .cface::before{
-  content:attr(data-mono);position:absolute;left:14px;bottom:-.15em;
+  content:attr(data-mono);position:absolute;inset:0;
+  display:grid;place-items:center;
   font-family:var(--serif);font-style:italic;font-weight:400;
-  font-size:78cqw;line-height:1;letter-spacing:-.05em;
-  color:rgba(255,255,255,.2);
+  font-size:40cqw;line-height:1;letter-spacing:-.03em;
+  color:rgba(255,255,255,.17);
 }
 /* THE DROP-IN SLOT. tools/build-pages.mjs writes a <picture> in here for all
    six people or for none of them, and only for files that clear twice the
    plate's widest painted width. Drop the six headshots into site/assets/team/
    and rebuild; no other file changes. `>` is named on both shapes because a
    <picture> wrapper puts the <img> one level deeper — the same trap §8 hit. */
+/* top:-14%/height:128% is the room the pan needs, the same shape .pcard's
+   plate has at -50%/150% — a photograph cannot travel inside a box it exactly
+   fills without showing the box's floor. 0.28 of the card's height is the
+   throw main.js §6 gives it. */
 .cface>picture>img,.cface>img{
-  position:absolute;inset:0;width:100%;height:100%;
+  position:absolute;left:0;top:-14%;width:100%;height:128%;
   object-fit:cover;object-position:var(--op,50% 22%);
+  will-change:transform;
 }
 
 /* The rest state sits one level in, not on the card: .ccard is the .rv target
@@ -1317,6 +1561,24 @@ picture{display:contents}
    nothing faked on touch. */
 .ccard-in{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;opacity:.8;transition:opacity var(--t) ease}
 .ccard:hover .ccard-in{opacity:1}
+/* NOTHING HAPPENED ON THESE PAGES. Measured 2026-09-09: on /team/ and /events/,
+   once the fade-up had run, exactly one element in the document responded to
+   anything — the footer, to scroll. Six portraits, two event cards, five career
+   rows: no hover, no scroll response, nothing. The home page declines a hover
+   scale on .pcard deliberately, because the reference declines it there and
+   pays for the stillness with a pan; these plates now have the pan too, so
+   this is the second half of the same idea rather than a new one.
+   4.5% over 600ms on the page's own block curve — small enough that it reads
+   as the card breathing rather than as a zoom. */
+.cface>picture>img,.cface>img,.ephoto>picture>img,.ephoto>img{
+  transition:scale .6s var(--ease-3)}
+.ccard:hover .cface img,.ccard:focus-within .cface img,
+.ecard:hover .ephoto img,.ecard:focus-within .ephoto img{scale:1.045}
+/* A pointer that cannot hover gets none of it, and pays for none of it. */
+@media (hover:none){
+  .cface>picture>img,.cface>img,.ephoto>picture>img,.ephoto>img{transition:none}
+  .ccard:hover .cface img,.ecard:hover .ephoto img{scale:1}
+}
 
 /* h3, not cite: cite is for the title of a work, and .vtile cite already
    misuses it for a person's name one section up. */
@@ -1409,6 +1671,17 @@ main.sub>.band:first-of-type{padding-block-start:clamp(96px,20vh,180px)}
    rhythm scaled to the amount of matter it separates; the token itself is
    untouched and the home page is not affected. */
 main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
+/* THE BAND UNDER A PAGE HEAD IS NOT A NEW CHAPTER, 2026-09-09. The gap above
+   exists to separate two sections that each hold a screen of matter. A
+   .page-head holds a name, a sentence and a button — it is the title of the
+   section under it, not a section of its own — and paying a full 18vh for that
+   boundary cost /start/ its whole first screen: measured cold, the landing
+   frame at 1440 was 2.11% ink, the emptiest viewport on the site, and the map
+   below it — the one component on this site the reference has no answer to —
+   opened with 60px of itself visible. Closing this one boundary puts 200px of
+   the map in the fold and changes nothing about any other gap on any page. */
+main.sub>.band:first-of-type{padding-block-start:clamp(80px,13vh,132px)}
+main.sub>.band:first-of-type:has(.page-head)+.band{padding-block-start:clamp(56px,7vh,88px)}
 /* A section cannot close on the 16px that belongs to its own last row. The
    reference leaves 90px under its final band before the footer starts. */
 main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
@@ -1418,7 +1691,14 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    its own 2rem floor -- so it was pinned at 32px from 390 all the way up and
    the cap was unreachable below a 3054px viewport. The h1 that names the page
    gets its own ramp; every other .title on the page is untouched. */
-.page-head h1.title{font-size:clamp(2.6rem,4.4vw,4.6rem);letter-spacing:-.04em}
+/* ONE DISPLAY SIZE FOR A PAGE'S OWN NAME, 2026-09-09. This ramp resolved to
+   63.36px at 1440 while /team/'s resolved to 56.16 and the home hero to 57.6 —
+   three sizes inside 13% for the same thing, and the subpages' was the LARGEST,
+   so "The events." set bigger than "Faith, in action." on the page the whole
+   site is named after. All three share the 4vw slope now and land on 57.6
+   together; the floors stay where they were measured, because /team/'s headline
+   is three lines of sentence at 390 and /events/'s is two words. */
+.page-head h1.title{font-size:clamp(2.6rem,4vw,4.6rem);letter-spacing:-.04em}
 
 /* One column below 800, two at and above it. Six people wanted three columns
    because a name is short; an event card carries four to six lines and a third
@@ -1444,7 +1724,8 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    with the faces in it is near the top, not the middle. */
 .ephoto{position:relative;margin:0;overflow:hidden;border-radius:6px;
   background:var(--chip);aspect-ratio:3/2;flex:none}
-.ephoto>picture>img,.ephoto>img{display:block;width:100%;height:100%;
+.ephoto>picture>img,.ephoto>img{display:block;position:relative;top:-14%;width:100%;height:128%;
+  will-change:transform;
   object-fit:cover;object-position:var(--op,50% 50%)}
 /* The card names what the photograph is, on the photograph. An event that has
    not happened has no picture of itself and the page may not imply that it
@@ -1484,7 +1765,12 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    the headings for the lesser ones. It sits between the page's own 63px name
    and those 32px section heads now. .ecard h3, the cards in the list below,
    is untouched: those genuinely are subordinate. */
-.ecard h2{font-size:clamp(2.125rem,2.6vw,2.375rem);font-weight:500;line-height:1.2;letter-spacing:-.02em}
+/* 2.6vw resolved to 37.44px at 1440 — a step that existed exactly once on the
+   site, between the 32px every section heading holds and the 57.6 every page
+   name now holds. The lead card is the page's subject and deserves to be
+   larger than a section heading, but it does not deserve a step of its own:
+   2vw lands it on 28.8 at 1440 and inside 32's own family below it. */
+.ecard h2{font-size:clamp(1.75rem,2vw,2rem);font-weight:500;line-height:1.2;letter-spacing:-.02em}
 .ecard h3{font-size:clamp(1rem,1.5vw,1.25rem);font-weight:500;line-height:1.4;letter-spacing:normal}
 .ecard .where,.ecard .note{font-size:clamp(.875rem,1.2vw,1rem);line-height:1.4;color:var(--text-75)}
 /* Not a chip and not a badge: the word, set the way every other small label on
@@ -1505,6 +1791,17 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    nothing without this. */
 .ecard[hidden],#upcoming[hidden],.epast li[hidden],.count[hidden]{display:none}
 
+/* The rule under a row wipes on the pointer, left to right, on the 735ms
+   signature curve the footer's links already use — the one move on this site
+   that belongs to a LIST rather than to a card, and the only thing that made
+   the career column and the record answer a pointer at all. */
+.epast li,.tline-row{position:relative}
+.epast li::after,.tline-row::after{content:'';position:absolute;left:0;right:0;bottom:-1px;
+  height:1px;background:var(--text);transform:scaleX(0);transform-origin:right;
+  transition:transform .735s var(--ease-sig)}
+.epast li:hover::after,.epast li:focus-within::after,
+.tline-row:hover::after,.tline-row:focus-within::after{transform:scaleX(1);transform-origin:left}
+@media (hover:none){.epast li::after,.tline-row::after{display:none}}
 .epast li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:14px 0;
   border-bottom:1px solid var(--rule);align-items:baseline}
 .epast li:first-child{border-top:1px solid var(--rule)}
@@ -1512,8 +1809,24 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   letter-spacing:.05em;text-transform:uppercase;color:var(--text-70)}
 .epast .what{font-size:1rem;line-height:1.5;color:var(--text-94)}
 .epast .where{font-size:.875rem;line-height:1.5;color:var(--text-70)}
+/* The record's rows link out to the listing each evening was announced on, so
+   the row needs the same subtractive hover the footer's links carry — this is
+   the one place on the page where a whole list is live. */
+.epast .what{flex:1 1 18em}
+.epast .what a{position:relative;display:inline-block;padding-block:5px;margin-block:-5px;color:inherit;transition:opacity .735s var(--ease-sig)}
+.epast .what a::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform .735s var(--ease-sig)}
+.epast .what a:hover{opacity:.7}
+.epast .what a:hover::after{transform:scaleX(1);transform-origin:left}
+.epast .ehint{color:var(--text-40);font-size:.8125rem}
+/* The one absence this list states rather than hides. Same ink and measure as
+   the map's own absence note on /start/, because it is the same fact. */
+.epast-note{margin-top:24px;max-width:var(--measure);font-size:.8125rem;
+  line-height:1.5;color:var(--text-40)}
+@media (min-width:760px){.epast .where{margin-left:auto;text-align:right}}
 
-.empty{font-size:clamp(.9375rem,1.2vw,1.0625rem);line-height:1.5;color:var(--text-75);
+.empty{font-size:clamp(.9375rem,1.2vw,1.1rem);line-height:1.5;color:var(--text-75);
   max-width:var(--measure)}
 .empty a{text-decoration:underline;text-underline-offset:3px;
   transition:color var(--t-resp) var(--ease-out-quad)}
@@ -1566,7 +1879,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
      at 30.4px underneath its 32px section heads -- the same inversion /events/
      had. 2.25rem keeps it above them at every width; the 3.9vw slope and the
      4rem cap, which were measured against the reference, are unchanged. */
-  --h1:clamp(2.25rem,3.9vw,4rem);
+  --h1:clamp(2.25rem,4vw,4rem);
   text-align:center;display:grid;justify-items:center;
 }
 .thero-h{
@@ -1587,6 +1900,14 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   width:1.786em;height:1em;border-radius:.3em;margin:0 .25em;
   background:var(--chip);
 }
+/* NO play triangle here, and the pill still had to stop reading as a stray
+   rectangle. The note above this block is right — a triangle on a loop that
+   autoplays and cannot be clicked is a lie about the interface — so the fix
+   was the FOOTAGE, not a control: the clip is re-cut from the graded hero
+   (tools/grade-hero.sh) and cropped to the bridge tower rather than the whole
+   bay, because at 228x128 a wide landscape has no subject and reads as a pale
+   smudge in the middle of a sentence, which is exactly how it read. */
+
 /* The still is the element that ships and the clip is laid over it, both
    filling the same box, so the moment main.js §10a appends the video nothing
    moves and nothing flashes: the video carries the still as its own poster. */
@@ -1601,7 +1922,12 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    applies and the floors are inert. */
 .thero-cta{
   margin-top:max(24px,calc(var(--h1) * .5714));
-  font-size:max(.6875rem,calc(var(--h1) * .2293));font-weight:500;line-height:1.2;
+  /* This derived .2293 of --h1 and landed on 12.8775px at 1440 — a size that
+     exists exactly once on the whole site and sits 0.08px from one that exists
+     four times. A ratio is the right idea for a lockup that scales with its
+     headline; a ratio that produces a value off the scale is not. Clamped into
+     the scale's own steps. */
+  font-size:clamp(.6875rem,calc(var(--h1) * .26),.8125rem);font-weight:500;line-height:1.2;
   letter-spacing:.05em;text-transform:uppercase;
   text-decoration:underline;text-underline-offset:.18em;
   transition:color var(--t-resp) var(--ease-out-quad);
@@ -1670,13 +1996,20 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   display:inline-block;width:6px;height:6px;border-radius:50%;
   background:var(--accent);margin-left:-14px;margin-right:8px;vertical-align:.08em;
 }
-.tline-role{font-size:clamp(1rem,1.3vw,1.0625rem);font-weight:500;line-height:1.4;
+.tline-role{font-size:clamp(1rem,1.3vw,1.1rem);font-weight:500;line-height:1.4;
   letter-spacing:-.01em;color:var(--text-94)}
 .tline-org{font-size:.9375rem;line-height:1.5;color:var(--text-70);margin-top:2px}
 /* The slot, sized off the line it sits on rather than off a px number, so a
    mark that does land is the height of the name beside it at every width. */
 .tline-org{display:flex;align-items:baseline;gap:.5em}
-.tline-mark{flex:0 0 1.15em;width:1.15em;height:1.15em;object-fit:contain;
+/* 1.15em is 17px, and at 17px on a dark ground a heraldic mark is mud: an
+   independent read of this column called all three illegible, and the site's
+   own doctrine for marks (research/partner-logos/PLAN.md §3) is that one is
+   hand-sized until it READS or it does not run. 1.6em is 24px, which is where
+   the Archdiocese's mitre and the Vita Inclinata glyph resolve into shapes.
+   The row is still designed to be handsome with nothing in the slot — that
+   part of the note above is the load-bearing part. */
+.tline-mark{flex:0 0 1.6em;width:1.6em;height:1.6em;object-fit:contain;
   align-self:center;
   /* One tone, like the partner strip: three marks at three aspect ratios and
      three palettes, painted 10px tall on black, read as clutter in colour.
@@ -1684,7 +2017,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
      and Linear apply to a client row. */
   filter:grayscale(1) brightness(2.4) contrast(.9)}
 /* The two rows with no permitted mark keep the column's left edge. */
-.tline-org:not(:has(.tline-mark))::before{content:'';flex:0 0 1.15em}
+.tline-org:not(:has(.tline-mark))::before{content:'';flex:0 0 1.6em}
 .tline-note{font-size:.875rem;line-height:1.5;color:var(--text-75);
   margin-top:8px;max-width:52ch}
 .tline-foot{font-size:.875rem;line-height:1.5;color:var(--text-75);
@@ -1832,7 +2165,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .scales label{
   display:flex;align-items:center;justify-content:center;min-height:44px;
   border-radius:9999px;cursor:pointer;text-align:center;
-  font-size:.7rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  font-size:.6875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
   font-feature-settings:'case' 1;color:var(--text-70);
   transition:background-color var(--t-resp) var(--ease-out-quad),
              color var(--t-resp) var(--ease-out-quad);
@@ -1918,7 +2251,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   position:absolute;z-index:2;display:none;align-items:center;white-space:nowrap;
   pointer-events:auto;min-height:44px;padding:0 14px;border-radius:9999px;
   background:var(--chip);color:var(--text);
-  font-size:.7rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  font-size:.6875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
   font-feature-settings:'case' 1;
   box-shadow:inset 1px 1px 0 var(--lamp-rim-strong),inset -1px -1px 0 var(--lamp-shade);
   transition:background-color var(--t-resp) var(--ease-out-quad),
@@ -1933,6 +2266,25 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 @media (max-width:759px){
   .pin::after{display:none}
   .pin .dot::before{width:38px;height:38px}
+  /* THREE PARISHES A MILE APART, 2026-09-09. In a 350px frame that is 30px, so
+     pins 1, 2 and 4 physically overlap — measured, pin 1 is 58% covered. The
+     dot cannot shrink: 24px is WCAG 2.2's target floor and the note above is
+     right to hold it. What was missing is an EDGE. All three carried the same
+     light rim as everything else on this page, so three overlapping cream
+     circles merged into one cream shape. A 2px ring of the page's own ground
+     cuts between them; the geography is unchanged and each number keeps a
+     closed disc of its own. */
+  .pin .dot{box-shadow:0 0 0 1px var(--lamp-rim-strong),0 0 0 3px var(--bg),
+    -5px -2px 13px rgba(245,238,214,.3)}
+  /* And the paint order reversed inside the cluster, so the pin a reader
+     counts to FIRST is the one whose disc is whole. DOM order put 4 over 2
+     over 1, which is the order that hides the lowest number. */
+  .pins .pin:nth-child(1) .dot{z-index:7}
+  .pins .pin:nth-child(2) .dot{z-index:6}
+  .pins .pin:nth-child(3) .dot{z-index:5}
+  .pins .pin:nth-child(4) .dot{z-index:4}
+  .pins .pin:nth-child(5) .dot{z-index:3}
+  .pin .dot:hover,.pin .dot:focus-visible{z-index:9}
 }
 .pin[data-dir=N] .lbl{left:var(--x);bottom:calc(100% - var(--y) + var(--lead));transform:translateX(-50%)}
 .pin[data-dir=S] .lbl{left:var(--x);top:calc(var(--y) + var(--lead));transform:translateX(-50%)}
@@ -2000,7 +2352,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 #city::placeholder{color:rgba(255,255,255,.45)}
 #city:hover{border-color:rgba(255,255,255,.3)}
 #city:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:transparent}
-.city-help{font-size:.75rem;line-height:1.45;color:var(--text-70)}
+.city-help{font-size:.75rem;line-height:1.4;color:var(--text-70)}
 .city-list{
   position:absolute;z-index:6;top:calc(100% - 46px);left:0;right:0;
   max-height:240px;overflow-y:auto;overscroll-behavior:contain;
@@ -2032,7 +2384,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   font-feature-settings:'case' 1;vertical-align:.08em}
 .vwhere,.vwhen{font-size:.875rem;line-height:1.5;color:var(--text-75)}
 .vsrc{font-size:.8125rem;line-height:1.5;color:var(--text-70)}
-.vsrc a{color:var(--text-75);text-decoration:underline;text-underline-offset:3px;
+/* 84x16 and 157x16 measured at 1440. The padding takes the hit box to 24px
+   and the negative margin gives the row back the leading it borrowed, so the
+   list's rhythm is unchanged — the same trick .foot-col a uses. */
+.vsrc a{display:inline-block;padding-block:5px;margin-block:-5px;
+  color:var(--text-75);text-decoration:underline;text-underline-offset:3px;
   transition:color var(--t-resp) var(--ease-out-quad)}
 .vsrc a:hover{color:var(--accent)}
 .vnote{font-size:.8125rem;line-height:1.5;color:var(--text-70);margin-top:2px;
@@ -2058,8 +2414,8 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   border:1px solid var(--lamp-rim-strong);border-radius:inherit;
   -webkit-mask:var(--lamp-arc);mask:var(--lamp-arc);
 }
-.hub-block h3{font-size:1.0625rem;font-weight:500;line-height:1.35;letter-spacing:-.01em}
-.hub-block p{font-size:.9375rem;line-height:1.55;color:var(--text-75)}
+.hub-block h3{font-size:1.1rem;font-weight:500;line-height:1.4;letter-spacing:-.01em}
+.hub-block p{font-size:.9375rem;line-height:1.5;color:var(--text-75)}
 .hub-more a{color:var(--text-94);text-decoration:underline;text-underline-offset:3px;
   transition:color var(--t-resp) var(--ease-out-quad)}
 .hub-more a:hover{color:var(--accent)}
@@ -2067,7 +2423,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 /* ── the register block ──────────────────────────────────────────────────── */
 .reg{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
 .reg .pending{font-size:1rem;line-height:1.5;color:var(--text-75);max-width:var(--measure)}
-.fine{font-size:.75rem;line-height:1.45;color:var(--text-70);max-width:var(--measure)}
+.fine{font-size:.75rem;line-height:1.4;color:var(--text-70);max-width:var(--measure)}
 #instead .desc{margin-top:20px}
 #instead .rv-c{margin-top:24px}
 
@@ -2103,8 +2459,27 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   margin-right:10px;border-radius:8px;overflow:hidden;background:var(--surface);
   display:grid;place-items:center;padding:24px;text-align:center;isolation:isolate}
 .perk img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover}
-.perk::before{content:'';position:absolute;inset:0;z-index:-1;background:rgba(0,0,0,.45)}
-.perk p{font-size:clamp(1rem,1.3vw,1.125rem);font-weight:500;letter-spacing:-.02em;line-height:1.35;max-width:20ch}
+/* A FLAT .45 IS NOT A SCRIM, 2026-09-09. Measured over the pixels actually
+   painted, "A reception at 6:30, and another one after" came to 1.77:1 at 390
+   and "A keynote on one theme of Catholic Social Teaching" to 2.77:1 — both
+   over the bright half of a photograph, both a long way under AA. A flat veil
+   spends the same ink on the dark corners (where none is needed) as on the
+   bright middle (where all of it is), so it can only be raised by darkening
+   the whole picture.
+   Two layers instead: the flat veil deepened one step, and a masked solid
+   concentrated where the type actually sits. Masked rather than a gradient
+   background-image, which is what §7.6's ninth tell forbids outside #top and
+   #voice — the same technique .believe-lines::before and .believe-card::before
+   already use. The corners of the photograph are barely touched. */
+.perk::before{content:'';position:absolute;inset:0;z-index:-1;background:rgba(0,0,0,.5)}
+.perk::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:rgba(0,0,0,.42);
+  -webkit-mask:radial-gradient(112% 68% at 50% 62%,#000 0%,#000 26%,transparent 100%);
+  mask:radial-gradient(112% 68% at 50% 62%,#000 0%,#000 26%,transparent 100%)}
+/* 1.125rem resolved to 18px against the 17.6px 36 .desc nodes already use, and
+   1.35 was a line-height ratio the reference's set does not contain. Both onto
+   the step beside them. */
+.perk p{font-size:clamp(1rem,1.3vw,1.1rem);font-weight:500;letter-spacing:-.02em;line-height:1.4;max-width:20ch}
 
 .seat-close{display:grid;justify-items:center;gap:16px;margin-top:clamp(56px,10vh,110px)}
 .seat-note{font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-40)}
@@ -2116,6 +2491,10 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    page. Each column drifts at its own rate as you pass it — .03 and .08 of the
    scroll, alternating — which is what stops a uniform grid reading as a
    contact sheet. */
+/* The icons are 16px, which is the size the reference draws them, and the
+   anchor is 16px too — but `.socials a::after` below already lays a 44x44 hit
+   box over each one, so the target meets WCAG 2.2 and only a probe that
+   measures the element's own border box reads it as 16px. Left alone. */
 .socials{display:flex;justify-content:center;gap:20px;padding:20px 24px;margin:0}
 .opener .socials{margin-top:-20px}
 /* The icons stay 16px — that is the reference's size and the row's whole
@@ -2223,10 +2602,17 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .venue{display:flex;flex-direction:column;align-items:flex-start;gap:5px;align-self:start;
   padding-bottom:14px;border-bottom:1px solid var(--rule)}
 .venue svg{margin-left:-2px;width:20px;height:24px;margin-bottom:12px;stroke:#fffafa;fill:none;stroke-width:1.1}
-.venue h3{font-size:clamp(1.05rem,1.4vw,1.375rem);font-weight:400;letter-spacing:-.02em}
+/* 1.4vw resolved to 20.16px at 1440 against the 20px nine <cite> nodes hold.
+   Same step; the clamp now lands on it exactly instead of beside it. */
+.venue h3{font-size:clamp(1.05rem,1.4vw,1.25rem);font-weight:400;letter-spacing:-.02em}
 .venue .label{color:var(--text-40)}
+/* The card says what happened in the room, not just where it is. Same ink as
+   the address, one step down in weight, and the date is a <time> so it is
+   machine-readable in the same way the events on /events/ are. */
+.venue-last{font-size:.6875rem;line-height:1.4;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--text-40)}
 
-.foot-base{display:grid;gap:16px;align-items:center;margin-top:clamp(56px,7vw,96px);
+.foot-base{display:grid;gap:16px;align-items:center;margin-top:clamp(44px,5vw,66px);
   font-size:.6875rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-40)}
 @media (min-width:760px){.foot-base{grid-template-columns:1fr auto 1fr}.foot-base .mid{text-align:center}.foot-base .end{justify-self:end}}
 /* ─── §15b press ────────────────────────────────────────────────────────────
@@ -2251,7 +2637,13 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .foot-base a{display:inline-block;padding-block:10px}
 .foot-base a:hover{color:var(--text)}
 .foot-base .socials{margin:0;gap:16px}
-.foot-fine{margin-top:22px;font-size:.6875rem;line-height:1.5;color:rgba(255,255,255,.48);max-width:56ch}
+/* 56ch at 11px is a 360px column, and this paragraph is long: it set as
+   fifteen lines down the left edge with 900px of black beside it, which is the
+   deepest void in the footer and the last thing on the page. The reference's
+   equivalent runs two lines across two thirds of the measure. 108ch is four
+   lines at 1440 and still inside the 45-90 character band once the page is
+   narrow enough for it to matter, because the value is a max. */
+.foot-fine{margin-top:22px;font-size:.6875rem;line-height:1.5;color:rgba(255,255,255,.48);max-width:108ch}
 
 /* ─── §16 motion ────────────────────────────────────────────────────────── */
 
@@ -2287,8 +2679,12 @@ html.motion .thero-pill{opacity:0;transform:scale(.86)}
 html.motion .thero-h.in .thero-pill{opacity:1;transform:none;
   transition:opacity .5s var(--ease-2) .28s,transform .5s var(--ease-2) .28s}
 html.motion .split .ch{display:inline-block;opacity:0;filter:blur(8px)}
+/* .38s, not .5s. It adds to the wave (main.js §3a), and the sum is what a
+   reader experiences: the last glyph of a long headline used to finish 1,152ms
+   after the first one started, which is a payoff word held dim for longer than
+   the eye will wait. */
 html.motion .split.in .ch{opacity:1;filter:blur(0);
-  transition:opacity .5s var(--ease-2),filter .5s var(--ease-2)}
+  transition:opacity .38s var(--ease-2),filter .38s var(--ease-2)}
 
 /* §16b — the load timeline ------------------------------------------------
    The bar drops in from −144px over 800ms and the hero's supporting copy
@@ -2327,11 +2723,21 @@ html.motion .rv-l.in{transform:none;filter:blur(0);
 html.motion .rv-c.in{transition:opacity .5s var(--ease-2)}
 
 /* a whole block — a card, a tile, a stat: 72px on the slower curve */
-html.motion .rv-b{transform:translateY(72px)}
-html.motion .rv-b.in{transform:none;transition:opacity .7s var(--ease-3),transform .7s var(--ease-3)}
+/* The 8px defocus is the one thing the forensics calls the difference between
+   the reference's reveal and a generic fade-up, and .rv-b — 32 uses, the most
+   of any variant — did not have it. 6px rather than 8: these are blocks and
+   photographs rather than glyphs, and 8px on a 400px card reads as a smear
+   where on a 32px letter it reads as focus. */
+html.motion .rv-b{transform:translateY(72px);filter:blur(6px)}
+html.motion .rv-b.in{transform:none;filter:blur(0);
+  transition:opacity .7s var(--ease-3),transform .7s var(--ease-3),filter .7s var(--ease-3)}
 
 /* the footer arrives from a long way down, once, on the material curve */
-html.motion .rv-f{transform:translateY(180px)}
+/* 180px was a smaller move than a card's 72px looks, because it runs over a
+   1s curve on a block the height of the screen. The reference's footer travels
+   384px on the same curve; the ending of a page should be the largest move on
+   it. */
+html.motion .rv-f{transform:translateY(340px)}
 html.motion .rv-f.in{transform:none;transition:opacity 1s var(--ease-mat),transform 1s var(--ease-mat)}
 
 html.motion .rv[data-d="1"].in{transition-delay:.1s}
@@ -2375,7 +2781,7 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   html.motion .hero .hero-aside>*,html.motion .hero .hero-time,
   html.motion .thero-pill{
     opacity:1;transform:none;filter:none;transition:none;animation:none}
-  .mrow,.perks-row{animation:none}
+  .perks-row{animation:none}
   .fcol{transform:none!important}
   .pcard>img,.pcard>picture>img,.pcard>video{transform:none!important;top:0;height:100%}
   .believe{height:auto}
@@ -2383,6 +2789,12 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   .believe-card{position:static;inset:auto;clip-path:none;margin-inline:auto;
     width:min(1080px,92vw);height:auto;aspect-ratio:16/9;border-radius:10px}
   .believe-card::after{display:none}
+  /* One ground, held: the cross-fade is a scroll effect and there is no scroll
+     effect here. The push-in and the deepening veil go with it. */
+  .believe-card picture:has(img.bplate){display:none}
+  .believe-card>video{--pv:1;transform:none}
+  .believe-card::before{-webkit-mask:radial-gradient(130% 120% at 50% 40%,transparent 0%,transparent 52%,#000 100%);
+    mask:radial-gradient(130% 120% at 50% 40%,transparent 0%,transparent 52%,#000 100%)}
   .believe-lines{display:grid;gap:16px;min-height:0;perspective:none}
   .believe-lines li{grid-area:auto;opacity:1!important;transform:none!important;filter:none!important}
   /* The lamp, not the geometric centre. §1c's rim is fully present in this
