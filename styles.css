@@ -296,7 +296,7 @@ html{
    not mix. Nothing here changes what anything looks like. */
 @media (prefers-reduced-motion:no-preference){
   #about,#voices,#record,#evening,#team,#seat,#stories,
-  #upcoming,#past,footer.foot{content-visibility:auto}
+  #upcoming,#past,#where,#what,#register,#instead,footer.foot{content-visibility:auto}
   /* Measured heights, not a blanket guess. The guess is what the scrollbar and
      an anchor jump are computed against before a section has ever rendered, so
      a flat 1200px put the #evening anchor 771px past its mark. These are the
@@ -321,7 +321,30 @@ html{
   #stories{contain-intrinsic-size:auto 2109px}
   #upcoming{contain-intrinsic-size:auto 562px}
   #past   {contain-intrinsic-size:auto 284px}
-  footer.foot{contain-intrinsic-size:auto 884px}
+  /* /start/'s four lower sections. #start is deliberately absent: it is the
+     first thing on the page, which is the pessimization #next-up is excluded
+     for. #where IS here, against research/hub-map/PLAN.md §9, and the reason is
+     a measurement rather than a preference. The plan excludes it because it
+     holds absolutely positioned overlays — but those overlays live inside
+     .mapframe, which is overflow:hidden and entirely inside the section, so
+     nothing escapes the containment box. Meanwhile the paired ABBA run against
+     /events/ (tools/_scrollcost.mjs, 390x844, 6x CPU, five rounds) puts this
+     one declaration at −2.72pp of over-budget frames and −22% of p90, faster in
+     5 of 5 rounds — the difference between meeting the plan's own stated target
+     of "no worse than /events/" and missing it. Removing the SVG entirely, by
+     contrast, measured at 0.05ms: the geometry was never the cost.
+     Every number below is measured on the page, with containment off, at 1440
+     and at 390 — never carried over from a section that looks similar. */
+  #where  {contain-intrinsic-size:auto 2118px}
+  #what   {contain-intrinsic-size:auto 453px}
+  #register{contain-intrinsic-size:auto 453px}
+  #instead{contain-intrinsic-size:auto 426px}
+  /* Re-measured because this run changed the footer: the Explore column gained
+     "Start a hub". 884/1180 were already 27% and 14% short of the footer as it
+     actually stands on all four pages — measured identically on /, /team/,
+     /events/ and /start/ — which is exactly the drift §2c's own rule above is
+     written to catch. */
+  footer.foot{contain-intrinsic-size:auto 1124px}
   @media (max-width:759px){
     #about  {contain-intrinsic-size:auto 1326px}
     #voices {contain-intrinsic-size:auto 1585px}
@@ -332,7 +355,11 @@ html{
     #stories{contain-intrinsic-size:auto 1638px}
     #upcoming{contain-intrinsic-size:auto 536px}
     #past   {contain-intrinsic-size:auto 250px}
-    footer.foot{contain-intrinsic-size:auto 1180px}
+    #where  {contain-intrinsic-size:auto 1724px}
+    #what   {contain-intrinsic-size:auto 846px}
+    #register{contain-intrinsic-size:auto 500px}
+    #instead{contain-intrinsic-size:auto 468px}
+    footer.foot{contain-intrinsic-size:auto 1350px}
   }
 }
 
@@ -1720,14 +1747,37 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .lay,.pins{transition:opacity .5s var(--ease-2),transform .55s var(--ease-3);
   transform-origin:50% 50%}
 .pins{position:absolute;inset:0}
-.lay{opacity:0;transform:scale(2.2)}
-.pins{opacity:0;transform:scale(2.2);pointer-events:none}
+.lay{opacity:0;transform:scale(2.2);
+  /* Same delayed visibility flip as .pins below, and here it is a measured
+     performance fix rather than a keyboard one. An opacity:0 layer is still a
+     layer: the world path at 2.2x was being rastered on every scroll of a
+     section that has no containment, and the paired ABBA run against /events/
+     put this page 3.95ms of p90 behind it. visibility:hidden takes the two
+     layers nobody is looking at out of paint entirely, and because the flip is
+     delayed rather than transitioned, opacity and transform are still the only
+     things that animate. */
+  visibility:hidden;
+  transition:opacity .5s var(--ease-2),transform .55s var(--ease-3),visibility 0s linear .55s}
+.pins{opacity:0;transform:scale(2.2);pointer-events:none;
+  /* visibility, delayed to the end of the fade: an opacity:0 layer still holds
+     its links in the tab order, so a keyboard pass through "The rooms" walked
+     five real pins and then two invisible ones on scales nobody was looking at.
+     Delaying the flip rather than transitioning it keeps opacity and transform
+     the only things that animate, which keeps the whole move on the
+     compositor. */
+  visibility:hidden;
+  transition:opacity .5s var(--ease-2),transform .55s var(--ease-3),visibility 0s linear .55s}
 
 #ms-sf:checked    ~ .mapfig .l-sf,    #ms-sf:checked    ~ .mapfig .pins-sf,
 #ms-bay:checked   ~ .mapfig .l-bay,   #ms-bay:checked   ~ .mapfig .pins-bay,
 #ms-world:checked ~ .mapfig .l-world, #ms-world:checked ~ .mapfig .pins-world{
   opacity:1;transform:none;
 }
+#ms-sf:checked    ~ .mapfig .l-sf,    #ms-sf:checked    ~ .mapfig .pins-sf,
+#ms-bay:checked   ~ .mapfig .l-bay,   #ms-bay:checked   ~ .mapfig .pins-bay,
+#ms-world:checked ~ .mapfig .l-world, #ms-world:checked ~ .mapfig .pins-world{
+  visibility:visible;
+  transition:opacity .5s var(--ease-2),transform .55s var(--ease-3),visibility 0s}
 /* Only the pins themselves take the pointer, never the layer box over the
    whole frame — a click on the map's background has to reach the frame and
    clear the open card. */
@@ -1860,6 +1910,15 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
              color var(--t-resp) var(--ease-out-quad);
 }
 @media (min-width:760px){.pin .lbl{display:inline-flex}}
+/* Below 760 there is no chip, so there is nothing for a leader to lead to, and
+   three haloes 55px apart in a 350px frame merge into one blob rather than
+   reading as three rooms a mile apart. The dot stays at the WCAG 2.2 floor of
+   24px and keeps its number; the list under the map is the label set, which is
+   what it is there for. */
+@media (max-width:759px){
+  .pin::after{display:none}
+  .pin .dot::before{width:38px;height:38px}
+}
 .pin[data-dir=N] .lbl{left:var(--x);bottom:calc(100% - var(--y) + var(--lead));transform:translateX(-50%)}
 .pin[data-dir=S] .lbl{left:var(--x);top:calc(var(--y) + var(--lead));transform:translateX(-50%)}
 .pin[data-dir=E] .lbl{top:var(--y);left:calc(var(--x) + var(--lead));transform:translateY(-50%)}
@@ -1899,6 +1958,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .map-detail,.map-dist,.map-world-note{
   font-size:.9375rem;line-height:1.5;color:var(--text-94);margin:0;min-height:1.5em;
 }
+/* A <div>, not a <p>: the card is built by cloning the matching list row, so it
+   carries that row's heading, and an <h3> inside a <p> is a paragraph the
+   parser closes early. */
+.map-detail{display:flex;flex-direction:column;gap:2px;max-width:var(--measure)}
+.map-detail h3{font-size:1rem;font-weight:500;line-height:1.4}
 .map-detail:empty,.map-dist:empty{display:none}
 .map-detail b{font-weight:500}
 .map-detail .vsrc a,.map-dist a{text-decoration:underline;text-underline-offset:3px}

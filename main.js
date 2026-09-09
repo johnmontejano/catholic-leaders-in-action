@@ -1211,10 +1211,13 @@
       const radio = q(`#ms-${lay}`, mapwrap);
       if (radio && !radio.checked) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
 
+      /* Eight kilometres is San Francisco itself, not "near San Francisco".
+         Oakland is thirteen away and it is emphatically not where the five
+         rooms are, which is the whole thing this page is careful about. */
       const d = haversine(proj.sf.city[1], proj.sf.city[0], city.lat, city.lon);
       if (dist) {
-        dist.textContent = d < 25
-          ? `${city.name} is where all five rooms are. Come to an evening — or start a second one.`
+        dist.textContent = d < 8
+          ? `That is where all five rooms are. Come to an evening — or start a second one here.`
           : `${city.name} is ${km(d)} km from San Francisco. Nothing there yet.`;
       }
       mapwrap.classList.add('has-city');
