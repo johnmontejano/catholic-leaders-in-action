@@ -1,0 +1,822 @@
+Abidjan|Ivory Coast|5.322|-4.042
+Abilene|TX|32.455|-99.738
+Abu Dhabi|United Arab Emirates|24.467|54.367
+Abuja|Nigeria|9.085|7.531
+Acalanes Ridge|CA|37.905|-122.079
+Accra|Ghana|5.552|-0.219
+Addis Ababa|Ethiopia|9.035|38.698
+Ahmedabad|India|23.032|72.578
+Akron|OH|41.080|-81.521
+Alameda|CA|37.742|-122.260
+Alamo|CA|37.855|-122.014
+Albany|CA|37.891|-122.318
+Albany|NY|42.666|-73.798
+Albuquerque|NM|35.105|-106.647
+Alexandria|Egypt|31.202|29.948
+Alexandria|VA|38.819|-77.084
+Algiers|Algeria|36.765|3.049
+Alhambra Valley|CA|37.967|-122.136
+Allendale|CA|38.443|-121.983
+Allentown|PA|40.594|-75.478
+Allen|TX|33.110|-96.673
+Alto|CA|37.906|-122.519
+Alum Rock|CA|37.369|-121.824
+Amaravati|India|16.534|80.524
+Amarillo|TX|35.198|-101.833
+American Canyon|CA|38.179|-122.260
+Amman|Jordan|31.952|35.931
+Amsterdam|Netherlands|52.352|4.915
+Anaheim|CA|33.856|-117.759
+Anchorage|AK|61.174|-149.284
+Andorra|Andorra|42.500|1.516
+Angwin|CA|38.578|-122.451
+Ankara|Turkey|39.929|32.862
+Ann Arbor|MI|42.276|-83.731
+Antananarivo|Madagascar|-18.915|47.515
+Antioch|CA|37.978|-121.796
+Apia|Samoa|-13.842|-171.739
+Arlington|TX|32.701|-97.125
+Arvada|CO|39.834|-105.150
+Ashgabat|Turkmenistan|37.950|58.383
+Ashland|CA|37.694|-122.116
+Asmara|Eritrea|15.333|38.933
+Asunción|Paraguay|-25.294|-57.643
+Athens-Clarke County unified government (balance)|GA|33.950|-83.370
+Athens|Greece|37.985|23.731
+Atherton|CA|37.457|-122.201
+Atlanta|GA|33.763|-84.423
+Augusta-Richmond County consolidated government (balance)|GA|33.366|-82.073
+Aurora|CO|39.710|-104.721
+Aurora|IL|41.763|-88.290
+Austin|TX|30.299|-97.754
+Baghdad|Iraq|33.341|44.392
+Baguio|Philippines|16.430|120.570
+Bakersfield|CA|35.353|-119.038
+Baku|Azerbaijan|40.397|49.860
+Baltimore|MD|39.300|-76.610
+Bamako|Mali|12.652|-8.002
+Bandar Seri Begawan|Brunei|4.883|114.933
+Bangkok|Thailand|13.752|100.515
+Bangui|Central African Republic|4.367|18.558
+Banjul|The Gambia|13.454|-16.592
+Barcelona|Spain|41.385|2.181
+Basseterre|Saint Kitts and Nevis|17.302|-62.717
+Baton Rouge|LA|30.440|-91.133
+Bay Point|CA|38.032|-121.962
+Bayview|CA|38.006|-122.320
+Baywood Park|CA|37.529|-122.342
+Beaumont|TX|30.085|-94.145
+Beijing|China|39.931|116.386
+Beirut|Lebanon|33.874|35.508
+Belgrade|Serbia|44.821|20.466
+Bellevue|WA|47.598|-122.156
+Belmont|CA|37.514|-122.294
+Belmopan|Belize|17.252|-88.767
+Belo Horizonte|Brazil|-19.913|-43.917
+Belvedere|CA|37.874|-122.471
+Bend|OR|44.057|-121.308
+Bengaluru|India|12.972|77.558
+Benicia|CA|38.073|-122.155
+Berkeley|CA|37.866|-122.299
+Berlin|Germany|52.524|13.400
+Bern|Switzerland|46.917|7.467
+Bethel Island|CA|38.028|-121.630
+Billings|MT|45.789|-108.552
+Bir Lehlou|Western Sahara|26.119|-9.653
+Birmingham|AL|33.527|-86.797
+Bishkek|Kyrgyzstan|42.875|74.583
+Bissau|Guinea Bissau|11.865|-15.598
+Black Point-Green Point|CA|38.111|-122.519
+Blackhawk|CA|37.810|-121.913
+Bloemfontein|South Africa|-29.120|26.230
+Bloomfield|CA|38.322|-122.834
+Boca Raton|FL|26.373|-80.104
+Bodega Bay|CA|38.327|-123.030
+Bodega|CA|38.349|-122.971
+Bogota|Colombia|4.598|-74.085
+Boise City|ID|43.599|-116.230
+Bolinas|CA|37.918|-122.710
+Boston|MA|42.339|-71.018
+Boulder|CO|40.024|-105.251
+Boyes Hot Springs|CA|38.313|-122.489
+Brasília|Brazil|-15.781|-47.918
+Bratislava|Slovakia|48.150|17.117
+Brazzaville|Congo (Brazzaville)|-4.257|15.283
+Brentwood|CA|37.936|-121.719
+Bridgeport|CT|41.187|-73.196
+Bridgetown|Barbados|13.102|-59.617
+Brisbane|CA|37.676|-122.383
+Broadmoor|CA|37.691|-122.481
+Brockton|MA|42.083|-71.025
+Broken Arrow|OK|36.037|-95.781
+Brownsville|TX|25.996|-97.451
+Brussels|Belgium|50.835|4.331
+Bucharest|Romania|44.435|26.098
+Buckeye|AZ|33.432|-112.642
+Budapest|Hungary|47.502|19.081
+Buenos Aires|Argentina|-34.601|-58.399
+Buffalo|NY|42.892|-78.860
+Bujumbura|Burundi|-3.376|29.360
+Burbank|CA|34.190|-118.326
+Burlingame|CA|37.590|-122.363
+Busan|South Korea|35.097|129.008
+Byron|CA|37.876|-121.642
+Cairo|Egypt|30.052|31.248
+Calistoga|CA|38.581|-122.583
+Cambrian Park|CA|37.256|-121.929
+Cambridge|MA|42.376|-71.119
+Camino Tassajara|CA|37.791|-121.885
+Campbell|CA|37.280|-121.953
+Canberra|Australia|-35.283|149.129
+Cape Coral|FL|26.643|-81.997
+Cape Town|South Africa|-33.918|18.433
+Caracas|Venezuela|10.503|-66.919
+Carlsbad|CA|33.129|-117.284
+Carmel|IN|39.965|-86.148
+Carmet|CA|38.374|-123.072
+Carrollton|TX|32.989|-96.900
+Cary|NC|35.781|-78.823
+Casablanca|Morocco|33.602|-7.618
+Castle Hill|CA|37.875|-122.059
+Castries|Saint Lucia|14.002|-61.000
+Castro Valley|CA|37.708|-122.063
+Cazadero|CA|38.528|-123.110
+Cedar Rapids|IA|41.964|-91.679
+Centennial|CO|39.591|-104.864
+Chandler|AZ|33.283|-111.852
+Changchun|China|43.867|125.338
+Charleston|SC|32.828|-79.973
+Charlotte|NC|35.209|-80.831
+Chattanooga|TN|35.066|-85.248
+Chattogram|Bangladesh|22.332|91.798
+Chengdu|China|30.672|104.068
+Chennai|India|13.092|80.278
+Cherryland|CA|37.679|-122.104
+Chesapeake|VA|36.679|-76.302
+Chicago|IL|41.837|-87.685
+Chico|CA|39.759|-121.818
+Chișinău|Moldova|47.005|28.858
+Chongqing|China|29.567|106.593
+Chula Vista|CA|32.628|-117.015
+Cincinnati|OH|39.140|-84.506
+Clarksville|TN|36.566|-87.345
+Clayton|CA|37.940|-121.930
+Clearwater|FL|27.979|-82.771
+Cleveland|OH|41.478|-81.679
+Cloverdale|CA|38.795|-123.015
+Clovis|CA|36.828|-119.682
+Clyde|CA|38.025|-122.028
+College Station|TX|30.585|-96.296
+Colma|CA|37.677|-122.453
+Colombo|Sri Lanka|6.932|79.858
+Colorado Springs|CO|38.867|-104.761
+Columbia|MO|38.947|-92.326
+Columbia|SC|34.041|-80.906
+Columbus|GA|32.510|-84.875
+Columbus|OH|39.984|-82.985
+Conakry|Guinea|9.533|-13.682
+Concord|CA|37.972|-122.002
+Concord|NC|35.392|-80.636
+Conroe|TX|30.329|-95.485
+Contra Costa Centre|CA|37.926|-122.054
+Coral Springs|FL|26.271|-80.259
+Corona|CA|33.862|-117.565
+Corpus Christi|TX|27.754|-97.173
+Corte Madera|CA|37.932|-122.508
+Costa Mesa|CA|33.666|-117.912
+Cotati|CA|38.328|-122.710
+Cotonou|Benin|6.402|2.518
+Crockett|CA|38.052|-122.220
+Cupertino|CA|37.319|-122.045
+Curitiba|Brazil|-25.418|-49.322
+Dakar|Senegal|14.718|-17.475
+Dalian|China|38.925|121.628
+Dallas|TX|32.793|-96.767
+Daly City|CA|37.702|-122.465
+Damascus|Syria|33.502|36.298
+Danville|CA|37.812|-121.970
+Dar es Salaam|Tanzania|-6.798|39.266
+Davenport|IA|41.557|-90.604
+Davie|FL|26.079|-80.283
+Dayton|OH|39.785|-84.200
+Dearborn|MI|42.313|-83.211
+Deer Park|CA|38.535|-122.470
+Delhi|India|28.672|77.228
+Deltona|FL|28.905|-81.211
+Denton|TX|33.217|-97.141
+Denver|CO|39.762|-104.881
+Des Moines|IA|41.573|-93.610
+Detroit|MI|42.383|-83.102
+Dhaka|Bangladesh|23.725|90.407
+Diablo|CA|37.841|-121.956
+Dili|East Timor|-8.559|125.579
+Dillon Beach|CA|38.243|-122.956
+Discovery Bay|CA|37.908|-121.597
+Dixon|CA|38.448|-121.824
+Djibouti|Djibouti|11.595|43.148
+Dodoma|Tanzania|-6.183|35.750
+Doha|Qatar|25.287|51.533
+Dongguan|China|23.051|113.743
+Downey|CA|33.938|-118.131
+Dublin|CA|37.716|-121.896
+Dublin|Ireland|53.335|-6.251
+Durham|NC|35.978|-78.898
+Dushanbe|Tajikistan|38.560|68.774
+East Foothills|CA|37.383|-121.814
+East Palo Alto|CA|37.468|-122.133
+East Richmond Heights|CA|37.945|-122.314
+Edinburg|TX|26.318|-98.153
+El Cajon|CA|32.802|-116.960
+El Cerrito|CA|37.920|-122.303
+El Granada|CA|37.514|-122.465
+El Monte|CA|34.075|-118.029
+El Paso|TX|31.848|-106.431
+El Sobrante|CA|37.974|-122.303
+El Verano|CA|38.297|-122.492
+Eldridge|CA|38.334|-122.507
+Elgin|IL|42.039|-88.326
+Elizabeth|NJ|40.666|-74.194
+Elk Grove|CA|38.415|-121.385
+Elmira|CA|38.352|-121.908
+Emerald Lake Hills|CA|37.466|-122.265
+Emeryville|CA|37.838|-122.302
+Escondido|CA|33.133|-117.074
+Eugene|OR|44.057|-123.119
+Evansville|IN|37.988|-87.535
+Everett|WA|47.965|-122.190
+Fairfax|CA|37.989|-122.595
+Fairfield|CA|38.262|-122.032
+Fairview|CA|37.678|-122.044
+Fargo|ND|46.865|-96.829
+Fayetteville|AR|36.071|-94.167
+Fayetteville|NC|35.083|-78.974
+Federal Way|WA|47.312|-122.338
+Fetters Hot Springs-Agua Caliente|CA|38.328|-122.487
+Fishers|IN|39.962|-85.968
+Fontana|CA|34.110|-117.463
+Forestville|CA|38.482|-122.890
+Fort Collins|CO|40.548|-105.065
+Fort Lauderdale|FL|26.141|-80.147
+Fort Wayne|IN|41.088|-85.143
+Fort Worth|TX|32.782|-97.349
+Fortaleza|Brazil|-3.748|-38.582
+Foster City|CA|37.565|-122.251
+Freetown|Sierra Leone|8.472|-13.236
+Fremont|CA|37.494|-121.941
+Fresno|CA|36.783|-119.793
+Frisco|TX|33.155|-96.823
+Fruitdale|CA|37.312|-121.936
+Fullerton|CA|33.886|-117.928
+Fulton|CA|38.494|-122.773
+Funafuti|Tuvalu|-8.517|179.217
+Gaborone|Botswana|-24.646|25.912
+Gainesville|FL|29.680|-82.347
+Garden Grove|CA|33.779|-117.960
+Garland|TX|32.910|-96.630
+Georgetown|Guyana|6.802|-58.167
+Georgetown|TX|30.668|-97.699
+Geyserville|CA|38.717|-122.903
+Gilbert|AZ|33.310|-111.743
+Gilroy|CA|37.006|-121.585
+Glen Ellen|CA|38.355|-122.543
+Glendale|AZ|33.533|-112.190
+Glendale|CA|34.181|-118.246
+Goodyear|AZ|33.254|-112.366
+Grand Prairie|TX|32.686|-97.021
+Grand Rapids|MI|42.961|-85.656
+Graton|CA|38.438|-122.866
+Greeley|CO|40.417|-104.773
+Green Bay|WI|44.522|-87.987
+Green Valley|CA|38.264|-122.162
+Greensboro|NC|36.095|-79.824
+Gresham|OR|45.502|-122.442
+Guadalajara|Mexico|20.672|-103.332
+Guangzhou|China|23.147|113.323
+Guatemala City|Guatemala|14.623|-90.529
+Guerneville|CA|38.517|-122.990
+Guiyang|China|26.582|106.718
+Half Moon Bay|CA|37.467|-122.440
+Hampton|VA|37.048|-76.297
+Hangzhou|China|30.252|120.168
+Hanoi|Vietnam|21.035|105.848
+Haora|India|22.580|88.330
+Harare|Zimbabwe|-17.816|31.043
+Harbin|China|45.752|126.648
+Hargeisa|Somaliland|9.560|44.065
+Hartford|CT|41.766|-72.682
+Hartley|CA|38.420|-121.951
+Havana|Cuba|23.134|-82.366
+Hayward|CA|37.627|-122.104
+Healdsburg|CA|38.623|-122.865
+Hechi|China|24.695|108.083
+Helsinki|Finland|60.178|24.932
+Henderson|NV|36.009|-115.027
+Hercules|CA|38.021|-122.289
+Hesperia|CA|34.397|-117.315
+Hialeah|FL|25.870|-80.303
+High Point|NC|35.991|-79.993
+Highlands|CA|37.520|-122.346
+Hillsborough|CA|37.557|-122.359
+Hillsboro|OR|45.527|-122.935
+Ho Chi Minh City|Vietnam|10.782|106.693
+Hollywood|FL|26.031|-80.165
+Hong Kong|Hong Kong S.A.R.|22.307|114.183
+Honiara|Solomon Islands|-9.438|159.950
+Houston|TX|29.786|-95.389
+Huntington Beach|CA|33.698|-118.004
+Huntsville|AL|34.698|-86.677
+Hyderabad|India|17.402|78.478
+Independence|MO|39.085|-94.352
+Indianapolis city (balance)|IN|39.777|-86.146
+Inglewood|CA|33.956|-118.344
+Inverness|CA|38.083|-122.855
+Irvine|CA|33.678|-117.771
+Irving|TX|32.858|-96.970
+Islamabad|Pakistan|33.702|73.165
+Istanbul|Turkey|41.107|29.008
+Jacksonville|FL|30.337|-81.662
+Jackson|MS|32.316|-90.213
+Jakarta|Indonesia|-6.172|106.827
+Jeddah|Saudi Arabia|21.519|39.217
+Jenner|CA|38.459|-123.127
+Jersey City|NJ|40.711|-74.065
+Jerusalem|Israel|31.778|35.207
+Johannesburg|South Africa|-26.168|28.028
+Joliet|IL|41.517|-88.148
+Juba|South Sudan|4.830|31.580
+Jurupa Valley|CA|34.003|-117.468
+Kabul|Afghanistan|34.519|69.181
+Kampala|Uganda|0.319|32.581
+Kano|Nigeria|12.002|8.518
+Kanpur|India|26.462|80.318
+Kansas City|KS|39.123|-94.742
+Kansas City|MO|39.125|-94.550
+Karachi|Pakistan|24.872|66.988
+Kathmandu|Nepal|27.719|85.315
+Kensington|CA|37.905|-122.284
+Kentfield|CA|37.936|-122.559
+Kent|WA|47.388|-122.213
+Kenwood|CA|38.415|-122.539
+Khartoum|Sudan|15.590|32.532
+Kigali|Rwanda|-1.952|30.059
+Killeen|TX|31.078|-97.732
+Kingston|Jamaica|17.977|-76.767
+Kingstown|Saint Vincent and the Grenadines|13.148|-61.212
+Kinshasa|Congo (Kinshasa)|-4.328|15.313
+Knightsen|CA|37.962|-121.649
+Knoxville|TN|35.971|-83.949
+Kolkata|India|22.497|88.323
+Kuala Lumpur|Malaysia|3.169|101.698
+Kuwait City|Kuwait|29.372|47.976
+Kyiv|Ukraine|50.435|30.515
+Kyoto|Japan|35.032|135.748
+København|Denmark|55.681|12.562
+La Honda|CA|37.318|-122.258
+La Paz|Bolivia|-16.496|-68.152
+Laayoune|Morocco|27.150|-13.200
+Ladera|CA|37.400|-122.199
+Lafayette|CA|37.891|-122.120
+Lafayette|LA|30.206|-92.028
+Lagos|Nigeria|6.445|3.390
+Lagunitas-Forest Knolls|CA|38.018|-122.691
+Lahore|Pakistan|31.562|74.348
+Lakeland|FL|28.055|-81.955
+Lakewood|CO|39.699|-105.118
+Lancaster|CA|34.694|-118.175
+Lansing|MI|42.714|-84.561
+Laredo|TX|27.560|-99.489
+Larkfield-Wikiup|CA|38.513|-122.754
+Larkspur|CA|37.941|-122.530
+Las Cruces|NM|32.326|-106.790
+Las Vegas|NV|36.233|-115.264
+League City|TX|29.490|-95.109
+Lee's Summit|MO|38.922|-94.385
+Lewisville|TX|33.051|-96.975
+Lexington Hills|CA|37.159|-121.989
+Lexington-Fayette urban county|KY|38.041|-84.458
+Libreville|Gabon|0.385|9.458
+Lilongwe|Malawi|-13.983|33.783
+Lima|Peru|-12.046|-77.052
+Lincoln|NE|40.810|-96.675
+Lisbon|Portugal|38.725|-9.147
+Little Rock|AR|34.725|-92.359
+Livermore|CA|37.687|-121.760
+Ljubljana|Slovenia|46.055|14.515
+Lobamba|eSwatini|-26.467|31.200
+Loma Mar|CA|37.266|-122.301
+Lomé|Togo|6.134|1.221
+London|United Kingdom|51.502|-0.119
+Long Beach|CA|33.781|-118.168
+Los Altos Hills|CA|37.367|-122.139
+Los Altos|CA|37.368|-122.097
+Los Angeles|CA|34.019|-118.411
+Los Gatos|CA|37.230|-121.957
+Louisville/Jefferson County metro government (balance)|KY|38.165|-85.647
+Lowell|MA|42.639|-71.321
+Loyola|CA|37.350|-122.098
+Luanda|Angola|-8.836|13.232
+Lubbock|TX|33.562|-101.889
+Lucas Valley-Marinwood|CA|38.041|-122.576
+Lusaka|Zambia|-15.415|28.281
+Luxembourg|Luxembourg|49.612|6.130
+Lynn|MA|42.475|-70.962
+Macon-Bibb County|GA|32.809|-83.694
+Madison|WI|43.088|-89.430
+Madrid|Spain|40.402|-3.685
+Majuro|Marshall Islands|7.103|171.380
+Malabo|Equatorial Guinea|3.750|8.783
+Malé|Maldives|4.167|73.500
+Managua|Nicaragua|12.155|-86.270
+Manama|Bahrain|26.236|50.583
+Manchester|NH|42.985|-71.444
+Manila|Philippines|14.606|120.980
+Maputo|Mozambique|-25.953|32.587
+Marin City|CA|37.871|-122.514
+Martinez|CA|37.998|-122.114
+Maseru|Lesotho|-29.317|27.483
+Mbabane|eSwatini|-26.317|31.133
+McAllen|TX|26.225|-98.246
+McKinney|TX|33.201|-96.664
+Medellín|Colombia|6.277|-75.577
+Melbourne|Australia|-37.818|144.973
+Melekeok|Palau|7.487|134.627
+Memphis|TN|35.109|-89.969
+Menifee|CA|33.690|-117.184
+Menlo Park|CA|37.480|-122.148
+Meridian|ID|43.611|-116.401
+Mesa|AZ|33.401|-111.716
+Mesquite|TX|32.760|-96.584
+Mexico City|Mexico|19.444|-99.133
+Miami Gardens|FL|25.949|-80.244
+Miami|FL|25.775|-80.209
+Midland|TX|32.025|-102.113
+Mill Valley|CA|37.908|-122.542
+Millbrae|CA|37.599|-122.402
+Milpitas|CA|37.433|-121.891
+Milwaukee|WI|43.063|-87.967
+Minneapolis|MN|44.963|-93.268
+Minsk|Belarus|53.902|27.565
+Miramar|FL|25.973|-80.339
+Mobile|AL|30.668|-88.108
+Modesto|CA|37.638|-121.003
+Mogadishu|Somalia|2.069|45.365
+Monaco|Monaco|43.740|7.407
+Monrovia|Liberia|6.315|-10.800
+Montalvin Manor|CA|37.998|-122.330
+Montara|CA|37.548|-122.492
+Monte Rio|CA|38.474|-123.026
+Monte Sereno|CA|37.240|-121.988
+Monterrey|Mexico|25.672|-100.332
+Montevideo|Uruguay|-34.856|-56.173
+Montgomery|AL|32.349|-86.267
+Montréal|Canada|45.502|-73.585
+Moraga|CA|37.846|-122.123
+Moreno Valley|CA|33.923|-117.206
+Morgan Hill|CA|37.132|-121.642
+Moroni|Comoros|-11.704|43.240
+Moscow|Russia|55.754|37.614
+Moskowite Corner|CA|38.444|-122.192
+Moss Beach|CA|37.513|-122.498
+Mountain View|CA|38.009|-122.117
+Muir Beach|CA|37.862|-122.580
+Mumbai|India|19.019|72.855
+Murfreesboro|TN|35.854|-86.421
+Murrieta|CA|33.573|-117.191
+Muscat|Oman|23.613|58.593
+N'Djamena|Chad|12.115|15.047
+Nagoya|Japan|35.157|136.913
+Nairobi|Kenya|-1.281|36.815
+Nampa|ID|43.585|-116.563
+Nanjing|China|32.052|118.778
+Napa|CA|38.298|-122.301
+Naperville|IL|41.749|-88.162
+Nashville-Davidson metropolitan government (balance)|TN|36.172|-86.785
+Nassau|The Bahamas|25.083|-77.350
+Naypyidaw|Myanmar|19.769|96.117
+New Bedford|MA|41.661|-70.938
+New Braunfels|TX|29.699|-98.115
+New Delhi|India|28.600|77.200
+New Haven|CT|41.311|-72.925
+New Orleans|LA|30.053|-89.935
+New Taipei|Taiwan|25.013|121.465
+New York|NY|40.663|-73.939
+Newark|CA|37.504|-122.032
+Newark|NJ|40.724|-74.173
+Newport News|VA|37.076|-76.522
+Niamey|Niger|13.519|2.115
+Nicasio|CA|38.061|-122.701
+Nicosia|Cyprus|35.167|33.367
+Norfolk|VA|36.923|-76.245
+Norman|OK|35.241|-97.345
+Norris Canyon|CA|37.746|-121.988
+North Charleston|SC|32.918|-80.065
+North Fair Oaks|CA|37.475|-122.203
+North Gate|CA|37.906|-121.998
+North Las Vegas|NV|36.290|-115.089
+North Richmond|CA|37.965|-122.371
+Nouakchott|Mauritania|18.086|-15.975
+Novato|CA|38.085|-122.548
+Nuku'alofa|Tonga|-21.139|-175.221
+Nur-Sultan|Kazakhstan|51.181|71.428
+Oakland|CA|37.770|-122.226
+Oakley|CA|37.996|-121.694
+Oakville|CA|38.438|-122.407
+Occidental|CA|38.400|-122.935
+Oceanside|CA|33.225|-117.306
+Odessa|TX|31.880|-102.345
+Oklahoma City|OK|35.467|-97.514
+Olathe|KS|38.882|-94.820
+Omaha|NE|41.263|-96.053
+Ontario|CA|34.038|-117.604
+Orange|CA|33.787|-117.861
+Orinda|CA|37.882|-122.169
+Orlando|FL|28.409|-81.255
+Oslo|Norway|59.919|10.748
+Ottawa|Canada|45.419|-75.702
+Ouagadougou|Burkina Faso|12.372|-1.527
+Overland Park|KS|38.889|-94.691
+Oxnard|CA|34.199|-119.208
+Pacheco|CA|37.988|-122.070
+Pacifica|CA|37.607|-122.477
+Palikir|Federated States of Micronesia|6.917|158.150
+Palm Bay|FL|27.955|-80.665
+Palm Coast|FL|29.537|-81.243
+Palmdale|CA|34.591|-118.105
+Palo Alto|CA|37.397|-122.143
+Panama City|Panama|8.970|-79.535
+Paramaribo|Suriname|5.835|-55.167
+Paris|France|48.869|2.331
+Pasadena|CA|34.161|-118.138
+Pasadena|TX|29.655|-95.151
+Paterson|NJ|40.915|-74.163
+Pearland|TX|29.556|-95.323
+Pembroke Pines|FL|26.015|-80.340
+Penngrove|CA|38.301|-122.671
+Peoria|AZ|33.786|-112.308
+Peoria|IL|40.752|-89.617
+Pescadero|CA|37.245|-122.379
+Petaluma Center|CA|38.251|-122.789
+Petaluma|CA|38.242|-122.629
+Philadelphia|PA|40.009|-75.133
+Phnom Penh|Cambodia|11.552|104.915
+Phoenix|AZ|33.572|-112.090
+Piedmont|CA|37.823|-122.230
+Pinole|CA|38.002|-122.318
+Pittsburgh|PA|40.440|-79.976
+Pittsburg|CA|38.017|-121.897
+Plano|TX|33.051|-96.748
+Plantation|FL|26.126|-80.262
+Pleasant Hill|CA|37.954|-122.076
+Pleasanton|CA|37.667|-121.881
+Podgorica|Montenegro|42.466|19.266
+Point Reyes Station|CA|38.085|-122.809
+Pomona|CA|34.058|-117.761
+Pompano Beach|FL|26.242|-80.134
+Port Costa|CA|38.045|-122.185
+Port Louis|Mauritius|-20.167|57.500
+Port Moresby|Papua New Guinea|-9.465|147.193
+Port St. Lucie|FL|27.281|-80.388
+Port Vila|Vanuatu|-17.733|168.317
+Port-au-Prince|Haiti|18.543|-72.338
+Port-of-Spain|Trinidad and Tobago|10.652|-61.517
+Portland|OR|45.537|-122.650
+Porto Alegre|Brazil|-30.048|-51.202
+Porto-Novo|Benin|6.483|2.617
+Portola Valley|CA|37.365|-122.233
+Prague|Czechia|50.085|14.464
+Praia|Cape Verde|14.917|-23.517
+Pretoria|South Africa|-25.705|28.227
+Pristina|Kosovo|42.667|21.166
+Providence|RI|41.823|-71.419
+Provo|UT|40.245|-111.645
+Pueblo|CO|38.269|-104.611
+Pune|India|18.532|73.848
+Putrajaya|Malaysia|2.914|101.702
+Pyongyang|North Korea|39.021|125.753
+Quincy|MA|42.261|-71.009
+Quito|Ecuador|-0.213|-78.502
+Rabat|Morocco|34.025|-6.836
+Raleigh|NC|35.832|-78.641
+Rancho Cucamonga|CA|34.130|-117.566
+Recife|Brazil|-8.074|-34.918
+Redwood City|CA|37.515|-122.214
+Reliez Valley|CA|37.940|-122.103
+Reno|NV|39.549|-119.850
+Renton|WA|47.479|-122.195
+Reykjavík|Iceland|64.150|-21.950
+Rialto|CA|34.117|-117.389
+Richardson|TX|32.972|-96.708
+Richmond|CA|37.952|-122.361
+Richmond|VA|37.531|-77.476
+Riga|Latvia|56.950|24.100
+Rio Rancho|NM|35.285|-106.699
+Rio Vista|CA|38.177|-121.703
+Rio de Janeiro|Brazil|-22.923|-43.227
+Riverside|CA|33.938|-117.393
+Riyadh|Saudi Arabia|24.643|46.771
+Rochester|MN|44.014|-92.479
+Rochester|NY|43.170|-77.617
+Rockford|IL|42.259|-89.063
+Rodeo|CA|38.037|-122.254
+Rohnert Park|CA|38.348|-122.701
+Rollingwood|CA|37.965|-122.331
+Rome|Italy|41.898|12.481
+Roseau|Dominica|15.301|-61.387
+Roseville|CA|38.770|-121.320
+Ross|CA|37.964|-122.562
+Round Rock|TX|30.526|-97.664
+Rutherford|CA|38.459|-122.429
+Sacramento|CA|38.568|-121.468
+Saint George's|Grenada|12.053|-61.742
+Saint John's|Antigua and Barbuda|17.118|-61.850
+Salem|OR|44.924|-123.023
+Salinas|CA|36.690|-121.634
+Salmon Creek|CA|38.346|-123.059
+Salt Lake City|UT|40.777|-111.931
+Salvador|Brazil|-12.968|-38.482
+San Angelo|TX|31.441|-100.450
+San Anselmo|CA|37.982|-122.570
+San Antonio|TX|29.463|-98.525
+San Bernardino|CA|34.141|-117.295
+San Bruno|CA|37.626|-122.431
+San Buenaventura (Ventura)|CA|34.268|-119.254
+San Carlos|CA|37.499|-122.268
+San Diego|CA|32.815|-117.136
+San Francisco|CA|37.727|-123.032
+San Geronimo|CA|38.007|-122.663
+San Jose|CA|37.296|-121.815
+San José|Costa Rica|9.937|-84.086
+San Leandro|CA|37.703|-122.163
+San Lorenzo|CA|37.676|-122.136
+San Marino|San Marino|43.936|12.442
+San Martin|CA|37.083|-121.596
+San Mateo|CA|37.560|-122.311
+San Miguel|CA|37.887|-122.037
+San Pablo|CA|37.963|-122.343
+San Rafael|CA|37.981|-122.507
+San Ramon|CA|37.765|-121.932
+San Salvador|El Salvador|13.712|-89.205
+Sanaa|Yemen|15.357|44.205
+Sandy Springs|GA|33.932|-84.369
+Santa Ana|CA|33.736|-117.883
+Santa Clara|CA|37.365|-121.968
+Santa Clarita|CA|34.417|-118.501
+Santa Maria|CA|34.933|-120.444
+Santa Rosa|CA|38.446|-122.706
+Santa Venetia|CA|38.006|-122.503
+Santiago|Chile|-33.448|-70.669
+Santo Domingo|Dominican Republic|18.472|-69.902
+Sarajevo|Bosnia and Herzegovina|43.850|18.383
+Saranap|CA|37.888|-122.076
+Saratoga|CA|37.268|-122.026
+Sausalito|CA|37.858|-122.492
+Savannah|GA|32.018|-81.196
+Scottsdale|AZ|33.684|-111.861
+Sea Ranch|CA|38.725|-123.458
+Seattle|WA|47.619|-122.352
+Sebastopol|CA|38.400|-122.828
+Seoul|South Korea|37.568|126.998
+Sereno del Mar|CA|38.384|-123.073
+Shanghai|China|31.218|121.435
+Shell Ridge|CA|37.906|-122.034
+Shenyeng|China|41.807|123.448
+Shenzhen|China|22.554|114.120
+Shreveport|LA|32.467|-93.792
+Silverado Resort|CA|38.356|-122.256
+Simi Valley|CA|34.267|-118.748
+Singapore|Singapore|1.295|103.854
+Sioux Falls|SD|43.541|-96.732
+Skopje|North Macedonia|42.000|21.433
+Sleepy Hollow|CA|38.012|-122.588
+Sofia|Bulgaria|42.685|23.315
+Sonoma State University|CA|38.341|-122.673
+Sonoma|CA|38.290|-122.460
+South Bend|IN|41.677|-86.269
+South Fulton|GA|33.636|-84.583
+Sparks|NV|39.574|-119.715
+Spokane Valley|WA|47.663|-117.233
+Spokane|WA|47.667|-117.433
+Springfield|IL|39.791|-89.645
+Springfield|MA|42.115|-72.540
+Springfield|MO|37.194|-93.293
+Sri Jayawardenepura Kotte|Sri Lanka|6.900|79.950
+St.  Petersburg|Russia|59.941|30.314
+St. George|UT|37.077|-113.577
+St. Helena|CA|38.513|-122.468
+St. Louis|MO|38.636|-90.245
+St. Paul|MN|44.949|-93.104
+St. Petersburg|FL|27.763|-82.644
+Stamford|CT|41.080|-73.546
+Stanford|CA|37.427|-122.168
+Sterling Heights|MI|42.581|-83.030
+Stinson Beach|CA|37.902|-122.650
+Stockholm|Sweden|59.353|18.095
+Stockton|CA|37.977|-121.309
+Strawberry|CA|37.891|-122.509
+Sucre|Bolivia|-19.041|-65.260
+Suffolk|VA|36.697|-76.635
+Sugar Land|TX|29.593|-95.634
+Suisun City|CA|38.248|-122.010
+Sunnyvale|CA|37.386|-122.026
+Sunol|CA|37.586|-121.880
+Sunrise|FL|26.172|-80.262
+Surat|India|21.202|72.838
+Surprise|AZ|33.671|-112.453
+Suva|Fiji|-18.133|178.442
+Sydney|Australia|-33.918|151.183
+Syracuse|NY|43.041|-76.144
+São Paulo|Brazil|-23.557|-46.627
+São Tomé|Sao Tome and Principe|0.333|6.733
+Tacoma|WA|47.252|-122.460
+Taipei|Taiwan|25.036|121.568
+Tallahassee|FL|30.454|-84.252
+Tallinn|Estonia|59.434|24.728
+Tamalpais-Homestead Valley|CA|37.879|-122.538
+Tampa|FL|27.970|-82.480
+Tara Hills|CA|37.994|-122.319
+Tarawa|Kiribati|1.338|173.018
+Tashkent|Uzbekistan|41.314|69.293
+Tbilisi|Georgia|41.727|44.789
+Tegucigalpa|Honduras|14.104|-87.219
+Tehran|Iran|35.674|51.422
+Tel Aviv|Israel|32.082|34.768
+Temecula|CA|33.493|-117.132
+Temelec|CA|38.258|-122.498
+Tempe|AZ|33.388|-111.932
+The Hague|Netherlands|52.080|4.270
+Thimphu|Bhutan|27.473|89.639
+Thornton|CO|39.920|-104.941
+Thousand Oaks|CA|34.193|-118.874
+Tianjin|China|39.132|117.198
+Tiburon|CA|37.887|-122.463
+Timber Cove|CA|38.541|-123.259
+Tirana|Albania|41.328|19.819
+Tokyo|Japan|35.687|139.749
+Toledo|OH|41.664|-83.582
+Tomales|CA|38.247|-122.905
+Topeka|KS|39.035|-95.696
+Toronto|Canada|43.702|-79.422
+Torrance|CA|33.830|-118.357
+Tracy|CA|37.727|-121.452
+Tripoli|Libya|32.892|13.180
+Tucson|AZ|32.153|-110.871
+Tulsa|OK|36.128|-95.902
+Tunis|Tunisia|36.803|10.180
+Tuscaloosa|AL|33.234|-87.528
+Tyler|TX|32.317|-95.306
+Ulaanbaatar|Mongolia|47.919|106.915
+Union City|CA|37.603|-122.019
+Urban Honolulu|HI|21.324|-157.848
+Vacaville|CA|38.359|-121.969
+Vaduz|Liechtenstein|47.134|9.517
+Vallejo|CA|38.107|-122.262
+Valletta|Malta|35.900|14.515
+Valley Ford|CA|38.325|-122.915
+Valparaíso|Chile|-33.046|-71.623
+Vancouver|WA|45.637|-122.597
+Vatican City|Vatican|41.903|12.453
+Victoria|Seychelles|-4.617|55.450
+Victorville|CA|34.528|-117.354
+Vienna|Austria|48.202|16.365
+Vientiane|Laos|17.967|102.600
+Vilnius|Lithuania|54.683|25.317
+Vine Hill|CA|38.007|-122.087
+Virginia Beach|VA|36.780|-76.029
+Visalia|CA|36.328|-119.329
+Waco|TX|31.558|-97.190
+Walnut Creek|CA|37.903|-122.040
+Warren|MI|42.493|-83.025
+Warsaw|Poland|52.252|20.998
+Washington|DC|38.904|-77.017
+Waterbury|CT|41.559|-73.037
+Wellington|New Zealand|-41.300|174.783
+West Covina|CA|34.056|-117.910
+West Jordan|UT|40.603|-112.001
+West Menlo Park|CA|37.434|-122.203
+West Palm Beach|FL|26.745|-80.127
+West Valley City|UT|40.688|-112.012
+Westminster|CO|39.880|-105.062
+Wichita Falls|TX|33.907|-98.526
+Wichita|KS|37.691|-97.346
+Wilmington|NC|34.209|-77.886
+Windhoek|Namibia|-22.570|17.084
+Windsor|CA|38.542|-122.809
+Winston-Salem|NC|36.103|-80.261
+Woodacre|CA|38.005|-122.638
+Woodside|CA|37.422|-122.259
+Worcester|MA|42.269|-71.808
+Wuhan|China|30.582|114.268
+Xian|China|34.277|108.893
+Yamoussoukro|Ivory Coast|6.818|-5.276
+Yangon|Myanmar|16.785|96.165
+Yaoundé|Cameroon|3.869|11.515
+Yerevan|Armenia|40.183|44.512
+Yokohama|Japan|35.431|139.602
+Yonkers|NY|40.946|-73.867
+Yountville|CA|38.394|-122.366
+Yuma|AZ|32.516|-114.522
+Zagreb|Croatia|45.800|16.000
+Zhangzhou|China|24.520|117.670
+Zibo|China|36.802|118.048
+Ürümqi|China|43.807|87.573
+Ōsaka|Japan|34.752|135.458

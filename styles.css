@@ -1213,6 +1213,9 @@ picture{display:contents}
    Tom stayed at opacity 0 on a real scroll at every one-column width. One gap
    of trailing box clears it everywhere; 8px did not. */
 .crew{
+  /* 3 x 400 + 2 x 16. Without it the row took a fourth column above 1728 and
+     left two cards stranded on a second line. */
+  max-width:1264px;margin-inline:auto;
   display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:16px;
   padding-inline:clamp(20px,5vw,32px);padding-bottom:16px;
   margin-top:clamp(56px,10vh,110px);
@@ -1242,9 +1245,12 @@ picture{display:contents}
   display:flex;flex-direction:column;
   padding:20px;border-radius:10px;background:var(--surface);
 }
-/* A straight 3 -> 1, no 2-up: three columns still fit at exactly 800
-   (3 x 234 + 2 x 16 + 2 x 32), and a 2-up row of six people reads as a table. */
-@media (max-width:799px){.ccard{width:100%;max-width:400px}}
+/* 3 -> 2 -> 1. The straight 3->1 was right when the card was type in a box;
+   with a portrait in it, one 400px column from 390 to 799 makes a 6,460px
+   page on a tablet, and six cards at 2-up no longer read as a table because
+   each one now carries a face. */
+@media (max-width:799px){.ccard{width:calc((100% - 16px)/2);max-width:400px}}
+@media (max-width:559px){.ccard{width:100%;max-width:400px}}
 
 /* The media field. Bleeds to the card's edges through the 20px padding and is
    clipped by the card's own radius, so it carries no radius of its own and the
@@ -1368,7 +1374,7 @@ picture{display:contents}
    where an anchored one does; the shorter band padding above the heading is
    what the eye reads as the opener.                                          */
 main.sub{padding-top:72px}
-main.sub>.band:first-of-type{padding-block-start:clamp(64px,12vh,120px)}
+main.sub>.band:first-of-type{padding-block-start:clamp(96px,20vh,180px)}
 /* --band-gap is 30vh, and it is right on the home page, where every band holds
    a full screen of photography and the gap is the pause between two chapters.
    The three bands here hold one heading and a short list each, so the same 270px
@@ -1587,7 +1593,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .tline-slot{flex:0 1 100%;display:flex;justify-content:center;margin-top:clamp(24px,4vh,56px)}
 /* Under Saul on one column, where the 16px row gap is the right distance and a
    section-sized margin would put him back at arm's length from his own career. */
-@media (max-width:799px){
+/* Only in the true one-column range. In the 2-up band the reorder put the
+   career on its own line straight after Saul, which left him alone on row 1
+   and Fr. Tom alone on the last -- the promoted-card shape the owner asked
+   to be rid of, arriving by accident through a flex line break. */
+@media (max-width:559px){
   .tline-slot{order:1;margin-top:0}
   .crew>li.ccard{order:2}
   .crew>li.ccard:first-child{order:0}
@@ -1623,8 +1633,16 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .tline-org{font-size:.9375rem;line-height:1.5;color:var(--text-70);margin-top:2px}
 /* The slot, sized off the line it sits on rather than off a px number, so a
    mark that does land is the height of the name beside it at every width. */
-.tline-mark{display:inline-block;height:1.15em;width:auto;
-  margin-right:.5em;vertical-align:-.22em}
+.tline-org{display:flex;align-items:baseline;gap:.5em}
+.tline-mark{flex:0 0 1.15em;width:1.15em;height:1.15em;object-fit:contain;
+  align-self:center;
+  /* One tone, like the partner strip: three marks at three aspect ratios and
+     three palettes, painted 10px tall on black, read as clutter in colour.
+     The shape is untouched -- this is the same normalisation Stripe, Vercel
+     and Linear apply to a client row. */
+  filter:grayscale(1) brightness(2.4) contrast(.9)}
+/* The two rows with no permitted mark keep the column's left edge. */
+.tline-org:not(:has(.tline-mark))::before{content:'';flex:0 0 1.15em}
 .tline-note{font-size:.875rem;line-height:1.5;color:var(--text-75);
   margin-top:8px;max-width:52ch}
 .tline-foot{font-size:.875rem;line-height:1.5;color:var(--text-75);
@@ -1637,6 +1655,342 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   .tline-when{margin-bottom:2px}
 }
 @media (max-width:799px){.tline{max-width:400px}}
+
+/* ─── §12e /start/'s map and the register form ───────────────────────────────
+   The page's one idea is a map that answers back, and the whole of it is drawn
+   here in the tokens this file already has. Nothing below is a new material:
+   the plate is --surface at 10px with §1c's masked lamp rim, the pins are the
+   badge and the response clock, the scale control is the pill ramp, the reveals
+   are §16's. tools/build-map.mjs bakes the geometry and the pin percentages;
+   this file only says what they look like.
+
+   THE ONE STRUCTURAL IDEA. .mapstage carries the SVG's own viewBox ratio and is
+   centred inside the plate with max-width/max-height. That reproduces
+   preserveAspectRatio="xMidYMid meet" in CSS, so the pin overlay letterboxes
+   exactly as the geometry does and ONE set of baked percentages is correct at
+   every width — no per-breakpoint pin set to maintain, and no JavaScript
+   measuring anything.
+
+   NOTHING HERE ANIMATES ON ITS OWN. No pulsing pins, no drift, no idle loop.
+   §1c's argument is that this page's light does not move when you move your
+   head, and a map that twitches at rest costs real frames on the phone that
+   started all of this. The only motion is the cross-fade between scales, and it
+   is opacity and transform only, so it never touches the main thread. */
+
+.mapwrap{position:relative;display:flex;flex-direction:column;gap:16px;margin-top:40px}
+@media (min-width:900px){.mapwrap{margin-top:60px}}
+
+/* The plate. Same convex object as .cell, .ecard and .pcard, lit from the same
+   fixed lamp, at the same 10px. 4:3 on a phone because a wide letterbox of San
+   Francisco at 350px shows a strip of a city; 16:10 everywhere else. */
+.mapfig{margin:0;display:flex;flex-direction:column;gap:14px}
+.mapframe{
+  position:relative;background:var(--surface);border-radius:10px;
+  overflow:hidden;display:flex;aspect-ratio:4/3;
+}
+@media (min-width:760px){.mapframe{aspect-ratio:16/10}}
+.mapframe::after{
+  content:'';position:absolute;inset:0;z-index:5;pointer-events:none;
+  border:1px solid var(--lamp-rim-strong);border-radius:inherit;
+  -webkit-mask:var(--lamp-arc);mask:var(--lamp-arc);
+}
+/* The stage is the letterbox, stated rather than computed. The viewBox is
+   1000x750 = 4:3, so on a phone — where the plate is also 4:3 — the stage is
+   the plate. At 760 and up the plate is 16:10 and `meet` fits the map by its
+   height, which is a width of exactly 750/1000 x 10/16 = 83.333%. Two numbers
+   in a media query beat aspect-ratio plus max-height, which does not do this:
+   with a definite width the ratio yields the height and max-height then clamps
+   it, silently breaking the very ratio the pins are baked against.
+   overflow:hidden is on the plate and has to be — a world layer at 2.2x would
+   otherwise spill across the page mid-transition. The 26 viewBox units of
+   inset build-map.mjs leaves around every layer is what keeps a pin's focus
+   ring off that edge. */
+.mapstage{position:relative;width:100%;height:100%;margin-inline:auto}
+@media (min-width:760px){.mapstage{width:83.3333%}}
+.mapgeo{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* The three layers, and the whole of the "zoom". A physically exact ratio from
+   the Bay to the world is ~266x, and asking a mid-range phone to rasterize a
+   world path at 266x for half a second is precisely the class of work that
+   produced the original stutter. The eye reads "zoom" from any scale above
+   ~1.5x paired with a fade and does not audit the ratio, so this is a flat
+   2.2x: the layer you are leaving grows and dissolves, the one you are
+   arriving at settles from the other side. transform and opacity are both
+   compositor properties, so the whole move is off the main thread. */
+.lay,.pins{transition:opacity .5s var(--ease-2),transform .55s var(--ease-3);
+  transform-origin:50% 50%}
+.pins{position:absolute;inset:0}
+.lay{opacity:0;transform:scale(2.2)}
+.pins{opacity:0;transform:scale(2.2);pointer-events:none}
+
+#ms-sf:checked    ~ .mapfig .l-sf,    #ms-sf:checked    ~ .mapfig .pins-sf,
+#ms-bay:checked   ~ .mapfig .l-bay,   #ms-bay:checked   ~ .mapfig .pins-bay,
+#ms-world:checked ~ .mapfig .l-world, #ms-world:checked ~ .mapfig .pins-world{
+  opacity:1;transform:none;
+}
+/* Only the pins themselves take the pointer, never the layer box over the
+   whole frame — a click on the map's background has to reach the frame and
+   clear the open card. */
+#ms-sf:checked    ~ .mapfig .pins-sf .pin,
+#ms-bay:checked   ~ .mapfig .pins-bay .pin,
+#ms-world:checked ~ .mapfig .pins-world .pin{pointer-events:auto}
+/* The connector, drawn by main.js §14 only when both ends are on the frame the
+   visitor is looking at. It is a dotted line and nothing else: the distance
+   under the map is the payoff, the curve is not. */
+.mapconn{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+/* A layer further out than the one showing shrinks away rather than growing. */
+#ms-bay:checked   ~ .mapfig .l-sf,    #ms-bay:checked   ~ .mapfig .pins-sf,
+#ms-world:checked ~ .mapfig .l-sf,    #ms-world:checked ~ .mapfig .pins-sf,
+#ms-world:checked ~ .mapfig .l-bay,   #ms-world:checked ~ .mapfig .pins-bay{
+  transform:scale(.4545);
+}
+/* Promote at the moment of the move and never at rest — the same discipline
+   .btn:active uses. main.js §14 puts .zooming on for 700ms and takes it off. */
+.mapwrap.zooming .lay,.mapwrap.zooming .pins{will-change:transform,opacity}
+
+/* The geometry itself. Two inks and a hairline: land is a step above the plate,
+   the arterials are the plate showing through it. No filters, no gradients, no
+   per-path shadow — one flat paint per layer, rasterized once. */
+.mapgeo .land{fill:#2e2e2e;stroke:rgba(255,255,255,.13);stroke-width:.8;
+  stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.mapgeo .road{fill:none;stroke:rgba(255,255,255,.26);stroke-width:1.2;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+
+/* ── the scale control ────────────────────────────────────────────────────
+   A real <fieldset>/<legend> radio group, so arrow keys work for free and the
+   group announces as "Map scale". The labels are the site's own badge at 44px,
+   in a segmented row that is three-up at every width — three words fit in
+   350px and a wrapping segmented control is not one. */
+.scales{border:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);
+  gap:6px;background:var(--chip);border-radius:9999px;padding:5px;
+  width:100%;max-width:420px}
+.scales label{
+  display:flex;align-items:center;justify-content:center;min-height:44px;
+  border-radius:9999px;cursor:pointer;text-align:center;
+  font-size:.7rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  font-feature-settings:'case' 1;color:var(--text-70);
+  transition:background-color var(--t-resp) var(--ease-out-quad),
+             color var(--t-resp) var(--ease-out-quad);
+}
+.scales label:hover{color:var(--text)}
+#ms-sf:checked ~ .mapfig .scales label[for=ms-sf],
+#ms-bay:checked ~ .mapfig .scales label[for=ms-bay],
+#ms-world:checked ~ .mapfig .scales label[for=ms-world]{
+  background:var(--accent);color:#000;
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.75),inset -1px -1px 0 rgba(0,0,0,.12);
+}
+/* The visually hidden radio still takes focus, and the ring has to land on the
+   thing you can see. */
+#ms-sf:focus-visible ~ .mapfig .scales label[for=ms-sf],
+#ms-bay:focus-visible ~ .mapfig .scales label[for=ms-bay],
+#ms-world:focus-visible ~ .mapfig .scales label[for=ms-world]{
+  outline:2px solid #000;box-shadow:0 0 0 5px var(--accent);
+}
+
+/* ── the pins ─────────────────────────────────────────────────────────────
+   HTML, not SVG, and that one decision buys all of it at once: the site's own
+   160ms response, §1c's lamp on the dot, .badge typography on the chip, a
+   44x44 hit target in real CSS pixels at every width, the two-tone focus ring
+   that cannot be clipped because nothing here needs overflow:hidden, and a
+   real text node a screen reader can read. An SVG <a> gives none of that
+   reliably.
+
+   THE COLLISION, AND THE CARTOGRAPHER'S ANSWER. St. Philip, St. James and
+   St. Paul sit inside 1.6 km, and the frame shows 16.7 km across, so at 390
+   their hit targets are on top of one another. So the DOT stays on the true
+   coordinate carrying its number, and the CHIP is offset with a 1px leader and
+   is itself the 44px target. build-map.mjs solves the offsets once, at the
+   narrowest width chips are shown, and bakes them; nothing solves a collision
+   at runtime.
+
+   BELOW 760 THE CHIPS DO NOT SHOW. Five name chips around a 40px cluster in a
+   350px frame is not a labelling problem with a clever solution, it is a frame
+   that is too small for the labels — so the phone gets numbered dots and the
+   numbered list under the map, which §6.2 of the plan already names as the
+   mobile route, the no-JS route and the screen-reader route at once. The name
+   is in the markup at every width; only the chip is conditional. */
+/* THE POSITIONING MODEL, and it is the one thing here that is not obvious.
+   .pin is the whole stage, not a point. A pin drawn as a zero-width box at
+   left:var(--x) looks right until a label needs an offset: a percentage in
+   `right` or `bottom` resolves against the CONTAINING BLOCK, which for a chip
+   inside a zero-width pin is zero — so every chip collapsed onto its own dot
+   at every width but the one it was solved at. Stretching .pin over the stage
+   makes --x, --y and --lead all percentages of the same box, so the arithmetic
+   below is exact and needs no container queries and no script. The pin box
+   paints nothing and takes no pointer; the dot and the chip do, and hovering
+   either still puts :hover on the link that owns them. */
+.pin{position:absolute;inset:0;pointer-events:none;
+  color:var(--text);text-decoration:none}
+.pin .dot{
+  position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);
+  z-index:2;pointer-events:auto;
+  display:flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--accent);color:#000;
+  font-size:.6875rem;font-weight:500;font-style:normal;line-height:1;
+  box-shadow:0 0 0 1px var(--lamp-rim-strong),-5px -2px 13px rgba(245,238,214,.3);
+  transition:transform var(--t-resp) var(--ease-out-quad),
+             box-shadow var(--t-resp) var(--ease-out-quad);
+}
+/* The warm halo, as a gradient on a pseudo-element rather than an SVG filter —
+   a filter here would cost a render surface per pin to draw what one radial
+   gradient draws for nothing. */
+.pin .dot::before{
+  content:'';position:absolute;left:50%;top:50%;width:54px;height:54px;z-index:-1;
+  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(245,238,214,.16),transparent 68%);
+}
+/* The leader: one hairline from the dot to the chip, horizontal or vertical,
+   because build-map.mjs only ever offsets on a cardinal. No trigonometry, and
+   the dot sits on top of its own end of it. */
+.pin::after{content:'';position:absolute;z-index:1;background:rgba(255,255,255,.32)}
+.pin[data-dir=N]::after{left:var(--x);bottom:calc(100% - var(--y));height:var(--lead);width:1px}
+.pin[data-dir=S]::after{left:var(--x);top:var(--y);height:var(--lead);width:1px}
+.pin[data-dir=E]::after{top:var(--y);left:var(--x);width:var(--lead);height:1px}
+.pin[data-dir=W]::after{top:var(--y);right:calc(100% - var(--x));width:var(--lead);height:1px}
+
+.pin .lbl{
+  position:absolute;z-index:2;display:none;align-items:center;white-space:nowrap;
+  pointer-events:auto;min-height:44px;padding:0 14px;border-radius:9999px;
+  background:var(--chip);color:var(--text);
+  font-size:.7rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+  font-feature-settings:'case' 1;
+  box-shadow:inset 1px 1px 0 var(--lamp-rim-strong),inset -1px -1px 0 var(--lamp-shade);
+  transition:background-color var(--t-resp) var(--ease-out-quad),
+             color var(--t-resp) var(--ease-out-quad);
+}
+@media (min-width:760px){.pin .lbl{display:inline-flex}}
+.pin[data-dir=N] .lbl{left:var(--x);bottom:calc(100% - var(--y) + var(--lead));transform:translateX(-50%)}
+.pin[data-dir=S] .lbl{left:var(--x);top:calc(var(--y) + var(--lead));transform:translateX(-50%)}
+.pin[data-dir=E] .lbl{top:var(--y);left:calc(var(--x) + var(--lead));transform:translateY(-50%)}
+.pin[data-dir=W] .lbl{top:var(--y);right:calc(100% - var(--x) + var(--lead));transform:translateY(-50%)}
+
+/* One channel, not two: hover, focus and the selected state all light the same
+   way, so nothing on this map is hover-only. */
+.pin:hover,.pin:focus-within,.pin.is-on{z-index:3}
+.pin:hover .dot,.pin:focus-visible .dot,.pin.is-on .dot{
+  transform:translate(-50%,-50%) scale(1.18);
+  box-shadow:0 0 0 1px var(--accent),-7px -3px 20px rgba(245,238,214,.5);
+}
+.pin:hover .lbl,.pin:focus-visible .lbl,.pin.is-on .lbl{background:var(--accent);color:#000}
+.pin:focus-visible{outline:none}
+.pin:focus-visible .dot{outline:2px solid #000;outline-offset:0;
+  box-shadow:0 0 0 5px var(--accent)}
+
+/* The single dot the two wider scales carry. Five pins two pixels apart would
+   be a claim about precision this map is not making. */
+.pin-one .dot{width:14px;height:14px}
+.pin-one::after{display:none}
+@media (max-width:759px){.pin-one .lbl{display:inline-flex;font-size:.65rem;min-height:36px;padding:0 12px}}
+
+/* The visitor's own pin. An OPEN RING, never a filled disc, so it can never be
+   mistaken for a room CLIA has been in — and it exists only in that visitor's
+   browser, for that session. Nothing is stored, nothing is shared, and no pin
+   on this map is ever derived from anyone's submission. */
+.pin.is-you .dot{background:transparent;border:2px solid var(--accent);
+  width:20px;height:20px;box-shadow:none;pointer-events:none}
+.pin.is-you .dot::before{display:none}
+.pin.is-you::after{display:none}
+.pin.is-you .lbl{display:inline-flex;background:transparent;color:var(--accent);
+  box-shadow:inset 0 0 0 1px var(--accent);min-height:30px;padding:0 12px;
+  font-size:.65rem;pointer-events:none}
+
+/* ── the slots under the frame ───────────────────────────────────────────── */
+.map-detail,.map-dist,.map-world-note{
+  font-size:.9375rem;line-height:1.5;color:var(--text-94);margin:0;min-height:1.5em;
+}
+.map-detail:empty,.map-dist:empty{display:none}
+.map-detail b{font-weight:500}
+.map-detail .vsrc a,.map-dist a{text-decoration:underline;text-underline-offset:3px}
+.map-world-note{display:none;color:var(--text-75)}
+#ms-world:checked ~ .mapfig .map-world-note{display:block}
+.mapwrap.has-city #ms-world:checked ~ .mapfig .map-world-note,
+.mapwrap.has-city .map-world-note{display:none}
+.map-note{font-size:.9375rem;line-height:1.5;color:var(--text-75);max-width:var(--measure)}
+
+/* ── the city field ───────────────────────────────────────────────────────── */
+.cityfield{position:relative;max-width:360px;display:flex;flex-direction:column;gap:8px}
+.city-l{font-size:.8125rem;font-weight:500;letter-spacing:.01em;color:var(--text-94)}
+#city{
+  height:48px;padding:0 16px;font:inherit;font-size:.9375rem;color:var(--text);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;width:100%;
+  transition:border-color var(--t-resp) var(--ease-out-quad),
+             background-color var(--t-resp) var(--ease-out-quad);
+}
+#city::placeholder{color:rgba(255,255,255,.45)}
+#city:hover{border-color:rgba(255,255,255,.3)}
+#city:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:transparent}
+.city-help{font-size:.75rem;line-height:1.45;color:var(--text-70)}
+.city-list{
+  position:absolute;z-index:6;top:calc(100% - 46px);left:0;right:0;
+  max-height:240px;overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--rule);border-radius:10px;
+  padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.city-list li{padding:10px 12px;border-radius:6px;cursor:pointer;
+  font-size:.9375rem;line-height:1.3;color:var(--text-94)}
+.city-list li .st{color:var(--text-70)}
+.city-list li[aria-selected=true],.city-list li:hover{background:var(--chip);color:var(--text)}
+
+/* ── the visible venue list ───────────────────────────────────────────────
+   Not an accessibility afterthought and not hidden: this is the map's text
+   equivalent, and it is the mobile route, the no-JS route and the screen-reader
+   route at once, which is exactly why it stays correct — everybody sees it. */
+.vlist{display:flex;flex-direction:column;margin-top:8px}
+.vrow{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--rule);
+  scroll-margin-top:96px;transition:background-color var(--t-resp) var(--ease-out-quad)}
+.vrow:first-child{border-top:1px solid var(--rule)}
+.vrow.is-on{background:rgba(255,255,255,.045)}
+.vnum{flex:none;width:24px;height:24px;border-radius:50%;background:var(--chip);
+  color:var(--text);display:flex;align-items:center;justify-content:center;
+  font-size:.6875rem;font-weight:500;line-height:1;margin-top:2px}
+.vrow.is-on .vnum{background:var(--accent);color:#000}
+.vbody{display:flex;flex-direction:column;gap:4px;min-width:0}
+.vrow h3{font-size:1rem;font-weight:500;line-height:1.4;color:var(--text-94)}
+.vrow .tag{display:inline-block;margin-left:6px;font-size:.6875rem;font-weight:500;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--accent);
+  font-feature-settings:'case' 1;vertical-align:.08em}
+.vwhere,.vwhen{font-size:.875rem;line-height:1.5;color:var(--text-75)}
+.vsrc{font-size:.8125rem;line-height:1.5;color:var(--text-70)}
+.vsrc a{color:var(--text-75);text-decoration:underline;text-underline-offset:3px;
+  transition:color var(--t-resp) var(--ease-out-quad)}
+.vsrc a:hover{color:var(--accent)}
+.vnote{font-size:.8125rem;line-height:1.5;color:var(--text-70);margin-top:2px;
+  max-width:56ch}
+/* The one absence, stated. A service event whose location was shared with
+   registrants only gets no pin, and saying so is the cheapest possible proof
+   to a reader that the other five are real. */
+.vabsent{font-size:.875rem;line-height:1.5;color:var(--text-70);margin-top:16px;
+  max-width:var(--measure)}
+.map-credit{margin-top:28px}
+
+/* ── what a hub is ───────────────────────────────────────────────────────── */
+.hub-what{display:flex;flex-direction:column;gap:16px;margin-top:40px}
+@media (min-width:860px){
+  .hub-what{flex-direction:row}
+  .hub-block{flex:1 1 0;min-width:0}
+  #what .title{margin-bottom:0}
+}
+.hub-block{position:relative;background:var(--surface);border-radius:10px;
+  padding:clamp(20px,2.4vw,28px);display:flex;flex-direction:column;gap:10px}
+.hub-block::after{
+  content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+  border:1px solid var(--lamp-rim-strong);border-radius:inherit;
+  -webkit-mask:var(--lamp-arc);mask:var(--lamp-arc);
+}
+.hub-block h3{font-size:1.0625rem;font-weight:500;line-height:1.35;letter-spacing:-.01em}
+.hub-block p{font-size:.9375rem;line-height:1.55;color:var(--text-75)}
+.hub-more a{color:var(--text-94);text-decoration:underline;text-underline-offset:3px;
+  transition:color var(--t-resp) var(--ease-out-quad)}
+.hub-more a:hover{color:var(--accent)}
+
+/* ── the register block ──────────────────────────────────────────────────── */
+.reg{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.reg .pending{font-size:1rem;line-height:1.5;color:var(--text-75);max-width:var(--measure)}
+.fine{font-size:.75rem;line-height:1.45;color:var(--text-70);max-width:var(--measure)}
+#instead .desc{margin-top:20px}
+#instead .rv-c{margin-top:24px}
 
 /* ─── §13 take a seat — the membership page's perk marquee ──────────────── */
 

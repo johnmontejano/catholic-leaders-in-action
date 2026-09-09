@@ -16,7 +16,8 @@
      §2 nav           §8 partner marquee
      §3 reveals       §9 the Instagram feed
      §4 clock         §10 video tiles
-     §5 countdown     §11 the SMS signup                                    */
+     §5 countdown     §11 the SMS signup
+                      §14 /start/'s map                                   */
 
 (() => {
   'use strict';
@@ -953,4 +954,331 @@
     const up = q('#upcoming');
     if (up && !qa('.ecard', up).some(li => !li.hidden)) up.hidden = true;
   }
+
+  /* §14 — /start/'s map ----------------------------------------------------
+     THE PERFORMANCE CONTRACT, which is the part that matters on this page:
+     zero scroll listeners, zero requestAnimationFrame loops, zero timers at
+     rest. Nothing here runs while the page is scrolling and nothing runs when
+     the visitor is not touching the map. Pin positions are baked percentages,
+     so nothing measures the DOM and nothing thrashes layout. Everything that
+     moves, moves on transform and opacity. The only fetch is same-origin, is
+     deferred to the first focus of the city field, and its failure is
+     non-fatal — the field stays a plain text input and every other thing on
+     the page still works.
+
+     With JavaScript off the map is not degraded, it is complete: the SVG is
+     inline so all three layers render, the scale switch is :checked, and every
+     pin is a link into a list that is visible anyway. The only things absent
+     are the visitor's own pin and the distance figure, and nothing on the page
+     implies they should be there. */
+  const mapwrap = q('#mapwrap');
+  if (mapwrap) {
+    const scales = qa('input[name=mscale]', mapwrap);
+    const detail = q('#map-detail');
+    const dist = q('#map-dist');
+    const stage = q('.mapstage', mapwrap);
+    const proj = (() => {
+      const el = q('#map-proj');
+      try { return el ? JSON.parse(el.textContent) : null; } catch { return null; }
+    })();
+
+    /* An instant that has passed stops being "upcoming". Same contract as §13
+       and the same trade: at load, once, with no timer, so the page is right to
+       within an hour of the build even with the script off. */
+    const nowMs = Date.now();
+    qa('.vrow[data-when],.pin[data-when]').forEach(el => {
+      if (Date.parse(el.dataset.when) > nowMs) return;
+      const tag = q('[data-upcoming]', el);
+      if (tag) tag.remove();
+      const sr = q('.sr', el);
+      if (sr) sr.textContent = sr.textContent.replace(/, upcoming$/, '');
+    });
+
+    /* ---- the scale control -------------------------------------------------
+       The switch itself is CSS. The only thing JavaScript does for it is
+       promote the two layers for the 700ms they are actually moving and then
+       let go again — the same "promote at the moment of the press, never
+       permanently" discipline .btn:active uses. */
+    let zoomT = 0;
+    scales.forEach(r => r.addEventListener('change', () => {
+      mapwrap.classList.add('zooming');
+      clearTimeout(zoomT);
+      zoomT = setTimeout(() => mapwrap.classList.remove('zooming'), 700);
+    }));
+
+    /* ---- a pin, and the venue behind it ------------------------------------
+       One channel, not two: hovering, focusing and tapping do the same thing.
+       No information on this map is hover-only. */
+    let onPin = null;
+    const clearPin = () => {
+      if (!onPin) return;
+      qa('.pin.is-on,.vrow.is-on', mapwrap).forEach(el => el.classList.remove('is-on'));
+      if (detail) detail.replaceChildren();
+      onPin = null;
+    };
+    const showPin = (a) => {
+      const row = q(`#v-${CSS.escape(a.dataset.v)}`);
+      if (!row || !detail) return;
+      qa('.pin.is-on,.vrow.is-on', mapwrap).forEach(el => el.classList.remove('is-on'));
+      a.classList.add('is-on');
+      row.classList.add('is-on');
+      /* Built from the row itself rather than from a second copy of the same
+         sentences, so the card and the list cannot disagree. */
+      const body = q('.vbody', row);
+      detail.replaceChildren(...[...body.children].map(n => n.cloneNode(true)));
+      onPin = a;
+    };
+    qa('.pin[data-v]', mapwrap).forEach(a => {
+      a.addEventListener('click', (e) => { e.preventDefault(); showPin(a); });
+      a.addEventListener('focus', () => showPin(a));
+      a.addEventListener('mouseenter', () => showPin(a));
+    });
+    /* The frame's own background clears it, and so does Escape. */
+    stage && stage.addEventListener('click', (e) => { if (!e.target.closest('.pin')) clearPin(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') clearPin(); });
+
+    /* ---- the city field ----------------------------------------------------
+       A real combobox against a gazetteer committed to this repository. There
+       is no geocoding request on a keystroke: that is blocked by this site's
+       posture and it would be a live feed of what somebody is typing to a third
+       party. 25 KB of text from our own origin, fetched once, leaks nothing. */
+    const input = q('#city');
+    const list = q('#city-list');
+    const R = 6371;
+    const rad = (d) => d * Math.PI / 180;
+    const haversine = (a, b, c, d) => {
+      const dp = rad(c - a), dl = rad(d - b);
+      const h = Math.sin(dp / 2) ** 2 + Math.cos(rad(a)) * Math.cos(rad(c)) * Math.sin(dl / 2) ** 2;
+      return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+    };
+    const fold = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+    /* The same two projections build-map.mjs baked the layers with, so a point
+       placed here lands where the same point would have been baked. */
+    const project = (lay, lon, lat) => {
+      const p = proj && proj[lay];
+      if (!p) return null;
+      let x, y;
+      if (p.proj === 'ne1') {
+        const ph = rad(lat), l = rad(lon), p2 = ph * ph, p4 = p2 * p2;
+        x = l * (0.8707 - 0.131979 * p2 + p4 * (-0.013791 + p4 * (0.003971 - 0.001529 * p2)));
+        y = ph * (1.007226 + p2 * (0.015085 + p4 * (-0.044475 + 0.028874 * p2 - 0.005916 * p4)));
+      } else {
+        x = rad(lon);
+        y = Math.log(Math.tan(Math.PI / 4 + rad(lat) / 2));
+      }
+      return [p.cx + (x - p.x0) * p.k, p.cy - (y - p.y0) * p.k];
+    };
+    const inBox = (b, lon, lat) => lon >= b[0] && lon <= b[2] && lat >= b[1] && lat <= b[3];
+
+    let places = null, loading = null, chosen = null, active = -1, options = [];
+
+    const load = () => {
+      if (places || loading) return loading;
+      const src = input && input.dataset.src;
+      if (!src) return null;
+      loading = fetch(src).then(r => r.ok ? r.text() : Promise.reject())
+        .then(t => {
+          places = t.split('\n').filter(Boolean).map(l => {
+            const [name, region, lat, lon] = l.split('|');
+            return { name, region, lat: +lat, lon: +lon, key: fold(name) };
+          });
+        })
+        /* Non-fatal by design: with no list the field is a plain text input,
+           the visitor still types a city, and it still reaches the form. */
+        .catch(() => { places = []; });
+      return loading;
+    };
+
+    const closeList = () => {
+      if (!list) return;
+      list.hidden = true;
+      list.replaceChildren();
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+      active = -1; options = [];
+    };
+
+    const render = (matches) => {
+      if (!list) return;
+      if (!matches.length) { closeList(); return; }
+      list.replaceChildren(...matches.map((m, i) => {
+        const li = document.createElement('li');
+        li.id = `city-o${i}`;
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', 'false');
+        li.append(m.name, ' ');
+        const st = document.createElement('span');
+        st.className = 'st';
+        st.textContent = m.region;
+        li.append(st);
+        li.addEventListener('mousedown', (e) => { e.preventDefault(); commit(m); });
+        return li;
+      }));
+      list.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+      options = matches;
+      active = -1;
+    };
+
+    const mark = () => {
+      qa('li', list).forEach((li, i) => li.setAttribute('aria-selected', i === active ? 'true' : 'false'));
+      if (active >= 0) input.setAttribute('aria-activedescendant', `city-o${active}`);
+      else input.removeAttribute('aria-activedescendant');
+    };
+
+    const search = (raw) => {
+      const s = fold(raw.trim());
+      if (!s || !places) return [];
+      const starts = [], has = [];
+      for (const p of places) {
+        if (p.key.startsWith(s)) starts.push(p);
+        else if (s.length > 2 && p.key.includes(s)) has.push(p);
+        if (starts.length >= 8) break;
+      }
+      return [...starts, ...has].slice(0, 8);
+    };
+
+    /* ---- the visitor's pin, and the number that is the payoff --------------
+       The pin is an OPEN RING, never a filled disc, and it is labelled with the
+       word "You". It exists only in this browser, for this session: nothing is
+       stored, nothing is shared with another visitor, and no pin on this map is
+       ever derived from anybody's submission. The map is CLIA's own record, not
+       a guestbook. */
+    const you = (() => {
+      const a = document.createElement('span');
+      a.className = 'pin is-you';
+      a.dataset.dir = 'E';
+      a.style.setProperty('--lead', '3.2%');
+      const dot = document.createElement('i');
+      dot.className = 'dot';
+      dot.setAttribute('aria-hidden', 'true');
+      const lbl = document.createElement('span');
+      lbl.className = 'lbl';
+      a.append(dot, lbl);
+      return a;
+    })();
+
+    const conn = (() => {
+      const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      s.setAttribute('class', 'mapconn');
+      s.setAttribute('viewBox', '0 0 1000 750');
+      s.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      s.setAttribute('aria-hidden', 'true');
+      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l.setAttribute('stroke', 'rgba(245,238,214,.55)');
+      l.setAttribute('stroke-width', '1.4');
+      l.setAttribute('stroke-dasharray', '4 5');
+      l.setAttribute('vector-effect', 'non-scaling-stroke');
+      s.append(l);
+      return { svg: s, line: l };
+    })();
+
+    const km = (v) => v >= 100 ? Math.round(v).toLocaleString('en-US')
+      : v >= 10 ? v.toFixed(0) : v.toFixed(1);
+
+    const place = (city) => {
+      if (!proj || !city) return;
+      /* Whichever scale actually contains the point — never a pin sitting on a
+         frame it is not inside. */
+      const lay = inBox(proj.sf.bbox, city.lon, city.lat) ? 'sf'
+        : inBox(proj.bay.bbox, city.lon, city.lat) ? 'bay' : 'world';
+      const xy = project(lay, city.lon, city.lat);
+      if (!xy) return;
+      const host = q(`.pins-${lay}`, mapwrap);
+      if (!host) return;
+      you.style.setProperty('--x', `${(xy[0] / 1000 * 100).toFixed(2)}%`);
+      you.style.setProperty('--y', `${(xy[1] / 750 * 100).toFixed(2)}%`);
+      you.dataset.dir = xy[0] > 620 ? 'W' : 'E';
+      q('.lbl', you).textContent = `You · ${city.name}`;
+      host.append(you);
+
+      /* The connector is drawn only when both ends are on the frame the
+         visitor is looking at and the straight line between them does not run
+         the wrong way round the planet. A deterministic rule, no projection
+         maths, and it never implies a route across the wrong half of the world.
+         The distance is the payoff; the curve is not. */
+      const sfXY = project(lay, proj.sf.city[0], proj.sf.city[1]);
+      const wrap = Math.abs(city.lon - proj.sf.city[0]) > 150;
+      conn.svg.remove();
+      if (sfXY && !wrap) {
+        conn.line.setAttribute('x1', sfXY[0]); conn.line.setAttribute('y1', sfXY[1]);
+        conn.line.setAttribute('x2', xy[0]); conn.line.setAttribute('y2', xy[1]);
+        host.parentNode.insertBefore(conn.svg, host);
+      }
+
+      /* Show the scale the pin is actually on. */
+      const radio = q(`#ms-${lay}`, mapwrap);
+      if (radio && !radio.checked) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
+
+      const d = haversine(proj.sf.city[1], proj.sf.city[0], city.lat, city.lon);
+      if (dist) {
+        dist.textContent = d < 25
+          ? `${city.name} is where all five rooms are. Come to an evening — or start a second one.`
+          : `${city.name} is ${km(d)} km from San Francisco. Nothing there yet.`;
+      }
+      mapwrap.classList.add('has-city');
+    };
+
+    const setForm = (label) => {
+      const go = q('#reg-go');
+      if (!go) return;
+      const base = go.dataset.form;
+      /* The city only. Never a name, never an email, never a coordinate:
+         a city is coarse and freely given, and identifying data does not belong
+         in a query string that lands in somebody's server log. */
+      go.href = label ? `${base}${base.includes('?') ? '&' : '?'}city=${encodeURIComponent(label)}&via=map` : base;
+    };
+
+    const commit = (m) => {
+      chosen = m;
+      const label = `${m.name}, ${m.region}`;
+      input.value = label;
+      closeList();
+      place({ ...m, name: label });
+      setForm(label);
+    };
+
+    const freeText = () => {
+      const raw = input.value.trim();
+      setForm(raw);
+      if (!raw || chosen) return;
+      /* Not on the list is not a dead end. The list is suggestions, never a
+         gate — a dead end here would be the worst possible failure on a page
+         whose whole purpose is that somebody is somewhere we have never been. */
+      you.remove(); conn.svg.remove();
+      mapwrap.classList.remove('has-city');
+      const w = q('#ms-world', mapwrap);
+      if (w && !w.checked) { w.checked = true; w.dispatchEvent(new Event('change')); }
+      if (dist) dist.textContent = `We could not find ${raw} on this map, which changes nothing — put it in the form and we will find it.`;
+    };
+
+    if (input) {
+      input.addEventListener('focus', load, { once: true });
+      input.addEventListener('input', () => {
+        chosen = null;
+        const v = input.value;
+        const go = () => render(search(v));
+        if (places) go(); else { const p = load(); p && p.then(go); }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeList(); return; }
+        if (e.key === 'Enter') {
+          if (active >= 0 && options[active]) { e.preventDefault(); commit(options[active]); }
+          else if (options.length) { e.preventDefault(); commit(options[0]); }
+          else freeText();
+          return;
+        }
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        if (!options.length) return;
+        e.preventDefault();
+        active = e.key === 'ArrowDown'
+          ? (active + 1) % options.length
+          : (active <= 0 ? options.length : active) - 1;
+        mark();
+      });
+      input.addEventListener('blur', () => { closeList(); freeText(); });
+    }
+  }
+
 })();
