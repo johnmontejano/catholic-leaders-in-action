@@ -615,6 +615,11 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
 .cell .glass{          /* the countdown, over the lead cell's illustration */
   -webkit-backdrop-filter:blur(20px) saturate(1.4);
   backdrop-filter:blur(20px) saturate(1.4);
+  /* A blur of a bright photograph is still a bright photograph: measured over
+     the pixels actually painted, "until the next evening" came to 4.29:1 at
+     11px against a 4.5 floor. Every other .glass on this page sits over --bg
+     and needs nothing; this one sits over a picture. */
+  background:rgba(0,0,0,.34);
 }
 /* 7b — the five elements that are both .btn and .glass drew two 1px inset rims
    at the same pixel row: .08 under .22 composites to .28, three and a half times
@@ -2640,6 +2645,13 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;
   overflow:hidden;padding:0 .75rem;container-type:inline-size;isolation:isolate;
 }
+/* NOT six columns. .feed is a five-COLUMN container whose children are five
+   <div class="fcol"> masonry columns, not a grid of tiles — so
+   repeat(6,1fr) leaves the sixth track empty, squeezes the other five and
+   strands 240px of black down the right edge. The wall's height belongs to how
+   many tiles each column holds, and that is markup, not CSS. Tried and
+   reverted 2026-09-09; the note is here so it is not tried again. */
+}
 /* A percentage mask on a content-sized container scales with the collage: 20%
    of a 1500px wall is 303px of erased photographs at each end. Fixed height. */
 .feed::before,.feed::after{content:'';position:absolute;left:0;right:0;height:clamp(56px,10vh,100px);z-index:2;pointer-events:none}
@@ -2735,6 +2747,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 /* The card says what happened in the room, not just where it is. Same ink as
    the address, one step down in weight, and the date is a <time> so it is
    machine-readable in the same way the events on /events/ are. */
+/* The block's own label, on the first card only, so the row is named like the
+   two link columns beside it: the home page lists all five rooms now and the
+   footer lists three, and three of five reads as a contradiction unless the
+   footer states its own rule. */
+.venue-head{margin-bottom:14px;color:var(--text-40)}
 .venue-last{font-size:.6875rem;line-height:1.4;letter-spacing:.04em;
   text-transform:uppercase;color:var(--text-40)}
 
