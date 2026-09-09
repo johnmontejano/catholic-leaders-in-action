@@ -954,11 +954,15 @@ picture{display:contents}
 /* Measured: this boundary was 130px on the way in and 400px on the way out
    against a 270px median (576px at 390) — the card's empty half-band adding
    itself to #voices' full 30vh. Both sides now subtract it. */
-/* 425vh was five statements at 85vh each plus a 121vh outro with nothing in
-   it. The outro is now 36vh (main.js §10) and the statements sit at 31vh, so
-   the section says the same five things in 65vh less scroll — which matters
-   because this page runs 15,210px against the reference's 9,363. */
-.believe{height:360vh;padding-top:max(0px,calc(var(--band-gap)*.667 - var(--believe-void)))}
+/* 425vh was five statements at 85vh each plus a 121vh outro with nothing in it.
+   360 fixed the outro. 300 fixes the dwell: measured after that change, the
+   last statement sat unchanged from y=4016 to y=5216 — 1,200px, a viewport and
+   a third, of a sentence that had finished arriving. Five statements now sit at
+   26vh each, which is still longer than a reader needs to read one, and the
+   section says the same five things in 125vh less scroll than it started with.
+   This page runs 14,625px against the reference's 9,363 and the difference is
+   not composition, it is dwell. */
+.believe{height:300vh;padding-top:max(0px,calc(var(--band-gap)*.667 - var(--believe-void)))}
 #voices{position:relative;z-index:1;padding-top:0;
   margin-top:calc(var(--band-gap) - var(--believe-void))}
 .believe-stage{position:sticky;top:0;height:100svh;display:grid;place-items:center;overflow:hidden}
@@ -1281,6 +1285,87 @@ picture{display:contents}
   font-size:.6875rem;font-weight:500;letter-spacing:.16em;line-height:1;
   color:var(--text-40)}
 .evening-clock span{display:inline-block;min-width:5.4ch;text-align:center}
+
+/* ─── §11c the rooms, on the home page ─────────────────────────────────────
+   The site's one departure from the reference's page order. The geometry, the
+   projection and the pin percentages are baked by tools/build-map.mjs and are
+   the same ones /start/ uses — this is that map's SF layer with the radios,
+   the two other scales, the labels and the visitor's own pin left behind,
+   because none of those are what the home page is asking.
+
+   Two columns above 900: the plate on the left at the container's own measure,
+   the five rooms as a list on the right. One column below it, list first,
+   because on a phone a name you can read beats a shape you cannot. */
+.rooms-block{display:grid;gap:clamp(28px,4vw,56px);width:var(--col);
+  margin:clamp(56px,8vh,96px) auto 0;align-items:center}
+@media (min-width:900px){.rooms-block{grid-template-columns:1.15fr 1fr}}
+/* THE PLATE CARRIES THE viewBox's OWN RATIO — 1000x750, and it must, because
+   the pin percentages build-map.mjs bakes are relative to a box that matches
+   it. preserveAspectRatio="xMidYMid meet" letterboxes anything else, and a
+   letterboxed map puts every pin in the wrong place: at 1.62/1 the five
+   parishes landed in the middle of the bay. This is the same rule .mapstage
+   follows on /start/ for the same reason. */
+.rooms-map{position:relative;border-radius:10px;overflow:hidden;
+  background:var(--surface);aspect-ratio:1000/750}
+.rooms-map .mapgeo{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* .lay rests at opacity 0 / scale 2.2 / visibility hidden and is revealed on
+   /start/ by the scale radios' sibling selector. There are no radios here —
+   this map has one scale and does not zoom — so the layer is simply on. */
+.rooms-map .lay{opacity:1;transform:none;visibility:visible;transition:none}
+/* The same ink /start/'s map is drawn in, because it is the same map. */
+.rooms-map .land{fill:#2e2e2e;stroke:rgba(255,255,255,.13);stroke-width:.8;
+  stroke-linejoin:round}
+.rooms-map .road{fill:none;stroke:rgba(255,255,255,.26);stroke-width:1.2;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.hpin{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);
+  z-index:2;display:grid;place-items:center;text-decoration:none}
+.hpin .dot{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  background:var(--accent);color:#000;
+  font-family:'Satoshi',var(--sans);font-size:.6875rem;font-weight:500;line-height:1;
+  font-style:normal;font-variant-numeric:tabular-nums;
+  /* The same ring the /start/ map's pins carry at ≤759px, and for the same
+     reason: three of these parishes are a mile apart, which is thirty pixels
+     here, so without a ground between them four cream discs merge into one
+     cream shape. */
+  box-shadow:0 0 0 1px var(--lamp-rim-strong),0 0 0 3px var(--surface),
+             -5px -2px 13px rgba(245,238,214,.3);
+  transition:transform var(--t-resp) var(--ease-out-quad)}
+.hpin:hover .dot,.hpin:focus-visible .dot{transform:scale(1.14)}
+/* On the .hpin, not on its .dot. The anchor already carries z-index:2, which
+   makes it a stacking context — so a z-index on the dot inside it orders the
+   dot against its own siblings and nothing else, and pin 4 still painted over
+   pin 1. Same rule as the /start/ map's cluster: the pin a reader counts to
+   first is the one whose disc is whole. */
+.rooms-map .hpin:nth-of-type(1){z-index:7}
+.rooms-map .hpin:nth-of-type(2){z-index:6}
+.rooms-map .hpin:nth-of-type(3){z-index:5}
+.rooms-map .hpin:nth-of-type(4){z-index:4}
+.rooms-map .hpin:nth-of-type(5){z-index:3}
+.rooms-map .hpin:hover,.rooms-map .hpin:focus-visible{z-index:9}
+
+.rooms-list{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.rooms-list li{display:grid;grid-template-columns:2.2em 1fr;align-items:baseline;
+  gap:0 .4em;padding:15px 0;border-bottom:1px solid var(--rule)}
+.rooms-list li:first-child{border-top:1px solid var(--rule)}
+.hnum{font-family:'Satoshi',var(--sans);font-variant-numeric:tabular-nums;
+  font-size:.6875rem;font-weight:500;letter-spacing:.05em;color:var(--text-40)}
+.hname{font-size:1.1rem;font-weight:500;letter-spacing:-.02em;line-height:1.4;color:var(--text)}
+.hwhen{grid-column:2;font-size:.6875rem;font-weight:500;letter-spacing:.05em;
+  text-transform:uppercase;line-height:1.4;color:var(--text-40)}
+.rooms-more{width:var(--col);margin:clamp(24px,3.4vh,40px) auto 0;
+  font-size:.8125rem;letter-spacing:.05em;text-transform:uppercase}
+.rooms-more a{position:relative;color:var(--text-40);
+  transition:color .735s var(--ease-sig)}
+.rooms-more a::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform .735s var(--ease-sig)}
+.rooms-more a:hover{color:var(--text)}
+.rooms-more a:hover::after{transform:scaleX(1);transform-origin:left}
+@media (max-width:899px){
+  .rooms-block{grid-template-columns:1fr}
+  .rooms-map{order:2}
+  .rooms-list{order:1}
+}
 
 /* ─── §12 the bento ─────────────────────────────────────────────────────── */
 
