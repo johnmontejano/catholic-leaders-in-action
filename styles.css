@@ -1413,6 +1413,12 @@ main.sub>.band+.band{padding-block-start:clamp(96px,18vh,180px)}
    reference leaves 90px under its final band before the footer starts. */
 main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .page-head{margin-bottom:clamp(40px,6vh,60px)}
+/* A page's own name should not be the same size as a section heading inside
+   it. .title's clamp(2rem,2.2vw,4.2rem) resolves to 31.68px at 1440 -- under
+   its own 2rem floor -- so it was pinned at 32px from 390 all the way up and
+   the cap was unreachable below a 3054px viewport. The h1 that names the page
+   gets its own ramp; every other .title on the page is untouched. */
+.page-head h1.title{font-size:clamp(2.6rem,4.4vw,4.6rem);letter-spacing:-.04em}
 
 /* One column below 800, two at and above it. Six people wanted three columns
    because a name is short; an event card carries four to six lines and a third
