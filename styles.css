@@ -1682,11 +1682,19 @@ picture{display:contents}
    Tom stayed at opacity 0 on a real scroll at every one-column width. One gap
    of trailing box clears it everywhere; 8px did not. */
 .crew{
-  /* 3 x 400 + 2 x 16. Without it the row took a fourth column above 1728 and
-     left two cards stranded on a second line. */
-  max-width:1264px;margin-inline:auto;
-  display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:16px;
-  padding-inline:clamp(20px,5vw,32px);padding-bottom:16px;
+  /* THE PAGE'S OWN COLUMN. This was max-width:1264 with its own centring and
+     its own padding, which put the first card's text at x=140 — twelve pixels
+     OUTSIDE the 152 that every heading, paragraph and footer column on the same
+     page starts at. A row that overhangs the column it sits in is the kind of
+     thing nobody can name and everybody sees.
+     Three tracks of var(--col), which lands them at 152, 536 and 920: the same
+     three the home page's bento already uses, so the two pages agree. Six
+     people, three columns, two rows — and the old flex-wrap could take a fourth
+     column above 1728 and strand two cards, which a fixed three-track grid
+     cannot do at any width. */
+  width:var(--col);margin-inline:auto;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:16px;
+  padding-bottom:16px;
   margin-top:clamp(56px,10vh,110px);
 }
 /* THE CARD IS A PLATE WITH A MEDIA FIELD, not a paragraph in a box.
@@ -1708,9 +1716,19 @@ picture{display:contents}
    whose height was set by Saul's third line the other two plates grow and all
    three name/role blocks still sit on one baseline. R64's row rhythm therefore
    still comes only from the note, and from nothing else. */
+/* THE TRACK DECIDES THE WIDTH. This read width:min(400px,(100% - 32px)/3),
+   which was right while .crew was a flex row — 100% meant the row. In a grid
+   100% means the TRACK, so each card resolved to (368-32)/3 = 112px and six
+   people sat in a third of their own columns. The same trap .stat fell into
+   when its row became a grid. */
+/* The timeline is the seventh child of .crew and is not a person: it spans the
+   row. minmax(0,1fr) on the tracks is what keeps the three person-columns
+   equal — a bare 1fr floors each track at its own min-content, and this wide
+   slot dragged column one to 409px against the other two at 348. */
+.crew>li.tline-slot{grid-column:1/-1}
 .ccard{
   position:relative;overflow:hidden;
-  flex:0 0 auto;width:min(400px,(100% - 32px) / 3);
+  width:auto;
   display:flex;flex-direction:column;
   padding:20px;border-radius:10px;background:var(--surface);
 }
@@ -2199,7 +2217,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    between rows, no box around each entry. */
 /* The slot is the full flex line; the block inside it keeps the card row's
    own measure. Order is the whole point of it — see teamRoster(). */
-.tline-slot{flex:0 1 100%;display:flex;justify-content:center;margin-top:clamp(24px,4vh,56px)}
+.tline-slot{display:flex;justify-content:stretch;margin-top:clamp(24px,4vh,56px)}
 /* Under Saul on one column, where the 16px row gap is the right distance and a
    section-sized margin would put him back at arm's length from his own career. */
 /* Only in the true one-column range. In the 2-up band the reorder put the
@@ -2211,8 +2229,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   .crew>li.ccard{order:2}
   .crew>li.ccard:first-child{order:0}
 }
+/* Was max-width:816 centred inside a 1136 column, which put its left edge at
+   x=312 — an edge nothing else on the page shares. It spans the crew grid's
+   full row now, so both its edges are the page's own. */
 .tline{
-  width:100%;max-width:816px;
+  width:100%;max-width:none;
   background:var(--surface);border-radius:10px;
   padding:clamp(20px,2.6vw,32px);
 }
@@ -2649,7 +2670,10 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   #what .title{margin-bottom:0}
 }
 .hub-block{position:relative;background:var(--surface);border-radius:10px;
-  padding:clamp(20px,2.4vw,28px);display:flex;flex-direction:column;gap:10px}
+  /* var(--pad-tile), not a third card padding. clamp(20px,2.4vw,28px) resolved
+     to 28 at 1440, which put this block's headings at x=180 against every other
+     card's 172 — one more axis bought for eight pixels nobody asked for. */
+  padding:var(--pad-tile);display:flex;flex-direction:column;gap:10px}
 .hub-block::after{
   content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
   border:1px solid var(--lamp-rim-strong);border-radius:inherit;
