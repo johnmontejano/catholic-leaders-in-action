@@ -1673,7 +1673,13 @@ picture{display:contents}
   border-radius:999px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   transition:border-color var(--t) ease,background var(--t) ease;
 }
-.sig-in::placeholder{color:rgba(255,255,255,.45)}
+/* Placeholders are TEXT and owe 4.5:1. .45 measured 4.52:1 on this field's own
+   background — passing by four hundredths, and this file has already been
+   caught once by exactly that margin (see --text-40, which computed 4.36 and
+   failed in practice on antialiasing). .58 measures ~6:1 and is still visibly
+   lighter than an entered value, which is the only job a placeholder colour
+   has. */
+.sig-in::placeholder{color:rgba(255,255,255,.58)}
 .sig-in:hover{border-color:rgba(255,255,255,.3)}
 .sig-in:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:transparent}
 .sig-go{flex:0 0 auto;white-space:nowrap}
@@ -2676,7 +2682,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   transition:border-color var(--t-resp) var(--ease-out-quad),
              background-color var(--t-resp) var(--ease-out-quad);
 }
-#city::placeholder{color:rgba(255,255,255,.45)}
+#city::placeholder{color:rgba(255,255,255,.58)}
 #city:hover{border-color:rgba(255,255,255,.3)}
 #city:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:transparent}
 .city-help{font-size:.75rem;line-height:1.4;color:var(--text-70)}
@@ -3070,7 +3076,19 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    equivalent runs two lines across two thirds of the measure. 108ch is four
    lines at 1440 and still inside the 45-90 character band once the page is
    narrow enough for it to matter, because the value is a max. */
-.foot-fine{margin-top:22px;font-size:.6875rem;line-height:1.5;color:rgba(255,255,255,.48);max-width:108ch}
+/* 108ch measured 126 characters per line at 1440, over eight lines. The
+   readable band is 45-75 and even fine print should not pass ~85; at 126 the
+   eye loses the line it is returning to on every wrap, which is precisely the
+   failure mode a credit paragraph cannot afford because it is the part people
+   read carefully or not at all. The reference has no line over 78 anywhere on
+   its home page. 70ch measures 82 rendered characters here, inside the ~85
+   ceiling this file is willing to set anything at.
+   The ink was rgba(255,255,255,.48): a fifth colour, hardcoded, outside the
+   1.0/.86/.72 scale and invisible to the palette count because it is used
+   exactly once. --text-40 is the scale's own muted step and measures 9.9:1
+   here against .48's 4.9:1. The 11px size is doing the de-emphasis; the ink
+   did not need to do it twice. */
+.foot-fine{margin-top:22px;font-size:.6875rem;line-height:1.5;color:var(--text-40);max-width:70ch}
 
 /* ─── §16 motion ────────────────────────────────────────────────────────── */
 
