@@ -3292,3 +3292,49 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
      feedback and needs more of it. */
   .btn:active{transform:translateY(0) scale(.955)}
 }
+
+/* ─── §19 between pages ─────────────────────────────────────────────────────
+   The reference is one client-routed application: you press "Founders" and the
+   page becomes the next page. This site is four separate documents, and
+   however fast the prerender makes them — the speculation rules above already
+   fetch on moderate intent — the swap was still a hard cut. That cut is the
+   last piece of "not as interactive" that had nothing to do with scrolling.
+
+   Cross-document view transitions cost one at-rule. The browser snapshots the
+   old page, snapshots the new one, and animates between them; where it is not
+   supported the navigation is exactly what it was before, so there is nothing
+   to feature-detect and nothing to polyfill. */
+@view-transition { navigation: auto; }
+
+/* The chrome does not travel — it IS the same bar on both pages, so naming it
+   holds it still while the content beneath cross-fades. Without these the nav
+   fades out and back in on every navigation, which reads as the whole window
+   blinking rather than the page turning. Each name must be unique per
+   document, and each of these appears exactly once. */
+.nav-mark{view-transition-name:nav-mark}
+.nav .btn{view-transition-name:nav-cta}
+.nav-links{view-transition-name:nav-links}
+.foot-line{view-transition-name:foot-line}
+
+/* 260ms is the site's own --t-mat-in less a frame: long enough to read as a
+   turn rather than a flicker, short enough that a prerendered page still feels
+   instant. The old page leaves on the hard curve and the new one arrives on
+   the soft one, which is the same asymmetry §18 gives every hover here. */
+::view-transition-old(root){
+  animation-duration:.18s;animation-timing-function:var(--ease-out-hard)}
+::view-transition-new(root){
+  animation-duration:.26s;animation-timing-function:var(--ease-in-soft)}
+::view-transition-group(nav-mark),
+::view-transition-group(nav-cta),
+::view-transition-group(nav-links),
+::view-transition-group(foot-line){
+  animation-duration:.26s;animation-timing-function:var(--ease-in-soft)}
+
+@media (prefers-reduced-motion:reduce){
+  /* Not `navigation: none` — the transition still runs, it simply does not
+     animate, which is what the preference asks for and keeps the snapshot
+     machinery from being a special case. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*){animation:none!important}
+}
