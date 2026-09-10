@@ -1001,14 +1001,10 @@
     ['Dc0IHIAFJ36_07', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · Handouts'],
     ['DawmlieFIHm_02', 'DawmlieFIHm', 640, 337, 'Jul 14 · Rights and Responsibilities'],
     ['Dc0IHIAFJ36_11', 'Dc0IHIAFJ36', 640, 335, 'Sep 1 · The full panel'],
-    ['DbULpBWJ-ok',    'DbULpBWJ-ok', 640, 640, 'Jul 27 · Called to Serve'],
-    ['DZ6Ga2yptfR',    'DZ6Ga2yptfR', 640, 640, 'Jun 23 · Called to Lead'],
-    ['DcKANRuGtzj',    'DcKANRuGtzj', 640, 640, 'Aug 17 · The Work of Human Hands'],
-    ['DZGufi6JAbk',    'DZGufi6JAbk', 640, 640, 'Jun 3 · Called to Lead, Vol. I'],
-    ['DbuObFxFJY3_04', 'DbuObFxFJY3', 640, 346, 'Aug 7 · Questions from the floor'],
-    ['Dc0IHIAFJ36_08', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · The hall'],
     ['DawmlieFIHm_09', 'DawmlieFIHm', 640, 337, 'Jul 14 · The reception'],
     ['DbuObFxFJY3_01', 'DbuObFxFJY3', 640, 345, 'Aug 7 · The hall'],
+    ['DbuObFxFJY3_04', 'DbuObFxFJY3', 640, 346, 'Aug 7 · Questions from the floor'],
+    ['Dc0IHIAFJ36_08', 'Dc0IHIAFJ36', 640, 337, 'Sep 1 · The hall'],
     ['DcOpj1nG-9D_01', 'DcOpj1nG-9D', 640, 486, 'Aug 19 · The Shroud, up close'],
     ['DbmTXzlGLPl_02', 'DbmTXzlGLPl', 640, 853, 'Aug 4 · Homeless ministry, SF']
   ];;
