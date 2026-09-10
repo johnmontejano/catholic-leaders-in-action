@@ -1019,7 +1019,16 @@
        surface instead of a contact sheet. */
     const COLS = 5;
 
-    const card = ([file, code, w, h, cap, vid]) => `
+    /* --op is the crop point, and it earns its keep on exactly one kind of tile.
+       Every derivative in assets/feed is already 3:4, the same ratio the tile
+       is, so object-fit:cover crops nothing and object-position does nothing —
+       which is why this wall never needed one before. The square tiles added
+       this round DO crop, 25% off the height, and a centred crop takes it half
+       from the top: heads. Each point is the face centroid of that frame
+       (area-weighted, so a group gives its centre of mass rather than whoever
+       stands closest), solved so the kept 75% contains it. On a 3:4 tile the
+       value is inert, so it can be set once per frame and not per position. */
+    const card = ([file, code, w, h, cap, vid, op]) => `
       <a class="fcard" href="https://www.instagram.com/p/${code}/" target="_blank" rel="noopener noreferrer"
          aria-label="Instagram — ${String(cap).replace(/["<>]/g, '')} (opens in a new tab)">
         ${vid ? `<video muted loop playsinline preload="none"
@@ -1029,6 +1038,7 @@
                    sizes="(max-width:800px) 33vw, 20vw"><img src="assets/feed/${file}-640.jpg"
                    srcset="assets/feed/${file}-400.jpg 400w, assets/feed/${file}-640.jpg 640w, assets/feed/${file}-900.jpg 900w"
                    sizes="(max-width:800px) 33vw, 20vw" width="640" height="853"
+                   ${op ? `style="--op:${String(op).replace(/["<>]/g, '')}"` : ''}
                    loading="lazy" decoding="async" alt=""></picture>`}
         <span class="fcard-ov">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"
@@ -1095,7 +1105,7 @@
         shown.slice().sort().join('|') === next.slice().sort().join('|');
       if (same) return;
 
-      renderFeed(feed, data.tiles.map(t => [t.id, t.shortcode, t.w, t.h, t.alt, t.video]));
+      renderFeed(feed, data.tiles.map(t => [t.id, t.shortcode, t.w, t.h, t.alt, t.video, t.op]));
       remeasure();
     } catch { /* a feed that will not load is a feed that stays as it was */ }
   };
