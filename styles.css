@@ -93,7 +93,14 @@
 
   --text:#ffffff;
   --text-94:rgba(255,255,255,.94);
-  --text-75:rgba(255,255,255,.753);
+  /* WAS .753, AGAINST --text-70's .78 — two inks 2.7% apart, which is nothing
+     a reader can see and one more colour the page has to hold. Worse, the
+     names inverted the scale: --text-70 was the BRIGHTER of the two, and the
+     comment below it still claims it sits "a step below --text-75". Measured
+     this round the page carried five white tints (1.0, .94, .9, .78, .753,
+     .72) where the reference's pages carry three to four. Merged UP, never
+     down, so no contrast that was passing can start failing. */
+  --text-75:rgba(255,255,255,.78);
   /* The roster's roles measured 4.36:1 on --surface at 12px/400 — the same
      antialiasing shortfall as --text-40, at the size where it bites hardest.
      .78 clears it and is still a step below --text-75's use as body ink. */
@@ -170,6 +177,12 @@
      reading as material and starts reading as an animation. A MATERIAL move —
      a photograph scaling inside its card, a plate changing shape — is the one
      the winners run at 600/400, and at 160ms it would look like a twitch. */
+  /* ONE card padding, not two. A 20/24 pair looks like a scale on paper, but
+     .pcard and the tiles both land in the page's third track, so the four
+     pixels put their contents on two axes 748 and 752 — the same accident the
+     badges had at 328/332. A padding step is only a scale if the things using
+     it never share a column, and here they do. */
+  --pad-tile:20px;
   --t-in:.16s;      --ease-in-soft:cubic-bezier(.25,1,.5,1);
   --t-out:.11s;     --ease-out-hard:cubic-bezier(.5,0,.75,0);
   --t-mat-in:.6s;   --t-mat-out:.4s;
@@ -503,9 +516,14 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
   font-weight:500;line-height:1;letter-spacing:-.03em;
   max-width:var(--heading);text-wrap:balance;
 }
+/* ONE INK FOR ONE CLASS. .hero-aside .desc set --text-94 over this rule's
+   --text-75 while repeating the same 1.1rem and the same 1.4 leading, so the
+   page ran the identical paragraph style at two different inks and the only
+   thing deciding which you got was where the paragraph happened to sit.
+   Unified UP, so nothing that was passing contrast stops. */
 .desc{
   font-size:1.1rem;font-weight:400;line-height:1.4;
-  color:var(--text-75);max-width:var(--measure);
+  color:var(--text-94);max-width:var(--measure);
 }
 /* Eight one-word widows on the page, including "it." alone on a 32px display
    line. text-wrap:pretty costs nothing where it is unsupported. */
@@ -790,7 +808,10 @@ section{position:relative}
 }
 /* Their bar link hover is a colour move and nothing else: 90% white to full
    over 200ms. The underline wipe belongs to their footer, not up here. */
-.nav-links a{color:rgba(255,255,255,.9);transition:color .2s cubic-bezier(.4,0,.2,1)}
+/* --text-94, not a sixth one-off .9 that exists nowhere else in the file. It
+   is brighter than what it replaces and still leaves headroom for the hover,
+   which goes to full white. */
+.nav-links a{color:var(--text-94);transition:color .2s cubic-bezier(.4,0,.2,1)}
 .nav-links a:hover{color:#fff}
 
 .nav-toggle{display:grid;place-items:center;width:42px;height:42px;border-radius:9999px;
@@ -918,7 +939,7 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
 .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
 
 .hero-aside{display:flex;flex-direction:column;gap:28px;align-items:flex-start;max-width:320px}
-.hero-aside .desc{font-size:1.1rem;line-height:1.4;color:var(--text-94);max-width:320px}
+.hero-aside .desc{max-width:320px}
 @media (max-width:899px){
   .hero-inner{align-items:center;text-align:center}
   .hero-left{align-items:center}
@@ -959,7 +980,7 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
 .pcard{
   position:relative;overflow:hidden;border-radius:10px;
   max-width:560px;aspect-ratio:1/1;background:var(--surface);
-  display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:24px;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:var(--pad-tile);
   isolation:isolate;
 }
 /* The photograph pans with the scroll the whole time the card is on screen —
@@ -1208,7 +1229,12 @@ picture{display:contents}
 .vtile-overlay .badge{align-self:flex-start}
 .vtile-overlay{
   position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;justify-content:space-between;
-  padding:16px;
+  /* Was 16px against .qtile's 20px. These two alternate along ONE grid row, so
+     the four pixels put their badges on two different axes — measured at
+     x=328 and x=332, and again at x=744 and x=748. Nobody can name that when
+     they look at it; they just say the page is not as tight as the reference,
+     whose whole site holds three to six axes where this page held sixteen. */
+  padding:var(--pad-tile);
   background:linear-gradient(to bottom,rgba(0,0,0,.3) 0%,transparent 30%,transparent 60%,rgba(0,0,0,.6) 100%);
 }
 .vtile cite{display:block;font-style:normal;font-size:clamp(1rem,1.5vw,1.25rem);font-weight:500;line-height:1.5;margin-bottom:4px}
@@ -1216,7 +1242,7 @@ picture{display:contents}
 
 .qtile{
   width:100%;position:relative;border-radius:10px;background:var(--surface);
-  padding:20px;display:flex;flex-direction:column;gap:12px;min-height:140px;
+  padding:var(--pad-tile);display:flex;flex-direction:column;gap:12px;min-height:140px;
 }
 .qtile .badge{align-self:flex-start}
 /* Optical margin alignment: the opening quote mark hangs into the padding so
@@ -1270,7 +1296,10 @@ picture{display:contents}
      into a minimum WIDTH, so 283px of floor put the row straight back where it
      was. The track is the only thing that decides. */
   aspect-ratio:1;min-width:0;
-  padding:1.2rem;
+  /* 1.2rem is 19.2px: not on the 4px grid, and 0.8px off the tile beside it.
+     A rem here bought nothing — this padding never wanted to track the type
+     size, it wanted to track the other cards in the row. */
+  padding:var(--pad-tile);
   border-left:1px solid var(--rule);
 }
 .stat-body{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem}
@@ -1380,7 +1409,13 @@ picture{display:contents}
    that are meant to be read across is just crooked. */
 .rooms-block{display:grid;gap:clamp(28px,4vw,56px);width:var(--col);
   margin:clamp(56px,8vh,96px) auto 0;align-items:start}
-@media (min-width:900px){.rooms-block{grid-template-columns:1.1fr 1fr}}
+/* .duo's geometry, not its own. 1.1fr/1fr put this section's second column at
+   x=774, an edge that exists nowhere else on the site, while .duo — the other
+   two-column band on this page — sits at 152 and 728. Measured this round the
+   page held ten alignment axes against the reference's two, and every section
+   running its own column maths is where they come from. Same two columns, the
+   page's own. */
+@media (min-width:900px){.rooms-block{grid-template-columns:repeat(2,1fr);gap:16px}}
 
 /* THE PLATE CARRIES THE viewBox's OWN RATIO — 1000x750, and it must, because
    the pin percentages build-map.mjs bakes are relative to a box that matches
@@ -1476,7 +1511,7 @@ picture{display:contents}
 
 .cell{
   position:relative;overflow:hidden;border-radius:10px;background:var(--surface);
-  padding:24px;min-height:240px;isolation:isolate;
+  padding:var(--pad-tile);min-height:240px;isolation:isolate;
   display:flex;flex-direction:column;justify-content:flex-end;gap:10px;
 }
 .cell>img,.cell>picture>img,.cell>video{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;opacity:.85}
@@ -1935,7 +1970,15 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    cards ever see. */
 @media (min-width:900px){
   .ecard-lead{flex-direction:row;align-items:center;gap:clamp(24px,3vw,40px)}
-  .ecard-lead>.ephoto{flex:0 0 60%}
+  /* 46%, not 60%, and the same 46% the :only-child rule above uses — whose own
+     comment already claims it is "the same shape the lead card uses". It was
+     not: measured on /events/ the lead gave its photograph 634px and its body
+     382px while the card below it gave 493 and 539. One component, two splits,
+     and the wider photograph bought the featured card a 48-character measure
+     for the four to six lines an event carries. The lead is still the lead —
+     it has the larger padding, an h2 against an h3, and the countdown — and
+     none of that needed a different column to say so. */
+  .ecard-lead>.ephoto{flex:0 0 46%}
   .ecard-lead>.ebody{flex:1 1 auto}
 }
 /* §1c's lamp, on §1c's own tints. .ecard is a convex plate like .cell and takes
@@ -2787,7 +2830,37 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   letter-spacing:-.025em;margin-bottom:clamp(56px,8vw,110px)}
 .foot-cols{display:grid;gap:48px 40px;grid-template-columns:repeat(2,1fr)}
 @media (min-width:760px){.foot-cols{grid-template-columns:repeat(2,1fr);gap:48px 40px}}
-@media (min-width:1000px){.foot-cols{grid-template-columns:repeat(2,.8fr) repeat(3,1.15fr);gap:64px 40px}}
+/* THE FOOTER RAN ITS OWN GRID. repeat(2,.8fr) repeat(3,1.15fr) put five tracks
+   at x=152, 347, 541, 803 and 1066 while the page's content grid — .stats,
+   .bento, .duo — runs four tracks at 152, 440, 728 and 1016. So the footer
+   invented FOUR alignment axes that appear nowhere else on the site, and it
+   was a third of this page's sixteen on its own. Measured against the
+   reference, whose whole site holds three to six axes per page, that one
+   element was most of the difference.
+   Four tracks now, the page's own, with the nav columns on the first row and
+   the three venues on the second. Same content, same order, same feel; every
+   edge in the footer is an edge the page already had. */
+@media (min-width:1000px){
+  .foot-cols{grid-template-columns:repeat(4,1fr);gap:56px 16px}
+  /* Three nav columns over three venue columns, on the same three tracks —
+     the reference balances its footer 4/4 and heads each column with a small
+     label; ours ran 7/4 with two empty tracks beside it, and the long column
+     mixed on-page anchors with actual pages. Split by KIND, which balances it
+     4/3/4 as a side effect. */
+  .foot-cols>.foot-col:nth-of-type(1){grid-column:1;grid-row:1}
+  .foot-cols>.foot-col:nth-of-type(2){grid-column:2;grid-row:1}
+  .foot-cols>.foot-col:nth-of-type(3){grid-column:3;grid-row:1}
+  /* nth-of-type counts TAGS, not classes, and all five children are DIVs — so
+     .venue:nth-of-type(1) matched nothing and two venues auto-placed into the
+     same track. The venues are the third, fourth and fifth DIV. */
+  /* The label heads the whole venue row; the venues sit on the row under it.
+     nth-of-type counts per TAG, and .venue-head is a <p>, so the three
+     .venue divs are still the third, fourth and fifth DIV child. */
+  .foot-cols>.venue-head{grid-column:1/-1;grid-row:2;margin-bottom:0}
+  .foot-cols>.venue:nth-of-type(4){grid-column:1;grid-row:3}
+  .foot-cols>.venue:nth-of-type(5){grid-column:2;grid-row:3}
+  .foot-cols>.venue:nth-of-type(6){grid-column:3;grid-row:3}
+}
 .foot-col{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 .foot-col .label{color:var(--text-40)}
 /* Their footer link rests at #fff and SUBTRACTS ink on hover; ours rested at
