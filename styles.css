@@ -710,7 +710,9 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
 /* Badge: 35px tall, 8px/16px padding, 11.2px uppercase at .05em. */
 .badge{
   position:relative;
-  display:inline-flex;align-items:center;height:35px;padding:0 16px;
+  /* 36, not 35. One pixel off the 4px grid on the most-repeated chip on the
+     site, for no reason anybody recorded. */
+  display:inline-flex;align-items:center;height:36px;padding:0 16px;
   background:var(--chip);border-radius:9999px;
   font-size:.6875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
   color:var(--text);
@@ -890,7 +892,7 @@ section{position:relative}
 /* The label is its own box because splitChars turns each word into an element,
    and a flex gap would then apply between every word rather than between the
    index and the label. */
-.menu-nav a{position:relative;display:flex;align-items:baseline;gap:16px;padding:6px 0;
+.menu-nav a{position:relative;display:flex;align-items:baseline;gap:16px;padding:8px 0;
   font-size:clamp(2rem,9vw,3rem);font-weight:500;letter-spacing:-.05em;line-height:1.2}
 .menu-nav a .lbl{display:block}
 /* The index sets the sections against each other and gives the eye a left edge
@@ -3004,7 +3006,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    12px the padding added at each end, so the six boxes come out at a 44.5px
    pitch and 44.5px tall — abutting exactly, never overlapping, which is the
    failure the phone rule already had to design around. */
-.foot-col a{position:relative;display:inline-block;padding-block:11px;margin-block:-6px;
+/* padding-block 12 and margin-block -8, both on the grid. 11/-6 was
+   reverse-engineered to land the tap target on exactly 44px; 12 lands it on 46,
+   which clears the same WCAG floor with room to spare and stops this rule being
+   the single most repeated off-grid value on the page. */
+.foot-col a{position:relative;display:inline-block;padding-block:12px;margin-block:-8px;
   font-size:.9375rem;opacity:1;transition:opacity .735s var(--ease-sig)}
 @media (max-width:759px){
   .foot-cols{gap:40px}
