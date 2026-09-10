@@ -1194,11 +1194,18 @@ picture{display:contents}
 /* Not a grid: two fixed-width flex columns, the second running in reverse, so
    the video tiles sit out of phase down the page. That phase shift is the
    whole bento effect. */
-.voices{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:clamp(56px,10vh,110px);
-  padding-inline:clamp(20px,5vw,32px)}
+/* THE PAGE'S OWN TWO COLUMNS. This band was a centred flex row of 400px
+   columns, which put its left edge at x=312 — a track that exists nowhere else
+   on the site, while .duo and .rooms-block both run 152 and 728. Measured, it
+   was one of the ten alignment axes the home page still held against the
+   reference's two. Same two columns as every other two-column band here. */
+.voices{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;
+  width:var(--col);margin-inline:auto;margin-top:clamp(56px,10vh,110px)}
+@media (max-width:799px){.voices{grid-template-columns:1fr;width:auto;
+  padding-inline:clamp(20px,5vw,32px)}}
 /* will-change on exactly two elements, because main.js §6b writes a transform
    to each of them on every scroll frame the section is on screen. */
-.vcol{width:clamp(360px,30vw,400px);flex-shrink:0;display:flex;flex-direction:column;gap:16px;
+.vcol{min-width:0;display:flex;flex-direction:column;gap:16px;
   will-change:transform}
 @media (prefers-reduced-motion:reduce){.vcol{will-change:auto;transform:none!important}}
 .vcol.rev{flex-direction:column-reverse}
@@ -2746,7 +2753,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   position:relative;width:100vw;max-width:100vw;margin-inline:calc(50% - 50vw);
   margin-top:clamp(24px,3vw,40px);
   display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;
-  overflow:hidden;padding:0 .75rem;container-type:inline-size;isolation:isolate;
+  /* NO SIDE PADDING. The reference's own wall runs to all four edges of the
+     viewport; ours held a 12px rail down each side, which is the difference
+     between a wall and a widget. The gap between columns stays — that is the
+     grid — but the outer edge is the screen. */
+  overflow:hidden;container-type:inline-size;isolation:isolate;
 }
 /* NOT six columns. .feed is a five-COLUMN container whose children are five
    <div class="fcol"> masonry columns, not a grid of tiles — so
@@ -2791,6 +2802,20 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    breakpoint, where the columns are narrow enough to need them. */
 .fcol .fcard:nth-child(n+5){display:none}
 
+/* ONE SQUARE PER COLUMN, AT A DIFFERENT HEIGHT IN EACH. Every tile at 3/4 puts
+   every seam between tiles on the same five y-positions, and five columns of
+   identical rectangles reads as a spreadsheet. The reference's wall varies its
+   tile heights, which is what makes it read as a wall rather than a grid.
+   A 3/4 tile is 1.333 column-widths tall and a square is 1.0, so three of the
+   first and one of the second is 5.0 either way — every column stays exactly
+   the same total height, and only the seams move. Nothing overflows, nothing
+   comes up short against the clipped box, and no photograph is re-cropped
+   beyond what object-fit was already doing. */
+.fcol:nth-child(1) .fcard:nth-child(2),
+.fcol:nth-child(2) .fcard:nth-child(4),
+.fcol:nth-child(3) .fcard:nth-child(1),
+.fcol:nth-child(4) .fcard:nth-child(3),
+.fcol:nth-child(5) .fcard:nth-child(2){aspect-ratio:1}
 .fcard{position:relative;display:block;width:100%;aspect-ratio:3/4;border-radius:.5rem;
   overflow:hidden;background:var(--surface)}
 /* No zoom: every other grid on this page is inert on hover — .pcard, .cell and
