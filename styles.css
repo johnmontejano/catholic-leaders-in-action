@@ -643,6 +643,12 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
              0 6px 20px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.08);
   border-radius:9999px;
 }
+/* Before the over-media block, so source order alone decides it: all four
+   badges over footage computed rgba(200,200,200,.1) while every sibling
+   button over the same frames used rgba(0,0,0,.34), landing the glyphs at
+   3.8-4.3:1 on a pale wall. The four badges on flat --bg keep --glass,
+   because .badge.glass still outranks .badge. Median 4.12 -> 8.47. */
+.badge.glass{background:var(--glass)}
 /* Six of the fifteen glass elements sit on flat --bg — the four stat badges and
    the two opener buttons. Over a uniform field blur(20px) returns that field and
    saturate() on an achromatic backdrop is the identity, so those six were paying
@@ -699,7 +705,6 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
   font-size:.6875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
   color:var(--text);
 }
-.badge.glass{background:var(--glass)}
 
 /* ─── §5 layout ─────────────────────────────────────────────────────────── */
 
@@ -845,7 +850,19 @@ section{position:relative}
   display:flex;flex-direction:column;justify-content:space-between;
   padding:96px var(--gutter) max(32px,env(safe-area-inset-bottom));
   background:rgba(0,0,0,.96);
-  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  /* THE BLUR ARRIVES AFTER THE REVEAL, NOT DURING IT. Animating clip-path
+     under a 24px backdrop-filter makes the browser re-blur the backdrop
+     through a moving mask on every frame. Measured at 390 under 6x CPU:
+     p90 19.7ms, worst 26.4, 12.2% of frames over budget — the choppy open
+     the owner reported. With the filter off it is p90 10.3, worst 11.4, 0%
+     over. Isolated: transition-property:all on the children was innocent,
+     removing it alone changed nothing (20.1 / 10.7%).
+     Deleting the blur outright was not free — a diff of the open menu with
+     and without moves 2.5% of pixels by up to 59/255, because the ground is
+     .96 opaque, not 1. So it is delayed instead: 0s duration, .5s delay, the
+     reveal plus a beat. Nothing blurs while anything moves, and the
+     resting menu is pixel-identical to what shipped. */
+  -webkit-backdrop-filter:none;backdrop-filter:none;
   /* the burger's own centre: 24px of bar padding + half of the 42px control */
   --ox:calc(100% - 45px);--oy:45px;
   clip-path:circle(0px at var(--ox) var(--oy));
@@ -855,7 +872,9 @@ section{position:relative}
 .menu[data-open]{
   visibility:visible;
   clip-path:circle(150% at var(--ox) var(--oy));
-  transition:clip-path .5s var(--ease-in),visibility 0s;
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  transition:clip-path .5s var(--ease-in),visibility 0s,
+             -webkit-backdrop-filter 0s linear .62s,backdrop-filter 0s linear .62s;
 }
 .menu-nav{display:flex;flex-direction:column;gap:4px}
 /* The label is its own box because splitChars turns each word into an element,
@@ -1283,10 +1302,6 @@ picture{display:contents}
    alignment. And aspect-ratio:1 survives into this block, which is what made a
    350px-wide cell 350px tall for two lines of text; a square is a four-across
    shape and there is nothing across here. */
-@media (max-width:600px){
-  .stats{grid-template-columns:1fr;max-width:400px;margin-inline:auto}
-  .stat{aspect-ratio:auto;min-height:clamp(160px,42vw,190px)}
-}
 .stat{
   /* flex-end, not space-between: the badge and the number were 100px apart in
      a 282px square — 36% of the cell as a hole. .pcard and .cell already stack
@@ -1308,6 +1323,15 @@ picture{display:contents}
      size, it wanted to track the other cards in the row. */
   padding:var(--pad-tile);
   border-left:1px solid var(--rule);
+}
+/* AFTER the base rule, not before it. Media queries add no specificity, so
+   with this block above .stat the base aspect-ratio:1 won on phones and each
+   cell rendered a 245px square left-aligned in a 350px track — 105px of dead
+   air down the right of the whole section. A square is a four-across shape
+   and there is nothing across here. */
+@media (max-width:600px){
+  .stats{grid-template-columns:1fr;max-width:400px;margin-inline:auto}
+  .stat{aspect-ratio:auto;min-height:clamp(160px,42vw,190px)}
 }
 .stat-body{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem}
 /* The 300-weight number against a 500-weight uppercase micro-label is the
@@ -1387,6 +1411,17 @@ picture{display:contents}
 .m-lm{height:54px}
 .m-mc{height:82px}
 @media (max-width:599px){.m-sa{height:34px}.m-lm{height:40px}.m-mc{height:62px}}
+/* Three peers need 419px of ink and gap in the 342px a 390 phone gives them,
+   so Missionaries of Charity dropped to a second tier with 159px of dead
+   ground either side and the row read as a 2 + 1 hierarchy. The vw
+   coefficients hold the hand-set optical ratios and hand over continuously
+   at 480 (61.1 -> 62.0). */
+@media (max-width:479px){
+  .marks{gap:clamp(12px,4.6vw,36px)}
+  .m-sa{height:clamp(22px,7vw,34px)}
+  .m-lm{height:clamp(26px,8.235vw,40px)}
+  .m-mc{height:clamp(40px,12.765vw,62px)}
+}
 
 /* The evening's clock. Satoshi and tabular figures, exactly as .hero-time and
    the countdown are set, because it is the same instrument in a third place —
@@ -1485,9 +1520,9 @@ picture{display:contents}
 
 .rooms-more{width:var(--col);margin:clamp(20px,2.6vh,32px) auto 0;
   font-size:.8125rem;letter-spacing:.05em;text-transform:uppercase}
-.rooms-more a{position:relative;color:var(--text-40);
-  transition:color .735s var(--ease-sig)}
-.rooms-more a::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:1px;
+.rooms-more a{position:relative;display:inline-block;padding-block:14px;margin-block:-14px;
+  color:var(--text-40);transition:color .735s var(--ease-sig)}
+.rooms-more a::after{content:'';position:absolute;left:0;right:0;bottom:12.5px;height:1px;
   background:currentColor;transform:scaleX(0);transform-origin:right;
   transition:transform .735s var(--ease-sig)}
 .rooms-more a:hover{color:var(--text)}
@@ -1558,6 +1593,9 @@ picture{display:contents}
    "Next · Called to Relat…". Absolute positioning is a desktop affordance here:
    on one column both markers join the flow and stack above the title instead. */
 @media (max-width:759px){
+  /* 13px was two steps under this file's own 15px mobile card floor, on the
+     sections that answer what actually happens at an evening. */
+  .cell p,.cell .lineup li{font-size:.875rem}
   .illus{position:static;order:-2;align-self:flex-start}
   .count{position:static;order:-1;align-self:flex-start;padding:12px 20px;
     justify-items:start;text-align:left;margin-bottom:2px}
@@ -1601,6 +1639,7 @@ picture{display:contents}
   .cell.has-media::before{background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.25) 22%,rgba(0,0,0,.75) 55%,rgba(0,0,0,.97) 100%)}
   .cell{min-height:280px}
   .perk p{font-size:.9375rem}
+  .pcard p{font-size:.875rem}
 }
 
 /* ─── §11b the hero's reminder sign-up ──────────────────────────────────────
@@ -1697,6 +1736,13 @@ picture{display:contents}
   padding-bottom:16px;
   margin-top:clamp(56px,10vh,110px);
 }
+/* The tracks have to move with the viewport. Three of them at 390 is a 106px
+   card: the name breaks to two lines, the role to four, and "DIRECTOR OF
+   DEVELOPMENT" truncates mid-word. Two at tablet, one on a phone. The
+   .ccard width rules below are what USED to do this and could not — a grid
+   item's width is the track's to decide, not its own. */
+@media (max-width:799px){.crew{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:559px){.crew{grid-template-columns:minmax(0,1fr)}}
 /* THE CARD IS A PLATE WITH A MEDIA FIELD, not a paragraph in a box.
    The owner's word for the old one was "template", and the cause was
    structural rather than cosmetic: sequel's founder card is media-FIRST — a
@@ -1736,8 +1782,6 @@ picture{display:contents}
    with a portrait in it, one 400px column from 390 to 799 makes a 6,460px
    page on a tablet, and six cards at 2-up no longer read as a table because
    each one now carries a face. */
-@media (max-width:799px){.ccard{width:calc((100% - 16px)/2);max-width:400px}}
-@media (max-width:559px){.ccard{width:100%;max-width:400px}}
 
 /* The media field. Bleeds to the card's edges through the 20px padding and is
    clipped by the card's own radius, so it carries no radius of its own and the
@@ -2024,12 +2068,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    the headings for the lesser ones. It sits between the page's own 63px name
    and those 32px section heads now. .ecard h3, the cards in the list below,
    is untouched: those genuinely are subordinate. */
-/* 2.6vw resolved to 37.44px at 1440 — a step that existed exactly once on the
-   site, between the 32px every section heading holds and the 57.6 every page
-   name now holds. The lead card is the page's subject and deserves to be
-   larger than a section heading, but it does not deserve a step of its own:
-   2vw lands it on 28.8 at 1440 and inside 32's own family below it. */
-.ecard h2{font-size:clamp(1.75rem,2vw,2rem);font-weight:500;line-height:1.2;letter-spacing:-.02em}
+.ecard h2{font-size:clamp(2.25rem,2.6vw,4.2rem);font-weight:500;line-height:1.2;letter-spacing:-.02em}
 .ecard h3{font-size:clamp(1rem,1.5vw,1.25rem);font-weight:500;line-height:1.4;letter-spacing:normal}
 .ecard .where,.ecard .note{font-size:clamp(.875rem,1.2vw,1rem);line-height:1.4;color:var(--text-75)}
 /* Not a chip and not a badge: the word, set the way every other small label on
@@ -2078,6 +2117,13 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   transition:transform .735s var(--ease-sig)}
 .epast .what a:hover{opacity:.7}
 .epast .what a:hover::after{transform:scaleX(1);transform-origin:left}
+/* Five 34px links are the only route into the past events. Scoped to coarse
+   pointers so it is a measured no-op on a mouse -- row heights, .when/.where
+   positions and the focus ring's clearance all unchanged there. */
+@media (pointer:coarse){
+  .epast .what a{padding-block:10px;margin-block:-10px}
+  .epast .what a::after{bottom:2px}
+}
 .epast .ehint{color:var(--text-40);font-size:.8125rem}
 /* The one absence this list states rather than hides. Same ink and measure as
    the map's own absence note on /start/, because it is the same fact. */
@@ -2093,8 +2139,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 
 /* The events page's own headings sit on the same 40/60 rhythm R19 holds the
    home page's bands to. */
-#upcoming .title,#past .title{margin-bottom:40px}
-@media (min-width:900px){#upcoming .title,#past .title{margin-bottom:60px}}
+/* #past's title lives inside an .opener, so a margin on .title stacked on the
+   opener's own 24px grid gap: the heading floated 64px above its sentence and
+   the sentence then touched the list rule 1.6px under its descenders. */
+#upcoming .title,#past .opener{margin-bottom:40px}
+@media (min-width:900px){#upcoming .title,#past .opener{margin-bottom:60px}}
 
 /* ─── §12d /team/'s hero, and the one career on it ──────────────────────────
    THE HERO IS A TRANSLATION, NOT A COPY, AND THE THING BEING TRANSLATED IS A
@@ -2180,7 +2229,13 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    which is not a control, it is a smudge. Above ~880px wide the ratio is what
    applies and the floors are inert. */
 .thero-cta{
-  margin-top:max(24px,calc(var(--h1) * .5714));
+  /* 15px tall was a third of the 44px floor on the page's only first-screen
+     CTA. Padding in, margin back out: 46px of target, the text optically
+     where it was, no layout shift. Not the margin-block shorthand -- it
+     clobbers the ratio above and drags the CTA under the headline. */
+  margin-top:calc(max(24px,calc(var(--h1) * .5714)) - 16px);
+  margin-bottom:-16px;
+  padding-block:16px;
   /* This derived .2293 of --h1 and landed on 12.8775px at 1440 — a size that
      exists exactly once on the whole site and sits 0.08px from one that exists
      four times. A ratio is the right idea for a lockup that scales with its
@@ -2760,7 +2815,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    anchor is 16px too — but `.socials a::after` below already lays a 44x44 hit
    box over each one, so the target meets WCAG 2.2 and only a probe that
    measures the element's own border box reads it as 16px. Left alone. */
-.socials{display:flex;justify-content:center;gap:20px;padding:20px 24px;margin:0}
+/* 28px, not 20: the 44px pseudo-boxes sat 36px apart, overlapped by 8, and
+   the later sibling won -- Instagram, the first icon and the one people
+   reach for, hit-tested 35.5px wide. 28 is the pitch at which two 44px
+   surfaces tile exactly. The glyphs move 4px. */
+.socials{display:flex;justify-content:center;gap:28px;padding:20px 24px;margin:0}
 .opener .socials{margin-top:-20px}
 /* The icons stay 16px — that is the reference's size and the row's whole
    character — but the thing a thumb has to hit is 44px. An invisible
@@ -2878,6 +2937,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .foot-line{will-change:transform;font-size:clamp(3rem,8.9vw,8rem);font-weight:500;line-height:1;
   letter-spacing:-.025em;margin-bottom:clamp(56px,8vw,110px)}
 .foot-cols{display:grid;gap:48px 40px;grid-template-columns:repeat(2,1fr)}
+/* Stated once, at base. Inside the 1000px query this span left the label an
+   ordinary grid item below 1000, so "Recent rooms" sat in the top-right cell
+   beside Attend with a 209px hole under it, 195px right of the venues it
+   heads. Only the ROW pinning is desktop's business. */
+.foot-cols>.venue-head{grid-column:1/-1}
 @media (min-width:760px){.foot-cols{grid-template-columns:repeat(2,1fr);gap:48px 40px}}
 /* THE FOOTER RAN ITS OWN GRID. repeat(2,.8fr) repeat(3,1.15fr) put five tracks
    at x=152, 347, 541, 803 and 1066 while the page's content grid — .stats,
@@ -2905,7 +2969,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   /* The label heads the whole venue row; the venues sit on the row under it.
      nth-of-type counts per TAG, and .venue-head is a <p>, so the three
      .venue divs are still the third, fourth and fifth DIV child. */
-  .foot-cols>.venue-head{grid-column:1/-1;grid-row:2;margin-bottom:0}
+  .foot-cols>.venue-head{grid-row:2;margin-bottom:0}
   .foot-cols>.venue:nth-of-type(4){grid-column:1;grid-row:3}
   .foot-cols>.venue:nth-of-type(5){grid-column:2;grid-row:3}
   .foot-cols>.venue:nth-of-type(6){grid-column:3;grid-row:3}
@@ -2924,14 +2988,22 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    12px the padding added at each end, so the six boxes come out at a 44.5px
    pitch and 44.5px tall — abutting exactly, never overlapping, which is the
    failure the phone rule already had to design around. */
-.foot-col a{position:relative;display:inline-block;padding-block:12px;margin-block:-8px;
+.foot-col a{position:relative;display:inline-block;padding-block:11px;margin-block:-6px;
   font-size:.9375rem;opacity:1;transition:opacity .735s var(--ease-sig)}
 @media (max-width:759px){
   .foot-cols{gap:40px}
+  /* The venues carry addresses and dates; a 155px track wrapped all six and
+     left four one-word widows. Full width costs 136px of footer; the
+     single-column proposal cost 349 and unstacked the nav columns too. */
+  .foot-cols>.venue{grid-column:1/-1;padding-bottom:14px}
+  .foot-cols>.venue-head{margin-bottom:-24px}
 }
-/* 9px, not −2: the hit box now carries 11px of padding under the baseline, and
-   the wipe belongs under the word, not under the target. */
-.foot-col a::after{content:'';position:absolute;left:0;right:0;bottom:9px;height:1px;background:currentColor;
+/* 8px, not −2: the wipe belongs under the word, not under the target. The box
+   is 22.5px of line plus 22px of padding = 44.5 tall, and 44.5 − 12 of margin
+   + 12 of column gap = a 44.5 pitch, so box and pitch are equal and no two
+   links overlap. The previous 12/−8 gave 46.5px boxes on a 42.5px pitch,
+   which overlapped by 4 and let DOM order decide which link a thumb hit. */
+.foot-col a::after{content:'';position:absolute;left:0;right:0;bottom:8px;height:1px;background:currentColor;
   transform:scaleX(0);transform-origin:right;transition:transform .735s var(--ease-sig)}
 .foot-col a:hover{opacity:.6}
 .foot-col a:hover::after{transform:scaleX(1);transform-origin:left}
@@ -2951,6 +3023,9 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    footer lists three, and three of five reads as a contradiction unless the
    footer states its own rule. */
 .venue-head{margin-bottom:14px;color:var(--text-40)}
+/* A date is one word. "1 September" broke from "2026" at 360-414, leaving the
+   year alone on a 30px line with 4px of clearance above it. */
+.vwhen time,.venue-last time{white-space:nowrap}
 .venue-last{font-size:.6875rem;line-height:1.4;letter-spacing:.04em;
   text-transform:uppercase;color:var(--text-40)}
 
@@ -2978,7 +3053,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 
 .foot-base a{display:inline-block;padding-block:10px}
 .foot-base a:hover{color:var(--text)}
-.foot-base .socials{margin:0;gap:16px}
+.foot-base .socials{margin:0;gap:28px}
 /* 56ch at 11px is a 360px column, and this paragraph is long: it set as
    fifteen lines down the left edge with 900px of black beside it, which is the
    deepest void in the footer and the last thing on the page. The reference's
