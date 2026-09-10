@@ -469,7 +469,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 html{scrollbar-color:rgba(255,255,255,.25) transparent}
 
 .skip{position:absolute;left:-9999px;top:0;z-index:200}
-.skip:focus{left:12px;top:12px;padding:10px 16px;background:var(--accent);color:#000;border-radius:9999px}
+.skip:focus{left:12px;top:12px;padding:12px 16px;background:var(--accent);color:#000;border-radius:9999px}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ─── §3 type ───────────────────────────────────────────────────────────── */
@@ -613,10 +613,10 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
   box-shadow:inset 1px 1px 0 var(--rim,var(--lamp-rim-strong)),
              inset -1px -1px 0 var(--shade,var(--lamp-shade));
 }
-.btn-sm{height:42px;padding:0 20px;gap:5px;font-size:.875rem}
-.btn-md{height:45px;padding:0 24px;gap:7px;font-size:.9375rem}
+.btn-sm{height:42px;padding:0 20px;gap:4px;font-size:.875rem}
+.btn-md{height:44px;padding:0 24px;gap:8px;font-size:.9375rem}
 /* 1.0625rem was 17px, 0.6px under the .desc step beside it. */
-.btn-lg{height:52px;padding:0 28px;gap:9px;font-size:1.1rem}
+.btn-lg{height:52px;padding:0 28px;gap:8px;font-size:1.1rem}
 
 /* The two ambient layers are the lamp's key and bounce, offset on the same
    diagonal as the rim: a black shadow on a black page is a shadow that draws
@@ -763,7 +763,7 @@ section{position:relative}
 .nav[data-ground]{background:var(--bg)}
 .nav[data-ground]~.nav-scrim{opacity:0}
 .nav-scrim{transition:opacity .3s ease-out}
-.nav-mark{display:flex;align-items:center;gap:10px;font-size:.9375rem;font-weight:500;letter-spacing:-.02em}
+.nav-mark{display:flex;align-items:center;gap:8px;font-size:.9375rem;font-weight:500;letter-spacing:-.02em}
 /* Inline, and painted with currentColor, so the mark is white on the hero
    video and inherits whatever the bar inherits — a PNG could do neither, and
    at 26px the old raster seal was mud. The pseudo-element is the 44px target. */
@@ -857,11 +857,11 @@ section{position:relative}
   clip-path:circle(150% at var(--ox) var(--oy));
   transition:clip-path .5s var(--ease-in),visibility 0s;
 }
-.menu-nav{display:flex;flex-direction:column;gap:2px}
+.menu-nav{display:flex;flex-direction:column;gap:4px}
 /* The label is its own box because splitChars turns each word into an element,
    and a flex gap would then apply between every word rather than between the
    index and the label. */
-.menu-nav a{position:relative;display:flex;align-items:baseline;gap:14px;padding:6px 0;
+.menu-nav a{position:relative;display:flex;align-items:baseline;gap:16px;padding:6px 0;
   font-size:clamp(2rem,9vw,3rem);font-weight:500;letter-spacing:-.05em;line-height:1.2}
 .menu-nav a .lbl{display:block}
 /* The index sets the sections against each other and gives the eye a left edge
@@ -927,7 +927,7 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
   .hero-left{flex-grow:1}
   .hero-aside{align-items:flex-end}
 }
-.hero-left{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.hero-left{display:flex;flex-direction:column;align-items:flex-start;gap:16px}
 .hero h1{
   /* 3.6rem was the reference's *rendered value at 1440* pasted into the cap
      slot, so the headline froze at 57.6px on every larger monitor. Their cap
@@ -935,7 +935,7 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
   font-size:clamp(3rem,4vw,6.5rem);
   font-weight:500;line-height:1;letter-spacing:-.05em;margin:0;
 }
-.hero-eyebrow{display:flex;align-items:center;gap:10px;color:var(--text-75)}
+.hero-eyebrow{display:flex;align-items:center;gap:8px;color:var(--text-75)}
 .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none}
 
 .hero-aside{display:flex;flex-direction:column;gap:28px;align-items:flex-start;max-width:320px}
@@ -946,7 +946,7 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
   .hero-aside{flex-direction:column-reverse;align-items:center;text-align:center}
 }
 
-.play{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px 0 7px;font-size:.875rem;font-weight:500;
+.play{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px 0 8px;font-size:.875rem;font-weight:500;
   position:relative;isolation:isolate;overflow:hidden;--mx:var(--lamp-x);--my:var(--lamp-y)}
 .play::before{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
   background:radial-gradient(120px circle at var(--mx) var(--my),rgba(255,255,255,.16),transparent 62%);
@@ -1008,7 +1008,7 @@ picture{display:contents}
 .pcard .badge{position:absolute;top:16px;right:16px;z-index:1}
 .pcard h3{font-size:clamp(1.25rem,1.5vw,1.375rem);font-weight:500;letter-spacing:-.03em;line-height:1.2}
 .pcard p{font-size:.8125rem;line-height:1.4;color:var(--text-94);max-width:46ch}
-.pcard .btn{align-self:flex-start;margin-top:6px}
+.pcard .btn{align-self:flex-start;margin-top:8px}
 
 /* ─── §9 the manifesto stage ────────────────────────────────────────────── */
 
@@ -1135,7 +1135,7 @@ picture{display:contents}
   -webkit-mask:radial-gradient(155% 46% at 50% 47%,transparent 0%,transparent 34%,#000 100%);
   mask:radial-gradient(155% 46% at 50% 47%,transparent 0%,transparent 34%,#000 100%);
 }
-.believe-body{position:relative;z-index:2;display:grid;justify-items:center;gap:22px;text-align:center;padding:0 6vw;opacity:var(--o,1)}
+.believe-body{position:relative;z-index:2;display:grid;justify-items:center;gap:24px;text-align:center;padding:0 6vw;opacity:var(--o,1)}
 /* The eyebrow's own shade. .believe-lines::before gives the statements one
    because they sit over moving footage; the eyebrow sits over the same footage
    and had none, and at 390 it landed on the bright part of a plate — measured
@@ -1470,7 +1470,7 @@ picture{display:contents}
 .rooms-list{display:grid;gap:0;margin:0;padding:0;list-style:none}
 .rooms-list li+li{border-top:1px solid var(--rule)}
 .rooms-list a{display:grid;grid-template-columns:2.2em 1fr;align-items:baseline;
-  gap:2px .4em;padding:14px 0;color:inherit;text-decoration:none;
+  gap:4px .4em;padding:16px 0;color:inherit;text-decoration:none;
   transition:opacity .735s var(--ease-sig)}
 .rooms-list a:hover{opacity:.72}
 .hnum{grid-row:1;font-family:'Satoshi',var(--sans);font-variant-numeric:tabular-nums;
@@ -1519,7 +1519,7 @@ picture{display:contents}
 .cell{
   position:relative;overflow:hidden;border-radius:10px;background:var(--surface);
   padding:var(--pad-tile);min-height:240px;isolation:isolate;
-  display:flex;flex-direction:column;justify-content:flex-end;gap:10px;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:12px;
 }
 .cell>img,.cell>picture>img,.cell>video{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;opacity:.85}
 /* Overscan for the parallax main.js adds to the PAN table, on .pcard's exact
@@ -1545,7 +1545,7 @@ picture{display:contents}
   color:var(--text-40)}
 
 .count{position:absolute;z-index:1;right:24px;top:24px;
-  display:grid;gap:2px;justify-items:center;padding:12px 22px;text-align:center}
+  display:grid;gap:4px;justify-items:center;padding:12px 24px;text-align:center}
 /* 1.375rem resolved to 22px against the 21.6px thirteen h3 nodes hold. */
 .count b{font-size:clamp(1rem,1.6vw,1.35rem);font-weight:500;letter-spacing:-.02em;
   font-family:'Satoshi',var(--sans);font-variant-numeric:tabular-nums}
@@ -1559,7 +1559,7 @@ picture{display:contents}
    on one column both markers join the flow and stack above the title instead. */
 @media (max-width:759px){
   .illus{position:static;order:-2;align-self:flex-start}
-  .count{position:static;order:-1;align-self:flex-start;padding:10px 18px;
+  .count{position:static;order:-1;align-self:flex-start;padding:12px 20px;
     justify-items:start;text-align:left;margin-bottom:2px}
   .cell{min-height:0;padding:20px}
   .cell.lead{min-height:0}
@@ -1574,7 +1574,7 @@ picture{display:contents}
 .next-live{display:contents}
 .next-live[hidden]{display:none}
 
-.cell .lineup{display:grid;gap:7px;margin-top:2px}
+.cell .lineup{display:grid;gap:8px;margin-top:4px}
 .cell .lineup li{font-size:.8125rem;color:var(--text-94);line-height:1.4;max-width:42ch}
 .cell .lineup b{font-weight:500;color:var(--text)}
 
@@ -1588,10 +1588,10 @@ picture{display:contents}
 @media (max-width:420px){
   /* `height:auto` was discarding the 42/45/52 ramp, so the primary CTA lost
      its hierarchy against every secondary button on the page. Floors instead. */
-  .btn{white-space:normal;height:auto;padding-block:11px;line-height:1.3;text-align:center}
+  .btn{white-space:normal;height:auto;padding-block:12px;line-height:1.3;text-align:center}
   .btn-sm{min-height:44px}
   .btn-md{min-height:46px}
-  .btn-lg{min-height:52px;padding-block:14px}
+  .btn-lg{min-height:52px;padding-block:16px}
   .opener{max-width:100%}
   .opener>*{max-width:100%}
 }
@@ -2061,7 +2061,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .epast li:hover::after,.epast li:focus-within::after,
 .tline-row:hover::after,.tline-row:focus-within::after{transform:scaleX(1);transform-origin:left}
 @media (hover:none){.epast li::after,.tline-row::after{display:none}}
-.epast li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:14px 0;
+.epast li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:16px 0;
   border-bottom:1px solid var(--rule);align-items:baseline}
 .epast li:first-child{border-top:1px solid var(--rule)}
 .epast .when{flex:none;min-width:11em;font-size:.75rem;font-weight:400;line-height:1.5;
@@ -2239,7 +2239,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 }
 .tline-cap{margin-bottom:clamp(18px,2.4vw,28px);color:var(--text-70)}
 .tline-row{
-  display:grid;grid-template-columns:11.5em 1fr;gap:2px 24px;align-items:baseline;
+  display:grid;grid-template-columns:11.5em 1fr;gap:4px 24px;align-items:baseline;
   padding:16px 0;border-top:1px solid var(--rule);
 }
 .tline-row:first-child{border-top:0;padding-top:0}
@@ -2621,7 +2621,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
   background:var(--surface);border:1px solid var(--rule);border-radius:10px;
   padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5);
 }
-.city-list li{padding:10px 12px;border-radius:6px;cursor:pointer;
+.city-list li{padding:12px 12px;border-radius:6px;cursor:pointer;
   font-size:.9375rem;line-height:1.3;color:var(--text-94)}
 .city-list li .st{color:var(--text-70)}
 .city-list li[aria-selected=true],.city-list li:hover{background:var(--chip);color:var(--text)}
@@ -2924,7 +2924,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    12px the padding added at each end, so the six boxes come out at a 44.5px
    pitch and 44.5px tall — abutting exactly, never overlapping, which is the
    failure the phone rule already had to design around. */
-.foot-col a{position:relative;display:inline-block;padding-block:11px;margin-block:-6px;
+.foot-col a{position:relative;display:inline-block;padding-block:12px;margin-block:-8px;
   font-size:.9375rem;opacity:1;transition:opacity .735s var(--ease-sig)}
 @media (max-width:759px){
   .foot-cols{gap:40px}
@@ -2936,8 +2936,8 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .foot-col a:hover{opacity:.6}
 .foot-col a:hover::after{transform:scaleX(1);transform-origin:left}
 
-.venue{display:flex;flex-direction:column;align-items:flex-start;gap:5px;align-self:start;
-  padding-bottom:14px;border-bottom:1px solid var(--rule)}
+.venue{display:flex;flex-direction:column;align-items:flex-start;gap:4px;align-self:start;
+  padding-bottom:16px;border-bottom:1px solid var(--rule)}
 .venue svg{margin-left:-2px;width:20px;height:24px;margin-bottom:12px;stroke:#fffafa;fill:none;stroke-width:1.1}
 /* 1.4vw resolved to 20.16px at 1440 against the 20px nine <cite> nodes hold.
    Same step; the clamp now lands on it exactly instead of beside it. */
