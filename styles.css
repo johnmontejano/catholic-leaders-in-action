@@ -92,7 +92,17 @@
   --accent-hover:#e5e5e0;
 
   --text:#ffffff;
-  --text-94:rgba(255,255,255,.94);
+/* THREE INKS, NOT FIVE. Measured at 390 this site carried 4-5 text colours
+   against the reference's 2-3, and the steps were not steps: 1.0 against .94 is
+   six per cent, and .78 against .72 is six per cent. Neither is visible, and
+   both cost a colour the page has to hold.
+   1.0 / .86 / .72 is the scale — headings and links, body, then labels and
+   meta — with gaps a reader can actually see. .94 comes DOWN to .86 and .78
+   comes UP, so the only contrast that moves downward is body text on black,
+   which measures 15:1 at .86 against a 4.5 requirement. --text-75 and
+   --text-70 keep their names because a hundred rules use them; they simply
+   resolve to the same ink now, which is what a scale means. */
+  --text-94:rgba(255,255,255,.86);
   /* WAS .753, AGAINST --text-70's .78 — two inks 2.7% apart, which is nothing
      a reader can see and one more colour the page has to hold. Worse, the
      names inverted the scale: --text-70 was the BRIGHTER of the two, and the
@@ -100,11 +110,11 @@
      this round the page carried five white tints (1.0, .94, .9, .78, .753,
      .72) where the reference's pages carry three to four. Merged UP, never
      down, so no contrast that was passing can start failing. */
-  --text-75:rgba(255,255,255,.78);
+  --text-75:rgba(255,255,255,.86);
   /* The roster's roles measured 4.36:1 on --surface at 12px/400 — the same
      antialiasing shortfall as --text-40, at the size where it bites hardest.
      .78 clears it and is still a step below --text-75's use as body ink. */
-  --text-70:rgba(255,255,255,.78);
+  --text-70:rgba(255,255,255,.86);
   /* .4 is 3.66:1 on black — below AA — and it is not the reference's either:
      their text ink ladder is .94/.90/.851/.753/.70 and rgba(255,255,255,.4)
      appears once, as a social-icon stroke, never as text.
