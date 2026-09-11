@@ -3437,30 +3437,17 @@ html.motion .rv-b[data-d="3"].in{transition-delay:.45s}
   .btn:active{transform:translateY(0) scale(.955)}
 }
 
-/* ─── §18b film grain ─────────────────────────────────────────────────────
-   Borrowed from the current run of dark editorial sites, where it is close to
-   universal — and it fits here better than it fits most of them, because this
-   site's whole imagery idea is "one film": every frame landed on one white
-   point, one exposure, one warmth. Grain is the texture that idea was missing.
-   It also does honest work on the archive's weakest frames. A phone sensor at
-   ISO 3200 in a parish hall produces noise that reads as cheap; the same
-   frame under a uniform grain reads as film, because the eye attributes the
-   texture to the medium rather than the capture. Measured, the site's noise
-   trails the reference's (5.81 against 2.92); grain does not remove it, it
-   makes it consistent, which is the part the eye objects to.
-   mix-blend-mode:overlay, so on the site's true black it resolves to black —
-   the grain lives only in the photographs and the #202020 surfaces, never
-   lifting the ground. Static, not animated: a fixed full-viewport layer with
-   a blend mode is one composite; animating it is sixty. pointer-events:none,
-   and it sits above everything but takes nothing. */
-body::after{
-  content:'';position:fixed;inset:0;z-index:2147483000;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size:240px 240px;
-  opacity:.28;mix-blend-mode:overlay;
-}
-/* The print stylesheet and any forced-colours mode should not carry it. */
-@media print,(forced-colors:active){body::after{display:none}}
+/* ─── §18b film grain — now IN THE FILES, see tools/grain.py ───────────────
+   Grain arrived here first as body::after with feTurbulence under
+   mix-blend-mode:overlay. It looked right, and measured per section it cost
+   17ms a frame in #about and 6ms in #believe: a blend mode on a fixed
+   full-viewport layer makes the whole page re-composite every time a video
+   frame paints. Blend-free alpha noise brought that to ~1ms and lifted pure
+   black to a mean of 6-9, a visible haze on a palette that stands on true
+   black. Neither is a trade this site can make.
+   So the grain is baked into every photographic derivative in linear light,
+   with the same overlay math, as part of the grade — which is what a
+   photograph on film is. Zero cost at runtime, and black is black. */
 
 /* ─── §19 between pages ─────────────────────────────────────────────────────
    The reference is one client-routed application: you press "Founders" and the
