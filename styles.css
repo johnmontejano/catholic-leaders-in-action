@@ -2178,17 +2178,30 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .epast .when{flex:none;min-width:11em;font-size:.75rem;font-weight:400;line-height:1.5;
   letter-spacing:.05em;text-transform:uppercase;color:var(--text-70)}
 .epast .what{font-size:1rem;line-height:1.5;color:var(--text-94)}
+/* THE WHOLE ROW IS THE TARGET. Each row already lights across its full width on
+   hover — li:hover::after draws the line under all 1,136px — and then only the
+   title, 109x34 of that, actually took the click. A row that answers the
+   pointer everywhere and the click in one place is an affordance lying about
+   itself. The anchor's ::before lays its hit box over the row (li is the
+   positioned ancestor), so the date and the venue click through to the same
+   listing; the link text stays the accessible name. */
+.epast .what a::before{content:'';position:absolute;inset:0}
 .epast .where{font-size:.875rem;line-height:1.5;color:var(--text-70)}
 /* The record's rows link out to the listing each evening was announced on, so
    the row needs the same subtractive hover the footer's links carry — this is
    the one place on the page where a whole list is live. */
 .epast .what{flex:1 1 18em}
-.epast .what a{position:relative;display:inline-block;padding-block:5px;margin-block:-5px;color:inherit;transition:opacity .735s var(--ease-sig)}
-.epast .what a::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:1px;
-  background:currentColor;transform:scaleX(0);transform-origin:right;
-  transition:transform .735s var(--ease-sig)}
+/* NOT position:relative — that was what kept the hit box the size of the title.
+   An absolutely positioned ::before resolves against the nearest positioned
+   ancestor, and with the anchor itself positioned that ancestor was the anchor:
+   inset:0 measured 192x34 and the date and venue still clicked through to
+   nothing. The li is the positioned box now, so inset:0 is the row.
+   The anchor's own title-width underline went with it. The row already draws
+   a full-width wipe on hover (li:hover::after, above); once the row is the
+   target that wipe IS the feedback, and a second line under the title alone
+   would say "only this part" — the exact thing being fixed. */
+.epast .what a{display:inline-block;padding-block:5px;margin-block:-5px;color:inherit;transition:opacity .735s var(--ease-sig)}
 .epast .what a:hover{opacity:.7}
-.epast .what a:hover::after{transform:scaleX(1);transform-origin:left}
 /* Five 34px links are the only route into the past events. Scoped to coarse
    pointers so it is a measured no-op on a mouse -- row heights, .when/.where
    positions and the focus ring's clearance all unchanged there. */
