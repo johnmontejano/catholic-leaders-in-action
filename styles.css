@@ -479,7 +479,9 @@ ul,ol{margin:0;padding:0;list-style:none}
 html{scrollbar-color:rgba(255,255,255,.25) transparent}
 
 .skip{position:absolute;left:-9999px;top:0;z-index:200}
-.skip:focus{left:12px;top:12px;padding:12px 16px;background:var(--accent);color:#000;border-radius:9999px}
+/* padding-block 14 puts the focused skip link at 44px like everything else; at
+   12 it landed on 24, which clears WCAG 2.2's minimum and nothing more. */
+.skip:focus{left:12px;top:12px;padding:14px 16px;background:var(--accent);color:#000;border-radius:9999px}
 .sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ─── §3 type ───────────────────────────────────────────────────────────── */
@@ -842,10 +844,25 @@ section{position:relative}
 /* --text-94, not a sixth one-off .9 that exists nowhere else in the file. It
    is brighter than what it replaces and still leaves headroom for the hover,
    which goes to full white. */
-.nav-links a{color:var(--text-94);transition:color .2s cubic-bezier(.4,0,.2,1)}
+/* THE PRIMARY NAVIGATION WAS FAILING WCAG 2.2 AA. Measured at 1440, each of
+   these links renders 23px tall — under the 24x24 CSS px that 2.5.8 Target Size
+   (Minimum) requires, never mind the 44 this file holds its own controls to.
+   They sit in a 44px bar and inherit none of it, because the bar's height comes
+   from its own padding and the anchors are inline.
+   Same fix .socials a already uses: an absolutely positioned ::after laying a
+   44px-tall hit box over each one. It moves no pixel of what renders, and
+   left/right:0 keeps it inside the link's own width so the 28px gap between
+   them is not swallowed. */
+.nav-links a{position:relative;color:var(--text-94);transition:color .2s cubic-bezier(.4,0,.2,1)}
+.nav-links a::after{content:'';position:absolute;left:0;right:0;top:50%;
+  height:44px;transform:translateY(-50%)}
 .nav-links a:hover{color:#fff}
 
-.nav-toggle{display:grid;place-items:center;width:42px;height:42px;border-radius:9999px;
+/* 44, not 42. This is the only navigation control that exists at 390 and it was
+   two pixels under the size every other control here is held to — the same
+   two pixels .btn-sm was under, and for the same reason: a number chosen once
+   and never measured. */
+.nav-toggle{display:grid;place-items:center;width:44px;height:44px;border-radius:9999px;
   position:relative;z-index:101}
 .nav-toggle:hover{background:rgba(255,255,255,.1)}
 @media (min-width:900px){.nav-toggle{display:none}}
@@ -3099,7 +3116,11 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .socials a:active,.nav-links a:active,.menu a:active{opacity:.6}
 .foot-col a:active{opacity:.5;transition-duration:.09s}
 
-.foot-base a{display:inline-block;padding-block:10px}
+/* 37px rendered, so the same expander rather than more padding — padding here
+   would push the sign-off row apart. */
+.foot-base a{position:relative;display:inline-block;padding-block:10px}
+.foot-base a::after{content:'';position:absolute;left:0;right:0;top:50%;
+  height:44px;transform:translateY(-50%)}
 .foot-base a:hover{color:var(--text)}
 .foot-base .socials{margin:0;gap:28px}
 /* 56ch at 11px is a 360px column, and this paragraph is long: it set as
