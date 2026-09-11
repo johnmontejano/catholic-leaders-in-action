@@ -568,7 +568,6 @@
        it — and it is written once here rather than every frame. */
     const plates = qa('[data-at],[data-in]', card);
     plates.forEach(el => {
-      if (el.dataset.w) el.style.setProperty('--pw', el.dataset.w);
     });
 
     const mBelieve = track(believe), mCard = track(card), mDuo = duo ? track(duo) : null;

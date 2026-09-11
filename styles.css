@@ -1183,8 +1183,16 @@ picture{display:contents}
    wipe is a real edge, and --veil still does the one job it was written for:
    the section closes darker than it opens. --pw is the plate's own weight,
    folded into the same number. */
+/* NO FILTER. filter:brightness() on a full-viewport <video> was the single
+   largest cost in the site's worst-performing section: the manifesto ran at
+   p50 41ms with 40 of 70 frames over 33ms, and removing the filter alone
+   measured 21ms. A filter on a video re-runs on every video frame AND every
+   scroll frame, and a static filter on the two still plates was no cheaper
+   because their mask and transform change every frame too.
+   The dynamic veil is a black overlay on the card now — a plain composite —
+   at opacity 1 − veil, and the per-plate weight is baked into the plate files
+   in linear light. Same picture, one filter pass fewer per frame. */
 .believe-card>video,.believe-card img.bplate{opacity:var(--pv,0);
-  filter:brightness(calc(var(--veil,.9) * var(--pw,1)));
   transform:scale(calc(var(--cam,1) * var(--pz,1))) translate3d(0,calc(var(--camy,0) * 1%),0);
   transform-origin:50% 42%;will-change:opacity,transform}
 /* --pz and --px/--py are per-plate framing, set in the markup beside the file
@@ -1212,6 +1220,14 @@ picture{display:contents}
   -webkit-mask:radial-gradient(155% 46% at 50% 47%,transparent 0%,transparent 34%,#000 100%);
   mask:radial-gradient(155% 46% at 50% 47%,transparent 0%,transparent 34%,#000 100%);
 }
+/* THE VEIL is a real element, not a pseudo — both of the card's pseudos were
+   already spoken for (::before is the vignette, ::after the hairline frame),
+   and a second ::after rule merged into the frame's and lost on opacity.
+   main.js writes --veil from 0.92 down to 0.74 across the traverse, so the
+   section closes darker than it opens; this is where that lands now that it
+   is no longer a filter. z-index 1 with the vignette, under the body at 2. */
+.believe-veil{position:absolute;inset:0;z-index:1;pointer-events:none;background:#000;
+  opacity:calc(1 - var(--veil,.9))}
 .believe-body{position:relative;z-index:2;display:grid;justify-items:center;gap:24px;text-align:center;padding:0 6vw;opacity:var(--o,1)}
 /* The eyebrow's own shade. .believe-lines::before gives the statements one
    because they sit over moving footage; the eyebrow sits over the same footage
