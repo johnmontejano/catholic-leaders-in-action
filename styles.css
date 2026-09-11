@@ -1929,7 +1929,13 @@ picture{display:contents}
 .cface>picture>img,.cface>img,.ephoto>picture>img,.ephoto>img{
   transition:scale .6s var(--ease-3)}
 .ccard:hover .cface img,.ccard:focus-within .cface img,
-.ecard:hover .ephoto img,.ecard:focus-within .ephoto img{scale:1.045}
+/* The photograph zooms when the ACTION is hovered, not the card. The card is
+   not clickable — 2% of it is, the RSVP button — and a card that came alive
+   under the pointer everywhere while answering the click in one corner was the
+   same lie the record rows told. Now the zoom and the button light together,
+   because they are one thing. focus-within stays: keyboard focus IS on the
+   button. */
+.ecard:has(.btn:hover) .ephoto img,.ecard:focus-within .ephoto img{scale:1.045}
 /* A pointer that cannot hover gets none of it, and pays for none of it. */
 @media (hover:none){
   .cface>picture>img,.cface>img,.ephoto>picture>img,.ephoto>img{transition:none}
@@ -2166,12 +2172,16 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    that belongs to a LIST rather than to a card, and the only thing that made
    the career column and the record answer a pointer at all. */
 .epast li,.tline-row{position:relative}
-.epast li::after,.tline-row::after{content:'';position:absolute;left:0;right:0;bottom:-1px;
+/* .epast li only. This wipe was shared with .tline-row, the career timeline on
+   /team/, whose rows are not links: five rows that lit up end to end under the
+   pointer exactly like the record's clickable rows and then did nothing. The
+   record rows earned the wipe by becoming clickable end to end; the timeline
+   is a list of facts and reads as one now. */
+.epast li::after{content:'';position:absolute;left:0;right:0;bottom:-1px;
   height:1px;background:var(--text);transform:scaleX(0);transform-origin:right;
   transition:transform .735s var(--ease-sig)}
-.epast li:hover::after,.epast li:focus-within::after,
-.tline-row:hover::after,.tline-row:focus-within::after{transform:scaleX(1);transform-origin:left}
-@media (hover:none){.epast li::after,.tline-row::after{display:none}}
+.epast li:hover::after,.epast li:focus-within::after{transform:scaleX(1);transform-origin:left}
+@media (hover:none){.epast li::after{display:none}}
 .epast li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:16px 0;
   border-bottom:1px solid var(--rule);align-items:baseline}
 .epast li:first-child{border-top:1px solid var(--rule)}
