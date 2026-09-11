@@ -429,6 +429,17 @@ html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
 .lenis.lenis-stopped{overflow:hidden}
+/* WCAG 2.2 AA 2.4.11, Focus Not Obscured. The nav is position:fixed and 92px
+   tall, 124px from 1024 up. When Tab moves focus to something off screen the
+   browser scrolls it flush to the viewport top — it has no idea a fixed header
+   is there — and the nav lands on top of it. Found by tabbing seventy stops on
+   each of the four pages: a feed tile came to rest underneath it.
+   scroll-padding-top on the scroll container fixes every scroll-into-view at
+   once — keyboard focus, fragment links, scrollIntoView from script. 8px past
+   the bar so the focus ring clears it rather than touching it. */
+html{scroll-padding-top:100px}
+@media (min-width:1024px){html{scroll-padding-top:132px}}
+
 /* Not under reduce. `html{scroll-behavior:auto}` in §17 is a bare-element
    selector and this one carries a class, so this wins on specificity wherever
    both apply — which meant a reduced-motion visitor who clicked an anchor got
