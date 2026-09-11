@@ -2885,7 +2885,12 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    the step beside them. */
 .perk p{font-size:clamp(1rem,1.3vw,1.1rem);font-weight:500;letter-spacing:-.02em;line-height:1.4;max-width:20ch}
 
+/* The margin-top was sized for the perks marquee that sits between .opener and
+   this on the home page. On /team/ the two are adjacent — nothing between them
+   — so the same margin opens a hole. When .seat-close follows .opener directly
+   it takes the opener's own gap. */
 .seat-close{display:grid;justify-items:center;gap:16px;margin-top:clamp(56px,10vh,110px)}
+.opener+.seat-close{margin-top:32px}
 .seat-note{font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-40)}
 
 /* ─── §14 the feed — /stories' five-column collage ──────────────────────── */
