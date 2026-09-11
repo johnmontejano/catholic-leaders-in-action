@@ -623,7 +623,18 @@ html{scrollbar-color:rgba(255,255,255,.25) transparent}
   box-shadow:inset 1px 1px 0 var(--rim,var(--lamp-rim-strong)),
              inset -1px -1px 0 var(--shade,var(--lamp-shade));
 }
-.btn-sm{height:42px;padding:0 20px;gap:4px;font-size:.875rem}
+/* TWO BUTTON SIZES, NOT THREE. .btn-sm was 42px tall at 14px and .btn-md 44px
+   at 15px — two pixels of height and one of type apart, which is not a variant,
+   it is the same button declared twice. It also cost the type scale a step:
+   measured, this page ran 13/14/15/16px, four sizes inside 23% of each other,
+   and the 14 was mostly this button.
+   And 42px is under the 44 this file holds everything else to. It only reached
+   44 at 390 because the clamp lifted it, so the smallest tap target on the site
+   was on DESKTOP, which is the opposite of how that usually goes.
+   One default at 44/15 and one large at 52/17.6. .btn-sm keeps its name so the
+   markup does not need touching — nine call sites across four pages — and now
+   resolves to the default. */
+.btn-sm,
 .btn-md{height:44px;padding:0 24px;gap:8px;font-size:.9375rem}
 /* 1.0625rem was 17px, 0.6px under the .desc step beside it. */
 .btn-lg{height:52px;padding:0 28px;gap:8px;font-size:1.1rem}
@@ -807,7 +818,10 @@ section{position:relative}
 
 /* The centre links fade out on scroll down and return on scroll up — the one
    piece of chrome on the reference that moves at all. */
-.nav-links{display:none;gap:28px;font-size:1rem;font-weight:500;
+/* .9375rem. One bar, three type sizes: the wordmark set 15px, the RSVP button
+   set 15px, and the links between them set 16px. Same defect the button tiers
+   had — a pixel of difference nobody can see and a step the scale has to carry. */
+.nav-links{display:none;gap:28px;font-size:.9375rem;font-weight:500;
   transition:opacity var(--t) var(--ease-2)}
 /* visibility, not just opacity and pointer-events. Measured 2026-09-09: four
    links sat at opacity 0 on every page and stayed in the tab order, so a
@@ -977,7 +991,11 @@ html.motion .menu[data-open] .menu-foot{opacity:1;transform:none;
   .hero-aside{flex-direction:column-reverse;align-items:center;text-align:center}
 }
 
-.play{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px 0 8px;font-size:.875rem;font-weight:500;
+/* .9375rem, matching .btn. This is a 44px pill with a label and an icon sitting
+   in the same hero as the buttons and built from the same parts; it was setting
+   its label one pixel smaller for no reason, which is the sort of difference
+   nobody sees and everybody feels. */
+.play{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px 0 8px;font-size:.9375rem;font-weight:500;
   position:relative;isolation:isolate;overflow:hidden;--mx:var(--lamp-x);--my:var(--lamp-y)}
 .play::before{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
   background:radial-gradient(120px circle at var(--mx) var(--my),rgba(255,255,255,.16),transparent 62%);
@@ -1531,7 +1549,10 @@ picture{display:contents}
   line-height:1.4;color:var(--text)}
 /* The neighbourhood is the map's own answer, set beside the name rather than
    hidden in a screen-reader span, which is where it was. */
-.hwhere{grid-column:2;font-size:.875rem;line-height:1.4;color:var(--text-70)}
+/* .8125rem, which is the size every other piece of secondary metadata on this
+   site already uses. At .875 this line was the last thing holding a 14px step
+   in the type scale, for one element in one row. */
+.hwhere{grid-column:2;font-size:.8125rem;line-height:1.4;color:var(--text-70)}
 .hwhen{grid-column:2;font-size:.6875rem;font-weight:500;letter-spacing:.05em;
   text-transform:uppercase;line-height:1.4;color:var(--text-40)}
 
