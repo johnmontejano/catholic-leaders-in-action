@@ -3087,7 +3087,13 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    two link columns beside it: the home page lists all five rooms now and the
    footer lists three, and three of five reads as a contradiction unless the
    footer states its own rule. */
-.venue-head{margin-bottom:14px;color:var(--text-40)}
+/* .venue-head is an <h2> now (see build-pages.mjs). Only the MARGIN needs
+   neutralising: a UA h2 brings its own block margin, but its font-size and
+   weight lose to .label, which is on the same element. Declaring
+   font-size:inherit here — my first attempt — beat .label on source order and
+   rendered the row heading at 16px/400 instead of the 11px uppercase label it
+   has always been. */
+.venue-head{margin:0 0 14px;color:var(--text-40)}
 /* A date is one word. "1 September" broke from "2026" at 360-414, leaving the
    year alone on a 30px line with 4px of clearance above it. */
 .vwhen time,.venue-last time{white-space:nowrap}
