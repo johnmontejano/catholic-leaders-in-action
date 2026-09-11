@@ -776,10 +776,10 @@ section{position:relative}
    the home page, content collides with the wordmark or the links at 29 of
    them, and it bites on the way UP, which is normal reading. A 150px scrim
    over white type at 128px is not a fix; only a ground is. */
-.nav{transition:background-color .3s ease-out}
+.nav{transition:background-color .3s var(--ease-2)}
 .nav[data-ground]{background:var(--bg)}
 .nav[data-ground]~.nav-scrim{opacity:0}
-.nav-scrim{transition:opacity .3s ease-out}
+.nav-scrim{transition:opacity .3s var(--ease-2)}
 .nav-mark{display:flex;align-items:center;gap:8px;font-size:.9375rem;font-weight:500;letter-spacing:-.02em}
 /* Inline, and painted with currentColor, so the mark is white on the hero
    video and inherits whatever the bar inherits — a PNG could do neither, and
@@ -800,7 +800,7 @@ section{position:relative}
    gesture the centre links already make, and scrolling up brings the name
    back. The mark alone is the identity by then — a visitor who has scrolled
    past the fold has already read the name in the hero. */
-.nav-mark span{transition:opacity .3s ease-out}
+.nav-mark span{transition:opacity .3s var(--ease-2)}
 /* Opacity alone: a 4px translate at 15px type is under the threshold at
    which anything reads as movement, so it was a compositor layer for nothing. */
 .nav[data-hide] .nav-mark span{opacity:0;pointer-events:none}
@@ -808,7 +808,7 @@ section{position:relative}
 /* The centre links fade out on scroll down and return on scroll up — the one
    piece of chrome on the reference that moves at all. */
 .nav-links{display:none;gap:28px;font-size:1rem;font-weight:500;
-  transition:opacity var(--t) ease-out}
+  transition:opacity var(--t) var(--ease-2)}
 /* visibility, not just opacity and pointer-events. Measured 2026-09-09: four
    links sat at opacity 0 on every page and stayed in the tab order, so a
    keyboard visitor who had scrolled past 160px tabbed through four invisible
@@ -818,7 +818,7 @@ section{position:relative}
    going to hidden and at the START when coming back — which is exactly the
    behaviour wanted, so the fade out still plays in full. */
 .nav[data-hide] .nav-links{opacity:0;visibility:hidden;pointer-events:none}
-.nav-links{transition:opacity var(--t) ease-out,visibility 0s linear var(--t)}
+.nav-links{transition:opacity var(--t) var(--ease-2),visibility 0s linear var(--t)}
 .nav:not([data-hide]) .nav-links{transition-delay:0s,0s}
 @media (min-width:900px){
   .nav-links{display:flex;position:absolute;left:50%;transform:translateX(-50%)}
@@ -899,7 +899,7 @@ section{position:relative}
    to run down — the reference's own device on its founders list. */
 .menu-nav a i{font-family:'Satoshi',var(--sans);font-style:normal;font-variant-numeric:tabular-nums;
   font-size:.6875rem;font-weight:500;letter-spacing:.08em;color:var(--text-40);
-  flex:none;width:2.2ch;transition:color var(--t) ease}
+  flex:none;width:2.2ch;transition:color var(--t) var(--ease-2)}
 .menu-nav a:hover i,.menu-nav a:active i{color:var(--accent)}
 
 .menu-foot{display:grid;gap:20px;justify-items:start;border-top:1px solid var(--rule);padding-top:28px}
@@ -1414,8 +1414,13 @@ picture{display:contents}
    The marks are 1.25x their marquee size now that they are not moving: a mark
    that scrolls past is recognised, a mark that stands still is read. */
 .marks{--mink:.86}
+/* var(--ease-2), not the raw `ease` keyword. `ease` is cubic-bezier(.25,.1,.25,1)
+   — the browser's default, which is to say nobody's decision — and it was the
+   fourth-most-used curve on a site that defines six of its own. Measured: ten
+   distinct easing curves across the page. power2.out is what every other colour
+   and opacity transition here already uses. */
 .pmark{display:block;width:auto;color:rgba(255,255,255,var(--mink));
-  transition:color var(--t) ease,opacity var(--t) ease}
+  transition:color var(--t) var(--ease-2),opacity var(--t) var(--ease-2)}
 .m-lm,.m-mc{opacity:var(--mink)}
 .marks>span:hover .pmark{color:var(--text)}
 .marks>span:hover .m-lm,.marks>span:hover .m-mc{opacity:1}
@@ -1673,7 +1678,7 @@ picture{display:contents}
   font:inherit;font-size:.9375rem;color:var(--text);
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
   border-radius:999px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  transition:border-color var(--t) ease,background var(--t) ease;
+  transition:border-color var(--t) var(--ease-2),background var(--t) var(--ease-2);
 }
 /* Placeholders are TEXT and owe 4.5:1. .45 measured 4.52:1 on this field's own
    background — passing by four hundredths, and this file has already been
@@ -1861,7 +1866,7 @@ picture{display:contents}
    carries the dim. One channel only: 0.8 -> 1.0 over 300ms, their measured
    curve. No scale, no lift, no shadow, no border, no colour change, and
    nothing faked on touch. */
-.ccard-in{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;opacity:.8;transition:opacity var(--t) ease}
+.ccard-in{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;opacity:.8;transition:opacity var(--t) var(--ease-2)}
 .ccard:hover .ccard-in{opacity:1}
 /* NOTHING HAPPENED ON THESE PAGES. Measured 2026-09-09: on /team/ and /events/,
    once the fade-up had run, exactly one element in the document responded to
@@ -2843,7 +2848,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    character — but the thing a thumb has to hit is 44px. An invisible
    pseudo-element does it without moving a pixel of what renders. */
 .socials a{position:relative;display:grid;place-items:center;width:16px;height:16px;
-  color:rgba(255,255,255,.4);transition:color var(--t) ease}
+  color:rgba(255,255,255,.4);transition:color var(--t) var(--ease-2)}
 .socials a::after{content:'';position:absolute;left:50%;top:50%;
   width:44px;height:44px;transform:translate(-50%,-50%)}
 .socials a:hover{color:var(--text)}
@@ -2924,7 +2929,7 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
 .fcard img,.fcard video{width:100%;height:100%;object-fit:cover;display:block}
 .fcard-ov{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:flex-end;
   padding:clamp(.5rem,1vw,.75rem);pointer-events:none;
-  background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,0) 35%);opacity:0;transition:opacity var(--t) ease}
+  background:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,0) 35%);opacity:0;transition:opacity var(--t) var(--ease-2)}
 .fcard:hover .fcard-ov{opacity:1}
 .fcard:active .fcard-ov{opacity:1}
 /* Twenty-four links to Instagram had no affordance at all on a touch screen —
