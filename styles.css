@@ -2442,7 +2442,19 @@ main.sub>.band:last-of-type{padding-block-end:clamp(64px,10vh,110px)}
    is opacity and transform only, so it never touches the main thread. */
 
 .mapwrap{position:relative;display:flex;flex-direction:column;gap:16px;margin-top:40px}
-@media (min-width:900px){.mapwrap{margin-top:60px}}
+/* MAP FULL WIDTH, THEN CONTROLS LEFT AND THE LIST RIGHT. Everything below the map
+   — the scale tabs, the caption, the city field, and all five venue rows —
+   used to stack in the left 40% of the page while the right 60% stayed empty
+   for ~1,500px of scroll, and the venue rows' hairlines ran the full 1136px
+   under ~480px of content, a rule 2.4x wider than the thing it underlined.
+   The home page's own rooms band is map-beside-list on exactly these two
+   columns; this is the same shape. The list's rules now match its column. */
+@media (min-width:900px){
+  .mapwrap{margin-top:60px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px 56px;align-items:start}
+  .mapwrap>.mapfig{grid-column:1/-1}
+  .mapwrap>.cityfield{grid-column:1;grid-row:2}
+  .mapwrap>.vlist{grid-column:2;grid-row:2;margin-top:0}
+}
 
 /* The plate. Same convex object as .cell, .ecard and .pcard, lit from the same
    fixed lamp, at the same 10px. 4:3 on a phone because a wide letterbox of San
