@@ -1,353 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- #include head -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Events | Catholic Leaders in Action, San Francisco</title>
 <meta name="description" content="Every Catholic Leaders in Action evening and ministry action in San Francisco: dates, times, venues and how to register. Free, for ages 21 to 40.">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
-
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Catholic Leaders in Action">
 <meta property="og:title" content="Events | Catholic Leaders in Action">
 <meta property="og:description" content="Upcoming evenings and ministry actions in San Francisco. Free, for ages 21 to 40, no application, only a registration.">
 <meta property="og:url" content="https://catholicleadersinaction.org/events/">
 <meta property="og:image" content="https://catholicleadersinaction.org/assets/og/og-wide.jpg">
-  <!-- Measured off the file: 1200x630. A card renderer can reserve the space
-       without fetching the image first, and og:image:alt is read aloud on some
-       platforms. -->
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Attendees seated in a San Francisco parish hall during a Catholic Leaders in Action evening.">
-  <meta property="og:locale" content="en_US">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Attendees seated in a San Francisco parish hall during a Catholic Leaders in Action evening.">
+<meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-
-<!-- Five pages, ten links between them, and every navigation was a 95ms white
-     hard cut because the browser started from nothing each time. Speculation
-     rules let it start earlier: `moderate` fires on a 200ms hover or a
-     pointerdown, which is after intent and before the click, and `prerender`
-     means the next page is already painted when the click lands.
-     This is not a page transition — MOTION.md §8.8 rules those out by name and
-     that still stands. Nothing here is visible, nothing animates, and a browser
-     that does not support it ignores the block and navigates exactly as before.
-     Same-origin only, and the two external RSVP links are excluded by not being
-     same-origin in the first place. -->
 <script type="speculationrules">
 {"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"selector_matches":"[rel~=nofollow]"}}]},"eagerness":"moderate"}]}
 </script>
-
 <link rel="canonical" href="https://catholicleadersinaction.org/events/">
 <link rel="icon" href="../assets/brand/mark-64.png" sizes="64x64" type="image/png">
 <link rel="icon" href="../assets/brand/mark-256.png" sizes="256x256" type="image/png">
 <link rel="apple-touch-icon" href="../assets/brand/mark-256.png">
-
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/GeneralSans-500.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/GeneralSans-400.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/Newsreader-italic.woff2" crossorigin>
 <link rel="stylesheet" href="../styles.css">
 <script>document.documentElement.className='motion';</script>
-<!-- /include head -->
 </head>
 <body>
-
-<!-- #include header -->
 <a class="skip" href="#main">Skip to content</a>
-
 <div class="nav-scrim" aria-hidden="true"></div>
 <header class="nav" id="nav">
-  <a class="nav-mark" href="/#top" aria-label="Catholic Leaders in Action, home">
-    <svg class="mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="0.7" y="15" width="3.6" height="8" rx=".3"/><rect x="5.6" y="11" width="3.6" height="12" rx=".3"/><rect x="10.3" y="1.2" width="3.8" height="21.8" rx=".3"/><rect x="6.7" y="5.4" width="11" height="3.2" rx=".3"/><rect x="15.2" y="11.5" width="3.6" height="11.5" rx=".3"/><rect x="20.1" y="15.5" width="3.2" height="7.5" rx=".3"/></svg>
-    <span>Catholic Leaders in Action</span>
-  </a>
-  <!-- THE PAGES, 2026-09-09. This carried Events, The record, Voices and The
-       team: two whole pages and two anchors into a section of the home page,
-       mixed, while /start/ — a fifth page with a map on it — appeared only in
-       the mobile menu. A visitor on a laptop could not reach it from the bar at
-       all, and the eight-destination menu underneath said so.
-       A primary bar names destinations. The three pages are the destinations;
-       the anchors are section links and they already live where section links
-       live, in the footer's Explore column and in the menu, both of which are
-       on every page. Which also lands this on the reference's own count: their
-       bar is Founders / Membership / Stories and nothing else. -->
-  <nav class="nav-links" aria-label="Primary">
-    <a href="/events/" data-nav="events" aria-current="page">Events</a>
-    <a href="/team/" data-nav="team">The team</a>
-    <a href="/start/" data-nav="start">Start a hub</a>
-  </nav>
-<!-- #include events:nav-cta -->
-  <a class="btn btn-sm btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="RSVP free on Luma (opens in a new tab)">
-    RSVP
-    <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </a>
-<!-- /include events:nav-cta -->
-  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="menu">
-    <span class="sr">Menu</span>
-    <span class="burger" aria-hidden="true"><i></i><i></i></span>
-  </button>
+<a class="nav-mark" href="/#top" aria-label="Catholic Leaders in Action, home">
+<svg class="mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M1 1h22v22H1zm9.25 3h3.5v2.32h5.6v3h-5.6V20h-3.5V9.32h-5.6v-3h5.6z"/></svg>
+<svg class="wordmark" viewBox="0 0 697.1 65.5" fill="currentColor" aria-hidden="true"><path d="M23.5 48Q14.5 48 8.3 41.5 2.2 35 2.2 25.5Q2.2 16 8.3 9.5 14.5 3.1 23.5 3.1Q31.6 3.1 37.4 8 43.3 13 44.5 20.9L37.5 20.9Q36.6 15.7 32.7 12.4 28.9 9 23.5 9Q17.2 9 13.1 13.7 9 18.3 9 25.5Q9 32.7 13.1 37.4 17.2 42 23.5 42Q28.9 42 32.7 38.7 36.6 35.4 37.5 30.1L44.5 30.1Q43.3 38.1 37.4 43 31.6 48 23.5 48ZM68.9 47.1L68.9 42.2Q65.9 47.7 58.7 47.7 53.8 47.7 50.8 45.1Q47.8 42.5 47.8 38.1 47.8 28.6 62.3 28.6Q65.1 28.6 68.2 29L68.2 26.6Q68.2 23.2 66.5 21.3 64.7 19.5 61.6 19.5Q58.3 19.5 56.3 21.3 54.4 23.2 54.2 26.6L48.7 26.6Q49 21.2 52.5 17.9 56 14.7 61.6 14.7Q67.4 14.7 70.7 17.8 74 21 74 26.7L74 47.1ZM53.6 37.9Q53.6 40.4 55.3 41.9 57 43.4 59.9 43.4Q63.7 43.4 66 41.2 68.2 39 68.2 35.3L68.2 32.7Q65.4 32.4 62.6 32.4 53.6 32.4 53.6 37.9ZM98.5 41.2L98.5 46.5Q96 47.7 93.1 47.7Q88.5 47.7 85.8 45.1Q83.2 42.6 83.2 37.5L83.2 20.4L74.8 20.4L74.8 15.3L83.2 15.3L83.2 4L89.2 4L89.2 15.3L97.6 15.3L97.6 20.4L89.2 20.4L89.2 36.1Q89.2 42 94.6 42Q96.8 42 98.5 41.2ZM109.4 29.1L109.4 47.1 103.4 47.1L103.4 4 109.4 4L109.4 20.4Q112.9 14.7 119.2 14.7 124.1 14.7 127.1 17.8Q130 20.9 130 26.5L130 47.1 124 47.1L124 28.5Q124 24.4 122.2 22.2 120.4 20 117.1 20Q113.9 20 111.7 22.5 109.4 25 109.4 29.1ZM161.3 43Q161.3 43 159.1 45.3 156.9 47.7 150.2 47.7Q143.5 47.7 139 43 134.6 38.3 134.6 31.2Q134.6 24.1 139 19.4 143.5 14.7 150.2 14.7Q156.9 14.7 161.3 19.4 165.8 24.1 165.8 31.2Q165.8 38.3 161.3 43ZM143.5 39.3Q143.5 39.3 144.8 40.8 146.2 42.3 150.2 42.3Q154.2 42.3 156.9 39.3 159.5 36.3 159.5 31.2Q159.5 26.1 156.9 23.1 154.2 20.1 150.2 20.1Q146.2 20.1 143.5 23.1 140.9 26.1 140.9 31.2Q140.9 36.3 143.5 39.3ZM176.9 47.1L170.8 47.1 170.8 4L176.9 4ZM190.2 5Q190.2 5 190.8 5.6 191.5 6.2 191.5 7.9Q191.5 9.6 190.2 10.8 189 11.9 187.1 11.9Q185.2 11.9 183.9 10.8 182.6 9.6 182.6 7.9Q182.6 6.2 183.9 5 185.2 3.9 187.1 3.9Q189 3.9 190.2 5ZM190.1 47.1L184.1 47.1 184.1 15.3L190.1 15.3ZM209.9 47.7Q203.3 47.7 199.2 43.1 195.1 38.5 195.1 31.2Q195.1 24 199.3 19.3 203.5 14.7 209.9 14.7Q215.8 14.7 219.8 18.3 223.7 22 224.6 28.2L218.2 28.2Q217.7 24.4 215.5 22.2 213.3 20 209.9 20Q206 20 203.7 23.1 201.3 26.1 201.3 31.2Q201.3 36.3 203.7 39.3 206 42.3 209.9 42.3Q213.3 42.3 215.5 40.2 217.7 38 218.3 34.2L224.6 34.2Q223.8 40.5 219.8 44.1 215.9 47.7 209.9 47.7ZM267.4 47.1L241.3 47.1 241.3 4L247.9 4 247.9 41.1L267.4 41.1ZM284.4 47.7Q277.5 47.7 273.3 43.1 269 38.5 269 31Q269 23.9 273.3 19.3 277.6 14.7 284.2 14.7Q291.4 14.7 295.5 19.8 299.7 24.9 298.9 32.7L275.2 32.7Q275.6 37.5 277.9 40.2 280.3 42.9 284.3 42.9Q287.6 42.9 289.9 41.2 292.1 39.5 292.9 36.3L298.9 36.3Q297.8 41.6 293.9 44.6 290 47.7 284.4 47.7ZM284.1 19.2Q280.4 19.2 278.1 21.7 275.8 24.2 275.3 28.7L292.5 28.7Q292.3 24.3 290 21.8 287.8 19.2 284.1 19.2ZM323.4 47.1L323.4 42.2Q320.3 47.7 313.2 47.7 308.2 47.7 305.3 45.1Q302.3 42.5 302.3 38.1 302.3 28.6 316.7 28.6Q319.6 28.6 322.7 29L322.7 26.6Q322.7 23.2 320.9 21.3 319.2 19.5 316 19.5Q312.7 19.5 310.8 21.3 308.8 23.2 308.7 26.6L303.2 26.6Q303.4 21.2 306.9 17.9 310.4 14.7 316 14.7Q321.9 14.7 325.2 17.8 328.4 21 328.4 26.7L328.4 47.1ZM308 37.9Q308 40.4 309.8 41.9 311.5 43.4 314.4 43.4Q318.2 43.4 320.4 41.2 322.7 39 322.7 35.3L322.7 32.7Q319.9 32.4 317.1 32.4 308 32.4 308 37.9ZM333.1 31.2Q333.1 23.9 336.9 19.3 340.8 14.7 347.2 14.7Q350.4 14.7 353 16.2 355.7 17.8 357.4 20.7L357.4 4 363.4 4L363.4 47.1 357.8 47.1L357.8 41.4Q354.2 47.7 347.2 47.7 340.8 47.7 336.9 43.1Q333.1 38.4 333.1 31.2ZM339.4 31.2Q339.4 36.4 341.8 39.3 344.3 42.3 348.4 42.3Q352.3 42.3 354.8 39.3 357.4 36.2 357.4 31.1Q357.4 25.9 354.8 23 352.3 20 348.4 20Q344.3 20 341.8 23 339.4 25.9 339.4 31.2ZM383.7 47.7Q376.8 47.7 372.6 43.1 368.3 38.5 368.3 31Q368.3 23.9 372.6 19.3 376.9 14.7 383.5 14.7Q390.7 14.7 394.8 19.8 399 24.9 398.2 32.7L374.5 32.7Q374.9 37.5 377.2 40.2 379.6 42.9 383.6 42.9Q386.9 42.9 389.2 41.2 391.4 39.5 392.2 36.3L398.2 36.3Q397.1 41.6 393.2 44.6 389.3 47.7 383.7 47.7ZM383.4 19.2Q379.7 19.2 377.4 21.7 375.1 24.2 374.6 28.7L391.8 28.7Q391.6 24.3 389.3 21.8 387.1 19.2 383.4 19.2ZM409.5 30.8L409.5 47.1 403.4 47.1L403.4 15.3 409.1 15.3L409.1 22Q410.8 18.7 414.1 16.8 417.4 14.9 421.3 14.9L421.3 21.2Q416 20.9 412.7 23.3 409.5 25.7 409.5 30.8ZM450.1 37.6Q450.1 42.3 446.6 45 443.1 47.7 436.8 47.7Q430.6 47.7 426.9 44.8 423.3 41.9 422.8 36.7L428.6 36.7Q428.8 39.6 431 41.4 433.3 43.1 436.9 43.1Q440.2 43.1 442.1 42 444 40.8 444 38.6Q444 36.7 442.7 35.7 441.4 34.7 438.4 34.1L433.3 33.1Q424.1 31.3 424.1 24.2 424.1 20 427.4 17.3Q430.8 14.7 436.3 14.7 442 14.7 445.6 17.5Q449.2 20.4 449.6 25.3L443.8 25.3Q443.6 22.4 441.6 20.8 439.6 19.2 436.4 19.2Q433.4 19.2 431.7 20.4 430 21.6 430 23.6Q430 25.5 431.2 26.6 432.5 27.6 435.4 28.1L440.8 29.1Q450.1 30.8 450.1 37.6ZM473 5Q473 5 473.6 5.6 474.2 6.2 474.2 7.9Q474.2 9.6 473 10.8 471.8 11.9 469.9 11.9Q467.9 11.9 466.7 10.8 465.4 9.6 465.4 7.9Q465.4 6.2 466.7 5 467.9 3.9 469.9 3.9Q471.8 3.9 473 5ZM472.9 47.1L466.9 47.1 466.9 15.3L472.9 15.3ZM486.2 29.1L486.2 47.1 480.1 47.1L480.1 15.3 485.8 15.3L485.8 20.6Q489.4 14.7 495.9 14.7 500.9 14.7 503.8 17.8Q506.8 20.9 506.8 26.5L506.8 47.1 500.7 47.1L500.7 28.5Q500.7 24.4 498.9 22.2 497.2 20 493.8 20Q490.6 20 488.4 22.5 486.2 25 486.2 29.1ZM555.1 47.1L551.2 36.4 532.6 36.4L528.6 47.1 521.9 47.1L538.4 4 545.7 4L562.1 47.1ZM541.9 11.2L534.5 31.1 549.2 31.1ZM577.1 47.7Q570.5 47.7 566.4 43.1 562.3 38.5 562.3 31.2Q562.3 24 566.5 19.3 570.7 14.7 577.1 14.7Q583 14.7 587 18.3 590.9 22 591.8 28.2L585.4 28.2Q584.9 24.4 582.7 22.2 580.5 20 577.1 20Q573.2 20 570.9 23.1 568.5 26.1 568.5 31.2Q568.5 36.3 570.9 39.3 573.2 42.3 577.1 42.3Q580.5 42.3 582.7 40.2 584.9 38 585.5 34.2L591.8 34.2Q591 40.5 587 44.1 583.1 47.7 577.1 47.7ZM614.6 41.2L614.6 46.5Q612.1 47.7 609.2 47.7Q604.6 47.7 602 45.1Q599.3 42.6 599.3 37.5L599.3 20.4L590.9 20.4L590.9 15.3L599.3 15.3L599.3 4L605.3 4L605.3 15.3L613.7 15.3L613.7 20.4L605.3 20.4L605.3 36.1Q605.3 42 610.7 42Q612.9 42 614.6 41.2ZM625.6 5Q625.6 5 626.3 5.6 626.9 6.2 626.9 7.9Q626.9 9.6 625.6 10.8 624.4 11.9 622.5 11.9Q620.6 11.9 619.3 10.8 618.1 9.6 618.1 7.9Q618.1 6.2 619.3 5 620.6 3.9 622.5 3.9Q624.4 3.9 625.6 5ZM625.6 47.1L619.5 47.1 619.5 15.3L625.6 15.3ZM657.2 43Q657.2 43 655 45.3 652.8 47.7 646.1 47.7Q639.4 47.7 634.9 43 630.5 38.3 630.5 31.2Q630.5 24.1 634.9 19.4 639.4 14.7 646.1 14.7Q652.8 14.7 657.2 19.4 661.7 24.1 661.7 31.2Q661.7 38.3 657.2 43ZM639.4 39.3Q639.4 39.3 640.7 40.8 642.1 42.3 646.1 42.3Q650.1 42.3 652.8 39.3 655.4 36.3 655.4 31.2Q655.4 26.1 652.8 23.1 650.1 20.1 646.1 20.1Q642.1 20.1 639.4 23.1 636.8 26.1 636.8 31.2Q636.8 36.3 639.4 39.3ZM672.7 29.1L672.7 47.1 666.7 47.1L666.7 15.3 672.3 15.3L672.3 20.6Q675.9 14.7 682.4 14.7 687.4 14.7 690.4 17.8Q693.3 20.9 693.3 26.5L693.3 47.1 687.2 47.1L687.2 28.5Q687.2 24.4 685.5 22.2 683.7 20 680.3 20Q677.2 20 674.9 22.5 672.7 25 672.7 29.1Z"/></svg>
+</a>
+<nav class="nav-links" aria-label="Primary">
+<a href="/events/" data-nav="events" aria-current="page">Events</a>
+<a href="/team/" data-nav="team">The team</a>
+<a href="/start/" data-nav="start">Start a hub</a>
+</nav>
+<a class="btn btn-sm btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="RSVP free on Luma (opens in a new tab)">
+RSVP
+<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</a>
+<button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="menu">
+<span class="sr">Menu</span>
+<span class="burger" aria-hidden="true"><i></i><i></i></span>
+</button>
 </header>
-
 <div class="menu" id="menu" hidden>
-  <nav class="menu-nav" aria-label="Sections">
-    <a href="/#evening"><i aria-hidden="true">01</i><span class="lbl">The evening</span></a>
-    <a href="/#record"><i aria-hidden="true">02</i><span class="lbl">The record</span></a>
-    <a href="/#voices"><i aria-hidden="true">03</i><span class="lbl">Voices</span></a>
-    <a href="/#stories"><i aria-hidden="true">04</i><span class="lbl">Stories</span></a>
-    <a href="/#seat"><i aria-hidden="true">05</i><span class="lbl">Take a seat</span></a>
-    <a href="/events/" data-nav="events" aria-current="page"><i aria-hidden="true">06</i><span class="lbl">Events</span></a>
-    <a href="/team/" data-nav="team"><i aria-hidden="true">07</i><span class="lbl">The team</span></a>
-    <a href="/start/" data-nav="start"><i aria-hidden="true">08</i><span class="lbl">Start a hub</span></a>
-  </nav>
-
-  <div class="menu-foot">
-<!-- #include events:menu-next -->
-    <div class="next-live" data-end="2026-10-07T04:30:00.000Z">
-      <p class="menu-next"><span class="eyebrow">Next evening</span>
-        Tuesday 6 October <span class="sep">·</span> 6:30 PM <br>Free, ages 21 to 40</p>
-      <a class="btn btn-lg btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer"
-         aria-label="RSVP free on Luma (opens in a new tab)">RSVP free
-        <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
-    <div class="next-live" data-empty hidden>
-      <p class="menu-next"><span class="eyebrow">Next evening</span>
-        The next evening is announced here and on Instagram.</p>
-      <a class="btn btn-lg btn-fill" href="/events/">See the events
-        <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
-<!-- /include events:menu-next -->
-    <div class="socials">
-      <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 0 0-2.13 1.38A5.9 5.9 0 0 0 .63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13a5.9 5.9 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 0 0 2.13-1.38 5.9 5.9 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.13A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Z"/><path d="M12 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
-      </a>
-      <a href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="Luma (opens in a new tab)">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6 22.4 12 12 22.4 1.6 12 12 1.6Zm0 4.53L6.13 12 12 17.87 17.87 12 12 6.13Z"/></svg>
-      </a>
-    </div>
-  </div>
+<nav class="menu-nav" aria-label="Sections">
+<a href="/#evening"><i aria-hidden="true">01</i><span class="lbl">The evening</span></a>
+<a href="/#record"><i aria-hidden="true">02</i><span class="lbl">The record</span></a>
+<a href="/#voices"><i aria-hidden="true">03</i><span class="lbl">Voices</span></a>
+<a href="/#stories"><i aria-hidden="true">04</i><span class="lbl">Stories</span></a>
+<a href="/#seat"><i aria-hidden="true">05</i><span class="lbl">Take a seat</span></a>
+<a href="/events/" data-nav="events" aria-current="page"><i aria-hidden="true">06</i><span class="lbl">Events</span></a>
+<a href="/team/" data-nav="team"><i aria-hidden="true">07</i><span class="lbl">The team</span></a>
+<a href="/start/" data-nav="start"><i aria-hidden="true">08</i><span class="lbl">Start a hub</span></a>
+</nav>
+<div class="menu-foot">
+<div class="next-live" data-end="2026-10-07T04:30:00.000Z">
+<p class="menu-next"><span class="eyebrow">Next evening</span>
+Tuesday 6 October <span class="sep">·</span> 6:30 PM <br>Free, ages 21 to 40</p>
+<a class="btn btn-lg btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer"
+aria-label="RSVP free on Luma (opens in a new tab)">RSVP free
+<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </div>
-<!-- /include header -->
-
+<div class="next-live" data-empty hidden>
+<p class="menu-next"><span class="eyebrow">Next evening</span>
+The next evening is announced here and on Instagram.</p>
+<a class="btn btn-lg btn-fill" href="/events/">See the events
+<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</div>
+<div class="socials">
+<a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 0 0-2.13 1.38A5.9 5.9 0 0 0 .63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13a5.9 5.9 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 0 0 2.13-1.38 5.9 5.9 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.13A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Z"/><path d="M12 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
+</a>
+<a href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="Luma (opens in a new tab)">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6 22.4 12 12 22.4 1.6 12 12 1.6Zm0 4.53L6.13 12 12 17.87 17.87 12 12 6.13Z"/></svg>
+</a>
+</div>
+</div>
+</div>
 <main id="main" class="sub">
-
-<!-- ─── the events, baked from site/assets/events/events.json ───────────── -->
-<!-- #include events:list -->
 <section class="band" id="next-up" aria-labelledby="events-h">
-  <div class="wrap">
-    <div class="page-head opener">
-      <h1 class="title rv rv-t" id="events-h">The <span class="em">events</span>.</h1>
-      <p class="desc rv rv-l" data-d="1">Everything Catholic Leaders in Action is running next, and what it has already run.</p>
-    </div>
-    <article class="ecard ecard-lead rv rv-b" data-end="2026-10-07T04:30:00.000Z">
-      <figure class="ephoto" style="--op:50% 42%">
-        <picture>
-          <source type="image/webp" srcset="../assets/img/room-back-430.webp 430w, ../assets/img/room-back-780.webp 780w, ../assets/img/room-back-1000.webp 1000w, ../assets/img/room-back-1454.webp 1454w" sizes="(min-width:1264px) 634px, (min-width:900px) 53vw, 81vw">
-          <img data-cover src="../assets/img/room-back-1454.jpg" srcset="../assets/img/room-back-430.jpg 430w, ../assets/img/room-back-780.jpg 780w, ../assets/img/room-back-1000.jpg 1000w, ../assets/img/room-back-1454.jpg 1454w" sizes="(min-width:1264px) 634px, (min-width:900px) 53vw, 81vw"
-               width="1454" height="938" fetchpriority="high" decoding="async"
-               alt="A past evening seen from the back of the parish hall: a full room of seated people facing a four-person panel at a table under a projected slide.">
-        </picture>
-        <figcaption class="badge">Pictured: a past evening</figcaption>
-      </figure>
-      <div class="ebody">
-        <p class="when">TUESDAY 6 OCTOBER 2026</p>
-        <p class="at"><time datetime="2026-10-06T18:30:00-07:00">6:30 PM to 9:30 PM PDT</time></p>
-        <h2>Called to Relationship</h2>
-        <p class="where">San Francisco</p>
-        <p class="tag">Free</p>
-        <a class="btn btn-lg btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer">RSVP on Luma
-        <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </div>
-    </article>
-    <p class="empty" data-empty hidden>Nothing is on the calendar right now. The next one is announced here and on <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer">Instagram</a>.</p>
-  </div>
+<div class="wrap">
+<div class="page-head opener">
+<h1 class="title rv rv-t" id="events-h">The <span class="em">events</span>.</h1>
+<p class="desc rv rv-l" data-d="1">Everything Catholic Leaders in Action is running next, and what it has already run.</p>
+</div>
+<article class="ecard ecard-lead rv rv-b" data-end="2026-10-07T04:30:00.000Z">
+<figure class="ephoto" style="--op:50% 42%">
+<picture>
+<source type="image/webp" srcset="../assets/img/room-back-430.webp 430w, ../assets/img/room-back-780.webp 780w, ../assets/img/room-back-1000.webp 1000w, ../assets/img/room-back-1454.webp 1454w" sizes="(min-width:1264px) 634px, (min-width:900px) 53vw, 81vw">
+<img data-cover src="../assets/img/room-back-1454.jpg" srcset="../assets/img/room-back-430.jpg 430w, ../assets/img/room-back-780.jpg 780w, ../assets/img/room-back-1000.jpg 1000w, ../assets/img/room-back-1454.jpg 1454w" sizes="(min-width:1264px) 634px, (min-width:900px) 53vw, 81vw"
+width="1454" height="938" fetchpriority="high" decoding="async"
+alt="A past evening seen from the back of the parish hall: a full room of seated people facing a four-person panel at a table under a projected slide.">
+</picture>
+<figcaption class="badge">Pictured: a past evening</figcaption>
+</figure>
+<div class="ebody">
+<p class="when">TUESDAY 6 OCTOBER 2026</p>
+<p class="at"><time datetime="2026-10-06T18:30:00-07:00">6:30 PM to 9:30 PM PDT</time></p>
+<h2>Called to Relationship</h2>
+<p class="where">San Francisco</p>
+<p class="tag">Free</p>
+<a class="btn btn-lg btn-fill" href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer">RSVP on Luma
+<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</div>
+</article>
+<p class="empty" data-empty hidden>Nothing is on the calendar right now. The next one is announced here and on <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer">Instagram</a>.</p>
+</div>
 </section>
-
 <section class="band" id="upcoming" aria-labelledby="upcoming-h">
-  <div class="wrap">
-    <h2 class="title rv rv-t" id="upcoming-h">Also <span class="em">coming</span>.</h2>
-    <ul class="elist">
-      <li class="ecard rv rv-b" data-d="0" data-end="2026-10-10T21:00:00.000Z">
-        <figure class="ephoto" style="--op:50% 8%">
-          <picture>
-            <source type="image/webp" srcset="../assets/img/serve-crew-p-720.webp 720w, ../assets/img/serve-crew-p-1080.webp 1080w, ../assets/img/serve-crew-p-1440.webp 1440w" sizes="(min-width:1264px) 512px, (min-width:1024px) 42vw, (min-width:800px) 39.5vw, (min-width:600px) 85vw, 79vw">
-            <img data-cover src="../assets/img/serve-crew-p-1440.jpg" srcset="../assets/img/serve-crew-p-720.jpg 720w, ../assets/img/serve-crew-p-1080.jpg 1080w, ../assets/img/serve-crew-p-1440.jpg 1440w" sizes="(min-width:1264px) 512px, (min-width:1024px) 42vw, (min-width:800px) 39.5vw, (min-width:600px) 85vw, 79vw"
-                 width="1440" height="1800" loading="lazy" decoding="async"
-                 alt="Three religious sisters in aprons standing and laughing with a person seated on a couch at a street encampment, a bicycle and a painted fence behind them.">
-          </picture>
-          <figcaption class="badge">Pictured: a past action</figcaption>
-        </figure>
-        <div class="ebody">
-          <p class="when">SATURDAY 10 OCTOBER 2026</p>
-          <p class="at"><time datetime="2026-10-10T10:00:00-07:00">10:00 AM to 2:00 PM PDT</time></p>
-          <h3>Volunteering at St. Vincent de Paul of San Francisco (SVDP-SF) DCNC Shelter</h3>
-          <p class="where">Division Circle Navigation Center, 224 S Van Ness Ave, San Francisco</p>
-          <p class="tag">Free</p>
-          <p class="note">Online waiver required.</p>
-          <a class="btn btn-sm btn-fill" href="https://luma.com/u6a7bkgx" target="_blank" rel="noopener noreferrer">RSVP on Luma
-        <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        </div>
-      </li>
-    </ul>
-  </div>
+<div class="wrap">
+<h2 class="title rv rv-t" id="upcoming-h">Also <span class="em">coming</span>.</h2>
+<ul class="elist">
+<li class="ecard rv rv-b" data-d="0" data-end="2026-10-10T21:00:00.000Z">
+<figure class="ephoto" style="--op:50% 8%">
+<picture>
+<source type="image/webp" srcset="../assets/img/serve-crew-p-720.webp 720w, ../assets/img/serve-crew-p-1080.webp 1080w, ../assets/img/serve-crew-p-1440.webp 1440w" sizes="(min-width:1264px) 512px, (min-width:1024px) 42vw, (min-width:800px) 39.5vw, (min-width:600px) 85vw, 79vw">
+<img data-cover src="../assets/img/serve-crew-p-1440.jpg" srcset="../assets/img/serve-crew-p-720.jpg 720w, ../assets/img/serve-crew-p-1080.jpg 1080w, ../assets/img/serve-crew-p-1440.jpg 1440w" sizes="(min-width:1264px) 512px, (min-width:1024px) 42vw, (min-width:800px) 39.5vw, (min-width:600px) 85vw, 79vw"
+width="1440" height="1800" loading="lazy" decoding="async"
+alt="Three religious sisters in aprons standing and laughing with a person seated on a couch at a street encampment, a bicycle and a painted fence behind them.">
+</picture>
+<figcaption class="badge">Pictured: a past action</figcaption>
+</figure>
+<div class="ebody">
+<p class="when">SATURDAY 10 OCTOBER 2026</p>
+<p class="at"><time datetime="2026-10-10T10:00:00-07:00">10:00 AM to 2:00 PM PDT</time></p>
+<h3>Volunteering at St. Vincent de Paul of San Francisco (SVDP-SF) DCNC Shelter</h3>
+<p class="where">Division Circle Navigation Center, 224 S Van Ness Ave, San Francisco</p>
+<p class="tag">Free</p>
+<p class="note">Online waiver required.</p>
+<a class="btn btn-sm btn-fill" href="https://luma.com/u6a7bkgx" target="_blank" rel="noopener noreferrer">RSVP on Luma
+<svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</div>
+</li>
+</ul>
+</div>
 </section>
-
 <section class="band" id="past" aria-labelledby="past-h">
-  <div class="wrap">
-    <div class="opener">
-      <h2 class="title rv rv-t" id="past-h">The <span class="em">record</span>.</h2>
-      <p class="desc rv rv-l" data-d="1">Every lecture evening Catholic Leaders in Action has run, and the room it ran in. Each one links to the listing it was announced on.</p>
-    </div>
-    <ul class="epast rv rv-b">
-      <li><span class="when">1 SEPTEMBER 2026</span><span class="what"><a href="https://luma.com/me6t2z7s" target="_blank" rel="noopener noreferrer" aria-label="The Work of Human Hands — the listing on Luma (opens in a new tab)">The Work of Human Hands</a></span><span class="where">St. Philip the Apostle · Noe Valley</span></li>
-      <li><span class="when">5 AUGUST 2026</span><span class="what"><a href="https://luma.com/j3fidejo" target="_blank" rel="noopener noreferrer" aria-label="Called to Serve — the listing on Luma (opens in a new tab)">Called to Serve</a></span><span class="where">St. Paul · Noe Valley</span></li>
-      <li><span class="when">30 JULY 2026</span><span class="what"><a href="https://luma.com/64n0c0y8" target="_blank" rel="noopener noreferrer" aria-label="¿Quién es el hombre de la Sábana Santa? — the listing on Luma (opens in a new tab)">¿Quién es el hombre de la Sábana Santa?</a></span><span class="where">St. Monica · Outer Richmond</span></li>
-      <li><span class="when">7 JULY 2026</span><span class="what"><a href="https://luma.com/5phxte1t" target="_blank" rel="noopener noreferrer" aria-label="Rights and Responsibilities — the listing on Luma (opens in a new tab)">Rights and Responsibilities</a></span><span class="where">St. James · Dolores Heights</span></li>
-      <li><span class="when">2 JUNE 2026</span><span class="what"><a href="https://luma.com/u1a8k3dj" target="_blank" rel="noopener noreferrer" aria-label="Called to Lead — the listing on Luma (opens in a new tab)">Called to Lead</a> <span class="ehint">the inaugural evening</span></span><span class="where">St. Philip the Apostle · Noe Valley</span></li>
-    </ul>
-    <p class="epast-note rv rv-l">One further evening is not on this list — a service evening with the Missionaries of Charity on 29 August 2026, whose location was shared only with the people who registered for it.</p>
-  </div>
+<div class="wrap">
+<div class="opener">
+<h2 class="title rv rv-t" id="past-h">The <span class="em">record</span>.</h2>
+<p class="desc rv rv-l" data-d="1">Every lecture evening Catholic Leaders in Action has run, and the room it ran in. Each one links to the listing it was announced on.</p>
+</div>
+<ul class="epast rv rv-b">
+<li><span class="when">1 SEPTEMBER 2026</span><span class="what"><a href="https://luma.com/me6t2z7s" target="_blank" rel="noopener noreferrer" aria-label="The Work of Human Hands — the listing on Luma (opens in a new tab)">The Work of Human Hands</a></span><span class="where">St. Philip the Apostle · Noe Valley</span></li>
+<li><span class="when">5 AUGUST 2026</span><span class="what"><a href="https://luma.com/j3fidejo" target="_blank" rel="noopener noreferrer" aria-label="Called to Serve — the listing on Luma (opens in a new tab)">Called to Serve</a></span><span class="where">St. Paul · Noe Valley</span></li>
+<li><span class="when">30 JULY 2026</span><span class="what"><a href="https://luma.com/64n0c0y8" target="_blank" rel="noopener noreferrer" aria-label="¿Quién es el hombre de la Sábana Santa? — the listing on Luma (opens in a new tab)">¿Quién es el hombre de la Sábana Santa?</a></span><span class="where">St. Monica · Outer Richmond</span></li>
+<li><span class="when">7 JULY 2026</span><span class="what"><a href="https://luma.com/5phxte1t" target="_blank" rel="noopener noreferrer" aria-label="Rights and Responsibilities — the listing on Luma (opens in a new tab)">Rights and Responsibilities</a></span><span class="where">St. James · Dolores Heights</span></li>
+<li><span class="when">2 JUNE 2026</span><span class="what"><a href="https://luma.com/u1a8k3dj" target="_blank" rel="noopener noreferrer" aria-label="Called to Lead — the listing on Luma (opens in a new tab)">Called to Lead</a> <span class="ehint">the inaugural evening</span></span><span class="where">St. Philip the Apostle · Noe Valley</span></li>
+</ul>
+<p class="epast-note rv rv-l">One further evening is not on this list — a service evening with the Missionaries of Charity on 29 August 2026, whose location was shared only with the people who registered for it.</p>
+</div>
 </section>
-
 <script type="application/ld+json">
 {
- "@context": "https://schema.org",
- "@type": "ItemList",
- "name": "Catholic Leaders in Action events",
- "itemListElement": [
-  {
-   "@type": "Event",
-   "name": "Called to Relationship",
-   "startDate": "2026-10-06T18:30:00-07:00",
-   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-   "eventStatus": "https://schema.org/EventScheduled",
-   "organizer": {
-    "@id": "https://catholicleadersinaction.org/#org"
-   },
-   "endDate": "2026-10-06T21:30:00-07:00",
-   "location": {
-    "@type": "Place",
-    "name": "San Francisco",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "San Francisco",
-     "addressRegion": "CA",
-     "addressCountry": "US"
-    }
-   },
-   "isAccessibleForFree": true,
-   "offers": {
-    "@type": "Offer",
-    "url": "https://luma.com/649axdrt",
-    "availability": "https://schema.org/InStock",
-    "price": "0",
-    "priceCurrency": "USD"
-   }
-  },
-  {
-   "@type": "Event",
-   "name": "Volunteering at St. Vincent de Paul of San Francisco (SVDP-SF) DCNC Shelter",
-   "startDate": "2026-10-10T10:00:00-07:00",
-   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-   "eventStatus": "https://schema.org/EventScheduled",
-   "organizer": {
-    "@id": "https://catholicleadersinaction.org/#org"
-   },
-   "endDate": "2026-10-10T14:00:00-07:00",
-   "location": {
-    "@type": "Place",
-    "name": "Division Circle Navigation Center",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "San Francisco",
-     "addressRegion": "CA",
-     "addressCountry": "US",
-     "streetAddress": "224 S Van Ness Ave"
-    }
-   },
-   "isAccessibleForFree": true,
-   "offers": {
-    "@type": "Offer",
-    "url": "https://luma.com/u6a7bkgx",
-    "availability": "https://schema.org/InStock",
-    "price": "0",
-    "priceCurrency": "USD"
-   }
-  }
- ]
+"@context": "https://schema.org",
+"@type": "ItemList",
+"name": "Catholic Leaders in Action events",
+"itemListElement": [
+{
+"@type": "Event",
+"name": "Called to Relationship",
+"startDate": "2026-10-06T18:30:00-07:00",
+"eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+"eventStatus": "https://schema.org/EventScheduled",
+"organizer": {
+"@id": "https://catholicleadersinaction.org/#org"
+},
+"endDate": "2026-10-06T21:30:00-07:00",
+"location": {
+"@type": "Place",
+"name": "San Francisco",
+"address": {
+"@type": "PostalAddress",
+"addressLocality": "San Francisco",
+"addressRegion": "CA",
+"addressCountry": "US"
+}
+},
+"isAccessibleForFree": true,
+"offers": {
+"@type": "Offer",
+"url": "https://luma.com/649axdrt",
+"availability": "https://schema.org/InStock",
+"price": "0",
+"priceCurrency": "USD"
+}
+},
+{
+"@type": "Event",
+"name": "Volunteering at St. Vincent de Paul of San Francisco (SVDP-SF) DCNC Shelter",
+"startDate": "2026-10-10T10:00:00-07:00",
+"eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+"eventStatus": "https://schema.org/EventScheduled",
+"organizer": {
+"@id": "https://catholicleadersinaction.org/#org"
+},
+"endDate": "2026-10-10T14:00:00-07:00",
+"location": {
+"@type": "Place",
+"name": "Division Circle Navigation Center",
+"address": {
+"@type": "PostalAddress",
+"addressLocality": "San Francisco",
+"addressRegion": "CA",
+"addressCountry": "US",
+"streetAddress": "224 S Van Ness Ave"
+}
+},
+"isAccessibleForFree": true,
+"offers": {
+"@type": "Offer",
+"url": "https://luma.com/u6a7bkgx",
+"availability": "https://schema.org/InStock",
+"price": "0",
+"priceCurrency": "USD"
+}
+}
+]
 }
 </script>
-<!-- /include events:list -->
-
 </main>
-
-<!-- #include footer -->
 <footer class="foot">
-  <div class="wrap rv rv-f">
-    <p class="foot-line">Faith, in <span class="em">action</span>.</p>
-
-    <div class="foot-cols">
-      <div class="foot-col">
-        <p class="label">Explore</p>
-        <a href="/#evening">The evening</a>
-        <a href="/#record">The record</a>
-        <a href="/#voices">Voices</a>
-        <a href="/#seat">Take a seat</a>
-      </div>
-      <div class="foot-col">
-        <p class="label">Pages</p>
-        <a href="/events/" data-nav="events" aria-current="page">Events</a>
-        <a href="/team/" data-nav="team">The team</a>
-        <a href="/start/" data-nav="start">Start a hub</a>
-      </div>
-      <div class="foot-col">
-        <p class="label">Attend</p>
-        <a href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer">Next evening</a>
-        <a href="https://luma.com/u6a7bkgx" target="_blank" rel="noopener noreferrer">The action</a>
-        <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="https://sfarch.org/" target="_blank" rel="noopener noreferrer">Archdiocese</a>
-      </div>
-
-<!-- #include footer:venues -->
-      <h2 class="label venue-head">Recent rooms</h2>
-      <div class="venue">
-        <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
-        <h3>St. Philip the Apostle</h3>
-        <p class="label">725 Diamond St &middot; Noe Valley</p>
-        <p class="venue-last">2 evenings &middot; last <time datetime="2026-09-01">1 September 2026</time></p>
-      </div>
-      <div class="venue">
-        <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
-        <h3>St. Paul</h3>
-        <p class="label">221 Valley St &middot; Noe Valley</p>
-        <p class="venue-last">one evening &middot; last <time datetime="2026-08-05">5 August 2026</time></p>
-      </div>
-      <div class="venue">
-        <svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
-        <h3>St. Monica</h3>
-        <p class="label">470 24th Ave &middot; Outer Richmond</p>
-        <p class="venue-last">one evening &middot; last <time datetime="2026-07-30">30 July 2026</time></p>
-      </div>
-<!-- /include footer:venues -->
-    </div>
-
-    <div class="foot-base">
-      <p><a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer">@catholicleadersinaction</a></p>
-      <p class="mid">© 2026 Catholic Leaders in Action</p>
-      <div class="end socials">
-        <a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 0 0-2.13 1.38A5.9 5.9 0 0 0 .63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13a5.9 5.9 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 0 0 2.13-1.38 5.9 5.9 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.13A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Z"/><path d="M12 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
-        </a>
-        <a href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="Luma (opens in a new tab)">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6 22.4 12 12 22.4 1.6 12 12 1.6Zm0 4.53L6.13 12 12 17.87 17.87 12 12 6.13Z"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <p class="foot-fine">Catholic Leaders in Action is a community formed in partnership with the Archdiocese of San Francisco. Except where noted, the photographs and clips on this page are the organization’s own; the hero film and the manifesto backdrop are stock footage, graded but not staged (“A Thick Fog Covering a View of the City”, Zetong Li, and “Round Shaped Windows In The Church”, cottonbro studio, both Pexels License); neither depicts a CLIA gathering or a room the organization uses; the September 1 photographs are by Nicole Ostrowski, and some clips are from posts co-authored with the Office of Human Life &amp; Dignity, Star of the Sea Young Adults and Pro-Life San Francisco. Two images in “The evening” are illustrations, marked as such where they appear: they are generated rather than photographed, and depict neither a past gathering nor any identifiable person. Attendee quotations are reproduced with attribution from the Archdiocese of San Francisco.</p>
-  </div>
+<div class="wrap rv rv-f">
+<p class="foot-line">Talk, then <span class="em">action</span>.</p>
+<div class="foot-cols">
+<div class="foot-col">
+<p class="label">Explore</p>
+<a href="/#evening">The evening</a>
+<a href="/#record">The record</a>
+<a href="/#voices">Voices</a>
+<a href="/#seat">Take a seat</a>
+</div>
+<div class="foot-col">
+<p class="label">Pages</p>
+<a href="/events/" data-nav="events" aria-current="page">Events</a>
+<a href="/team/" data-nav="team">The team</a>
+<a href="/start/" data-nav="start">Start a hub</a>
+</div>
+<div class="foot-col">
+<p class="label">Attend</p>
+<a href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer">Next evening</a>
+<a href="https://luma.com/u6a7bkgx" target="_blank" rel="noopener noreferrer">The action</a>
+<a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer">Instagram</a>
+<a href="https://sfarch.org/" target="_blank" rel="noopener noreferrer">Archdiocese</a>
+</div>
+<h2 class="label venue-head">Recent rooms</h2>
+<div class="venue">
+<svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
+<h3>St. Philip the Apostle</h3>
+<p class="label">725 Diamond St &middot; Noe Valley</p>
+<p class="venue-last">2 evenings &middot; last <time datetime="2026-09-01">1 September 2026</time></p>
+</div>
+<div class="venue">
+<svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
+<h3>St. Paul</h3>
+<p class="label">221 Valley St &middot; Noe Valley</p>
+<p class="venue-last">one evening &middot; last <time datetime="2026-08-05">5 August 2026</time></p>
+</div>
+<div class="venue">
+<svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 1v5M7.5 3.5h5M10 6 3 11v12h14V11L10 6ZM8 23v-5a2 2 0 0 1 4 0v5"/></svg>
+<h3>St. Monica</h3>
+<p class="label">470 24th Ave &middot; Outer Richmond</p>
+<p class="venue-last">one evening &middot; last <time datetime="2026-07-30">30 July 2026</time></p>
+</div>
+</div>
+<div class="foot-base">
+<p><a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer">@catholicleadersinaction</a></p>
+<p class="mid">© 2026 Catholic Leaders in Action</p>
+<div class="end socials">
+<a href="https://www.instagram.com/catholicleadersinaction/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 0 0-2.13 1.38A5.9 5.9 0 0 0 .63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13a5.9 5.9 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 0 0 2.13-1.38 5.9 5.9 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.13A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Z"/><path d="M12 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
+</a>
+<a href="https://luma.com/649axdrt" target="_blank" rel="noopener noreferrer" aria-label="Luma (opens in a new tab)">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6 22.4 12 12 22.4 1.6 12 12 1.6Zm0 4.53L6.13 12 12 17.87 17.87 12 12 6.13Z"/></svg>
+</a>
+</div>
+</div>
+<p class="foot-fine">Catholic Leaders in Action is a community formed in partnership with the Archdiocese of San Francisco. Except where noted, the photographs and clips on this page are the organization’s own; the hero film and the manifesto backdrop are stock footage, graded but not staged (“A Thick Fog Covering a View of the City”, Zetong Li, and “Round Shaped Windows In The Church”, cottonbro studio, both Pexels License); neither depicts a CLIA gathering or a room the organization uses; the September 1 photographs are by Nicole Ostrowski, and some clips are from posts co-authored with the Office of Human Life &amp; Dignity, Star of the Sea Young Adults and Pro-Life San Francisco. Two images in “The evening” are illustrations, marked as such where they appear: they are generated rather than photographed, and depict neither a past gathering nor any identifiable person. Attendee quotations are reproduced with attribution from the Archdiocese of San Francisco.</p>
+</div>
 </footer>
-<!-- /include footer -->
-
 <script src="../assets/js/lenis.min.js" defer></script>
 <script src="../main.js" defer></script>
 </body>
