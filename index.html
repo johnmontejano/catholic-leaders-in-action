@@ -29,7 +29,13 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-400.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Newsreader-italic.woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
-<script>document.documentElement.className='motion';</script>
+<script>document.documentElement.className='motion';
+/* THE PHONE, DECIDED ONCE AND EARLY (2026-09-15). (hover:none) and
+(pointer:coarse) are what a phone is supposed to report, and some Androids
+report a mouse instead — a stylus, a desktop-mode flag — so the phone got
+Lenis, blur reveals and backdrop blurs meant for a laptop. maxTouchPoints is
+the signal that does not lie. Set here so the first paint already knows. */
+if(navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches||matchMedia('(hover:none)').matches)document.documentElement.classList.add('touch');</script>
 <script type="application/ld+json">
 {
 "@context":"https://schema.org",
