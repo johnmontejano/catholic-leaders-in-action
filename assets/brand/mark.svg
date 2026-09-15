@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Catholic Leaders in Action">
-  <!-- One object: a plate with the cross cut out of it. The cross is the same
-       form as the t in the wordmark. Holds at 16px; nothing here is thinner
-       than 2.3 units. 2026-09-14. -->
-  <path fill-rule="evenodd" d="M1 1h22v22H1zm9.25 3h3.5v2.32h5.6v3h-5.6V20h-3.5V9.32h-5.6v-3h5.6z"/>
+  <!-- THE MARK, 2026-09-15. A cross with two bars: the archiepiscopal cross,
+       the cross an archbishop carries before him — and, in the same silhouette,
+       a tower of the Golden Gate Bridge, whose two cross-struts are what
+       everyone in this city draws when they draw it. The Archdiocese of San
+       Francisco and San Francisco, in one form, with no lettering to collide
+       with anyone else's. Solid, one path, nothing thinner than 2.5 units;
+       holds at 16px. -->
+  <path d="M10.6 1.4h2.8v3.4h4v2.5h-4v3.2h6.9v2.5h-6.9v9.6h-2.8v-9.6H3.6v-2.5h7v-3.2h-4V4.8h4z"/>
 </svg>

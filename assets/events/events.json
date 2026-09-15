@@ -1,11 +1,11 @@
 {
- "updated": "2026-09-07T21:36:33.788Z",
+ "updated": "2026-09-15T19:47:46.101Z",
  "zone": "America/Los_Angeles",
  "source": "google-calendar-ics",
  "feedOk": true,
  "upcoming": [
   {
-   "id": "seed:evening-2026-10-06",
+   "id": "1lhlk832i6loaol1ck8c8nd8f0@google.com#2026-10-07T01:30:00.000Z",
    "title": "Called to Relationship",
    "start": "2026-10-07T01:30:00.000Z",
    "end": "2026-10-07T04:30:00.000Z",
@@ -15,18 +15,18 @@
    "dateLabel": "Tuesday, October 6, 2026",
    "timeLabel": "6:30 PM to 9:30 PM PDT",
    "isoLocal": "2026-10-06T18:30:00-07:00",
-   "location": "San Francisco",
+   "location": "San Francisco (the parish hall address comes with your registration)",
    "rsvp": "https://luma.com/649axdrt",
    "rsvpMissing": false,
-   "free": true,
+   "free": null,
    "note": null,
    "kind": "evening",
    "recurring": false,
-   "origin": "seed"
+   "origin": "calendar"
   },
   {
-   "id": "seed:action-2026-10-10",
-   "title": "Volunteering at St. Vincent de Paul of San Francisco (SVDP-SF) DCNC Shelter",
+   "id": "u7gtntovrq42qp1sns79j9f6l8@google.com#2026-10-10T17:00:00.000Z",
+   "title": "Serving with St. Vincent de Paul",
    "start": "2026-10-10T17:00:00.000Z",
    "end": "2026-10-10T21:00:00.000Z",
    "startDate": "2026-10-10",
@@ -35,14 +35,14 @@
    "dateLabel": "Saturday, October 10, 2026",
    "timeLabel": "10:00 AM to 2:00 PM PDT",
    "isoLocal": "2026-10-10T10:00:00-07:00",
-   "location": "Division Circle Navigation Center, 224 S Van Ness Ave, San Francisco",
+   "location": "Division Circle Navigation Center, 224 S Van Ness Ave, San Francisco, CA 94103",
    "rsvp": "https://luma.com/u6a7bkgx",
    "rsvpMissing": false,
-   "free": true,
-   "note": "Online waiver required.",
+   "free": null,
+   "note": null,
    "kind": "action",
    "recurring": false,
-   "origin": "seed"
+   "origin": "calendar"
   }
  ],
  "past": [],
