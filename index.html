@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-v="89271032">
+<html lang="en" data-v="4de7e7f2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-500.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GeneralSans-400.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Newsreader-italic.woff2" crossorigin>
-<link rel="stylesheet" href="styles.css?v=89271032">
+<link rel="stylesheet" href="styles.css?v=4de7e7f2">
 <script>document.documentElement.className='motion';
 /* THE PHONE, DECIDED ONCE AND EARLY (2026-09-15). (hover:none) and
 (pointer:coarse) are what a phone is supposed to report, and some Androids
@@ -99,6 +99,7 @@ RSVP
 <span class="burger" aria-hidden="true"><i></i><i></i></span>
 </button>
 </header>
+<a class="totop-fab" href="#top" aria-label="Back to top" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 <div class="menu" id="menu" hidden>
 <nav class="menu-nav" aria-label="Sections">
 <a href="/#evening"><i aria-hidden="true">01</i><span class="lbl">The evening</span></a>
@@ -144,6 +145,10 @@ disablepictureinpicture poster="assets/video/sf-hero-poster.webp" aria-hidden="t
 <source src="assets/video/sf-hero.mp4" type="video/mp4">
 </video>
 </div>
+<button class="film-ctl" type="button" aria-label="Pause the film" data-state="playing" hidden>
+<svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3v10M11 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+<svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7-4.5z" fill="currentColor"/></svg>
+</button>
 <div class="hero-inner">
 <div class="hero-left">
 <p class="hero-eyebrow eyebrow"><span class="dot"></span>San Francisco <span class="sep">·</span> Ages 21 to 40</p>
@@ -239,7 +244,8 @@ aria-describedby="sig-fine">
 </div>
 <div class="deck-nav">
 <button class="deck-btn" type="button" data-prev aria-label="Previous evening"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H4M7.5 4.5 4 8l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-<p class="deck-count" aria-hidden="true"><b data-cur>1</b> / 6</p>
+<div class="dots" data-dots role="tablist" aria-label="Evenings"></div>
+<p class="deck-count sr" aria-live="polite"><b data-cur>1</b> of 6</p>
 <button class="deck-btn" type="button" data-next aria-label="Next evening"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div>
 <p class="tlink-row rv rv-c" data-d="1"><a class="tlink" href="/events/">Every evening, on the record</a></p>
@@ -269,7 +275,7 @@ sizes="(max-width:700px) 370vw, 138vw">
 </picture>
 <div class="believe-veil" aria-hidden="true"></div>
 <div class="believe-body" id="believeBody">
-<p class="eyebrow">We believe in</p>
+<p class="eyebrow">What we stand on</p>
 <div class="believe-lines" id="believeLines">
 <ul id="drum">
 <li>Every generation inherits a culture. Few choose to <span class="em">shape</span> it.</li>
@@ -338,6 +344,7 @@ aria-label="Roberto Lacayo speaking to camera about serving with the Missionarie
 </figure>
 </div>
 <div class="rail-nav">
+<div class="dots" data-dots role="tablist" aria-label="Voices"></div>
 <button class="deck-btn" type="button" data-prev aria-label="Scroll back"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H4M7.5 4.5 4 8l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <button class="deck-btn" type="button" data-next aria-label="Scroll forward"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div>
@@ -347,8 +354,8 @@ aria-label="Roberto Lacayo speaking to camera about serving with the Missionarie
 <div class="wrap">
 <div class="record-head">
 <div class="opener left">
-<h2 class="title rv rv-t">Every lecture night, sold out.</h2>
-<p class="desc rv rv-l" data-d="1">Formed in June 2026 in partnership with the Archdiocese of San Francisco. Six gatherings so far, in five rooms across the city.</p>
+<h2 class="title rv rv-t">Every lecture night, sold out. <span class="dim">Six gatherings, five rooms.</span></h2>
+<p class="desc rv rv-l" data-d="1">Formed in June 2026 in partnership with the Archdiocese of San Francisco.</p>
 </div>
 <div class="stats" id="stats">
 <div class="stat rv rv-b"><b><span data-to="6">6</span></b><p class="cap">Gatherings since June</p></div>
@@ -417,8 +424,8 @@ aria-label="Roberto Lacayo speaking to camera about serving with the Missionarie
 <section class="band" id="evening">
 <div class="wrap">
 <div class="opener">
-<h2 class="title rv rv-t">The <span class="em">evening</span></h2>
-<p class="desc rv rv-l" data-d="1">What a night actually looks like — 6:30 to 9:30, one evening a month, in a parish hall in San Francisco.</p>
+<h2 class="title rv rv-t">The <span class="em">evening</span>. <span class="dim">6:30 to 9:30, one night a month.</span></h2>
+<p class="desc rv rv-l" data-d="1">What a night actually looks like, in a parish hall in San Francisco.</p>
 </div>
 <div class="bento">
 <article class="cell has-media wide lead rv rv-b">
@@ -624,16 +631,16 @@ alt="A religious sister and a volunteer handing supplies out of the back of a va
 <p class="venue-last">2 evenings &middot; last <time datetime="2026-09-01">1 September 2026</time></p>
 </div>
 <div class="venue">
-<span class="vnum" aria-hidden="true">4</span>
-<h3>St. Paul</h3>
-<p class="label">221 Valley St &middot; Noe Valley</p>
-<p class="venue-last">one evening &middot; last <time datetime="2026-08-05">5 August 2026</time></p>
-</div>
-<div class="venue">
 <span class="vnum" aria-hidden="true">3</span>
 <h3>St. Monica</h3>
 <p class="label">470 24th Ave &middot; Outer Richmond</p>
 <p class="venue-last">one evening &middot; last <time datetime="2026-07-30">30 July 2026</time></p>
+</div>
+<div class="venue">
+<span class="vnum" aria-hidden="true">4</span>
+<h3>St. Paul</h3>
+<p class="label">221 Valley St &middot; Noe Valley</p>
+<p class="venue-last">one evening &middot; last <time datetime="2026-08-05">5 August 2026</time></p>
 </div>
 </div>
 <div class="foot-base">
@@ -652,7 +659,7 @@ alt="A religious sister and a volunteer handing supplies out of the back of a va
 <p class="foot-fine">Catholic Leaders in Action is a community formed in partnership with the Archdiocese of San Francisco. Except where noted, the photographs and clips on this page are the organization’s own; the hero film and the manifesto backdrop are stock footage, graded but not staged (“A Thick Fog Covering a View of the City”, Zetong Li, and “Round Shaped Windows In The Church”, cottonbro studio, both Pexels License); neither depicts a CLIA gathering or a room the organization uses; the September 1 photographs are by Nicole Ostrowski, and some clips are from posts co-authored with the Office of Human Life &amp; Dignity, Star of the Sea Young Adults and Pro-Life San Francisco. Two images in “The evening” are illustrations, marked as such where they appear: they are generated rather than photographed, and depict neither a past gathering nor any identifiable person. Attendee quotations are reproduced with attribution from the Archdiocese of San Francisco.</p>
 </div>
 </footer>
-<script src="assets/js/lenis.min.js?v=89271032" defer></script>
-<script src="main.js?v=89271032" defer></script>
+<script src="assets/js/lenis.min.js?v=4de7e7f2" defer></script>
+<script src="main.js?v=4de7e7f2" defer></script>
 </body>
 </html>
