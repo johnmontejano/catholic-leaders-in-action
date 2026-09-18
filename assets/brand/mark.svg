@@ -1,10 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Catholic Leaders in Action">
-  <!-- THE MARK, 2026-09-15. A cross with two bars: the archiepiscopal cross,
-       the cross an archbishop carries before him — and, in the same silhouette,
-       a tower of the Golden Gate Bridge, whose two cross-struts are what
-       everyone in this city draws when they draw it. The Archdiocese of San
-       Francisco and San Francisco, in one form, with no lettering to collide
-       with anyone else's. Solid, one path, nothing thinner than 2.5 units;
-       holds at 16px. -->
-  <path d="M10.6 1.4h2.8v3.4h4v2.5h-4v3.2h6.9v2.5h-6.9v9.6h-2.8v-9.6H3.6v-2.5h7v-3.2h-4V4.8h4z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="currentColor" role="img" aria-label="Catholic Leaders in Action">
+  <!-- THE SEAL, 2026-09-18. The fourth mark, and the first the owner did not
+       reject on sight: a circular institute seal — ring, the name and the city
+       and the founding year set around it in the site's own General Sans, a
+       Latin cross with gently tapered terminals at the centre. Drawn as one
+       SVG so it is crisp at 22px in the bar and at 512px on a home screen; the
+       ring text resolves to a dotted ring below ~40px, which is what a seal
+       does. Generated direction (research/logo-candidates-2026-09-18/b-seal.png)
+       redrawn by hand as vector. -->
+  <defs>
+    <path id="clia-arc-top" d="M26.2 101.9 A74 74 0 1 1 173.8 101.9"/>
+    <path id="clia-arc-bot" d="M26.6 108.3 A74 74 0 1 0 173.4 108.3"/>
+  </defs>
+  <circle cx="100" cy="100" r="95.5" fill="none" stroke="currentColor" stroke-width="3.2"/>
+  <g font-family="'General Sans',system-ui,sans-serif" font-weight="500" font-size="10.2" letter-spacing="1.35">
+    <text><textPath href="#clia-arc-top" startOffset="50%" text-anchor="middle">CATHOLIC LEADERS IN ACTION</textPath></text>
+    <text dy="7.6"><textPath href="#clia-arc-bot" startOffset="50%" text-anchor="middle">SAN FRANCISCO · MMXXVI</textPath></text>
+  </g>
+  <circle cx="26" cy="100" r="2.1"/><circle cx="174" cy="100" r="2.1"/>
+  <path d="M89.5 46 L110.5 46 L107.5 87.5 L144 84.5 L144 105.5 L107.5 102.5 L110.5 152 L89.5 152 L92.5 102.5 L56 105.5 L56 84.5 L92.5 87.5 Z"/>
 </svg>
